@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Etude
+Exec=etude
+Icon=fi.oikarinenotto.etude
+Terminal=false
+Type=Application
+Categories=Utility;
+Keywords=GTK;
+StartupNotify=true
+DBusActivatable=true

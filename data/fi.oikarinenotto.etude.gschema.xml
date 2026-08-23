@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="etude">
+	<schema id="fi.oikarinenotto.etude" path="/fi/oikarinenotto/etude/">
+	</schema>
+</schemalist>
