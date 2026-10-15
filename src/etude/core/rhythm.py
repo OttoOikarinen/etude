@@ -111,7 +111,10 @@ class Meter:
 
     @property
     def groups(self) -> tuple[int, ...]:
-        """Beat groups in units of ``beat_unit``: 4/4 → (1, 1, 1, 1), 6/8 → (3, 3), 7/8 → (2, 2, 3)."""
+        """Beat groups in units of ``beat_unit``.
+
+        4/4 → (1, 1, 1, 1), 6/8 → (3, 3), 7/8 → (2, 2, 3).
+        """
         if self.grouping is not None:
             return self.grouping
         if self.is_compound:

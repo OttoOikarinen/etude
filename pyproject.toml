@@ -55,7 +55,7 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 # Gtk.Template children and GObject virtual methods follow GTK naming.
 "src/etude/ui/**" = ["N802", "N815"]
-"src/etude/main.py" = ["N802"]
+"src/etude/main.py" = ["N802", "E402"]
 "src/etude/window.py" = ["N802"]
 
 [tool.ruff.format]

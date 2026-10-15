@@ -29,7 +29,10 @@ class KeySignature:
 
     @classmethod
     def for_major(cls, tonic: PitchName) -> KeySignature:
-        """Key signature of the major key on ``tonic``; raises for theoretical keys like G♯ major."""
+        """Key signature of the major key on ``tonic``.
+
+        Raises :class:`ValueError` for theoretical keys such as G♯ major.
+        """
         return cls(tonic.line_of_fifths)
 
     @classmethod

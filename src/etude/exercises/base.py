@@ -278,7 +278,9 @@ class ExerciseDefinition(ABC):
         """Items covered under ``settings``, in teaching order."""
 
     @abstractmethod
-    def generate(self, item_id: ItemId, settings: Mapping[str, object], rng: random.Random) -> Question:
+    def generate(
+        self, item_id: ItemId, settings: Mapping[str, object], rng: random.Random
+    ) -> Question:
         """A fresh concrete question for ``item_id``. Must be deterministic for a given
         ``rng`` state, and the expected answer must be unambiguous among the options."""
 

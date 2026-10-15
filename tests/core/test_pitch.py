@@ -99,7 +99,18 @@ def test_from_midi(midi: int, sharps: str, flats: str) -> None:
 
 @pytest.mark.parametrize(
     ('position', 'name'),
-    [(0, 'C'), (1, 'G'), (-1, 'F'), (6, 'F#'), (7, 'C#'), (-2, 'Bb'), (-7, 'Cb'), (12, 'B#'), (13, 'F##'), (14, 'C##')],
+    [
+        (0, 'C'),
+        (1, 'G'),
+        (-1, 'F'),
+        (6, 'F#'),
+        (7, 'C#'),
+        (-2, 'Bb'),
+        (-7, 'Cb'),
+        (12, 'B#'),
+        (13, 'F##'),
+        (14, 'C##'),
+    ],
 )
 def test_line_of_fifths(position: int, name: str) -> None:
     pitch_name = PitchName.from_line_of_fifths(position)

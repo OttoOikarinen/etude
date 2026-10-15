@@ -18,13 +18,16 @@ simple_intervals = st.sampled_from(
     [
         Interval.parse(text)
         for text in (
-            'P1 A1 m2 M2 A2 d3 m3 M3 A3 d4 P4 A4 d5 P5 A5 d6 m6 M6 A6 d7 m7 M7 d8 P8'.split()
+            *('P1', 'A1', 'm2', 'M2', 'A2', 'd3', 'm3', 'M3', 'A3', 'd4', 'P4', 'A4'),
+            *('d5', 'P5', 'A5', 'd6', 'm6', 'M6', 'A6', 'd7', 'm7', 'M7', 'd8', 'P8'),
         )
     ]
 )
 intervals = st.one_of(
     simple_intervals,
-    st.builds(Interval, st.sampled_from([Quality.MINOR, Quality.MAJOR]), st.sampled_from([9, 10, 13])),
+    st.builds(
+        Interval, st.sampled_from([Quality.MINOR, Quality.MAJOR]), st.sampled_from([9, 10, 13])
+    ),
     st.builds(Interval, st.just(Quality.PERFECT), st.sampled_from([11, 12, 15])),
 )
 
