@@ -1,0 +1,157 @@
+# Architecture
+
+Etude is a GNOME application written in Python with GTK 4 and
+libadwaita, built with Meson and distributed as a Flatpak. This document
+explains how the code is organised, which rules keep it maintainable, and
+where to start when you change something.
+
+## Layers
+
+```
+┌───────────────────────────────────────────────────────────────┐
+│ etude.main, etude.window, etude.ui        application shell,  │
+│ etude.notation.widget (StaffView)         pages, widgets      │  GTK
+├───────────────────────────────────────────────────────────────┤
+│ etude.exercises   etude.content   etude.storage               │
+├───────────────────────────────────────────────────────────────┤
+│ etude.learning    etude.notation  etude.audio                 │  pure
+├───────────────────────────────────────────────────────────────┤  Python
+│ etude.core        (music theory value types)                  │
+└───────────────────────────────────────────────────────────────┘
+```
+
+* A layer may import the layers below it, never above. Packages on the
+  same layer are independent of each other.
+* Only the shell, `etude.ui` and `etude.notation.widget` import `gi`.
+  Everything else is plain Python and is tested without a display.
+* Both rules are enforced by import-linter (`lint-imports`, configured in
+  `pyproject.toml`).
+
+| Package | Responsibility |
+|---|---|
+| `core` | Spelled pitches, intervals, scales, keys, chords, Roman numerals, rhythm, set theory, note naming conventions. Immutable value types. |
+| `notation` | `spec` describes what to engrave; `layout` turns it into a `displaylist` in staff-space units using Bravura (SMuFL) metrics; `a11y` describes it in words; `widget` draws it. |
+| `audio` | `spec` describes what to play; `backend` is the interface; FluidSynth plays it, `null` stands in for tests and machines without sound. |
+| `learning` | FSRS scheduling, ratings derived from answers, session building (interleaving, new vs. review), mastery, placement, statistics. Talks to storage and exercises only through `learning.ports`. |
+| `storage` | SQLite implementation of the `learning.ports` stores, with migrations. |
+| `exercises` | `base` is the framework; `families/` holds the exercises; `registry` discovers them. |
+| `content` | Curriculum, theory lessons and glossary loaded from `data/content/`. |
+| `ui` | Pages, widgets and dialogs following the design mockups. |
+
+## Contracts
+
+The modules below are the interfaces between work streams. Change them
+deliberately, in their own pull request, and update this document.
+
+* `etude/core/pitch.py`, `interval.py`, `rhythm.py`, `key.py`: the
+  value types everything else is built on.
+* `etude/notation/spec.py` and `displaylist.py`: what the engraver accepts
+  and produces.
+* `etude/audio/spec.py` and `backend.py`: what the synthesizer accepts.
+* `etude/learning/model.py` and `ports.py`: knowledge items, cards,
+  outcomes, sessions, and the storage and catalogue protocols.
+* `etude/exercises/base.py`: questions, answer specifications, feedback,
+  settings and the `ExerciseDefinition` base class.
+
+### How a question flows
+
+```
+SessionBuilder ──plans──▶ (exercise id, item id)
+      │
+      ▼
+ExerciseDefinition.generate(item, settings, rng) ──▶ Question
+      │                                   figure ──▶ layout ──▶ StaffView
+      │                                   playback ─▶ AudioBackend
+      ▼
+ExercisePage renders Question.answer (choice, piano, chips, staff input…)
+      │ learner answers
+      ▼
+ExerciseDefinition.grade(question, given) ──▶ Feedback ──▶ FeedbackBanner
+      │
+      ▼
+Outcome ──derive_rating──▶ Rating ──Scheduler.review──▶ Card ──▶ CardStore
+```
+
+### Knowledge items
+
+The scheduler works on *knowledge items*, not on questions. An item is a
+hierarchical string id owned by exactly one exercise, for example
+`keysig.major.4s`, `interval.ear.melodic.asc.m6` or `vocab.term.fermata`.
+Each exercise declares a unique `item_prefix`. `generate()` produces a new
+concrete question for an item every time (different root, register, clef
+or instrument), so learners practise the concept and not one memorised
+picture or sound.
+
+Ids are stored in learners' databases: never rename an item id without a
+storage migration.
+
+## Data and settings
+
+* Read-only data (fonts, SoundFont, content) lives in `data/` in the source
+  tree and in `pkgdatadir` once installed; find it with
+  `etude.paths.data_file()`.
+* Preferences are GSettings keys (`data/fi.oikarinenotto.etude.gschema.xml`).
+* Learning data is a SQLite database in the user data directory
+  (`~/.var/app/fi.oikarinenotto.etude/data/etude/` under Flatpak).
+* The app never uses the network.
+
+## Building and running
+
+The supported way to build is Flatpak, either from GNOME Builder (open
+the project and press Run) or on the command line:
+
+```sh
+flatpak install flathub org.flatpak.Builder
+flatpak run org.flatpak.Builder --user --install --force-clean build-dir fi.oikarinenotto.etude.json
+flatpak run fi.oikarinenotto.etude
+```
+
+For a quick check of the Meson build without Flatpak packaging, run
+Meson from the SDK:
+
+```sh
+flatpak run --filesystem="$PWD" --command=sh org.gnome.Sdk//51 \
+    -c 'meson setup _build && meson test -C _build'
+```
+
+### Notes on dependencies
+
+* FluidSynth is built with `-Denable-signalsmith=OFF`: that optional
+  reverb and limiter component downloads sources while configuring, which
+  Flatpak builds do not allow. FluidSynth's default reverb is used.
+* Bravura is registered at startup with
+  `PangoCairo.FontMap.get_default().add_font_file()` and drawn with
+  `Gtk.Snapshot.append_layout()`. SMuFL fonts are scaled so that one em
+  equals four staff spaces; a glyph's SMuFL origin is the Pango baseline.
+
+## Testing
+
+* `tests/` mirrors the package layout. Domain packages are tested with
+  pytest and hypothesis on any Python ≥ 3.13; run `pytest`.
+* Notation layout is golden-tested: display lists and rendered PNGs are
+  compared against files in `tests/notation/golden/`.
+* Every exercise has a property test that generates many questions and
+  checks that the expected answer is among the options, the options are
+  distinct, and grading the expected answer succeeds.
+* `meson test` (also run in the Flatpak CI job) validates the desktop file,
+  AppStream metadata and GSettings schema, and runs UI smoke tests.
+* `tests/test_packaging.py` checks that every module is listed in Meson,
+  every `.ui` file is in the GResource, and translatable files are in
+  `po/POTFILES.in`.
+
+## Conventions
+
+* Code style is enforced by ruff (format and lint) and mypy `--strict` for
+  the domain packages. Line length is 100.
+* Every file starts with SPDX headers (`SPDX-FileCopyrightText` and
+  `SPDX-License-Identifier`); files that cannot hold a header are covered by
+  `REUSE.toml`. Code is GPL-3.0-or-later, documentation and teaching
+  content CC-BY-SA-4.0.
+* English is the source language. Every user-visible string goes through
+  gettext (`from gettext import gettext as _`), including strings produced
+  by exercises.
+* Note names are never hard-coded in UI text: use the naming helpers in
+  `etude.core` so that learners can choose English (C–B), German/Nordic
+  (C–H, with B for B♭) or fixed-do names.
+* Colour is never the only signal: states use colour, icon and text, and
+  notation inks are semantic (`Ink.SUCCESS`, not green).
