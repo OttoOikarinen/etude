@@ -7,8 +7,7 @@ project('etude',
 i18n = import('i18n')
 gnome = import('gnome')
 
-
-
+application_id = 'fi.oikarinenotto.etude'
 
 subdir('data')
 subdir('src')

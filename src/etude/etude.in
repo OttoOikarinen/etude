@@ -43,5 +43,8 @@ if __name__ == '__main__':
     resource = Gio.Resource.load(os.path.join(pkgdatadir, 'etude.gresource'))
     resource._register()
 
+    from etude import paths
+    paths.set_data_dir(pkgdatadir)
+
     from etude import main
     sys.exit(main.main(VERSION))

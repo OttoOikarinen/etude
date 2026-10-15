@@ -1,8 +1,9 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
 data/fi.oikarinenotto.etude.desktop.in
-data/fi.oikarinenotto.etude.metainfo.xml.in
 data/fi.oikarinenotto.etude.gschema.xml
-src/main.py
-src/window.py
-src/window.ui
+data/fi.oikarinenotto.etude.metainfo.xml.in
+src/etude/main.py
+src/etude/shortcuts-dialog.ui
+src/etude/window.py
+src/etude/window.ui
