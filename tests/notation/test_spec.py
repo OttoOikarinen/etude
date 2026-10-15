@@ -48,9 +48,7 @@ def test_staff_geometry_round_trip() -> None:
 def test_hit_test_prefers_heads() -> None:
     event = HitRegion(staff=0, event=1, head=None, x=0, y=0, width=4, height=8)
     head = HitRegion(staff=0, event=1, head=0, x=1, y=3, width=1.2, height=1)
-    display = DisplayList(
-        items=(), width=10, height=8, staves=(), hit_regions=(head, event)
-    )
+    display = DisplayList(items=(), width=10, height=8, staves=(), hit_regions=(head, event))
     assert display.hit_test(1.5, 3.5) == head
     assert display.hit_test(3.5, 7) == event
     assert display.hit_test(9, 1) is None

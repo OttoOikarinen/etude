@@ -7,6 +7,7 @@ from hypothesis import assume, given
 from hypothesis import strategies as st
 
 from etude.core import Interval, Letter, Pitch, PitchName, Quality
+from etude.core.pitch import MAX_ALTER
 
 pitches = st.builds(
     Pitch,
@@ -37,21 +38,30 @@ def test_parse_round_trip(pitch: Pitch) -> None:
     assert Pitch.parse(str(pitch)) == pitch
 
 
+def transposed(pitch: Pitch, interval: Interval) -> Pitch:
+    """Transpose up, discarding cases that would need more than triple accidentals."""
+    octave, step = divmod(pitch.diatonic_index + interval.number - 1, 7)
+    natural_midi = 12 * (octave + 1) + Letter(step).semitones
+    alter = pitch.midi + interval.semitones - natural_midi
+    assume(abs(alter) <= MAX_ALTER)
+    return pitch.transpose(interval)
+
+
 @given(pitches, intervals)
 def test_transpose_round_trip(pitch: Pitch, interval: Interval) -> None:
-    assert pitch.transpose(interval).transpose(interval, down=True) == pitch
+    assert transposed(pitch, interval).transpose(interval, down=True) == pitch
 
 
 @given(pitches, intervals)
 def test_transpose_then_measure(pitch: Pitch, interval: Interval) -> None:
-    higher = pitch.transpose(interval)
+    higher = transposed(pitch, interval)
     assume(abs(higher.alter) <= 2)
     assert Interval.between(pitch, higher) == interval
 
 
 @given(pitches, intervals)
 def test_semitones_match_midi(pitch: Pitch, interval: Interval) -> None:
-    assert pitch.transpose(interval).midi - pitch.midi == interval.semitones
+    assert transposed(pitch, interval).midi - pitch.midi == interval.semitones
 
 
 @given(simple_intervals)

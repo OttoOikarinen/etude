@@ -27,7 +27,7 @@ repos:
         types: [python]
       - id: import-linter
         name: import-linter
-        entry: lint-imports
+        entry: env PYTHONPATH=src lint-imports
         language: system
         pass_filenames: false
         types: [python]

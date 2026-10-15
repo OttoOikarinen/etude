@@ -18,6 +18,7 @@ Two coordinates are used throughout the code base:
 
 from __future__ import annotations
 
+import math
 import re
 from dataclasses import dataclass
 from enum import IntEnum
@@ -38,8 +39,19 @@ _ASCII_ACCIDENTALS = {-3: 'bbb', -2: 'bb', -1: 'b', 0: '', 1: '#', 2: '##', 3: '
 _SYMBOL_ACCIDENTALS = {-3: '♭𝄫', -2: '𝄫', -1: '♭', 0: '', 1: '♯', 2: '𝄪', 3: '♯𝄪'}
 _ALTER_TOKENS = {
     '': 0,
-    '#': 1, '##': 2, '###': 3, 'x': 2, '♯': 1, '𝄪': 2, '♯♯': 2,
-    'b': -1, 'bb': -2, 'bbb': -3, '♭': -1, '𝄫': -2, '♭♭': -2,
+    '#': 1,
+    '##': 2,
+    '###': 3,
+    'x': 2,
+    '♯': 1,
+    '𝄪': 2,
+    '♯♯': 2,
+    'b': -1,
+    'bb': -2,
+    'bbb': -3,
+    '♭': -1,
+    '𝄫': -2,
+    '♭♭': -2,
 }
 _NAME_RE = re.compile(r'^([A-Ga-g])(#{1,3}|x|b{1,3}|♯{1,2}|♭{1,2}|𝄪|𝄫)?$')
 _PITCH_RE = re.compile(r'^([A-Ga-g])(#{1,3}|x|b{1,3}|♯{1,2}|♭{1,2}|𝄪|𝄫)?(-?\d+)$')
@@ -205,7 +217,7 @@ class Pitch:
 
     def frequency(self, a4: float = 440.0) -> float:
         """Equal-tempered frequency in hertz."""
-        return a4 * 2.0 ** ((self.midi - 69) / 12)
+        return a4 * math.pow(2.0, (self.midi - 69) / 12)
 
     def transpose(self, interval: Interval, *, down: bool = False) -> Pitch:
         """Move by a spelled interval. ``C4 + M3 = E4``, ``C4 - M3 = A♭3``."""

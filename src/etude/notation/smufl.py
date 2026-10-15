@@ -18,10 +18,10 @@ from dataclasses import dataclass
 from pathlib import Path
 
 CODEPOINTS: dict[str, str] = {
-    'gClef': '\uE050',
-    'fClef': '\uE062',
-    'cClef': '\uE05C',
-    'noteheadBlack': '\uE0A4',
+    'gClef': '\ue050',
+    'fClef': '\ue062',
+    'cClef': '\ue05c',
+    'noteheadBlack': '\ue0a4',
 }
 """SMuFL glyph name → code point. Extend as layout needs more glyphs."""
 

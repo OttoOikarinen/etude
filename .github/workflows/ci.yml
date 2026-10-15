@@ -38,6 +38,8 @@ jobs:
       - name: import-linter
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: lint-imports
+        env:
+          PYTHONPATH: src
       - name: codespell
         if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         run: codespell

@@ -31,7 +31,7 @@ Run the same checks as CI:
 source .venv/bin/activate
 ruff check && ruff format --check
 mypy
-lint-imports
+PYTHONPATH=src lint-imports
 codespell
 reuse lint
 pytest

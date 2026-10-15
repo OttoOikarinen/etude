@@ -65,7 +65,7 @@ def test_translatable_files_are_in_potfiles() -> None:
     }
     for path in [*PACKAGE.rglob('*.py'), *PACKAGE.rglob('*.ui')]:
         text = path.read_text()
-        if re.search(r"\b_\(|\bngettext\(|\bpgettext\(|translatable=\"yes\"", text):
+        if re.search(r'\b_\(|\bngettext\(|\bpgettext\(|translatable="yes"', text):
             relative = str(path.relative_to(ROOT))
             assert relative in potfiles, f'add {relative} to po/POTFILES.in'
     for entry in potfiles:
