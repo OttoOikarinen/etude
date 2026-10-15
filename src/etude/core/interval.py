@@ -70,6 +70,8 @@ class Interval:
             raise ValueError(f'interval number must be 1 or more, not {self.number}')
         if self.quality not in self._offsets():
             raise ValueError(f'{self.quality.name.lower()} is not a quality of a {self.number}')
+        if self.number == 1 and self._offsets()[self.quality] < 0:
+            raise ValueError('a unison cannot be diminished')
 
     @classmethod
     def parse(cls, text: str) -> Interval:
@@ -95,7 +97,7 @@ class Interval:
         offset = semitones - _SIMPLE_SEMITONES[simple] - 12 * ((number - 1) // 7)
         offsets = _PERFECT_OFFSETS if simple in _PERFECT_CLASS else _MAJOR_OFFSETS
         for quality, value in offsets.items():
-            if value == offset:
+            if value == offset and not (number == 1 and value < 0):
                 return cls(quality, number)
         raise ValueError(f'no interval quality spans {low} to {high}')
 

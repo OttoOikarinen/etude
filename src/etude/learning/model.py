@@ -69,6 +69,12 @@ class Outcome:
     """The learner's answer, serialised by the exercise, for "Review mistakes"."""
     expected: str = ''
 
+    def __post_init__(self) -> None:
+        if self.score is not None and not 0.0 <= self.score <= 1.0:
+            raise ValueError(f'score {self.score} is outside 0–1')
+        if self.response_ms < 0:
+            raise ValueError('response time cannot be negative')
+
 
 class SessionMode(Enum):
     DAILY_REVIEW = 'daily_review'
@@ -89,7 +95,7 @@ class SessionRequest:
     now: datetime
     size: int = 20
     exercise_id: str | None = None
-    settings: Mapping[str, object] = field(default_factory=dict)
+    settings: Mapping[str, object] = field(default_factory=dict, hash=False)
     item_ids: tuple[ItemId, ...] = ()
     """Explicit items for ``REVIEW_MISTAKES`` and ``DRILL_WEAK``."""
 

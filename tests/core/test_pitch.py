@@ -118,6 +118,13 @@ def test_line_of_fifths(position: int, name: str) -> None:
     assert pitch_name.line_of_fifths == position
 
 
+@pytest.mark.parametrize('alter', range(-3, 4))
+def test_symbol_round_trip(alter: int) -> None:
+    name = PitchName(Letter.F, alter)
+    assert PitchName.parse(name.symbol) == name
+    assert Pitch.parse(name.at(4).symbol) == name.at(4)
+
+
 def test_pitch_name_transpose() -> None:
     assert str(PitchName.parse('Eb').transpose(Interval.parse('M3'))) == 'G'
     assert PitchName.parse('A').at(3) == Pitch.parse('A3')

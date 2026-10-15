@@ -33,12 +33,13 @@ from .window import EtudeWindow
 class EtudeApplication(Adw.Application):
     """The main application singleton class."""
 
-    def __init__(self):
+    def __init__(self, version='0.1.0'):
         super().__init__(
             application_id='fi.oikarinenotto.etude',
             flags=Gio.ApplicationFlags.DEFAULT_FLAGS,
             resource_base_path='/fi/oikarinenotto/etude',
         )
+        self.version = version
         self.create_action('quit', lambda *_: self.quit(), ['<control>q'])
         self.create_action('about', self.on_about_action)
         self.create_action('preferences', self.on_preferences_action)
@@ -60,7 +61,7 @@ class EtudeApplication(Adw.Application):
             application_name='Etude',
             application_icon='fi.oikarinenotto.etude',
             developer_name='Otto Oikarinen',
-            version='0.1.0',
+            version=self.version,
             # Translators: Replace "translator-credits" with your name/username,
             # and optionally an email or URL.
             translator_credits=_('translator-credits'),
@@ -91,5 +92,5 @@ class EtudeApplication(Adw.Application):
 
 def main(version):
     """The application's entry point."""
-    app = EtudeApplication()
+    app = EtudeApplication(version)
     return app.run(sys.argv)

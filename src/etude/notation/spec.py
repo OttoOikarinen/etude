@@ -45,8 +45,7 @@ class Clef(Enum):
 
     def pitch_at(self, position: int, alter: int = 0) -> Pitch:
         """Inverse of :meth:`staff_position` for a given alteration."""
-        index = self.bottom_line.diatonic_index + position
-        octave, step = divmod(index, 7)
+        octave, step = divmod(self.bottom_line.diatonic_index + position, 7)
         return Pitch(Letter(step), alter, octave)
 
 

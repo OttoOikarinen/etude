@@ -17,14 +17,15 @@ PARTIAL_CREDIT_PASS = 0.8
 
 
 def derive_rating(outcome: Outcome, *, fast_ms: float, slow_ms: float) -> Rating:
-    """Wrong → AGAIN; hinted, slow or barely passing → HARD; fast → EASY; otherwise GOOD."""
-    if outcome.score is not None:
-        if outcome.score < PARTIAL_CREDIT_PASS:
-            return Rating.AGAIN
-        if outcome.score < 1.0:
-            return Rating.HARD
-    elif not outcome.correct:
+    """Wrong → AGAIN; hinted, slow or partly right → HARD; fast → EASY; otherwise GOOD.
+
+    Exercises with partial credit set ``correct`` to
+    ``score >= PARTIAL_CREDIT_PASS``; ``correct`` always decides recall.
+    """
+    if not outcome.correct:
         return Rating.AGAIN
+    if outcome.score is not None and outcome.score < 1.0:
+        return Rating.HARD
     if outcome.hinted or outcome.response_ms > slow_ms:
         return Rating.HARD
     if outcome.response_ms < fast_ms:

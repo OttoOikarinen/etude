@@ -38,6 +38,13 @@ def test_between_rejects_lower_spelling() -> None:
         Interval.between(Pitch.parse('D4'), Pitch.parse('C4'))
 
 
+def test_unisons_are_never_diminished() -> None:
+    with pytest.raises(ValueError, match='no interval quality'):
+        Interval.between(Pitch.parse('C4'), Pitch.parse('Cb4'))
+    with pytest.raises(ValueError, match='unison'):
+        Interval.parse('d1')
+
+
 def test_between_rejects_unnameable_size() -> None:
     with pytest.raises(ValueError, match='no interval quality'):
         Interval.between(Pitch.parse('Cbb4'), Pitch.parse('G##4'))

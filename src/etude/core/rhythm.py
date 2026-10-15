@@ -77,7 +77,8 @@ class Meter:
     ``grouping`` gives the beat groups of an irregular meter in units of
     ``beat_unit`` (7/8 as ``(2, 2, 3)``). When it is omitted, simple and
     compound meters group regularly and other meters (5/8, 7/8) are
-    grouped by :attr:`groups` with twos first and threes last.
+    (odd counts of eighths or shorter) are grouped in twos with one three at
+    the end.
     """
 
     beats: int
@@ -107,7 +108,9 @@ class Meter:
     @property
     def is_compound(self) -> bool:
         """6/8, 9/8, 12/8 and the like: the pulse is a dotted note."""
-        return self.grouping is None and self.beats % 3 == 0 and self.beats > 3
+        if self.grouping is not None:
+            return len(self.grouping) > 1 and all(group == 3 for group in self.grouping)
+        return self.beats % 3 == 0 and self.beats > 3
 
     @property
     def groups(self) -> tuple[int, ...]:
@@ -119,8 +122,8 @@ class Meter:
             return self.grouping
         if self.is_compound:
             return (3,) * (self.beats // 3)
-        if self.beat_unit >= 8 and self.beats > 3:
-            threes = self.beats % 2
+        if self.beat_unit >= 8 and self.beats > 3 and self.beats % 2:
+            threes = 1
             twos = (self.beats - 3 * threes) // 2
             return (2,) * twos + (3,) * threes
         return (1,) * self.beats

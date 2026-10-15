@@ -45,6 +45,8 @@ class PlaybackNote:
             raise ValueError(f'MIDI note {self.midi} is out of range')
         if not 1 <= self.velocity <= 127:
             raise ValueError(f'velocity {self.velocity} is out of range')
+        if self.start < 0 or self.length <= 0:
+            raise ValueError('notes need a non-negative start and a positive length')
 
 
 @dataclass(frozen=True, slots=True)
@@ -57,6 +59,12 @@ class PlaybackSpec:
     """Metronome clicks before the first note (rhythm exercises)."""
     click: bool = False
     """Keep the metronome running during the playback."""
+
+    def __post_init__(self) -> None:
+        if self.tempo <= 0:
+            raise ValueError(f'tempo must be positive, not {self.tempo}')
+        if self.count_in < 0:
+            raise ValueError('count-in cannot be negative')
 
     @property
     def length(self) -> Fraction:

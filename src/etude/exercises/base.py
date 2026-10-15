@@ -63,7 +63,7 @@ class ChoiceAnswer:
     """Pick one option (design 1b, 1d, 1e, 1g). Value: the option ``key``."""
 
     options: tuple[Option, ...]
-    targets: Mapping[int, str] = field(default_factory=dict)
+    targets: Mapping[int, str] = field(default_factory=dict, hash=False)
     """Event index on the figure → option key; clicking that note picks the
     option (design 1g, "click the note on the staff")."""
 

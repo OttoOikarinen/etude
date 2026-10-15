@@ -49,13 +49,35 @@ def test_note_validation() -> None:
         PlaybackNote(60, Fraction(0), Fraction(1), velocity=0)
 
 
-def test_null_backend_records_and_finishes() -> None:
+def test_note_and_spec_ranges() -> None:
+    with pytest.raises(ValueError, match='positive length'):
+        PlaybackNote(60, Fraction(0), Fraction(0))
+    with pytest.raises(ValueError, match='non-negative start'):
+        PlaybackNote(60, Fraction(-1), Fraction(1))
+    with pytest.raises(ValueError, match='tempo'):
+        PlaybackSpec((), tempo=0)
+    with pytest.raises(ValueError, match='count-in'):
+        PlaybackSpec((), count_in=-1)
+
+
+def test_null_backend_finishes_asynchronously() -> None:
     backend = NullBackend()
-    finished: list[bool] = []
-    spec = PlaybackSpec.melodic([C4])
-    handle = backend.play(spec, on_finished=lambda: finished.append(True))
+    events: list[object] = []
+    spec = PlaybackSpec.melodic([C4, E4], count_in=2)
+    handle = backend.play(spec, on_finished=lambda: events.append('done'), on_beat=events.append)
     assert not backend.available
     assert backend.played == [spec]
-    assert finished == [True]
-    handle.stop()
-    assert handle.stopped
+    assert events == []
+    backend.complete()
+    assert events == [-2, -1, 0, 1, 'done']
+    assert handle.finished
+
+
+def test_null_backend_stop_cancels_callbacks() -> None:
+    backend = NullBackend()
+    events: list[str] = []
+    first = backend.play(PlaybackSpec.melodic([C4]), on_finished=lambda: events.append('first'))
+    backend.play(PlaybackSpec.melodic([E4]), on_finished=lambda: events.append('second'))
+    assert first.stopped
+    backend.complete()
+    assert events == ['second']

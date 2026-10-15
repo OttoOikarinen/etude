@@ -33,10 +33,18 @@ def outcome(
         (outcome(ms=500), Rating.EASY),
         (outcome(ms=500, hinted=True), Rating.HARD),
         (outcome(), Rating.GOOD),
-        (outcome(score=0.5), Rating.AGAIN),
+        (outcome(correct=False, score=1.0, ms=500), Rating.AGAIN),
+        (outcome(correct=False, score=0.5), Rating.AGAIN),
         (outcome(score=0.9), Rating.HARD),
         (outcome(score=1.0, ms=500), Rating.EASY),
     ],
 )
 def test_derive_rating(answer: Outcome, rating: Rating) -> None:
     assert derive_rating(answer, fast_ms=1000, slow_ms=5000) is rating
+
+
+def test_outcome_validation() -> None:
+    with pytest.raises(ValueError, match='score'):
+        outcome(score=1.2)
+    with pytest.raises(ValueError, match='response time'):
+        outcome(ms=-1)

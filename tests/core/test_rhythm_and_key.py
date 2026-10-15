@@ -40,6 +40,7 @@ def test_duration_validation() -> None:
         ('6/8', True, (3, 3), Fraction(3, 8), Fraction(3, 4)),
         ('12/8', True, (3, 3, 3, 3), Fraction(3, 8), Fraction(3, 2)),
         ('3/8', False, (1, 1, 1), Fraction(1, 8), Fraction(3, 8)),
+        ('4/8', False, (1, 1, 1, 1), Fraction(1, 8), Fraction(1, 2)),
         ('5/8', False, (2, 3), Fraction(1, 8), Fraction(5, 8)),
         ('7/8', False, (2, 2, 3), Fraction(1, 8), Fraction(7, 8)),
     ],
@@ -59,6 +60,9 @@ def test_meter_explicit_grouping() -> None:
     meter = Meter(7, 8, grouping=(3, 2, 2))
     assert meter.groups == (3, 2, 2)
     assert not meter.is_compound
+    compound = Meter(6, 8, grouping=(3, 3))
+    assert compound.is_compound
+    assert compound.pulse == Fraction(3, 8)
     with pytest.raises(ValueError, match='add up'):
         Meter(7, 8, grouping=(3, 3))
 
