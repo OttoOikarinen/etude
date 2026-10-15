@@ -1,5 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Otto Oikarinen -->
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 <schemalist gettext-domain="etude">
-	<schema id="fi.oikarinenotto.etude" path="/fi/oikarinenotto/etude/">
-	</schema>
+  <enum id="fi.oikarinenotto.etude.NoteNaming">
+    <value nick="automatic" value="0"/>
+    <value nick="english" value="1"/>
+    <value nick="german-nordic" value="2"/>
+    <value nick="fixed-do" value="3"/>
+  </enum>
+
+  <enum id="fi.oikarinenotto.etude.Instrument">
+    <value nick="piano" value="0"/>
+    <value nick="organ" value="1"/>
+    <value nick="guitar" value="2"/>
+    <value nick="strings" value="3"/>
+    <value nick="choir" value="4"/>
+    <value nick="flute" value="5"/>
+    <value nick="varied" value="6"/>
+  </enum>
+
+  <schema id="fi.oikarinenotto.etude" path="/fi/oikarinenotto/etude/">
+    <key name="window-width" type="i">
+      <default>1180</default>
+    </key>
+    <key name="window-height" type="i">
+      <default>760</default>
+    </key>
+    <key name="window-maximized" type="b">
+      <default>false</default>
+    </key>
+
+    <key name="note-naming" enum="fi.oikarinenotto.etude.NoteNaming">
+      <default>'automatic'</default>
+      <summary>Note naming convention</summary>
+      <description>How note names are written: English (C D E F G A B), German and Nordic (C D E F G A H, with B for B flat) or fixed do (do re mi). Automatic follows the language.</description>
+    </key>
+    <key name="instrument" enum="fi.oikarinenotto.etude.Instrument">
+      <default>'piano'</default>
+      <summary>Instrument for playback</summary>
+      <description>Timbre used to play examples and ear-training questions. Varied picks a different instrument for each question.</description>
+    </key>
+
+    <key name="questions-per-session" type="u">
+      <range min="5" max="100"/>
+      <default>20</default>
+      <summary>Questions per session</summary>
+    </key>
+    <key name="daily-goal" type="u">
+      <range min="5" max="500"/>
+      <default>30</default>
+      <summary>Daily goal</summary>
+      <description>Number of questions to answer each day to keep the streak.</description>
+    </key>
+    <key name="timed-mode" type="b">
+      <default>false</default>
+      <summary>Timed mode</summary>
+    </key>
+    <key name="reveal-after-mistake" type="b">
+      <default>true</default>
+      <summary>Reveal answer after mistake</summary>
+    </key>
+    <key name="exercise-settings" type="a{sa{sv}}">
+      <default>{}</default>
+      <summary>Per-exercise settings</summary>
+      <description>Question pool settings of each exercise, keyed by exercise id.</description>
+    </key>
+
+    <key name="large-notation" type="b">
+      <default>false</default>
+      <summary>Large notation</summary>
+      <description>Scale the staff with the system text size.</description>
+    </key>
+    <key name="written-alternative" type="b">
+      <default>false</default>
+      <summary>Written alternative for audio tasks</summary>
+      <description>Show notation instead of requiring playback.</description>
+    </key>
+    <key name="announce-feedback" type="b">
+      <default>true</default>
+      <summary>Announce feedback to screen reader</summary>
+    </key>
+    <key name="audio-latency-ms" type="i">
+      <range min="-500" max="500"/>
+      <default>0</default>
+      <summary>Audio latency correction</summary>
+      <description>Calibrated offset, in milliseconds, applied when judging tapped rhythms.</description>
+    </key>
+  </schema>
 </schemalist>
