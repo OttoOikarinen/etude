@@ -1,0 +1,18 @@
+name: Music content error
+description: A wrong answer, explanation, term or example
+labels: [content]
+body:
+  - type: input
+    id: where
+    attributes:
+      label: Exercise or lesson
+      description: E.g. "Intervals — Ear" or "Level 2, unit 4 lesson".
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What is wrong, and what should it be?
+      description: A reference (textbook, page) helps us fix it quickly.
+    validations:
+      required: true

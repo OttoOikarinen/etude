@@ -1,0 +1,143 @@
+# Tool configuration and development dependencies.
+#
+# Etude is built and installed with Meson (see meson.build), not with pip.
+# Set up a development environment with:
+#
+#     python3 -m venv .venv
+#     .venv/bin/pip install --group dev
+
+[dependency-groups]
+runtime = [
+    # Keep in sync with the python3-fsrs module in fi.oikarinenotto.etude.json.
+    "fsrs==6.3.2",
+]
+dev = [
+    { include-group = "runtime" },
+    "codespell>=2.4",
+    "hypothesis>=6.150",
+    "import-linter>=2.15",
+    "mypy>=2.4",
+    "pre-commit>=4.7",
+    "pytest>=9.1",
+    "pytest-cov>=7.1",
+    "reuse>=6.2",
+    "ruff>=0.17",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "B",    # bugbear
+    "C4",   # comprehensions
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "PIE",
+    "PT",   # pytest style
+    "RET",
+    "RUF",
+    "SIM",
+    "UP",   # pyupgrade
+    "W",    # pycodestyle warnings
+]
+ignore = [
+    # Music text is full of ♯, ♭, – and × on purpose.
+    "RUF001",
+    "RUF002",
+    "RUF003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Gtk.Template children and GObject virtual methods follow GTK naming.
+"src/etude/ui/**" = ["N802", "N815"]
+"src/etude/main.py" = ["N802"]
+"src/etude/window.py" = ["N802"]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.mypy]
+python_version = "3.13"
+mypy_path = "src"
+explicit_package_bases = true
+strict = true
+warn_unreachable = true
+# GTK code is checked by tests and review; everything below it must type-check strictly.
+files = [
+    "src/etude/core",
+    "src/etude/notation",
+    "src/etude/audio",
+    "src/etude/learning",
+    "src/etude/storage",
+    "src/etude/exercises",
+    "src/etude/content",
+    "src/etude/paths.py",
+]
+exclude = ['src/etude/notation/widget\.py$']
+
+[[tool.mypy.overrides]]
+module = ["gi", "gi.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers", "--strict-config", "--import-mode=importlib"]
+markers = [
+    "gtk: needs PyGObject with GTK 4 and libadwaita, and a display",
+]
+
+[tool.coverage.run]
+source = ["etude"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+exclude_also = [
+    "raise NotImplementedError",
+    "@abstractmethod",
+    "if TYPE_CHECKING:",
+    "class .*\\(Protocol\\):",
+]
+
+[tool.codespell]
+skip = "*.po,*.svg,./LICENSES,./COPYING,./data/fonts,./.venv,./_build"
+
+[tool.importlinter]
+root_package = "etude"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Layers: UI → exercises/content/storage → learning/notation/audio → core"
+type = "layers"
+layers = [
+    "etude.ui",
+    "etude.exercises | etude.content | etude.storage",
+    "etude.learning | etude.notation | etude.audio",
+    "etude.core",
+]
+
+[[tool.importlinter.contracts]]
+name = "Domain packages are testable without GObject"
+type = "forbidden"
+source_modules = [
+    "etude.core",
+    "etude.notation.spec",
+    "etude.notation.displaylist",
+    "etude.notation.smufl",
+    "etude.notation.layout",
+    "etude.notation.a11y",
+    "etude.audio",
+    "etude.learning",
+    "etude.storage",
+    "etude.exercises",
+    "etude.content",
+    "etude.paths",
+]
+forbidden_modules = ["gi"]
