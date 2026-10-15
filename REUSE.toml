@@ -1,0 +1,39 @@
+version = 1
+SPDX-PackageName = "Etude"
+SPDX-PackageDownloadLocation = "https://github.com/OttoOikarinen/etude"
+
+# Source, build files and configuration without room for a header.
+[[annotations]]
+path = [
+  "**/meson.build",
+  "src/etude/*.ui",
+  "src/etude/**/*.ui",
+  "src/etude/etude.gresource.xml",
+  "src/etude/etude.in",
+  "data/*.in",
+  "data/icons/**",
+  "po/**",
+  "fi.oikarinenotto.etude.json",
+  "pyproject.toml",
+  ".gitignore",
+  ".editorconfig",
+  ".pre-commit-config.yaml",
+  ".github/**",
+  "tests/**/golden/**",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Otto Oikarinen"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+# Documentation and teaching content.
+[[annotations]]
+path = ["*.md", "docs/**", "data/content/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Otto Oikarinen"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
+
+[[annotations]]
+path = ["data/fonts/Bravura.otf", "data/fonts/Bravura.json", "data/fonts/OFL.txt"]
+precedence = "override"
+SPDX-FileCopyrightText = "2015 Steinberg Media Technologies GmbH"
+SPDX-License-Identifier = "OFL-1.1"

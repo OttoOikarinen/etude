@@ -1,0 +1,38 @@
+# Hooks run the tools from the active virtual environment
+# (python3 -m venv .venv && .venv/bin/pip install --group dev),
+# so versions come from pyproject.toml and match CI.
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: ruff check --fix
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: ruff format
+        entry: ruff format
+        language: system
+        types: [python]
+      - id: codespell
+        name: codespell
+        entry: codespell
+        language: system
+        types: [text]
+      - id: mypy
+        name: mypy
+        entry: mypy
+        language: system
+        pass_filenames: false
+        types: [python]
+      - id: import-linter
+        name: import-linter
+        entry: env PYTHONPATH=src lint-imports
+        language: system
+        pass_filenames: false
+        types: [python]
+      - id: reuse
+        name: reuse lint
+        entry: reuse lint
+        language: system
+        pass_filenames: false

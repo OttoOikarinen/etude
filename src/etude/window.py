@@ -1,6 +1,4 @@
-#!@PYTHON@
-
-# etude.in
+# window.py
 #
 # Copyright 2026 Otto Oikarinen
 #
@@ -19,29 +17,12 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import os
-import sys
-import signal
-import locale
-import gettext
+from gi.repository import Adw, Gtk
 
-VERSION = '@VERSION@'
-pkgdatadir = '@pkgdatadir@'
-localedir = '@localedir@'
 
-sys.path.insert(1, pkgdatadir)
-signal.signal(signal.SIGINT, signal.SIG_DFL)
-locale.bindtextdomain('etude', localedir)
-locale.textdomain('etude')
-gettext.bindtextdomain('etude', localedir)
-gettext.textdomain('etude')
+@Gtk.Template(resource_path='/fi/oikarinenotto/etude/window.ui')
+class EtudeWindow(Adw.ApplicationWindow):
+    __gtype_name__ = 'EtudeWindow'
 
-if __name__ == '__main__':
-    import gi
-
-    from gi.repository import Gio
-    resource = Gio.Resource.load(os.path.join(pkgdatadir, 'etude.gresource'))
-    resource._register()
-
-    from etude import main
-    sys.exit(main.main(VERSION))
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)

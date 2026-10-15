@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  <template class="EtudeWindow" parent="AdwApplicationWindow">
+    <property name="title" translatable="yes">Etude</property>
+    <property name="default-width">800</property>
+    <property name="default-height">600</property>
+    <property name="content">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <child type="end">
+              <object class="GtkMenuButton">
+                <property name="primary">True</property>
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="tooltip-text" translatable="yes">Main Menu</property>
+                <property name="menu-model">primary_menu</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <property name="content">
+          <object class="AdwNavigationSplitView" id="split_view">
+            <property name="sidebar">
+              <object class="AdwNavigationPage">
+                <property name="title" translatable="yes">Sidebar</property>
+                <property name="child">
+                  <object class="AdwToolbarView">
+                    <child type="top">
+                      <object class="AdwHeaderBar"/>
+                    </child>
+                    <property name="content">
+                      <object class="GtkListBox" id="sidebar_list">
+                        <property name="selection-mode">single</property>
+                        <style><class name="navigation-sidebar"/></style>
+                        <child>
+                          <object class="GtkListBoxRow">
+                            <property name="child">
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">All exercises</property>
+                                <property name="xalign">0</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkListBoxRow">
+                            <property name="child">
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Notation</property>
+                                <property name="xalign">0</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkListBoxRow">
+                            <property name="child">
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Ear training</property>
+                                <property name="xalign">0</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkListBoxRow">
+                            <property name="child">
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Theory</property>
+                                <property name="xalign">0</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkListBoxRow">
+                            <property name="child">
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Progress</property>
+                                <property name="xalign">0</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+              </object>
+            </property>
+            <property name="content">
+              <object class="AdwNavigationPage">
+                <property name="title" translatable="yes">All exercises</property>
+                <property name="child">
+                  <object class="AdwToolbarView">
+                    <child type="top">
+                      <object class="AdwHeaderBar" />
+                    </child>
+                    <property name="content">
+                      <object class="AdwStatusPage">
+                        <property name="title" translatable="yes">Coming soon</property>
+                        <property name="icon-name">audio-x-generic-symbolic</property>
+                      </object>
+                    </property>
+                  </object>
+                  <!-- ... -->
+                </property>
+              </object>
+            </property>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+  <menu id="primary_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Preferences</attribute>
+        <attribute name="action">app.preferences</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
+        <attribute name="action">app.shortcuts</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_About Etude</attribute>
+        <attribute name="action">app.about</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

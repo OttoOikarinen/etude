@@ -18,24 +18,28 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import sys
-import gi
-
 from gettext import gettext as _
+
+import gi
 
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 
-from gi.repository import Gtk, Gio, Adw
+from gi.repository import Adw, Gio
+
 from .window import EtudeWindow
 
 
 class EtudeApplication(Adw.Application):
     """The main application singleton class."""
 
-    def __init__(self):
-        super().__init__(application_id='fi.oikarinenotto.etude',
-                         flags=Gio.ApplicationFlags.DEFAULT_FLAGS,
-                         resource_base_path='/fi/oikarinenotto/etude')
+    def __init__(self, version='0.1.0'):
+        super().__init__(
+            application_id='fi.oikarinenotto.etude',
+            flags=Gio.ApplicationFlags.DEFAULT_FLAGS,
+            resource_base_path='/fi/oikarinenotto/etude',
+        )
+        self.version = version
         self.create_action('quit', lambda *_: self.quit(), ['<control>q'])
         self.create_action('about', self.on_about_action)
         self.create_action('preferences', self.on_preferences_action)
@@ -53,14 +57,17 @@ class EtudeApplication(Adw.Application):
 
     def on_about_action(self, *args):
         """Callback for the app.about action."""
-        about = Adw.AboutDialog(application_name='Etude',
-                                application_icon='fi.oikarinenotto.etude',
-                                developer_name='Otto Oikarinen',
-                                version='0.1.0',
-                                # Translators: Replace "translator-credits" with your name/username, and optionally an email or URL.
-                                translator_credits = _('translator-credits'),
-                                developers=['Otto Oikarinen'],
-                                copyright='© 2026 Otto Oikarinen')
+        about = Adw.AboutDialog(
+            application_name='Etude',
+            application_icon='fi.oikarinenotto.etude',
+            developer_name='Otto Oikarinen',
+            version=self.version,
+            # Translators: Replace "translator-credits" with your name/username,
+            # and optionally an email or URL.
+            translator_credits=_('translator-credits'),
+            developers=['Otto Oikarinen'],
+            copyright='© 2026 Otto Oikarinen',
+        )
         about.present(self.props.active_window)
 
     def on_preferences_action(self, widget, _):
@@ -77,13 +84,13 @@ class EtudeApplication(Adw.Application):
             shortcuts: an optional list of accelerators
         """
         action = Gio.SimpleAction.new(name, None)
-        action.connect("activate", callback)
+        action.connect('activate', callback)
         self.add_action(action)
         if shortcuts:
-            self.set_accels_for_action(f"app.{name}", shortcuts)
+            self.set_accels_for_action(f'app.{name}', shortcuts)
 
 
 def main(version):
     """The application's entry point."""
-    app = EtudeApplication()
+    app = EtudeApplication(version)
     return app.run(sys.argv)
