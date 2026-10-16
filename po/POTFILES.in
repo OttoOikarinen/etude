@@ -5,6 +5,7 @@ data/fi.oikarinenotto.etude.gschema.xml
 data/fi.oikarinenotto.etude.metainfo.xml.in
 src/etude/core/naming.py
 src/etude/exercises/base.py
+src/etude/exercises/families/intervals.py
 src/etude/exercises/families/key_signatures.py
 src/etude/exercises/families/note_naming.py
 src/etude/exercises/families/scale_degrees.py
