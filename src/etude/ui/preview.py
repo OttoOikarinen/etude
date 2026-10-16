@@ -43,7 +43,16 @@ from ..exercises.base import (
 )
 from ..learning.model import ItemId, SessionMode, SessionSummary
 from ..notation.spec import Bracket, Chord, Clef, Head, Ink, StaffSpec
-from .model import ContinueData, ExerciseCardData, ProgressData, StreakData, WeakItem
+from .model import (
+    ContinueData,
+    DueExercise,
+    ExerciseCardData,
+    ProgressData,
+    SessionSource,
+    StreakData,
+    TodayData,
+    WeakItem,
+)
 
 # Home -------------------------------------------------------------------------
 
@@ -114,11 +123,47 @@ def exercise_cards() -> tuple[ExerciseCardData, ...]:
 
 
 def continue_data() -> ContinueData:
-    return ContinueData('interval-ear', _('Intervals — by ear'), 7, 20, 0.64)
+    return ContinueData('interval-ear', _('Intervals — by ear'), 7, 20, 0.64, '♪')
 
 
 def streak() -> StreakData:
     return StreakData(12, True)
+
+
+# Today ------------------------------------------------------------------------
+
+
+def today() -> TodayData:
+    """A learner with reviews due, in the middle of the day."""
+    return TodayData(
+        due=24,
+        new=5,
+        by_exercise=(
+            DueExercise('interval-ear', _('Intervals — Ear'), '♪', 9),
+            DueExercise('keysig', _('Key Signatures'), '♯', 6),
+            DueExercise('chord-staff', _('Chords — Staff'), '♮', 5),
+            DueExercise('scale-degree', _('Scale Degrees'), '♭', 4),
+        ),
+        answered_today=18,
+        daily_goal=30,
+        streak=12,
+        goal_met=False,
+        session_size=20,
+    )
+
+
+def caught_up_today() -> TodayData:
+    """Nothing due, no new items left today, and the goal met."""
+    return TodayData(
+        due=0,
+        new=0,
+        by_exercise=(),
+        answered_today=34,
+        daily_goal=30,
+        streak=12,
+        goal_met=True,
+        session_size=20,
+    )
 
 
 # Progress ---------------------------------------------------------------------
@@ -184,6 +229,16 @@ def progress(period: str = 'week') -> ProgressData:
         weakest,
         15,
     )
+
+
+def empty_progress(period: str = 'week') -> ProgressData:
+    """A brand-new learner: nothing answered yet."""
+    if period == 'week':
+        days = (_('Mon'), _('Tue'), _('Wed'), _('Thu'), _('Fri'), _('Sat'), _('Today'))
+        answered = tuple((d, 0) for d in days)
+    else:
+        answered = ((_('This month'), 0),)
+    return ProgressData(0, 0, None, None, 0, 0, (), answered, (), 0)
 
 
 # Questions ---------------------------------------------------------------------
@@ -737,22 +792,28 @@ class PreviewKeySignatures(ExerciseDefinition):
 class PreviewModel:
     """An :class:`~etude.ui.model.AppModel` with the design's fixed data."""
 
-    def __init__(self) -> None:
+    def __init__(self, *, caught_up: bool = False) -> None:
         self.played: list[PlaybackSpec] = []
         """Playbacks requested so far; nothing is heard."""
         self.started: list[tuple[SessionMode, str | None, tuple[ItemId, ...]]] = []
+        self.caught_up = caught_up
+        """Show the Today page's "All caught up" state and a brand-new learner's progress."""
+        self._continue: ContinueData | None = continue_data()
 
     def exercise_cards(self) -> tuple[ExerciseCardData, ...]:
         return exercise_cards()
 
     def continue_data(self) -> ContinueData | None:
-        return continue_data()
+        return self._continue
 
     def streak(self) -> StreakData:
         return streak()
 
+    def today(self) -> TodayData:
+        return caught_up_today() if self.caught_up else today()
+
     def progress(self, period: str) -> ProgressData:
-        return progress(period)
+        return empty_progress(period) if self.caught_up else progress(period)
 
     def definition(self, exercise_id: str) -> ExerciseDefinition | None:
         return PreviewKeySignatures() if exercise_id == PreviewKeySignatures.id else None
@@ -765,9 +826,30 @@ class PreviewModel:
         item_ids: tuple[ItemId, ...] = (),
     ) -> PreviewSession:
         self.started.append((mode, exercise_id, item_ids))
+        self._continue = None
         questions = preview_questions()
         key = exercise_id if exercise_id in questions else 'interval-ear'
         return PreviewSession([key])
+
+    def close_session(self, session: SessionSource) -> None:
+        if isinstance(session, PreviewSession):
+            item = session.current
+            self._continue = ContinueData(
+                item.question.exercise_id,
+                item.exercise_title,
+                session.number - 1,
+                session.total,
+                session.accuracy,
+            )
+
+    def resume(self) -> PreviewSession | None:
+        if self._continue is None:
+            return None
+        self._continue = None
+        return PreviewSession(['interval-ear'])
+
+    def dismiss_continue(self) -> None:
+        self._continue = None
 
     @property
     def audio_available(self) -> bool:

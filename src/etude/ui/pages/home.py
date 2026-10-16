@@ -35,7 +35,19 @@ def sessions_text(count: int) -> str:
 
 
 def accuracy_text(card: ExerciseCardData) -> str:
-    return format_percent(card.accuracy) if card.accuracy is not None else _('New')
+    """The card's accuracy, or "Not started" before the first answer."""
+    return format_percent(card.accuracy) if card.accuracy is not None else _('Not started')
+
+
+def card_summary(card: ExerciseCardData) -> str:
+    """One line for lists and screen readers, e.g. "94% accuracy · 18 sessions"."""
+    if card.accuracy is None:
+        return accuracy_text(card)
+    # Translators: e.g. "94% accuracy" on an exercise card.
+    parts = [_('{percent} accuracy').format(percent=format_percent(card.accuracy))]
+    if card.sessions:
+        parts.append(sessions_text(card.sessions))
+    return ' · '.join(parts)
 
 
 class ExerciseCard(Gtk.Button):
@@ -70,38 +82,39 @@ class ExerciseCard(Gtk.Button):
         description.add_css_class('dim-label')
         box.append(description)
         stats = Gtk.Box(spacing=6)
-        accuracy = Gtk.Label(label=accuracy_text(card), xalign=0)
-        accuracy.add_css_class('heading')
+        started = card.accuracy is not None
+        accuracy = Gtk.Label(label=accuracy_text(card), xalign=0, hexpand=not started)
+        accuracy.add_css_class('heading' if started else 'dim-label')
         accuracy.add_css_class('numeric')
         stats.append(accuracy)
-        caption = Gtk.Label(label=_('accuracy'), xalign=0, hexpand=True)
-        caption.add_css_class('dim-label')
-        caption.add_css_class('caption')
-        stats.append(caption)
-        sessions = Gtk.Label(label=sessions_text(card.sessions))
-        sessions.add_css_class('dim-label')
-        sessions.add_css_class('caption')
-        stats.append(sessions)
+        if started:
+            caption = Gtk.Label(label=_('accuracy'), xalign=0, hexpand=True)
+            caption.add_css_class('dim-label')
+            caption.add_css_class('caption')
+            stats.append(caption)
+        if card.sessions:
+            sessions = Gtk.Label(label=sessions_text(card.sessions))
+            sessions.add_css_class('dim-label')
+            sessions.add_css_class('caption')
+            stats.append(sessions)
         box.append(stats)
         self.set_child(box)
         self.update_property(
             [Gtk.AccessibleProperty.LABEL, Gtk.AccessibleProperty.DESCRIPTION],
-            [
-                card.title,
-                f'{card.description} {accuracy_text(card)} {_("accuracy")}, '
-                f'{sessions_text(card.sessions)}',
-            ],
+            [card.title, f'{card.description} {card_summary(card)}'],
         )
 
 
 @Gtk.Template(resource_path=ui_resource('pages/home.ui'))
 class HomePage(Adw.NavigationPage):
-    """Signals: ``exercise-activated(exercise_id)`` and ``resume-activated(exercise_id)``."""
+    """Signals: ``exercise-activated(exercise_id)``, ``resume-activated`` and
+    ``continue-dismissed`` (the Continue banner's buttons)."""
 
     __gtype_name__ = 'EtudeHomePage'
     __gsignals__ = {  # noqa: RUF012 (GObject API)
         'exercise-activated': (GObject.SignalFlags.RUN_FIRST, None, (str,)),
-        'resume-activated': (GObject.SignalFlags.RUN_FIRST, None, (str,)),
+        'resume-activated': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'continue-dismissed': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     sort_button: Gtk.MenuButton = Gtk.Template.Child()
@@ -111,6 +124,7 @@ class HomePage(Adw.NavigationPage):
     continue_detail: Gtk.Label = Gtk.Template.Child()
     resume_button: Gtk.Button = Gtk.Template.Child()
     resume_button_narrow: Gtk.Button = Gtk.Template.Child()
+    dismiss_button: Gtk.Button = Gtk.Template.Child()
     layout_stack: Gtk.Stack = Gtk.Template.Child()
     card_grid: Gtk.FlowBox = Gtk.Template.Child()
     list_box: Gtk.Box = Gtk.Template.Child()
@@ -144,16 +158,17 @@ class HomePage(Adw.NavigationPage):
         self.set_title(family_title(family) if family else _('All Exercises'))
         self._rebuild()
 
-    def set_continue(self, data: ContinueData | None, glyph: str = '♪') -> None:
+    def set_continue(self, data: ContinueData | None) -> None:
+        """Show the banner of an interrupted session, or hide it (``None``)."""
         self._continue = data
         self.continue_revealer.set_reveal_child(data is not None)
         if data is None:
             return
-        self.continue_glyph.set_label(glyph)
+        self.continue_glyph.set_label(data.glyph)
         self.continue_title.set_label(data.title)
-        # Translators: e.g. "7 of 20 answered · 64% accuracy in this exercise".
+        # Translators: the Continue banner, e.g. "7 of 20 answered · 64% accuracy".
         self.continue_detail.set_label(
-            _('{answered} of {total} answered · {accuracy} accuracy in this exercise').format(
+            _('{answered} of {total} answered · {accuracy} accuracy').format(
                 answered=data.answered, total=data.total, accuracy=format_percent(data.accuracy)
             )
         )
@@ -206,14 +221,7 @@ class HomePage(Adw.NavigationPage):
                 continue
             group = Adw.PreferencesGroup(title=family_title(family))
             for card in members:
-                row = Adw.ActionRow(
-                    title=card.title,
-                    # Translators: e.g. "94% · 18 sessions".
-                    subtitle=_('{accuracy} · {sessions}').format(
-                        accuracy=accuracy_text(card), sessions=sessions_text(card.sessions)
-                    ),
-                    activatable=True,
-                )
+                row = Adw.ActionRow(title=card.title, subtitle=card_summary(card), activatable=True)
                 tile = Gtk.Label(
                     label=card.glyph,
                     valign=Gtk.Align.CENTER,
@@ -254,8 +262,10 @@ class HomePage(Adw.NavigationPage):
     @Gtk.Template.Callback()
     def _on_resume_clicked(self, _button: Gtk.Button) -> None:
         if self._continue is not None:
-            self.emit('resume-activated', self._continue.exercise_id)
+            self.emit('resume-activated')
 
     @Gtk.Template.Callback()
     def _on_dismiss_clicked(self, _button: Gtk.Button) -> None:
         self.continue_revealer.set_reveal_child(False)
+        self._continue = None
+        self.emit('continue-dismissed')

@@ -13,7 +13,7 @@ from __future__ import annotations
 import statistics
 from collections import Counter
 from collections.abc import Iterable, Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, date, datetime, time, timedelta, tzinfo
 
 from .model import Card, ItemId, Outcome, SessionMode, SessionRecord, SessionSummary
@@ -36,6 +36,8 @@ class StatsConfig:
     """Below this many samples the default speed thresholds are used."""
     default_fast_ms: float = 2500.0
     default_slow_ms: float = 8000.0
+    recent_answers: int = 100
+    """Answers an exercise's "current" accuracy is computed over (the home page cards)."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -89,6 +91,17 @@ class SpeedThresholds:
     slow_ms: float
     samples: int
     """``0`` when the defaults are used."""
+
+
+@dataclass(frozen=True, slots=True)
+class ExerciseActivity:
+    """How much and how well the learner has practised one exercise (home page cards)."""
+
+    recent: Accuracy
+    """Accuracy over the last :attr:`StatsConfig.recent_answers` answers, in any session."""
+    last_answered: datetime | None
+    sessions: int
+    """Finished sessions of this exercise that have at least one answer."""
 
 
 @dataclass(slots=True)
@@ -160,6 +173,12 @@ class Stats:
         self._tz = tzinfo
         self._cards = cards
         self.config = config if config is not None else StatsConfig()
+
+    def set_daily_goal(self, goal: int) -> None:
+        """Apply a new daily goal (the ``daily-goal`` setting) to every later query."""
+        if goal < 1:
+            raise ValueError(f'the daily goal must be at least 1, not {goal}')
+        self.config = replace(self.config, daily_goal=goal)
 
     # Calendar helpers
 
@@ -252,7 +271,16 @@ class Stats:
     # Sessions
 
     def _finished_sessions(self, start: datetime, end: datetime) -> list[SessionRecord]:
-        return [s for s in self._sessions.between(start, end) if s.summary is not None]
+        """Finished sessions started in ``[start, end)`` in which something was answered.
+
+        A session closed before its first answer is not practice: it counts
+        neither as a session nor towards time practised or personal bests.
+        """
+        return [
+            s
+            for s in self._sessions.between(start, end)
+            if s.summary is not None and s.summary.total > 0
+        ]
 
     def time_practised(self, start: datetime, end: datetime) -> timedelta:
         """Total duration of the finished sessions started in ``[start, end)``."""
@@ -266,6 +294,29 @@ class Stats:
 
     def session_count(self, start: datetime, end: datetime) -> int:
         return len(self._finished_sessions(start, end))
+
+    def exercise_activity(
+        self, exercise_ids: Iterable[str], now: datetime
+    ) -> dict[str, ExerciseActivity]:
+        """Recent accuracy, last answer and session count of each exercise up to ``now``."""
+        sessions = Counter(
+            s.exercise_id for s in self._finished_sessions(EPOCH, now) if s.exercise_id is not None
+        )
+        result = {}
+        for exercise_id in exercise_ids:
+            recent = [
+                o
+                for o in self._attempts.recent(
+                    exercise_id=exercise_id, limit=self.config.recent_answers
+                )
+                if o.answered_at <= now
+            ]
+            result[exercise_id] = ExerciseActivity(
+                recent=Accuracy(correct=sum(o.correct for o in recent), total=len(recent)),
+                last_answered=max((o.answered_at for o in recent), default=None),
+                sessions=sessions[exercise_id],
+            )
+        return result
 
     # Items
 
@@ -307,10 +358,13 @@ class Stats:
         exercise_id: str | None,
         started_at: datetime,
         finished_at: datetime,
+        paused: timedelta = timedelta(),
     ) -> SessionSummary:
         """Numbers for the session-complete dialog.
 
-        ``personal_best`` means the longest run of correct answers beats every
+        ``paused`` is time the session spent interrupted (closed and resumed
+        later from the home page's Continue banner); it does not count as
+        practice. ``personal_best`` means the longest run of correct answers beats every
         earlier finished session of the same mode and exercise; a first session
         has nothing to beat and is not a personal best.
         """
@@ -321,7 +375,7 @@ class Stats:
             if s.summary is not None and s.mode is mode and s.exercise_id == exercise_id
         ]
         mistakes = tuple(dict.fromkeys(o.item_id for o in outcomes if not o.correct))
-        duration = max(finished_at - started_at, timedelta())
+        duration = max(finished_at - started_at - paused, timedelta())
         return SessionSummary(
             total=len(outcomes),
             correct=sum(o.correct for o in outcomes),

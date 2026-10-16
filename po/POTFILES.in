@@ -28,6 +28,8 @@ src/etude/ui/pages/progress.py
 src/etude/ui/pages/progress.ui
 src/etude/ui/pages/setup.py
 src/etude/ui/pages/setup.ui
+src/etude/ui/pages/today.py
+src/etude/ui/pages/today.ui
 src/etude/ui/preview.py
 src/etude/ui/widgets/bar_chart.py
 src/etude/ui/widgets/chips.py

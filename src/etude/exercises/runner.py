@@ -77,6 +77,7 @@ class SessionRunner:
         self._rng = rng if rng is not None else random.Random()
         self._clock = clock
         self._plan = [p for p in engine.start_session(request) if self._known(p)]
+        self._session_id = engine.active_session_id
         self.index = 0
         self.answered = 0
         self.correct = 0
@@ -117,6 +118,31 @@ class SessionRunner:
     @property
     def accuracy(self) -> float | None:
         return self.correct / self.answered if self.answered else None
+
+    @property
+    def is_answered(self) -> bool:
+        """Whether the current question has been answered or skipped."""
+        return self._graded
+
+    @property
+    def is_open(self) -> bool:
+        """Whether this session is still the engine's open session.
+
+        Starting another session finishes an unfinished one (see
+        :meth:`LearningEngine.start_session`), which closes this runner too.
+        """
+        return not self._finished and self.engine.active_session_id == self._session_id
+
+    # Interruptions (the home page's Continue banner, design 1a)
+
+    def pause(self) -> None:
+        """The learner left the exercise page; time until :meth:`resume` is not practice."""
+        self._require_open()
+        self.engine.pause_session(self._clock())
+
+    def resume(self) -> None:
+        self._require_open()
+        self.engine.resume_session(self._clock())
 
     # Answering
 
@@ -169,10 +195,16 @@ class SessionRunner:
         return False
 
     def finish(self) -> SessionSummary:
-        if self._finished:
-            raise RuntimeError('the session is already finished')
+        """Close the session; the summary covers every answer, also from before a pause."""
+        self._require_open()
         self._finished = True
         return self.engine.finish_session(self._clock())
+
+    def _require_open(self) -> None:
+        if self._finished:
+            raise RuntimeError('the session is already finished')
+        if self.engine.active_session_id != self._session_id:
+            raise RuntimeError('the session was closed when another one started')
 
     # Follow-up sessions (design 1i)
 

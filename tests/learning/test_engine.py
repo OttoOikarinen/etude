@@ -145,3 +145,59 @@ def test_an_empty_plan_opens_no_session() -> None:
     assert engine.start_session(SessionRequest(SessionMode.DAILY_REVIEW, now=FakeClock().now)) == []
     assert sessions.records == {}
     assert engine.active_plan is None
+
+
+def test_pause_and_resume_do_not_count_as_practice() -> None:
+    engine, _, _, sessions, clock, _ = make_engine()
+    engine.start_session(SessionRequest(SessionMode.EXERCISE, now=clock.now, exercise_id='keys'))
+    assert engine.active_session_id == 1
+    engine.record(outcome('k.0', clock.advance(timedelta(seconds=10)), exercise='keys'))
+    engine.pause_session(clock.now)
+    engine.pause_session(clock.advance(timedelta(minutes=1)))  # pausing twice changes nothing
+    assert engine.is_paused
+    engine.resume_session(clock.advance(timedelta(hours=2)))
+    assert not engine.is_paused
+    engine.record(outcome('k.1', clock.advance(timedelta(seconds=20)), exercise='keys'))
+    summary = engine.finish_session(clock.now)
+    assert summary.total == 2
+    assert summary.duration_ms == 30_000
+    assert sessions.records[1].summary == summary
+
+
+def test_a_session_finished_while_paused_ends_when_it_was_paused() -> None:
+    engine, _, _, sessions, clock, _ = make_engine()
+    engine.start_session(SessionRequest(SessionMode.EXERCISE, now=clock.now, exercise_id='keys'))
+    engine.record(outcome('k.0', clock.advance(timedelta(seconds=10)), exercise='keys'))
+    paused = clock.now
+    engine.pause_session(paused)
+    later = clock.advance(timedelta(hours=3))
+    engine.start_session(SessionRequest(SessionMode.DAILY_REVIEW, now=later))
+    assert sessions.records[1].finished_at == paused
+    assert sessions.records[1].summary is not None
+    assert sessions.records[1].summary.duration_ms == 10_000
+    assert engine.active_session_id == 2
+
+
+def test_answering_resumes_a_paused_session() -> None:
+    engine, _, _, _, clock, _ = make_engine()
+    engine.start_session(SessionRequest(SessionMode.EXERCISE, now=clock.now, exercise_id='keys'))
+    engine.pause_session(clock.advance(timedelta(seconds=10)))
+    engine.record(outcome('k.0', clock.advance(timedelta(minutes=5)), exercise='keys'))
+    assert not engine.is_paused
+    assert engine.finish_session(clock.now).duration_ms == 10_000
+
+
+def test_pausing_without_a_session_is_an_error() -> None:
+    engine, _, _, _, clock, _ = make_engine()
+    assert engine.active_session_id is None
+    with pytest.raises(RuntimeError, match='no session'):
+        engine.pause_session(clock.now)
+    with pytest.raises(RuntimeError, match='no session'):
+        engine.resume_session(clock.now)
+
+
+def test_new_items_outlook() -> None:
+    engine, _, _, _, clock, _ = make_engine()
+    outlook = engine.new_items(clock.now)
+    assert outlook.available == 5
+    assert not outlook.held_back

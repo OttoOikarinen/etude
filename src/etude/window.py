@@ -32,12 +32,13 @@ from .learning.model import ItemId, SessionMode
 from .ui.common import get_settings
 from .ui.controller import ExerciseController, empty_session_message
 from .ui.dialogs.session_summary import RESPONSE_BACK
-from .ui.model import AppModel
+from .ui.model import AppModel, SessionSource
 from .ui.pages.exercise import ExercisePage
 from .ui.pages.home import HomePage
 from .ui.pages.placeholder import create_placeholder_page
 from .ui.pages.progress import ProgressPage
 from .ui.pages.setup import SetupPage
+from .ui.pages.today import TodayPage
 
 
 @dataclass(frozen=True)
@@ -69,7 +70,6 @@ def sections() -> tuple[Section, ...]:
 
 
 PLACEHOLDERS = {
-    'today': ('x-office-calendar-symbolic', _('Your daily review of due items arrives soon')),
     'path': ('find-location-symbolic', _('The curriculum map arrives soon')),
     'theory': ('x-office-document-symbolic', _('Theory lessons arrive soon')),
     'glossary': ('accessories-dictionary-symbolic', _('The glossary arrives soon')),
@@ -102,8 +102,18 @@ class SidebarRow(Gtk.ListBoxRow):
             glyph = Gtk.Label(label=section.glyph, accessible_role=Gtk.AccessibleRole.PRESENTATION)
             glyph.add_css_class('sidebar-glyph')
             box.append(glyph)
-        box.append(Gtk.Label(label=section.title, xalign=0))
+        box.append(Gtk.Label(label=section.title, xalign=0, hexpand=True))
+        self.count_label = Gtk.Label(visible=False, valign=Gtk.Align.CENTER)
+        self.count_label.add_css_class('sidebar-count')
+        self.count_label.add_css_class('numeric')
+        box.append(self.count_label)
         self.set_child(box)
+
+    def set_count(self, count: int, description: str = '') -> None:
+        """Show a small count after the title (due items next to "Today")."""
+        self.count_label.set_label(str(count))
+        self.count_label.set_visible(count > 0)
+        self.update_property([Gtk.AccessibleProperty.DESCRIPTION], [description if count else ''])
 
 
 @Gtk.Template(resource_path='/fi/oikarinenotto/etude/window.ui')
@@ -133,22 +143,36 @@ class EtudeWindow(Adw.ApplicationWindow):
         self.cards = list(model.exercise_cards())
         self.home_page = HomePage()
         self.home_page.connect('exercise-activated', self._on_exercise_activated)
-        self.home_page.connect('resume-activated', lambda _p, ex: self.start_exercise(ex))
+        self.home_page.connect('resume-activated', lambda _p: self.resume_session())
+        self.home_page.connect('continue-dismissed', lambda _p: self._on_continue_dismissed())
+        self.today_page = TodayPage()
+        self.today_page.connect(
+            'start-review', lambda _p: self.start_session(SessionMode.DAILY_REVIEW)
+        )
+        self.today_page.connect('exercise-activated', lambda _p, ex: self.start_exercise(ex))
+        self.today_page.connect('browse-requested', lambda _p: self.show_section('all'))
         self.progress_page = ProgressPage(model.progress)
         self.progress_page.connect('drill-requested', self._on_drill_requested)
-        for page in (self.home_page, self.progress_page):
+        for page in (self.home_page, self.today_page, self.progress_page):
             self.bind_property('compact', page, 'compact', GObject.BindingFlags.SYNC_CREATE)
         self._placeholders: dict[str, Adw.NavigationPage] = {}
         self.controller: ExerciseController | None = None
+        self._paused_elapsed = 0
+        """Seconds on the clock of the interrupted session, restored on resume."""
+        self._page_serial = 0
         self._section = 'all'
-        self.refresh()
 
         self.rows: dict[str, SidebarRow] = {}
         for section in sections():
             row = SidebarRow(section)
             self.rows[section.id] = row
             self.sidebar_list.append(row)
+        self.refresh()
         self.show_section('all')
+        self.nav_view.connect('popped', self._on_page_popped)
+        self._goal_handler = 0
+        self.connect('realize', lambda _w: self._watch_daily_goal(True))
+        self.connect('unrealize', lambda _w: self._watch_daily_goal(False))
 
         keys = Gtk.EventControllerKey(propagation_phase=Gtk.PropagationPhase.CAPTURE)
         keys.connect('key-pressed', self._on_key_pressed)
@@ -157,7 +181,7 @@ class EtudeWindow(Adw.ApplicationWindow):
     # Navigation -----------------------------------------------------------------------
 
     def refresh(self) -> None:
-        """Reload the numbers shown on the home page, sidebar and progress page."""
+        """Reload the numbers shown on every section page and the sidebar."""
         self.cards = list(self.model.exercise_cards())
         section = next(s for s in sections() if s.id == self._section)
         self.home_page.set_exercises(self.cards, section.family)
@@ -167,6 +191,30 @@ class EtudeWindow(Adw.ApplicationWindow):
         self.streak_caption.set_label(ngettext('Day streak', 'Day streak', streak.days))
         self.practised_box.set_visible(streak.practised_today)
         self.progress_page.set_data(self.model.progress(self.progress_page.period))
+        self._refresh_today()
+
+    def _watch_daily_goal(self, watch: bool) -> None:
+        """Show a changed ``daily-goal`` at once (the model applies it first: it
+        connected earlier). Only while the window is realized: a closed window's
+        model may be gone."""
+        if self.settings is None:
+            return
+        if watch and not self._goal_handler:
+            self._goal_handler = self.settings.connect(
+                'changed::daily-goal', lambda *_a: self.refresh()
+            )
+        elif not watch and self._goal_handler:
+            self.settings.disconnect(self._goal_handler)
+            self._goal_handler = 0
+
+    def _refresh_today(self) -> None:
+        today = self.model.today()
+        self.today_page.set_data(today)
+        self.rows['today'].set_count(
+            today.due,
+            # Translators: read by screen readers after "Today" in the sidebar.
+            ngettext('{n} item due', '{n} items due', today.due).format(n=today.due),
+        )
 
     def show_section(self, section_id: str) -> Adw.NavigationPage:
         section = next(s for s in sections() if s.id == section_id)
@@ -175,6 +223,10 @@ class EtudeWindow(Adw.ApplicationWindow):
         if section_id == 'all' or section.family is not None:
             self.home_page.set_exercises(self.cards, section.family)
             page = self.home_page
+        elif section_id == 'today':
+            # Items fall due as time passes: always show the current numbers.
+            self._refresh_today()
+            page = self.today_page
         elif section_id == 'progress':
             page = self.progress_page
         else:
@@ -213,25 +265,62 @@ class EtudeWindow(Adw.ApplicationWindow):
             session = self.model.start(mode, exercise_id=exercise_id, item_ids=item_ids)
         except EmptySessionError:
             self.toast_overlay.add_toast(Adw.Toast(title=empty_session_message()))
+            self.refresh()  # starting finished an interrupted session
             return None
+        return self._open_session(session, replace=replace)
+
+    def resume_session(self) -> ExercisePage | None:
+        """Go on with the interrupted session of the Continue banner."""
+        session = self.model.resume()
+        if session is None:
+            self.refresh()
+            return None
+        page = self._open_session(session)
+        page.set_elapsed(self._paused_elapsed)
+        return page
+
+    def _open_session(self, session: SessionSource, *, replace: bool = False) -> ExercisePage:
         page = ExercisePage(session.title)
         self.bind_property('compact', page, 'compact', GObject.BindingFlags.SYNC_CREATE)
         page.connect('close-requested', lambda _p: self._close_session())
         self.controller = ExerciseController(page, session, self.model, self._on_session_finished)
-        if replace or self.nav_view.find_page('exercise') is not None:
+        # A page that was just closed stays in the view until its pop animation
+        # ends, so every exercise page gets its own tag.
+        self._page_serial += 1
+        page.set_tag(f'exercise-{self._page_serial}')
+        stack = self.nav_view.get_navigation_stack()
+        pages = [stack.get_item(i) for i in range(stack.get_n_items())]
+        if replace or any(isinstance(p, ExercisePage) for p in pages):
             self.nav_view.replace([self.nav_view.find_page('main'), page])
         else:
             self.nav_view.push(page)
+        # Starting or resuming a session ends the Continue banner's session.
+        self.home_page.set_continue(self.model.continue_data())
         return page
 
     def _close_session(self) -> None:
         self.nav_view.pop_to_tag('main')
+
+    def _on_page_popped(self, _view: Adw.NavigationView, page: Adw.NavigationPage) -> None:
+        """Leaving the exercise page in any way keeps its session for the Continue banner."""
+        controller = self.controller
+        if controller is None or page is not controller.page:
+            return
+        self.controller = None
+        if controller.summary is None:
+            self._paused_elapsed = controller.page.elapsed
+            self.model.close_session(controller.session)
+        self.refresh()
+
+    def _on_continue_dismissed(self) -> None:
+        self.model.dismiss_continue()
         self.refresh()
 
     def _on_session_finished(self, response: str) -> None:
-        self.refresh()
         if response == RESPONSE_BACK:
-            self.nav_view.pop_to_tag('main')
+            self.nav_view.pop_to_tag('main')  # refreshes through _on_page_popped
+        else:
+            self.refresh()
 
     def visible_exercise_page(self) -> ExercisePage | None:
         page = self.nav_view.get_visible_page()

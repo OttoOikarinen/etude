@@ -6,6 +6,7 @@ install_data(
     'placeholder.py',
     'progress.py',
     'setup.py',
+    'today.py',
   ],
   install_dir: moduledir / 'ui' / 'pages',
 )

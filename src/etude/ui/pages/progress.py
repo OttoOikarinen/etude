@@ -61,6 +61,7 @@ class ProgressPage(Adw.NavigationPage):
     charts_box: Gtk.Box = Gtk.Template.Child()
     accuracy_grid: Gtk.Grid = Gtk.Template.Child()
     chart_slot: Adw.Bin = Gtk.Template.Child()
+    accuracy_empty: Gtk.Label = Gtk.Template.Child()
     weakest_group: Adw.PreferencesGroup = Gtk.Template.Child()
     drill_button: Gtk.Button = Gtk.Template.Child()
 
@@ -89,7 +90,7 @@ class ProgressPage(Adw.NavigationPage):
     def set_data(self, data: ProgressData) -> None:
         self.data = data
         self.stat_cards.remove_all()
-        week = self.period_group.get_active_name() == 'week'
+        period = self.period
         cards = (
             _stat_card(
                 _('Day streak'),
@@ -99,9 +100,10 @@ class ProgressPage(Adw.NavigationPage):
                 ),
             ),
             _stat_card(
-                _('Accuracy this week') if week else _('Accuracy'),
-                format_percent(data.accuracy),
-                self._change_text(data.accuracy_change, week),
+                _('Accuracy this week') if period == 'week' else _('Accuracy'),
+                # Translators: shown instead of a percentage when nothing was answered.
+                format_percent(data.accuracy) if data.accuracy is not None else _('—'),
+                self._accuracy_detail(data, period),
             ),
             _stat_card(
                 _('Time practised'),
@@ -120,6 +122,7 @@ class ProgressPage(Adw.NavigationPage):
             following = child.get_next_sibling()
             self.accuracy_grid.remove(child)
             child = following
+        self.accuracy_empty.set_visible(not data.by_exercise)
         for row, (title, accuracy) in enumerate(data.by_exercise):
             label = Gtk.Label(label=title, xalign=0, ellipsize=3)
             bar = Gtk.LevelBar(value=accuracy, hexpand=True, valign=Gtk.Align.CENTER)
@@ -152,6 +155,33 @@ class ProgressPage(Adw.NavigationPage):
                 n=data.drill_count
             )
         )
+        self.drill_button.set_visible(data.drill_count > 0)
+        self.weakest_group.set_description(
+            None
+            if data.weakest
+            else _(
+                'No weak items yet. Items you often get wrong appear here once you have '
+                'answered them a few times, so you can drill them.'
+            )
+        )
+
+    @property
+    def drill_items(self) -> tuple:
+        """The items "Drill these N items" practises."""
+        if self.data is None:
+            return ()
+        return self.data.drill_items or tuple(i.item_id for i in self.data.weakest)
+
+    @classmethod
+    def _accuracy_detail(cls, data: ProgressData, period: str) -> str:
+        if data.accuracy is None:
+            return _('No answers yet')
+        if period == 'all':
+            return _('Since you started')
+        if data.accuracy_change is None:
+            # Translators: no answers in the previous period, so no "+4 points".
+            return _('Nothing to compare with yet')
+        return cls._change_text(data.accuracy_change, period == 'week')
 
     @staticmethod
     def _change_text(change: int, week: bool) -> str:
@@ -177,5 +207,5 @@ class ProgressPage(Adw.NavigationPage):
 
     @Gtk.Template.Callback()
     def _on_drill_clicked(self, _button: Gtk.Button) -> None:
-        if self.data is not None:
-            self.emit('drill-requested', tuple(i.item_id for i in self.data.weakest))
+        if self.drill_items:
+            self.emit('drill-requested', self.drill_items)
