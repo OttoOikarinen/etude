@@ -1,0 +1,197 @@
+#!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 Otto Oikarinen
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+"""Render every screen of the design to PNG files for visual review.
+
+Not a test: run it by hand inside the GNOME SDK, for example::
+
+    flatpak run --filesystem=<parent of the checkout> --socket=wayland \\
+        --socket=fallback-x11 --share=ipc --device=dri --command=python3 \\
+        org.gnome.Sdk//51 tests/ui/screenshots.py --output build/screenshots
+
+Each screen is shown in a window, rendered through ``Gtk.WidgetPaintable`` and
+saved with ``Gsk.Renderer.render_texture().save_to_png()``; the window is
+closed straight away.
+"""
+
+from __future__ import annotations
+
+import argparse
+import importlib.util
+import sys
+import tempfile
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+_spec = importlib.util.spec_from_file_location('etude_ui_smoke', HERE / 'smoke.py')
+smoke = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(smoke)
+
+WIDE = (1180, 760)
+NARROW = (400, 820)
+
+
+def wait(ms: int) -> None:
+    from gi.repository import GLib
+
+    loop = GLib.MainLoop()
+    GLib.timeout_add(ms, loop.quit)
+    loop.run()
+
+
+def render(window, path: Path) -> None:
+    from gi.repository import Graphene, Gsk, Gtk
+
+    wait(450)
+    width, height = window.get_width(), window.get_height()
+    paintable = Gtk.WidgetPaintable.new(window)
+    snapshot = Gtk.Snapshot()
+    paintable.snapshot(snapshot, width, height)
+    node = snapshot.to_node()
+    if node is None:
+        print(f'nothing to render for {path.name}')
+        return
+    renderer = window.get_renderer()
+    if renderer is None:
+        renderer = Gsk.CairoRenderer()
+        renderer.realize_for_display(window.get_display())
+    texture = renderer.render_texture(node, Graphene.Rect().init(0, 0, width, height))
+    texture.save_to_png(str(path))
+    print(path)
+
+
+def window_at(size: tuple[int, int]):
+    from etude.window import EtudeWindow
+
+    window = EtudeWindow()
+    window.set_default_size(*size)
+    window.present()
+    wait(300)
+    return window
+
+
+def shoot(out: Path, scheme: str, size: tuple[int, int], suffix: str) -> None:
+    from gi.repository import Adw
+
+    from etude.ui import preview
+
+    style = Adw.StyleManager.get_default()
+    style.set_color_scheme(
+        Adw.ColorScheme.FORCE_DARK if scheme == 'dark' else Adw.ColorScheme.FORCE_LIGHT
+    )
+    name = f'{scheme}{suffix}'
+
+    def answered(page, key: str, value=None, wrong: bool = False):
+        questions = preview.preview_questions()
+        item = questions[key]
+        given = (
+            item.sample_wrong if wrong else (value if value is not None else item.question.expected)
+        )
+        page._shown_at -= 1.8  # the design shows "Answered in 1.8 s."
+        page.answer_widget.submit(given)
+
+    # 1a / 3a home
+    window = window_at(size)
+    render(window, out / f'1a-home-{name}.png')
+    if size == WIDE:
+        window.show_section('progress')
+        render(window, out / f'1h-progress-{name}.png')
+        window.show_section('today')
+        render(window, out / f'1k-today-placeholder-{name}.png')
+        window.show_section('all')
+    # 1j setup
+    window.open_setup('keysig')
+    render(window, out / f'1j-setup-{name}.png')
+    # 1b key signature question
+    page = window.start_exercise('keysig', replace=True)
+    page.set_elapsed(252)
+    render(window, out / f'1b-keysig-question-{name}.png')
+    # 1c note naming, correct
+    page = window.start_exercise('note-naming')
+    page.set_elapsed(252)
+    if size == NARROW:
+        render(window, out / f'3b-note-naming-{name}.png')
+        page.answer_widget.emit('sheet-requested')
+        render(window, out / f'3b-piano-sheet-{name}.png')
+        page.bottom_sheet.set_open(False)
+    answered(page, 'note-naming')
+    render(window, out / f'1c-note-correct-{name}.png')
+    # 1d interval, wrong
+    page = window.start_exercise('interval-staff')
+    page.set_elapsed(252)
+    answered(page, 'interval-staff', wrong=True)
+    render(window, out / f'1d-interval-wrong-{name}.png')
+    if size == WIDE:
+        # 1e ear
+        page = window.start_exercise('interval-ear')
+        page.set_elapsed(252)
+        render(window, out / f'1e-ear-{name}.png')
+        # 1f chips, partly answered
+        page = window.start_exercise('chord-staff')
+        page.set_elapsed(252)
+        chips = page.answer_widget
+        chips.chips['root']['E'].set_active(True)
+        chips.chips['quality']['minor'].set_active(True)
+        chips.chips['inversion']['root'].set_active(True)
+        render(window, out / f'1f-chips-{name}.png')
+        # 1g scale degree
+        page = window.start_exercise('scale-degree')
+        page.set_elapsed(252)
+        render(window, out / f'1g-degree-{name}.png')
+        # Text answer
+        page = window.start_exercise('vocabulary')
+        render(window, out / f'1x-text-{name}.png')
+    # 1i summary
+    page = window.start_exercise('keysig')
+    from etude.ui.dialogs.session_summary import create_session_summary_dialog
+
+    dialog = create_session_summary_dialog(
+        preview.sample_summary(), 'Key Signatures · 20 questions · Treble clef'
+    )
+    dialog.present(window)
+    render(window, out / f'1i-summary-{name}.png')
+    dialog.force_close()
+    if size == WIDE:
+        from etude.ui.dialogs.preferences import PreferencesDialog
+
+        prefs = PreferencesDialog()
+        prefs.present(window)
+        render(window, out / f'1l-preferences-{name}.png')
+        prefs.force_close()
+        from gi.repository import Gtk
+
+        builder = Gtk.Builder.new_from_resource('/fi/oikarinenotto/etude/shortcuts-dialog.ui')
+        shortcuts = builder.get_object('shortcuts_dialog')
+        shortcuts.present(window)
+        render(window, out / f'1m-shortcuts-{name}.png')
+        shortcuts.force_close()
+    window.destroy()
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, default=Path('build/screenshots'))
+    parser.add_argument('--only', choices=('light', 'dark', 'narrow'), action='append')
+    args = parser.parse_args()
+    reason = smoke.unavailable_reason()
+    if reason:
+        print(f'cannot render: {reason}')
+        return 1
+    args.output.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory() as workdir:
+        smoke.prepare(smoke.ROOT, Path(workdir))
+        smoke.load_css()
+        runs = {
+            'light': ('light', WIDE, ''),
+            'dark': ('dark', WIDE, ''),
+            'narrow': ('light', NARROW, '-narrow'),
+        }
+        for key in args.only or runs:
+            shoot(args.output, *runs[key])
+        shoot(args.output, 'dark', NARROW, '-narrow') if not args.only else None
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

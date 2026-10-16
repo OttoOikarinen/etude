@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Otto Oikarinen -->
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  <template class="EtudeProgressPage" parent="AdwNavigationPage">
+    <property name="title" translatable="yes">Progress</property>
+    <property name="tag">progress</property>
+    <property name="child">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar"/>
+        </child>
+        <property name="content">
+          <object class="GtkScrolledWindow">
+            <property name="hscrollbar-policy">never</property>
+            <property name="child">
+              <object class="AdwClamp">
+                <property name="maximum-size">1040</property>
+                <property name="tightening-threshold">800</property>
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">24</property>
+                    <style>
+                      <class name="progress-body"/>
+                    </style>
+                    <child>
+                      <object class="AdwToggleGroup" id="period_group">
+                        <property name="halign">start</property>
+                        <property name="active-name">week</property>
+                        <signal name="notify::active-name" handler="_on_period_changed"/>
+                        <accessibility>
+                          <property name="label" translatable="yes">Period</property>
+                        </accessibility>
+                        <child>
+                          <object class="AdwToggle">
+                            <property name="name">week</property>
+                            <property name="label" translatable="yes">7 days</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwToggle">
+                            <property name="name">month</property>
+                            <property name="label" translatable="yes">30 days</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwToggle">
+                            <property name="name">all</property>
+                            <property name="label" translatable="yes">All time</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkFlowBox" id="stat_cards">
+                        <property name="selection-mode">none</property>
+                        <property name="homogeneous">true</property>
+                        <property name="column-spacing">12</property>
+                        <property name="row-spacing">12</property>
+                        <property name="min-children-per-line">1</property>
+                        <property name="max-children-per-line">3</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="charts_box">
+                        <property name="spacing">12</property>
+                        <property name="homogeneous">true</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">12</property>
+                            <style>
+                              <class name="card"/>
+                              <class name="chart-card"/>
+                            </style>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Accuracy by Exercise</property>
+                                <property name="xalign">0</property>
+                                <style>
+                                  <class name="heading"/>
+                                </style>
+                                <accessibility>
+                                  <property name="level">2</property>
+                                </accessibility>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkGrid" id="accuracy_grid">
+                                <property name="column-spacing">12</property>
+                                <property name="row-spacing">10</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">12</property>
+                            <style>
+                              <class name="card"/>
+                              <class name="chart-card"/>
+                            </style>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Questions Answered</property>
+                                <property name="xalign">0</property>
+                                <style>
+                                  <class name="heading"/>
+                                </style>
+                                <accessibility>
+                                  <property name="level">2</property>
+                                </accessibility>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwBin" id="chart_slot">
+                                <property name="vexpand">true</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwPreferencesGroup" id="weakest_group">
+                        <property name="title" translatable="yes">Weakest Items</property>
+                        <property name="header-suffix">
+                          <object class="GtkButton" id="drill_button">
+                            <property name="valign">center</property>
+                            <signal name="clicked" handler="_on_drill_clicked"/>
+                            <style>
+                              <class name="pill"/>
+                              <class name="suggested-action"/>
+                            </style>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+</interface>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Otto Oikarinen -->
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  <template class="EtudeFeedbackBanner" parent="GtkBox">
+    <property name="spacing">14</property>
+    <property name="accessible-role">status</property>
+    <style>
+      <class name="feedback-banner"/>
+    </style>
+    <child>
+      <object class="GtkBox">
+        <property name="spacing">14</property>
+        <property name="hexpand">true</property>
+    <child>
+      <object class="GtkImage" id="icon">
+        <property name="valign">start</property>
+        <property name="pixel-size">24</property>
+        <property name="accessible-role">presentation</property>
+        <style>
+          <class name="feedback-icon"/>
+        </style>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">4</property>
+        <property name="hexpand">true</property>
+        <property name="valign">center</property>
+        <child>
+          <object class="GtkLabel" id="title">
+            <property name="xalign">0</property>
+            <property name="wrap">true</property>
+            <style>
+              <class name="heading"/>
+              <class name="feedback-title"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="detail">
+            <property name="xalign">0</property>
+            <property name="wrap">true</property>
+          </object>
+        </child>
+      </object>
+    </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox" id="actions">
+        <property name="spacing">8</property>
+        <property name="valign">center</property>
+        <child>
+          <object class="GtkButton" id="play_button">
+            <property name="visible">false</property>
+            <signal name="clicked" handler="_on_play_clicked"/>
+            <child>
+              <object class="AdwButtonContent" id="play_content">
+                <property name="icon-name">media-playback-start-symbolic</property>
+                <property name="label" translatable="yes">Play answer</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="next_button">
+            <property name="tooltip-text" translatable="yes">Next question</property>
+            <signal name="clicked" handler="_on_next_clicked"/>
+            <style>
+              <class name="suggested-action"/>
+            </style>
+            <child>
+              <object class="GtkBox">
+                <property name="spacing">8</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Next</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">↵</property>
+                    <property name="accessible-role">presentation</property>
+                    <property name="valign">center</property>
+                    <style>
+                      <class name="accel-badge"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <accessibility>
+              <property name="label" translatable="yes">Next</property>
+              <property name="key-shortcuts">Return</property>
+            </accessibility>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

@@ -1,0 +1,284 @@
+/* SPDX-FileCopyrightText: 2026 Otto Oikarinen */
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+
+/* Etude styles. Only libadwaita colour variables are used, so the accent
+   colour, dark style and high contrast apply automatically. libadwaita loads
+   this file because it is aliased to style.css at the resource base path. */
+
+/* Keyboard accelerator badge on every answer control. */
+.accel-badge {
+  font-family: monospace;
+  font-size: 0.8em;
+  font-weight: bold;
+  min-width: 1.4em;
+  padding: 1px 5px;
+  border-radius: 6px;
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 22%, transparent);
+}
+
+.suggested-action .accel-badge {
+  background-color: color-mix(in srgb, currentColor 18%, transparent);
+}
+
+/* Sidebar ------------------------------------------------------------------ */
+
+.sidebar-heading {
+  padding: 12px 6px 2px 6px;
+  font-size: 0.9em;
+  color: color-mix(in srgb, currentColor 70%, transparent);
+}
+
+.sidebar-glyph {
+  min-width: 16px;
+  font-size: 1.1em;
+}
+
+.sidebar-footer {
+  padding: 12px 18px 18px 18px;
+}
+
+.accent {
+  color: var(--accent-color);
+}
+
+image.success {
+  color: var(--success-color);
+}
+
+/* Home ----------------------------------------------------------------------- */
+
+.home-body,
+.progress-body {
+  margin: 24px 24px 36px 24px;
+}
+
+.continue-banner {
+  padding: 16px 18px;
+  background-color: color-mix(in srgb, var(--accent-bg-color) 10%, var(--card-bg-color));
+}
+
+.icon-tile {
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 12px;
+  font-size: 1.5em;
+  color: var(--accent-color);
+  background-color: color-mix(in srgb, var(--accent-bg-color) 14%, transparent);
+}
+
+.icon-tile.small {
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: 8px;
+  font-size: 1.2em;
+}
+
+.exercise-card {
+  padding: 16px;
+  border-radius: 12px;
+}
+
+/* Exercise page ---------------------------------------------------------------- */
+
+.exercise-body {
+  margin: 24px 24px 32px 24px;
+}
+
+.figure-placeholder {
+  padding: 24px;
+  border-radius: 12px;
+  background-color: var(--card-bg-color);
+  box-shadow: 0 0 0 1px var(--border-color);
+}
+
+.answer-button {
+  padding: 10px 12px;
+  min-height: 24px;
+  border-radius: 6px;
+}
+
+.answer-button.success,
+.chip.success {
+  color: var(--success-color);
+  background-color: color-mix(in srgb, var(--success-bg-color) 16%, transparent);
+  box-shadow: inset 0 0 0 2px var(--success-color);
+}
+
+.answer-button.error,
+.chip.error {
+  color: var(--error-color);
+  background-color: color-mix(in srgb, var(--error-bg-color) 14%, transparent);
+  box-shadow: inset 0 0 0 2px var(--error-color);
+}
+
+entry.success {
+  outline-color: var(--success-color);
+}
+
+.compact .answer-button,
+.compact .chip,
+.compact .exercise-body button {
+  min-height: 48px;
+  min-width: 48px;
+}
+
+.compact .exercise-body {
+  margin: 12px 12px 24px 12px;
+}
+
+.letter-row > button {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.chip {
+  padding: 4px 14px;
+  min-height: 28px;
+}
+
+.chip:checked {
+  background-color: var(--accent-bg-color);
+  color: var(--accent-fg-color);
+}
+
+.answer-button.degree {
+  padding: 8px 4px;
+}
+
+.hint-box {
+  padding: 8px 14px;
+  border-radius: 6px;
+  background-color: color-mix(in srgb, var(--accent-bg-color) 10%, transparent);
+}
+
+.coming-later {
+  padding: 24px;
+}
+
+/* Feedback banner */
+.feedback-banner {
+  padding: 14px 16px;
+  border-radius: 12px;
+}
+
+.feedback-banner.feedback-success {
+  background-color: color-mix(in srgb, var(--success-bg-color) 14%, var(--card-bg-color));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--success-color) 40%, transparent);
+}
+
+.feedback-banner.feedback-success .feedback-icon,
+.feedback-banner.feedback-success .feedback-title {
+  color: var(--success-color);
+}
+
+.feedback-banner.feedback-error {
+  background-color: color-mix(in srgb, var(--error-bg-color) 12%, var(--card-bg-color));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--error-color) 40%, transparent);
+}
+
+.feedback-banner.feedback-error .feedback-icon,
+.feedback-banner.feedback-error .feedback-title {
+  color: var(--error-color);
+}
+
+/* Stats bar */
+.stats-bar {
+  padding: 8px 18px;
+  font-size: 0.95em;
+}
+
+.stats-bar.streak-reset .streak {
+  color: var(--error-color);
+}
+
+/* Ear panel */
+.ear-panel {
+  padding: 20px;
+}
+
+button.big-play {
+  min-width: 72px;
+  min-height: 72px;
+  -gtk-icon-size: 28px;
+}
+
+.audio-note {
+  padding-top: 4px;
+}
+
+/* Piano keyboard */
+.piano-keyboard {
+  padding: 2px;
+}
+
+.piano-key {
+  padding: 0 0 10px 0;
+  border-radius: 0 0 6px 6px;
+  font-weight: bold;
+}
+
+.piano-key.white {
+  /* Piano keys stay light and dark in both styles; mixes keep them opaque. */
+  background-color: color-mix(in srgb, white 94%, var(--window-bg-color));
+  color: color-mix(in srgb, black 80%, var(--window-bg-color));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, black 22%, transparent);
+}
+
+.piano-key.white:hover {
+  background-color: color-mix(in srgb, var(--accent-bg-color) 14%, white);
+}
+
+.piano-key.black {
+  background-color: color-mix(in srgb, black 82%, var(--window-bg-color));
+  color: white;
+  border-radius: 0 0 4px 4px;
+}
+
+.piano-key.black:hover {
+  background-color: color-mix(in srgb, black 65%, var(--accent-bg-color));
+}
+
+.piano-key.success,
+.piano-key.white.success:hover {
+  background-color: var(--success-bg-color);
+  color: var(--success-fg-color);
+}
+
+.piano-key.error,
+.piano-key.white.error:hover {
+  background-color: var(--error-bg-color);
+  color: var(--error-fg-color);
+}
+
+.piano-sheet {
+  margin: 12px 18px 24px 18px;
+}
+
+/* Progress -------------------------------------------------------------------- */
+
+.stat-card,
+.chart-card {
+  padding: 16px 18px;
+  border-radius: 12px;
+}
+
+levelbar.accuracy-bar > * {
+  min-height: 8px;
+  border-radius: 4px;
+}
+
+levelbar.accuracy-bar block.filled {
+  background-color: var(--accent-bg-color);
+  border-radius: 4px;
+}
+
+.weak-percent {
+  color: var(--error-color);
+  font-weight: bold;
+}
+
+/* Session summary */
+.summary-numbers {
+  margin: 6px 0;
+}
