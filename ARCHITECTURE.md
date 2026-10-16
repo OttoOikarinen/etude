@@ -60,6 +60,9 @@ Contract changes so far (all backwards-compatible):
   downbeats.
 * W1 learning: `SessionRecord` and `SessionLog.between()` let statistics
   compute time practised, session counts and personal bests.
+* W1 notation: `CurveItem` (ties) joins the display-list `Item` union,
+  `GlyphItem.scale` lets a brace span a system, and `StaffSpec.voices`
+  adds further voices to a staff (first voice stems up, the rest down).
 
 ### How a question flows
 
@@ -136,8 +139,11 @@ flatpak run --filesystem="$PWD" --command=sh org.gnome.Sdk//51 \
 
 * `tests/` mirrors the package layout. Domain packages are tested with
   pytest and hypothesis on any Python ≥ 3.13; run `pytest`.
-* Notation layout is golden-tested: display lists and rendered PNGs are
-  compared against files in `tests/notation/golden/`.
+* Notation layout is golden-tested: display lists are compared against
+  JSON files in `tests/notation/golden/` (regenerate with
+  `ETUDE_UPDATE_GOLDEN=1`). Rendering is reviewed with
+  `tools/notation_gallery.py`, which draws the design figures and a stress
+  sheet to PNG.
 * Every exercise has a property test that generates many questions and
   checks that the expected answer is among the options, the options are
   distinct, and grading the expected answer succeeds.
