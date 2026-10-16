@@ -13,6 +13,7 @@ from .chord_symbol import ChordSymbol
 from .figured_bass import Figure, FigureAccidental, FiguredBass
 from .interval import Interval, Quality
 from .key import KeySignature
+from .naming import NamingConvention
 from .pcset import PitchClassSet
 from .pitch import Letter, Pitch, PitchName
 from .rhythm import Duration, Meter, NoteValue, Tuplet
@@ -36,6 +37,7 @@ __all__ = [
     'Letter',
     'Meter',
     'Mode',
+    'NamingConvention',
     'NoteValue',
     'Pitch',
     'PitchClassSet',

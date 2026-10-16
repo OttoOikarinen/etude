@@ -6,6 +6,7 @@ install_data(
     'figured_bass.py',
     'interval.py',
     'key.py',
+    'naming.py',
     'neo_riemannian.py',
     'pcset.py',
     'pitch.py',
