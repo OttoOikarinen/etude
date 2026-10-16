@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+# SPDX-FileCopyrightText: 2026 Otto Oikarinen
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import sys
@@ -25,9 +26,12 @@ import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 
-from gi.repository import Adw, Gio
+from gi.repository import Adw, Gio, Gtk
 
+from .ui.dialogs.preferences import PreferencesDialog
 from .window import EtudeWindow
+
+PROJECT_URL = 'https://github.com/OttoOikarinen/etude'
 
 
 class EtudeApplication(Adw.Application):
@@ -42,7 +46,8 @@ class EtudeApplication(Adw.Application):
         self.version = version
         self.create_action('quit', lambda *_: self.quit(), ['<control>q'])
         self.create_action('about', self.on_about_action)
-        self.create_action('preferences', self.on_preferences_action)
+        self.create_action('preferences', self.on_preferences_action, ['<control>comma'])
+        # app.shortcuts and Ctrl+? come from AdwApplication, which loads shortcuts-dialog.ui.
 
     def do_activate(self):
         """Called when the application is activated.
@@ -62,6 +67,9 @@ class EtudeApplication(Adw.Application):
             application_icon='fi.oikarinenotto.etude',
             developer_name='Otto Oikarinen',
             version=self.version,
+            website=PROJECT_URL,
+            issue_url=f'{PROJECT_URL}/issues',
+            license_type=Gtk.License.GPL_3_0,
             # Translators: Replace "translator-credits" with your name/username,
             # and optionally an email or URL.
             translator_credits=_('translator-credits'),
@@ -70,9 +78,9 @@ class EtudeApplication(Adw.Application):
         )
         about.present(self.props.active_window)
 
-    def on_preferences_action(self, widget, _):
+    def on_preferences_action(self, *args):
         """Callback for the app.preferences action."""
-        print('app.preferences action activated')
+        PreferencesDialog().present(self.props.active_window)
 
     def create_action(self, name, callback, shortcuts=None):
         """Add an application action.
