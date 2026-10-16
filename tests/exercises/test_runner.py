@@ -188,3 +188,40 @@ def test_finishing_twice_is_an_error(world: World) -> None:
     runner.finish()
     with pytest.raises(RuntimeError):
         runner.finish()
+
+
+def test_pause_and_resume_keep_one_session(world: World) -> None:
+    runner = world.runner(size=4)
+    for _ in range(2):
+        world.clock.advance(timedelta(seconds=3))
+        runner.answer(runner.current.question.expected, response_ms=2000)
+        assert runner.is_answered
+        runner.advance()
+        assert not runner.is_answered
+    runner.pause()
+    world.clock.advance(timedelta(hours=1))
+    assert runner.is_open
+    runner.resume()
+    play_through(runner, world.clock)
+    summary = runner.finish()
+    assert summary.total == 4
+    assert summary.correct == 4
+    assert summary.duration_ms == 12_000, 'the hour away is not practice'
+    assert not runner.is_open
+    assert len(world.sessions.records) == 1
+
+
+def test_a_session_closes_when_another_one_starts(world: World) -> None:
+    first = world.runner(size=3)
+    first.answer(first.current.question.expected, response_ms=2000)
+    first.advance()
+    first.pause()
+    second = world.runner(size=3)
+    assert not first.is_open
+    assert second.is_open
+    with pytest.raises(RuntimeError, match='another one started'):
+        first.finish()
+    with pytest.raises(RuntimeError):
+        first.resume()
+    assert world.sessions.records[1].summary is not None
+    assert world.sessions.records[1].summary.total == 1

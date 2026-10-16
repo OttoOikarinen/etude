@@ -17,6 +17,7 @@ from etude.learning.model import Card, CardState, ItemId, SessionMode, SessionSu
 from etude.learning.stats import (
     Accuracy,
     AccuracyChange,
+    ExerciseActivity,
     Stats,
     StatsConfig,
     longest_correct_run,
@@ -225,6 +226,63 @@ def test_time_practised_and_session_count() -> None:
     period = stats.period(local(2026, 10, 15, 20), 7)
     assert stats.time_practised(*period) == timedelta(minutes=7)
     assert stats.session_count(*period) == 2
+
+
+def test_sessions_without_answers_do_not_count() -> None:
+    _, sessions, stats = make()
+    empty = sessions.start(SessionMode.EXERCISE, 'keys', local(2026, 10, 15, 9))
+    sessions.finish(empty, local(2026, 10, 15, 9, 1), summary(total=0, best=0))
+    real = sessions.start(SessionMode.EXERCISE, 'keys', local(2026, 10, 15, 10))
+    sessions.finish(real, local(2026, 10, 15, 10, 2), summary(duration_ms=120_000))
+    period = stats.period(local(2026, 10, 15, 20), 7)
+    assert stats.session_count(*period) == 1
+    assert stats.time_practised(*period) == timedelta(minutes=2)
+
+
+def test_exercise_activity() -> None:
+    attempts, sessions, stats = make(recent_answers=4)
+    now = local(2026, 10, 15, 20)
+    for n in range(6):
+        # Two old mistakes, then four correct answers: only the recent four count.
+        attempts.add(
+            outcome(f'k{n}', local(2026, 10, 15, 9, n), correct=n >= 2, exercise='keys'), None
+        )
+    attempts.add(outcome('n0', local(2026, 10, 14, 9), correct=False, exercise='notes'), None)
+    for exercise, total in (('keys', 10), ('keys', 0), ('notes', 3), (None, 5)):
+        sid = sessions.start(SessionMode.EXERCISE, exercise, local(2026, 10, 15, 8))
+        sessions.finish(sid, local(2026, 10, 15, 8, 5), summary(total=total, best=0))
+    sessions.start(SessionMode.EXERCISE, 'keys', local(2026, 10, 15, 11))  # unfinished
+    result = stats.exercise_activity(['keys', 'notes', 'ivl'], now)
+    assert result['keys'] == ExerciseActivity(Accuracy(4, 4), local(2026, 10, 15, 9, 5), 1)
+    assert result['notes'] == ExerciseActivity(Accuracy(0, 1), local(2026, 10, 14, 9), 1)
+    assert result['ivl'] == ExerciseActivity(Accuracy(0, 0), None, 0)
+    assert result['ivl'].recent.ratio is None
+
+
+def test_set_daily_goal_applies_to_streaks() -> None:
+    attempts, _, stats = make(goal=3)
+    now = local(2026, 10, 15, 20)
+    answer_on(attempts, local(2026, 10, 15, 9), 4)
+    assert stats.streak(now).current == 1
+    stats.set_daily_goal(5)
+    assert stats.config.daily_goal == 5
+    assert stats.streak(now).current == 0
+    with pytest.raises(ValueError, match='at least 1'):
+        stats.set_daily_goal(0)
+
+
+def test_paused_time_is_not_practice() -> None:
+    _, _, stats = make()
+    start = utc(2026, 10, 15, 9)
+    result = stats.session_summary(
+        [outcome('a', start + timedelta(seconds=5))],
+        mode=SessionMode.EXERCISE,
+        exercise_id='ex',
+        started_at=start,
+        finished_at=start + timedelta(hours=1),
+        paused=timedelta(minutes=59),
+    )
+    assert result.duration_ms == 60_000
 
 
 def test_session_summary() -> None:

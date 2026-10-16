@@ -17,13 +17,13 @@ from __future__ import annotations
 import random
 from collections.abc import Callable
 from dataclasses import dataclass, field, replace
-from datetime import UTC, datetime, tzinfo
+from datetime import UTC, datetime, timedelta, tzinfo
 
 from .model import Card, Outcome, PlannedQuestion, SessionMode, SessionRequest, SessionSummary
 from .ports import AttemptLog, CardStore, ItemCatalog, Scheduler, SessionLog
 from .rating import derive_rating
 from .scheduler import FsrsScheduler
-from .session import Confusables, SessionBuilder, SessionConfig
+from .session import Confusables, NewItems, SessionBuilder, SessionConfig
 from .stats import Stats, StatsConfig
 
 
@@ -39,6 +39,8 @@ class _ActiveSession:
     started_at: datetime
     plan: list[PlannedQuestion]
     outcomes: list[Outcome] = field(default_factory=list)
+    paused_at: datetime | None = None
+    paused: timedelta = timedelta()
 
 
 class LearningEngine:
@@ -100,6 +102,19 @@ class LearningEngine:
     def active_plan(self) -> list[PlannedQuestion] | None:
         return None if self._active is None else list(self._active.plan)
 
+    @property
+    def active_session_id(self) -> int | None:
+        """Session-log id of the open session, if any."""
+        return None if self._active is None else self._active.id
+
+    @property
+    def is_paused(self) -> bool:
+        return self._active is not None and self._active.paused_at is not None
+
+    def new_items(self, now: datetime) -> NewItems:
+        """New items daily reviews may still introduce today (the Today page)."""
+        return self._builder.new_items_today(now)
+
     def start_session(self, request: SessionRequest) -> list[PlannedQuestion]:
         """Plan a session and open it in the session log.
 
@@ -118,6 +133,27 @@ class LearningEngine:
         )
         return list(plan)
 
+    def pause_session(self, now: datetime) -> None:
+        """The learner left the open session to come back to it later.
+
+        Time until :meth:`resume_session` does not count as practice. A
+        session finished while paused ends when it was paused.
+        """
+        active = self._require_active()
+        if active.paused_at is None:
+            active.paused_at = now
+
+    def resume_session(self, now: datetime) -> None:
+        active = self._require_active()
+        if active.paused_at is not None:
+            active.paused += max(now - active.paused_at, timedelta())
+            active.paused_at = None
+
+    def _require_active(self) -> _ActiveSession:
+        if self._active is None:
+            raise RuntimeError('no session is active')
+        return self._active
+
     def record(self, outcome: Outcome) -> Card:
         """Rate an answer, reschedule its item and store both; returns the new card.
 
@@ -133,21 +169,25 @@ class LearningEngine:
         self._cards.put(card)
         self._attempts.add(outcome, None if self._active is None else self._active.id)
         if self._active is not None:
+            if self._active.paused_at is not None:
+                self.resume_session(outcome.answered_at)
             self._active.outcomes.append(outcome)
         return card
 
     def finish_session(self, now: datetime | None = None) -> SessionSummary:
         """Close the active session and return its summary."""
-        active = self._active
-        if active is None:
-            raise RuntimeError('no session is active')
-        finished_at = self._clock() if now is None else now
+        active = self._require_active()
+        if active.paused_at is not None:
+            finished_at = active.paused_at
+        else:
+            finished_at = self._clock() if now is None else now
         summary = self.stats.session_summary(
             active.outcomes,
             mode=active.mode,
             exercise_id=active.exercise_id,
             started_at=active.started_at,
             finished_at=finished_at,
+            paused=active.paused,
         )
         self._sessions.finish(active.id, finished_at, summary)
         self._active = None

@@ -54,6 +54,18 @@ class SessionConfig:
     """The learner's time zone, for what "today" means in :attr:`daily_new_limit`."""
 
 
+@dataclass(frozen=True, slots=True)
+class NewItems:
+    """What daily reviews may still introduce today (the Today page)."""
+
+    available: int
+    """New items the learner can still meet today across daily reviews."""
+    left_today: int
+    """What remains of :attr:`SessionConfig.daily_new_limit` today."""
+    held_back: bool
+    """Recent accuracy is below :attr:`SessionConfig.target_accuracy`, so no new items for now."""
+
+
 class SessionBuilder:
     """Builds the list of questions for a :class:`SessionRequest`."""
 
@@ -107,6 +119,15 @@ class SessionBuilder:
         slots = request.size - len(questions)
         if slots <= 0:
             return questions
+        budget = min(slots, self._new_budget(request.now, exercise_id=None))
+        return questions + self._round_robin_new(self._daily_candidates(), budget)
+
+    def _daily_candidates(self) -> list[tuple[str, list[ItemId]]]:
+        """Unseen items, in teaching order, of the exercises daily reviews draw new items from.
+
+        New items come from exercises the learner has begun; a brand-new
+        learner gets items from every exercise so the first session is not empty.
+        """
         unseen: dict[str, list[ItemId]] = {}
         started: list[str] = []
         for exercise in self._catalog.exercise_ids():
@@ -115,11 +136,17 @@ class SessionBuilder:
             unseen[exercise] = [item for item in items if item not in known]
             if known:
                 started.append(exercise)
-        # New items come from exercises the learner has begun; a brand-new
-        # learner gets items from every exercise so the first session is not empty.
-        candidates = [(e, unseen[e]) for e in (started or self._catalog.exercise_ids())]
-        budget = min(slots, self._new_budget(request.now, exercise_id=None))
-        return questions + self._round_robin_new(candidates, budget)
+        return [(e, unseen[e]) for e in (started or self._catalog.exercise_ids())]
+
+    def new_items_today(self, now: datetime) -> NewItems:
+        """How many new items daily reviews may still introduce today, and why not more."""
+        accuracy = self.recent_accuracy(None)
+        held_back = accuracy is not None and accuracy < self.config.target_accuracy
+        left = max(0, self.config.daily_new_limit - self.new_today(now))
+        unseen = sum(len(items) for _exercise, items in self._daily_candidates())
+        return NewItems(
+            available=0 if held_back else min(left, unseen), left_today=left, held_back=held_back
+        )
 
     def _exercise(self, request: SessionRequest) -> list[PlannedQuestion]:
         exercise = _required_exercise(request)

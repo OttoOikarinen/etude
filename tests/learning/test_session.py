@@ -22,6 +22,7 @@ from etude.learning.model import (
 )
 from etude.learning.scheduler import FsrsScheduler
 from etude.learning.session import (
+    NewItems,
     SessionBuilder,
     SessionConfig,
     interleave,
@@ -190,6 +191,39 @@ def test_daily_cap_on_new_items() -> None:
     world.attempts.add(outcome('keys.8', NOW - timedelta(hours=1)), None)
     assert world.builder.new_today(NOW) == 4
     assert sum(q.is_new for q in world.build(size=20)) == 3
+
+
+def test_new_items_today_for_a_beginner() -> None:
+    world = World(config=SessionConfig(daily_new_limit=10))
+    expected = NewItems(available=10, left_today=10, held_back=False)
+    assert world.builder.new_items_today(NOW) == expected
+
+
+def test_new_items_today_counts_only_unseen_items_of_started_exercises() -> None:
+    world = World(catalog={'keys': ['keys.0', 'keys.1', 'keys.2'], 'notes': ['notes.0']})
+    world.later('keys.0')
+    world.answers(20, 0, at=NOW - timedelta(days=2))
+    assert world.builder.new_items_today(NOW).available == 2
+
+
+def test_new_items_today_held_back_by_low_accuracy() -> None:
+    world = World()
+    world.later('keys.0')
+    world.answers(10, 10)
+    outlook = world.builder.new_items_today(NOW)
+    assert outlook.held_back
+    assert outlook.available == 0
+    assert outlook.left_today > 0
+
+
+def test_new_items_today_after_the_daily_limit() -> None:
+    world = World(config=SessionConfig(daily_new_limit=2))
+    for n in range(2):
+        item = f'notes.{n}'
+        world.cards.put(Card(ItemId(item), NOW + timedelta(minutes=10), reps=1, last_review=NOW))
+        world.attempts.add(outcome(item, NOW - timedelta(hours=2), exercise='notes'), None)
+    expected = NewItems(available=0, left_today=0, held_back=False)
+    assert world.builder.new_items_today(NOW) == expected
 
 
 def test_daily_review_does_not_pad_with_items_not_due() -> None:
