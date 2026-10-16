@@ -92,6 +92,7 @@ class Services:
             tzinfo=self.timezone,
             rng=self.rng,
             stats_config=stats_config,
+            confusables=self.registry.confusables,
         )
         self._audio = audio
         self._audio_lock = threading.Lock()

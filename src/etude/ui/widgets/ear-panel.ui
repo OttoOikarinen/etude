@@ -86,11 +86,14 @@
       </object>
     </child>
     <child>
-      <object class="GtkBox">
-        <property name="spacing">18</property>
+      <object class="AdwWrapBox">
+        <!-- Wraps the tempo below the playback mode on narrow screens (design 3b). -->
+        <property name="child-spacing">18</property>
+        <property name="line-spacing">8</property>
         <property name="halign">center</property>
+        <property name="justify">none</property>
         <child>
-          <object class="GtkBox">
+          <object class="GtkBox" id="mode_box">
             <property name="spacing">8</property>
             <child>
               <object class="GtkLabel" id="playback_label">

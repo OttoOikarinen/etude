@@ -154,9 +154,13 @@ class SessionBuilder:
         known = self._cards.get_many(items)
         due = due_first(known, request.now)[: request.size]
         questions = [PlannedQuestion(exercise, c.item_id) for c in due]
-        budget = min(
-            request.size - len(questions), self._new_budget(request.now, exercise_id=exercise)
-        )
+        new_budget = self._new_budget(request.now, exercise_id=exercise)
+        if not known and new_budget == 0:
+            # The learner chose an exercise they have not started: let them start it
+            # even when today's new items went to other exercises (autonomy, see
+            # docs/PEDAGOGY.md), a few items at a time.
+            new_budget = self.config.session_new_limit
+        budget = min(request.size - len(questions), new_budget)
         unseen = [item for item in items if item not in known]
         questions += self._round_robin_new([(exercise, unseen)], budget)
         # Nothing (more) due: practise the items most likely to be forgotten next,

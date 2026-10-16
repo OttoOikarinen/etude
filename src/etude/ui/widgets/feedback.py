@@ -17,14 +17,16 @@ from ..common import setting_bool, ui_resource
 class FeedbackBanner(Gtk.Box):
     """Shows a :class:`Feedback` with colour, icon and text, and announces it.
 
-    Signals: ``next`` (Next ↵ pressed) and ``play`` (the play button, e.g.
-    "Play interval", pressed).
+    Signals: ``next`` (Next ↵ pressed), ``play`` (the play button, e.g.
+    "Play interval", pressed) and ``play-given`` (play the learner's own answer,
+    for comparing sounds in ear training).
     """
 
     __gtype_name__ = 'EtudeFeedbackBanner'
     __gsignals__ = {  # noqa: RUF012 (GObject API)
         'next': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'play': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'play-given': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     icon: Gtk.Image = Gtk.Template.Child()
@@ -32,12 +34,16 @@ class FeedbackBanner(Gtk.Box):
     detail: Gtk.Label = Gtk.Template.Child()
     play_button: Gtk.Button = Gtk.Template.Child()
     play_content: Adw.ButtonContent = Gtk.Template.Child()
+    play_given_button: Gtk.Button = Gtk.Template.Child()
+    play_given_content: Adw.ButtonContent = Gtk.Template.Child()
     next_button: Gtk.Button = Gtk.Template.Child()
     actions: Gtk.Box = Gtk.Template.Child()
 
     def __init__(self, **kwargs: object) -> None:
         super().__init__(**kwargs)
         self.feedback: Feedback | None = None
+        self._play_label = _('Play answer')
+        self._compact = False
 
     def show_feedback(
         self,
@@ -74,7 +80,10 @@ class FeedbackBanner(Gtk.Box):
         self.detail.set_label(detail)
         self.detail.set_visible(bool(detail))
         self.play_button.set_visible(feedback.play_expected is not None)
-        self.play_content.set_label(play_label or _('Play answer'))
+        self._play_label = play_label or _('Play answer')
+        self.play_button.set_tooltip_text(self._play_label)
+        self.play_given_button.set_visible(feedback.play_given is not None and not feedback.correct)
+        self._update_labels()
         if announce is None:
             announce = setting_bool('announce-feedback', True)
         if announce:
@@ -84,9 +93,22 @@ class FeedbackBanner(Gtk.Box):
             )
 
     def set_compact(self, compact: bool) -> None:
-        """Narrow layout: the buttons go below the text."""
+        """Narrow layout: the buttons go below the text with short labels."""
+        self._compact = compact
         self.set_orientation(Gtk.Orientation.VERTICAL if compact else Gtk.Orientation.HORIZONTAL)
         self.actions.set_halign(Gtk.Align.END if compact else Gtk.Align.FILL)
+        self._update_labels()
+
+    def _update_labels(self) -> None:
+        # Short labels keep the two play buttons apart when space is tight; screen
+        # readers always get the full names.
+        given = _('Your Answer')
+        # Translators: short label of the button that plays the right answer (narrow layout).
+        self.play_content.set_label(_('Answer') if self._compact else self._play_label)
+        # Translators: short label of the button that plays the learner's answer (narrow).
+        self.play_given_content.set_label(_('Yours') if self._compact else given)
+        self.play_button.update_property([Gtk.AccessibleProperty.LABEL], [self._play_label])
+        self.play_given_button.update_property([Gtk.AccessibleProperty.LABEL], [given])
 
     @Gtk.Template.Callback()
     def _on_next_clicked(self, _button: Gtk.Button) -> None:
@@ -95,3 +117,7 @@ class FeedbackBanner(Gtk.Box):
     @Gtk.Template.Callback()
     def _on_play_clicked(self, _button: Gtk.Button) -> None:
         self.emit('play')
+
+    @Gtk.Template.Callback()
+    def _on_play_given_clicked(self, _button: Gtk.Button) -> None:
+        self.emit('play-given')

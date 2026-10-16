@@ -67,6 +67,19 @@
           </object>
         </child>
         <child>
+          <object class="GtkButton" id="play_given_button">
+            <property name="visible">false</property>
+            <property name="tooltip-text" translatable="yes">Play the answer you chose</property>
+            <signal name="clicked" handler="_on_play_given_clicked"/>
+            <child>
+              <object class="AdwButtonContent" id="play_given_content">
+                <property name="icon-name">media-playback-start-symbolic</property>
+                <property name="label" translatable="yes">Your Answer</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
           <object class="GtkButton" id="next_button">
             <property name="tooltip-text" translatable="yes">Next question</property>
             <signal name="clicked" handler="_on_next_clicked"/>

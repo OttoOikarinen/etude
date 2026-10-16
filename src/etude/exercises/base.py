@@ -179,6 +179,9 @@ class Question:
     for learners who cannot rely on hearing."""
     context: str = ''
     """Short extra facts shown with the question, e.g. "Root: C4" (design 1e)."""
+    playback_style_choice: bool = True
+    """Offer the ear panel's Melodic/Harmonic toggle. Intervals can be heard
+    either way; a chord question's playback style is part of the question."""
     hint: str | None = None
 
 
@@ -299,6 +302,11 @@ class ExerciseDefinition(ABC):
 
     @abstractmethod
     def grade(self, question: Question, given: object) -> Feedback: ...
+
+    def confusables(self, item_id: ItemId) -> Sequence[ItemId]:
+        """Items learners easily mistake for ``item_id`` (a minor sixth for a major
+        sixth). Sessions place them next to each other so learners compare them."""
+        return ()
 
     def item_label(self, item_id: ItemId) -> str:
         """Translated name of an item for lists such as "Weakest items",

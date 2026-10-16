@@ -24,7 +24,9 @@ write ``Cis-duuri`` and ``cis-molli``.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from enum import Enum
+from functools import wraps
 from gettext import gettext as _
 from gettext import pgettext
 
@@ -41,6 +43,26 @@ class NamingConvention(Enum):
 
 
 _default_convention = NamingConvention.ENGLISH
+
+
+def _per_language[T](build: Callable[[], T]) -> Callable[[], T]:
+    """Cache a table of translated names until the translation changes.
+
+    Building a table translates every entry; caching it keeps generating
+    and grading questions fast. The key is one translated probe string, so a
+    different language (as in tests that switch catalogues) rebuilds it.
+    """
+    cache: dict[str, T] = {}
+
+    @wraps(build)
+    def wrapper() -> T:
+        key = _('perfect unison')
+        if key not in cache:
+            cache.clear()
+            cache[key] = build()
+        return cache[key]
+
+    return wrapper
 
 
 def set_default_convention(convention: NamingConvention) -> None:
@@ -60,6 +82,7 @@ def default_convention() -> NamingConvention:
 _SYMBOLS = {-3: '♭𝄫', -2: '𝄫', -1: '♭', 0: '', 1: '♯', 2: '𝄪', 3: '♯𝄪'}
 
 
+@_per_language
 def _german_names() -> dict[tuple[Letter, int], str]:
     ctx = 'German/Nordic note name'
     C, D, E, F, G, A, B = Letter  # noqa: N806 - letter names
@@ -105,6 +128,7 @@ def _german_names() -> dict[tuple[Letter, int], str]:
     }
 
 
+@_per_language
 def _solfege_syllables() -> dict[Letter, str]:
     ctx = 'fixed-do syllable'
     return {
@@ -164,6 +188,7 @@ def key_name(key: Key, convention: NamingConvention | None = None) -> str:
     return template.format(tonic=tonic, tonic_lower=tonic.lower())
 
 
+@_per_language
 def _interval_names() -> dict[tuple[str, int], str]:
     return {
         ('P', 1): _('perfect unison'),

@@ -57,6 +57,13 @@ class ExerciseRegistry:
         merged = {**definition.default_settings(), **settings}
         return definition.items(merged)
 
+    def confusables(self, item_id: ItemId) -> Sequence[ItemId]:
+        """The owning exercise's confusable items (the session builder's hook)."""
+        try:
+            return self.get(self.exercise_for(item_id)).confusables(item_id)
+        except KeyError:
+            return ()
+
     def exercise_for(self, item_id: ItemId) -> str:
         for definition in self:
             if item_id.startswith(definition.item_prefix):

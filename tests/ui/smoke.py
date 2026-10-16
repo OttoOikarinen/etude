@@ -769,6 +769,86 @@ def check_live_today_review() -> None:
             _close_live(window, services)
 
 
+def check_live_exercises_fit_and_compare() -> None:
+    """Every real exercise fits the 400 px layout before and after answering, ear
+    questions offer the learner's own answer for comparison, and chord questions
+    hide the interval-only Melodic/Harmonic toggle."""
+    import tempfile
+
+    from gi.repository import Gtk
+
+    from etude.audio.null import NullBackend
+    from etude.exercises.base import ChoiceAnswer
+    from etude.services import Services
+    from etude.ui.common import get_settings
+    from etude.ui.model import LiveModel
+
+    def min_width(page) -> int:
+        return page.measure(Gtk.Orientation.HORIZONTAL, -1)[0]
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        services = Services.open(Path(data_dir))
+        services._audio = NullBackend()
+        window = new_window(LiveModel(services, get_settings()))
+        try:
+            window.compact = True
+            for exercise_id in services.registry.exercise_ids():
+                page = window.start_exercise(exercise_id, replace=True)
+                assert page is not None, exercise_id
+                pump()
+                assert min_width(page) <= 400, (exercise_id, min_width(page))
+                question = page.question
+                if exercise_id == 'chord-ear':
+                    assert not page.ear_panel.mode_box.get_visible()
+                if exercise_id == 'interval-ear':
+                    assert page.ear_panel.mode_box.get_visible()
+                if isinstance(question.answer, ChoiceAnswer):
+                    wrong = next(
+                        o.key for o in question.answer.options if o.key != question.expected
+                    )
+                    page.answer_widget.submit(wrong)
+                else:
+                    page.answer_widget.submit(question.expected)
+                pump()
+                assert min_width(page) <= 400, (exercise_id, 'answered', min_width(page))
+                if question.playback_is_question and isinstance(question.answer, ChoiceAnswer):
+                    banner = page.feedback_banner
+                    assert banner.play_given_button.get_visible(), exercise_id
+                    banner.play_given_button.emit('clicked')
+        finally:
+            window.destroy()
+            services.close()
+
+
+def check_reveal_details() -> None:
+    """Chips mark roots chosen with ♯/♭; a right letter in the wrong octave is not
+    also marked wrong."""
+    from etude.core import Pitch
+    from etude.exercises.base import ChipGroup, ChipsAnswer, Option, PianoAnswer
+    from etude.ui.widgets.chips import ChipGroups
+    from etude.ui.widgets.piano import PianoAnswerView
+
+    letters = tuple(Option(letter, letter, accel=letter.lower()) for letter in 'CDEFGAB')
+    spec = ChipsAnswer((ChipGroup('root', 'Root', letters, accidentals=True),))
+    chips = ChipGroups(spec)
+    from gi.repository import Gdk
+
+    assert chips.handle_key(Gdk.KEY_F, Gdk.ModifierType.SHIFT_MASK)
+    assert chips.value() == {'root': 'F#'}
+    chips.reveal({'root': 'F#'}, {'root': 'F#'}, True)
+    assert chips.chips['root']['F'].has_css_class('success')
+    chips = ChipGroups(spec)
+    chips.reveal({'root': 'Eb'}, {'root': 'E'}, False)
+    assert chips.chips['root']['E'].has_css_class('success')
+    assert chips._accidental_chips['root'].has_css_class('error')
+
+    piano = PianoAnswerView(PianoAnswer(Pitch.parse('C3'), Pitch.parse('C5'), octave_matters=True))
+    piano.reveal(Pitch.parse('G4'), Pitch.parse('G3'), False)
+    button = piano.letter_buttons[Pitch.parse('G4').letter]
+    assert button.has_css_class('success')
+    assert not button.has_css_class('error')
+
+
 CHECKS: list[Callable[[], None]] = [
     check_window_and_sections,
     check_keysig_correct_then_next,
@@ -782,6 +862,8 @@ CHECKS: list[Callable[[], None]] = [
     check_dialogs,
     check_session_summary_flow,
     check_live_session,
+    check_live_exercises_fit_and_compare,
+    check_reveal_details,
     check_today_preview,
     check_continue_banner_preview,
     check_progress_empty,

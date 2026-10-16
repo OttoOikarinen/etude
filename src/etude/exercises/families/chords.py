@@ -777,6 +777,7 @@ class ChordQualityEar(ExerciseDefinition):
             figure=figure,
             playback=chord_playback(pitches, style=style, instrument=instrument),
             playback_is_question=True,
+            playback_style_choice=False,
             written_alternative=figure,
             context=context,
             hint=_('Listen for the third first: major sounds bright, minor darker.'),

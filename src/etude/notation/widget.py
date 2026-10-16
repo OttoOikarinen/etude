@@ -52,6 +52,8 @@ from .spec import Figure, Ink  # noqa: E402
 
 FONT_FAMILY = 'Bravura'
 DEFAULT_STAFF_SPACE = 12.0
+MIN_FIT = 0.5
+"""Smallest scale a figure shrinks to before the page has to scroll sideways."""
 
 # libadwaita's standalone colours (for marks on the view background), light and dark.
 _SUCCESS = ('#1b8553', '#78e9ab')
@@ -379,6 +381,8 @@ class StaffView(Gtk.Widget):
         self._staff_space = DEFAULT_STAFF_SPACE
         self._scale = 1.0
         self._fill_width = False
+        self._fit = 1.0
+        """Scale factor below 1 when the allocation is narrower than the figure."""
         self._display: DisplayList | None = None
         self._layout_width: float | None = None
         self._focus_index: int | None = None
@@ -457,6 +461,12 @@ class StaffView(Gtk.Widget):
 
     @property
     def pixels_per_space(self) -> float:
+        """Pixels per staff space as drawn: the requested size, reduced when the
+        widget is narrower than the figure (phones, design 3b)."""
+        return self._staff_space * self._scale * self._fit
+
+    @property
+    def _requested_px(self) -> float:
         return self._staff_space * self._scale
 
     # -- layout --
@@ -479,23 +489,42 @@ class StaffView(Gtk.Widget):
             return self._display
         return layout(self._figure, FontMetrics.bravura())
 
+    def do_get_request_mode(self) -> Gtk.SizeRequestMode:
+        return Gtk.SizeRequestMode.HEIGHT_FOR_WIDTH
+
     def do_measure(self, orientation: Gtk.Orientation, for_size: int) -> tuple[int, int, int, int]:
         display = self._natural()
         if display is None:
             return 0, 0, -1, -1
-        px = self.pixels_per_space
-        size = display.width if orientation == Gtk.Orientation.HORIZONTAL else display.height
-        if orientation == Gtk.Orientation.VERTICAL and self._display is not None:
-            size = max(size, self._display.height)
-        pixels = math.ceil(size * px)
+        px = self._requested_px
+        if orientation == Gtk.Orientation.HORIZONTAL:
+            natural = math.ceil(display.width * px)
+            # Shrink down to MIN_FIT of the requested size rather than overflow.
+            return math.ceil(natural * MIN_FIT), natural, -1, -1
+        height = display.height
+        if self._display is not None:
+            height = max(height, self._display.height)
+        if self._fill_width:
+            pixels = math.ceil(height * px)
+            return pixels, pixels, -1, -1
+        if for_size < 0:
+            # Without a width, the smallest height is the one at the smallest fit.
+            return math.ceil(height * px * MIN_FIT), math.ceil(height * px), -1, -1
+        fit = max(MIN_FIT, min(1.0, for_size / (display.width * px)))
+        pixels = math.ceil(height * px * fit)
         return pixels, pixels, -1, -1
 
     def do_size_allocate(self, width: int, height: int, baseline: int) -> None:
         if self._fill_width and self._figure is not None:
+            self._fit = 1.0
             target = width / self.pixels_per_space
             if self._layout_width is None or abs(target - self._layout_width) > 1e-3:
                 self._layout_width = target
                 self._display = layout(self._figure, FontMetrics.bravura(), width=target)
+        else:
+            display = self._display
+            natural = display.width * self._requested_px if display is not None else 0
+            self._fit = max(MIN_FIT, min(1.0, width / natural)) if natural > 0 else 1.0
         self.queue_draw()
 
     def _origin(self) -> tuple[float, float]:

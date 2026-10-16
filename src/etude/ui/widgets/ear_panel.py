@@ -16,8 +16,8 @@ from ..common import ui_resource
 class EarPanel(Gtk.Box):
     """Big play button, replay, play count, context, playback mode and tempo.
 
-    Emits ``play-requested(harmonic: bool, tempo: int)``. W1 plays nothing; W2
-    connects the signal to the audio backend.
+    Emits ``play-requested(harmonic: bool, tempo: int)``; the exercise page
+    turns that into a playback for the audio backend.
     """
 
     __gtype_name__ = 'EtudeEarPanel'
@@ -29,12 +29,25 @@ class EarPanel(Gtk.Box):
     replay_button: Gtk.Button = Gtk.Template.Child()
     played_label: Gtk.Label = Gtk.Template.Child()
     context_label: Gtk.Label = Gtk.Template.Child()
+    mode_box: Gtk.Box = Gtk.Template.Child()
     mode_group: Adw.ToggleGroup = Gtk.Template.Child()
     tempo_spin: Gtk.SpinButton = Gtk.Template.Child()
 
-    def __init__(self, context: str = '', tempo: int = 80, **kwargs: object) -> None:
+    def __init__(
+        self,
+        context: str = '',
+        tempo: int = 80,
+        *,
+        harmonic: bool = False,
+        style_choice: bool = True,
+        **kwargs: object,
+    ) -> None:
+        """``harmonic`` is how the question is written; ``style_choice`` offers the
+        Melodic/Harmonic toggle (intervals), which some questions (chords) leave out."""
         super().__init__(**kwargs)
         self.play_count = 0
+        self.mode_group.set_active_name('harmonic' if harmonic else 'melodic')
+        self.mode_box.set_visible(style_choice)
         self.context_label.set_label(context)
         self.context_label.set_visible(bool(context))
         self.tempo_spin.set_value(tempo)

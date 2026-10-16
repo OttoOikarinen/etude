@@ -443,3 +443,14 @@ def test_arrangement_never_repeats_an_item_when_avoidable(entries: list[tuple[st
     counts = Counter(x.item_id for x in plan)
     if not counts or max(counts.values()) <= (len(plan) + 1) // 2:
         assert no_item_twice_in_a_row(result)
+
+
+def test_an_unstarted_exercise_can_start_after_the_daily_limit() -> None:
+    world = World(config=SessionConfig(daily_new_limit=0))
+    plan = world.build(SessionMode.EXERCISE, exercise_id='ivl', size=8)
+    new = {q.item_id for q in plan if q.is_new}
+    assert new == {f'ivl.{n}' for n in range(5)}, 'a few items, in teaching order'
+    # A started exercise keeps to the daily limit: only known items come back.
+    world.later('keys.0')
+    plan = world.build(SessionMode.EXERCISE, exercise_id='keys', size=4)
+    assert not any(q.is_new for q in plan)
