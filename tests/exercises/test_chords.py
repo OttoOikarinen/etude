@@ -182,7 +182,7 @@ def test_design_question() -> None:
     assert feedback.title == 'Correct — E minor triad, root position'
     assert feedback.detail == (
         'E–G–B: a minor third and a perfect fifth above E. '
-        'The bass is E, the root, so the chord is in root position.'
+        'The root, E, is in the bass: root position.'
     )
     assert STAFF.play_label == 'Play chord'
     assert STAFF.describe_settings(settings) == 'Treble clef · triads'
@@ -359,16 +359,16 @@ def test_feedback_explains_inversions() -> None:
     question = find_question('chord.staff.dim.first', STAFF_DEFAULTS, root='Bb')
     assert STAFF.grade(question, question.expected).detail == (
         'B♭–D♭–F♭: a minor third and a diminished fifth above B♭. '
-        'The bass is D♭, the third, so the chord is in first inversion.'
+        'The third, D♭, is in the bass: first inversion.'
     )
     question = find_question('chord.staff.dom7.third', ALL_STAFF, root='G')
     assert STAFF.grade(question, question.expected).detail == (
         'G–B–D–F: a major third, a perfect fifth and a minor seventh above G. '
-        'The bass is F, the seventh, so the chord is in third inversion.'
+        'The seventh, F, is in the bass: third inversion.'
     )
     question = find_question('chord.staff.aug.second', STAFF_DEFAULTS, root='C')
     assert STAFF.grade(question, question.expected).detail.startswith(
-        'C–E–G♯: a major third and an augmented fifth above C. The bass is G♯, the fifth'
+        'C–E–G♯: a major third and an augmented fifth above C. The fifth, G♯, is in the bass'
     )
 
 
@@ -447,6 +447,54 @@ def test_expected_roots_use_the_chips_format() -> None:
             letters = {o.key for o in question.answer.groups[0].options}
             assert root[0] in letters
             assert root[1:] in ('', '#', 'b')
+
+
+@pytest.fixture(scope='module')
+def gtk() -> object:
+    gi = pytest.importorskip('gi')
+    try:
+        gi.require_version('Gtk', '4.0')
+        gi.require_version('Gdk', '4.0')
+        gi.require_version('Adw', '1')
+        from gi.repository import Adw, Gtk
+    except (ImportError, ValueError) as error:
+        pytest.skip(f'GTK 4 and libadwaita are not available: {error}')
+    if not Gtk.init_check():
+        pytest.skip('no display')
+    Adw.init()
+    return Gtk
+
+
+@pytest.mark.gtk
+def test_the_chips_widget_produces_the_expected_values(gtk: object) -> None:
+    """The keyboard flow of design 1f (letter, digit, digit, Enter) plus the ♯ / ♭ chip
+    yields exactly the expected mapping, for every quality and inversion."""
+    from gi.repository import Gdk
+
+    from etude.ui.widgets.chips import ChipGroups
+
+    clicks = {'': 0, '#': 1, 'b': 2}
+    for item in STAFF.items(ALL_STAFF):
+        for seed in range(3):
+            question = STAFF.generate(item, ALL_STAFF, random.Random(seed))
+            assert isinstance(question.answer, ChipsAnswer)
+            expected = expected_map(question)
+            widget = ChipGroups(question.answer)
+            answered: list[object] = []
+            widget.connect('answered', lambda _w, value, out=answered: out.append(value))
+            state = Gdk.ModifierType(0)
+            for group in question.answer.groups:
+                chosen = expected[group.key]
+                key = chosen[0] if group.accidentals else chosen
+                accel = next(o.accel for o in group.options if o.key == key)
+                assert accel is not None
+                assert widget.handle_key(Gdk.unicode_to_keyval(ord(accel)), state)
+                if group.accidentals:
+                    for _ in range(clicks[chosen[1:]]):
+                        widget._accidental_chips[group.key].emit('clicked')
+            assert widget.activate_default()
+            assert answered == [dict(expected)]
+            assert STAFF.grade(question, answered[0]).correct
 
 
 # Chord Quality — Ear --------------------------------------------------------------------

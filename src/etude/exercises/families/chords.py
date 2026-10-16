@@ -191,13 +191,12 @@ def _inversion_name(index: int) -> str:
 
 
 def _bass_sentence(index: int) -> str:
-    # Translators: {bass} is a note name, e.g. "The bass is G, the third, so the chord
-    # is in first inversion."
+    # Translators: {bass} is a note name, e.g. "The third, G, is in the bass: first inversion."
     return (
-        _('The bass is {bass}, the root, so the chord is in root position.'),
-        _('The bass is {bass}, the third, so the chord is in first inversion.'),
-        _('The bass is {bass}, the fifth, so the chord is in second inversion.'),
-        _('The bass is {bass}, the seventh, so the chord is in third inversion.'),
+        _('The root, {bass}, is in the bass: root position.'),
+        _('The third, {bass}, is in the bass: first inversion.'),
+        _('The fifth, {bass}, is in the bass: second inversion.'),
+        _('The seventh, {bass}, is in the bass: third inversion.'),
     )[index]
 
 
