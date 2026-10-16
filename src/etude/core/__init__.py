@@ -13,10 +13,12 @@ from .chord_symbol import ChordSymbol
 from .figured_bass import Figure, FigureAccidental, FiguredBass
 from .interval import Interval, Quality
 from .key import KeySignature
+from .pcset import PitchClassSet
 from .pitch import Letter, Pitch, PitchName
 from .rhythm import Duration, Meter, NoteValue, Tuplet
 from .roman import RomanNumeral
 from .scale import DegreeFunction, Key, Mode, Scale, ScaleType
+from .tone_row import RowForm, RowLabelling, ToneRow
 
 __all__ = [
     'Chord',
@@ -36,10 +38,14 @@ __all__ = [
     'Mode',
     'NoteValue',
     'Pitch',
+    'PitchClassSet',
     'PitchName',
     'Quality',
     'RomanNumeral',
+    'RowForm',
+    'RowLabelling',
     'Scale',
     'ScaleType',
+    'ToneRow',
     'Tuplet',
 ]
