@@ -33,12 +33,15 @@ class GlyphItem:
     x: float
     y: float
     ink: Ink = Ink.FOREGROUND
+    scale: float = 1.0
+    """Size relative to the normal glyph size (one em = four staff spaces); braces
+    that span several staves are drawn larger."""
 
 
 @dataclass(frozen=True, slots=True)
 class LineItem:
     """A straight line with butt caps; used for staff lines, ledger lines, stems,
-    barlines and brackets."""
+    barlines and brackets. ``thickness`` is centred on the line."""
 
     x1: float
     y1: float
@@ -50,7 +53,10 @@ class LineItem:
 
 @dataclass(frozen=True, slots=True)
 class BeamItem:
-    """A filled parallelogram between two stem ends; ``thickness`` is vertical."""
+    """A filled parallelogram between two stem ends; ``thickness`` is vertical.
+
+    The parallelogram is centred on the line from (x1, y1) to (x2, y2).
+    """
 
     x1: float
     y1: float
@@ -72,8 +78,30 @@ class CircleItem:
 
 
 @dataclass(frozen=True, slots=True)
+class CurveItem:
+    """A tie: a filled crescent from (x1, y1) to (x2, y2).
+
+    ``bulge`` is the vertical offset of the curve's middle from the chord
+    between the end points (negative arches upwards). ``thickness`` is the
+    width at the middle; the ends taper to ``end_thickness``.
+    """
+
+    x1: float
+    y1: float
+    x2: float
+    y2: float
+    bulge: float
+    thickness: float
+    end_thickness: float = 0.1
+    ink: Ink = Ink.FOREGROUND
+
+
+@dataclass(frozen=True, slots=True)
 class TextItem:
-    """UI text (labels under notes, bracket labels); drawn with the UI font."""
+    """UI text (labels under notes, bracket labels); drawn with the UI font.
+
+    ``y`` is the text baseline; ``align`` says which edge (or the centre) sits at ``x``.
+    """
 
     text: str
     x: float
@@ -85,7 +113,7 @@ class TextItem:
     ink: Ink = Ink.DIM
 
 
-Item = GlyphItem | LineItem | BeamItem | CircleItem | TextItem
+Item = GlyphItem | LineItem | BeamItem | CircleItem | CurveItem | TextItem
 
 
 @dataclass(frozen=True, slots=True)

@@ -152,6 +152,12 @@ class StaffSpec:
     """Number of staff lines; rhythm exercises may use a single line."""
     description: str | None = None
     """Accessible description. When ``None`` one is generated from the content."""
+    voices: tuple[tuple[Event, ...], ...] = ()
+    """Further voices on the same staff, aligned with ``events`` by onset (alto under
+    soprano on a grand staff). When set, ``events`` is the upper voice with stems up
+    and every further voice has stems down. Hit regions and ``event_x`` number the
+    events of further voices after those of ``events``: the first event of
+    ``voices[0]`` has index ``len(events)``."""
 
     @classmethod
     def notes(cls, *pitches: Pitch | str, clef: Clef = Clef.TREBLE, **kwargs: object) -> StaffSpec:
