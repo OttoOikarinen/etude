@@ -14,7 +14,15 @@ from collections.abc import Iterable, Mapping, Sequence
 from datetime import datetime
 from typing import Protocol
 
-from .model import Card, ItemId, Outcome, Rating, SessionMode, SessionSummary
+from .model import (
+    Card,
+    ItemId,
+    Outcome,
+    Rating,
+    SessionMode,
+    SessionRecord,
+    SessionSummary,
+)
 
 
 class Scheduler(Protocol):
@@ -56,6 +64,9 @@ class SessionLog(Protocol):
     def start(self, mode: SessionMode, exercise_id: str | None, now: datetime) -> int: ...
 
     def finish(self, session_id: int, now: datetime, summary: SessionSummary) -> None: ...
+
+    def between(self, start: datetime, end: datetime) -> list[SessionRecord]:
+        """Sessions started in ``[start, end)``, oldest first."""
 
 
 class ItemCatalog(Protocol):

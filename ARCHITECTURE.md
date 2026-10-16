@@ -53,6 +53,14 @@ deliberately, in their own pull request, and update this document.
 * `etude/exercises/base.py`: questions, answer specifications, feedback,
   settings and the `ExerciseDefinition` base class.
 
+Contract changes so far (all backwards-compatible):
+
+* W1 audio: `PlaybackNote.percussion` plays a GM drum key on channel 10;
+  `PlaybackSpec.meter` makes the metronome count felt pulses with accented
+  downbeats.
+* W1 learning: `SessionRecord` and `SessionLog.between()` let statistics
+  compute time practised, session counts and personal bests.
+
 ### How a question flows
 
 ```
