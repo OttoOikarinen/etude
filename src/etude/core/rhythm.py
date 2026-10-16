@@ -76,9 +76,9 @@ class Meter:
 
     ``grouping`` gives the beat groups of an irregular meter in units of
     ``beat_unit`` (7/8 as ``(2, 2, 3)``). When it is omitted, simple and
-    compound meters group regularly and other meters (5/8, 7/8) are
-    (odd counts of eighths or shorter) are grouped in twos with one three at
-    the end.
+    compound meters group regularly, and additive meters (odd counts of
+    eighths or shorter, such as 5/8 and 7/8) are grouped in twos with one
+    three at the end.
     """
 
     beats: int
