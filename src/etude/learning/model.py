@@ -117,3 +117,16 @@ class SessionSummary:
     best_streak: int
     personal_best: bool
     mistakes: tuple[ItemId, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class SessionRecord:
+    """A stored session, for the progress page and personal bests."""
+
+    id: int
+    mode: SessionMode
+    exercise_id: str | None
+    started_at: datetime
+    finished_at: datetime | None = None
+    summary: SessionSummary | None = None
+    """``None`` until the session is finished."""
