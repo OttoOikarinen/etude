@@ -12,19 +12,11 @@ from gi.repository import Adw, Gdk, Gtk
 
 from ...core import PitchName
 from ...exercises.base import ChipGroup, ChipsAnswer, Option
-from ..common import accel_badge, keyval_matches, set_shortcut
+from ..common import accel_badge, keyval_matches, note_label, set_shortcut
 from .base import AnswerWidget
 
 _ACCIDENTAL_SUFFIX = {0: '', 1: '#', -1: 'b'}
 _ACCIDENTAL_SYMBOL = {0: '♯ / ♭', 1: '♯', -1: '♭'}
-
-
-def _is_letter_group(group: ChipGroup) -> bool:
-    """Groups of natural note letters get a ♯ / ♭ chip (design 1f, "Root")."""
-    try:
-        return all(PitchName.parse(o.key).alter == 0 for o in group.options) and bool(group.options)
-    except ValueError:
-        return False
 
 
 class Chip(Gtk.ToggleButton):
@@ -114,7 +106,7 @@ class ChipGroups(AnswerWidget):
             chip.connect('toggled', lambda _c: self._update())
             self.chips[group.key][option.key] = chip
             wrap.append(chip)
-        if _is_letter_group(group):
+        if group.accidentals:
             self._alter[group.key] = 0
             accidental = Gtk.Button(label=_ACCIDENTAL_SYMBOL[0], tooltip_text=_('Sharp or flat'))
             accidental.add_css_class('pill')
@@ -132,7 +124,7 @@ class ChipGroups(AnswerWidget):
         for option in group.options:
             chip = self.chips[group.key][option.key]
             name = PitchName.parse(option.key)
-            chip.label.set_label(PitchName(name.letter, alter).symbol)
+            chip.label.set_label(note_label(PitchName(name.letter, alter)))
         self._update()
 
     def _selected(self, group: ChipGroup) -> Chip | None:

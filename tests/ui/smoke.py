@@ -63,13 +63,15 @@ def unavailable_reason() -> str | None:
         import gi
 
         gi.require_version('Gtk', '4.0')
+        gi.require_version('Gdk', '4.0')
         gi.require_version('Adw', '1')
-        from gi.repository import Adw, Gtk
+        from gi.repository import Adw, Gdk, Gtk
     except (ImportError, ValueError) as error:
         return f'GTK 4 and libadwaita are not available: {error}'
     if (Adw.get_major_version(), Adw.get_minor_version()) < (1, 10):
         return 'libadwaita 1.10 is required'
-    if not Gtk.init_check():
+    # GTK 4 can initialise without a display, so check for one explicitly.
+    if not Gtk.init_check() or Gdk.Display.get_default() is None:
         return 'no display'
     Adw.init()  # registers the Adw types used by templates (Adw.Application does this)
     return None
@@ -98,10 +100,11 @@ def load_css() -> None:
 # Checks ------------------------------------------------------------------------
 
 
-def new_window():
+def new_window(model=None):
+    from etude.ui.preview import PreviewModel
     from etude.window import EtudeWindow
 
-    window = EtudeWindow()
+    window = EtudeWindow(model if model is not None else PreviewModel())
     window.present()
     pump()
     return window
@@ -166,7 +169,11 @@ def check_keysig_correct_then_next() -> None:
         assert page.window_title.get_subtitle().startswith('Question 8 of 20')
         assert press(page, 'question')  # hint
         assert page.hint_revealer.get_reveal_child()
-        assert press(page, 'space')  # skip
+        assert press(page, 'space')  # skip: shows the answer
+        assert page.feedback is not None
+        assert not page.feedback.correct
+        assert page.feedback_banner.title.get_label().startswith('Skipped — the answer is')
+        assert press(page, 'Return')
         assert page.window_title.get_subtitle().startswith('Question 9 of 20')
         page.pause_button.set_active(True)
         assert page.state_stack.get_visible_child_name() == 'paused'
@@ -195,7 +202,7 @@ def check_interval_wrong() -> None:
         assert page.streak_label.get_label() == 'Streak reset'
         assert not press(page, '7'), 'answers are locked after answering'
         page.feedback_banner.play_button.emit('clicked')
-        assert window.controller.played, 'play-requested was not emitted'
+        assert window.model.played, 'play-requested was not emitted'
     finally:
         window.destroy()
 
@@ -271,7 +278,7 @@ def check_scale_degree_and_ear() -> None:
         assert panel.context_label.get_label() == 'Root: C4'
         panel.mode_group.set_active_name('harmonic')
         panel.play()
-        spec = window.controller.played[-1]
+        spec = window.model.played[-1]
         assert all(n.start == 0 for n in spec.notes), 'harmonic playback starts together'
         assert not page._figure_holder.get_visible()
         page.show_staff_button.set_active(True)
@@ -391,6 +398,55 @@ def check_session_summary_flow() -> None:
         window.destroy()
 
 
+def check_live_session() -> None:
+    """A real key-signature session against a fresh database, end to end."""
+    import tempfile
+
+    from etude.audio.null import NullBackend
+    from etude.services import Services
+    from etude.ui.common import get_settings
+    from etude.ui.model import LiveModel
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        services = Services.open(Path(data_dir))
+        services._audio = NullBackend()
+        model = LiveModel(services, get_settings())
+        get_settings().set_uint('questions-per-session', 5)
+        window = new_window(model)
+        try:
+            ids = [c.id for c in window.cards]
+            assert 'keysig' in ids, ids
+            page = window.start_exercise('keysig')
+            assert page is not None
+            assert page.get_title() == 'Key Signatures'
+            controller = window.controller
+            for number in range(1, 6):
+                assert page.window_title.get_subtitle().startswith(f'Question {number} of 5')
+                assert page._figure_holder.get_visible(), 'the staff is shown'
+                expected = page.question.expected
+                page.answer_widget.submit(expected)
+                assert page.feedback.correct, page.feedback.title
+                if number < 5:
+                    assert press(page, 'Return')
+            assert press(page, 'Return')
+            pump()
+            assert controller.summary is not None
+            assert controller.summary.correct == 5
+            dialog = window.get_visible_dialog()
+            assert dialog is not None
+            dialog.close()
+            window.refresh()
+            card = next(c for c in window.cards if c.id == 'keysig')
+            assert card.accuracy == 1.0
+            assert window.model.streak().practised_today
+            progress = window.model.progress('week')
+            assert progress.by_exercise == (('Key Signatures', 1.0),)
+        finally:
+            get_settings().reset('questions-per-session')
+            window.destroy()
+            services.close()
+
+
 CHECKS: list[Callable[[], None]] = [
     check_window_and_sections,
     check_keysig_correct_then_next,
@@ -403,6 +459,7 @@ CHECKS: list[Callable[[], None]] = [
     check_setup,
     check_dialogs,
     check_session_summary_flow,
+    check_live_session,
 ]
 
 

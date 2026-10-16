@@ -20,10 +20,12 @@ from abc import ABC, abstractmethod
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from enum import Enum
+from gettext import gettext as _
 from typing import ClassVar
 
 from ..audio.spec import PlaybackSpec
-from ..core import Duration, KeySignature, Meter, Pitch
+from ..core import Duration, KeySignature, Meter, Pitch, PitchName
+from ..core.naming import pitch_name
 from ..learning.model import ItemId
 from ..notation.spec import Clef, Figure
 
@@ -88,6 +90,10 @@ class ChipGroup:
     key: str
     label: str
     options: tuple[Option, ...]
+    accidentals: bool = False
+    """Offer a ♯ / ♭ chip that alters the chosen option (design 1f, "Root").
+    Option keys must then be natural note letters, and the value of the group
+    is the key with ``'#'`` or ``'b'`` appended when an accidental is chosen."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -254,6 +260,8 @@ class ExerciseDefinition(ABC):
     level: ClassVar[int]
     """Curriculum level 1–4 where the exercise is introduced."""
     icon_name: ClassVar[str]
+    glyph: ClassVar[str] = '♪'
+    """Short symbol drawn in the exercise's icon tile on the home page."""
     settings: ClassVar[tuple[Setting, ...]] = ()
 
     @property
@@ -265,6 +273,11 @@ class ExerciseDefinition(ABC):
     @abstractmethod
     def description(self) -> str:
         """Translated one-sentence description for the exercise card."""
+
+    @property
+    def play_label(self) -> str:
+        """Label of the button that plays a question or answer, e.g. "Play chord"."""
+        return _('Play')
 
     def default_settings(self) -> dict[str, object]:
         return {s.key: s.default for s in self.settings}
@@ -286,6 +299,39 @@ class ExerciseDefinition(ABC):
 
     @abstractmethod
     def grade(self, question: Question, given: object) -> Feedback: ...
+
+    def item_label(self, item_id: ItemId) -> str:
+        """Translated name of an item for lists such as "Weakest items",
+        e.g. "6 flats — key signature". Defaults to the id itself."""
+        return str(item_id)
+
+    def answer_label(self, question: Question, value: object) -> str:
+        """Display form of an answer value (expected or given), e.g. "E minor, root position".
+
+        The default joins option labels and note names; exercises override it
+        when their answers read better as a phrase.
+        """
+        answer = question.answer
+        if isinstance(answer, ChoiceAnswer):
+            return next((o.label for o in answer.options if o.key == value), str(value))
+        if isinstance(answer, ChipsAnswer) and isinstance(value, Mapping):
+            labels = []
+            for group in answer.groups:
+                key = str(value.get(group.key, ''))
+                option = next((o for o in group.options if o.key == key), None)
+                if option is not None:
+                    labels.append(option.label)
+                elif group.accidentals:
+                    labels.append(pitch_name(PitchName.parse(key)))
+                else:
+                    labels.append(key)
+            # Translators: separator between the parts of a multi-part answer.
+            return _(', ').join(labels)
+        if isinstance(value, Pitch):
+            return pitch_name(value.name) + str(value.octave)
+        if isinstance(value, PitchName):
+            return pitch_name(value)
+        return str(value)
 
     def serialize(self, value: object) -> str:
         """Compact text form of an answer value for the attempt log."""

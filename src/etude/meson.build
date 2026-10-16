@@ -25,6 +25,7 @@ install_data(
     '__init__.py',
     'main.py',
     'paths.py',
+    'services.py',
     'window.py',
   ],
   install_dir: moduledir,

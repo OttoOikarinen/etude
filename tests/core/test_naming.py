@@ -196,3 +196,16 @@ def test_degree_names() -> None:
 )
 def test_convention_for_locale(locale: str | None, expected: NamingConvention) -> None:
     assert convention_for_locale(locale) is expected
+
+
+def test_default_convention_applies_when_none_is_given():
+    from etude.core import naming
+
+    before = naming.default_convention()
+    try:
+        naming.set_default_convention(naming.NamingConvention.GERMAN_NORDIC)
+        assert naming.pitch_name(PitchName.parse('Bb')) == 'B'
+        assert naming.pitch_name(PitchName.parse('B')) == 'H'
+        assert naming.pitch_name(PitchName.parse('B'), naming.NamingConvention.ENGLISH) == 'B'
+    finally:
+        naming.set_default_convention(before)

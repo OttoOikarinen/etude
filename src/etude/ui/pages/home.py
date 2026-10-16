@@ -17,7 +17,7 @@ from gi.repository import Adw, Gio, GLib, GObject, Gtk
 
 from ...exercises.base import Family
 from ..common import format_percent, ui_resource
-from ..preview import ContinueData, ExerciseCardData
+from ..model import ContinueData, ExerciseCardData
 
 
 def family_title(family: Family) -> str:

@@ -4,6 +4,7 @@ install_data(
     'common.py',
     'controller.py',
     'figure.py',
+    'model.py',
     'preview.py',
   ],
   install_dir: moduledir / 'ui',

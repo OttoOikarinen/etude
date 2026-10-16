@@ -25,6 +25,7 @@ from ...exercises.base import (
     Setting,
 )
 from ..common import get_settings, ui_resource
+from ..model import exercise_settings
 
 SESSION_BINDINGS = (
     ('questions-per-session', 'questions_row', 'value'),
@@ -50,10 +51,7 @@ def to_variant(value: object) -> GLib.Variant:
 
 
 def load_exercise_settings(settings: Gio.Settings | None, exercise_id: str) -> dict[str, object]:
-    if settings is None:
-        return {}
-    stored = settings.get_value('exercise-settings').unpack()
-    return dict(stored.get(exercise_id, {}))
+    return exercise_settings(settings, exercise_id)
 
 
 def save_exercise_settings(

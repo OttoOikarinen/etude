@@ -19,20 +19,20 @@ installable Flatpak bundle from CI for testing. The first public release
 
 ## W1 — Engines
 
-- [ ] Theory core: scales and modes, keys, chords and inversions, Roman numerals, figured bass,
+- [x] Theory core: scales and modes, keys, chords and inversions, Roman numerals, figured bass,
       chord symbols, pitch-class sets, tone rows, note naming conventions
-- [ ] Notation engine: clefs, key and time signatures, notes, accidentals, ledger lines, stems,
+- [x] Notation engine: clefs, key and time signatures, notes, accidentals, ledger lines, stems,
       chords, beams, rests, tuplets, grand staff, hit-testing, accessible descriptions,
       golden tests, `StaffView` widget
-- [ ] Audio: FluidSynth backend, metronome, latency calibration
-- [ ] Learning engine and storage: SQLite schema and migrations, FSRS scheduler, session
+- [x] Audio: FluidSynth backend, metronome, latency calibration
+- [x] Learning engine and storage: SQLite schema and migrations, FSRS scheduler, session
       builder, mastery, statistics
-- [ ] UI shell: the design's screens with stub data, all answer widgets, adaptive layouts,
+- [x] UI shell: the design's screens with stub data, all answer widgets, adaptive layouts,
       dark style
 
 ## W2 — Integration and the designed exercises
 
-- [ ] Generic exercise page wired to the framework, scheduler and storage
+- [x] Generic exercise page wired to the framework, scheduler and storage
 - [ ] Key signatures, note naming, intervals (staff and ear), chords, scale degrees
 - [ ] Today review, progress page, session summary, generated setup page
 - [ ] All 14 design mockups work with real data

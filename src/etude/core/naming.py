@@ -40,6 +40,23 @@ class NamingConvention(Enum):
     FIXED_DO = 'fixed-do'
 
 
+_default_convention = NamingConvention.ENGLISH
+
+
+def set_default_convention(convention: NamingConvention) -> None:
+    """Set the convention used when a naming function is called without one.
+
+    The application calls this from the ``note-naming`` setting, so exercises
+    produce labels in the learner's convention without passing it around.
+    """
+    global _default_convention
+    _default_convention = convention
+
+
+def default_convention() -> NamingConvention:
+    return _default_convention
+
+
 _SYMBOLS = {-3: '♭𝄫', -2: '𝄫', -1: '♭', 0: '', 1: '♯', 2: '𝄪', 3: '♯𝄪'}
 
 
@@ -101,12 +118,13 @@ def _solfege_syllables() -> dict[Letter, str]:
     }
 
 
-def pitch_name(name: PitchName, convention: NamingConvention = NamingConvention.ENGLISH) -> str:
+def pitch_name(name: PitchName, convention: NamingConvention | None = None) -> str:
     """Display name of a spelled pitch class: ``'C♯'``, ``'Cis'`` or ``'Do♯'``.
 
     German/Nordic names cover up to double sharps and flats; rarer triple
     alterations fall back to letters with accidental signs.
     """
+    convention = convention or _default_convention
     if convention is NamingConvention.GERMAN_NORDIC:
         german = _german_names().get((name.letter, name.alter))
         if german is not None:
@@ -117,8 +135,9 @@ def pitch_name(name: PitchName, convention: NamingConvention = NamingConvention.
     return name.symbol
 
 
-def key_name(key: Key, convention: NamingConvention = NamingConvention.ENGLISH) -> str:
+def key_name(key: Key, convention: NamingConvention | None = None) -> str:
     """Name of a key: ``'E major'``, ``'C♯ minor'``; in Finnish ``'cis-molli'``."""
+    convention = convention or _default_convention
     if convention is NamingConvention.GERMAN_NORDIC:
         if key.mode is Mode.MAJOR:
             # Translators: a major key with German/Nordic note names. {tonic} is the
@@ -326,8 +345,9 @@ def chord_quality_name(quality: ChordQuality) -> str:
     return names[quality]
 
 
-def chord_name(chord: Chord, convention: NamingConvention = NamingConvention.ENGLISH) -> str:
+def chord_name(chord: Chord, convention: NamingConvention | None = None) -> str:
     """Root and quality, e.g. ``'F♯ half-diminished seventh'`` (inversion is not named)."""
+    convention = convention or _default_convention
     # Translators: a chord name. {root} is a note name and {quality} a chord quality
     # such as "minor triad" or "dominant seventh"; reorder them as your language needs.
     template = pgettext('chord name', '{root} {quality}')
@@ -361,8 +381,9 @@ def scale_type_name(scale_type: ScaleType) -> str:
     return names[scale_type]
 
 
-def scale_name(scale: Scale, convention: NamingConvention = NamingConvention.ENGLISH) -> str:
+def scale_name(scale: Scale, convention: NamingConvention | None = None) -> str:
     """Tonic and scale type, e.g. ``'D Dorian'``."""
+    convention = convention or _default_convention
     # Translators: a scale name. {tonic} is a note name and {scale} a scale type
     # such as "harmonic minor" or "Dorian"; reorder them as your language needs.
     template = pgettext('scale name', '{tonic} {scale}')

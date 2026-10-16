@@ -4,6 +4,9 @@ data/fi.oikarinenotto.etude.desktop.in
 data/fi.oikarinenotto.etude.gschema.xml
 data/fi.oikarinenotto.etude.metainfo.xml.in
 src/etude/core/naming.py
+src/etude/exercises/base.py
+src/etude/exercises/families/key_signatures.py
+src/etude/exercises/runner.py
 src/etude/main.py
 src/etude/notation/a11y.py
 src/etude/shortcuts-dialog.ui
@@ -12,6 +15,7 @@ src/etude/ui/controller.py
 src/etude/ui/dialogs/preferences.ui
 src/etude/ui/dialogs/session_summary.py
 src/etude/ui/figure.py
+src/etude/ui/model.py
 src/etude/ui/pages/exercise.py
 src/etude/ui/pages/exercise.ui
 src/etude/ui/pages/home.py

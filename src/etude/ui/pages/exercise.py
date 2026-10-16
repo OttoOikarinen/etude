@@ -107,7 +107,9 @@ class ExercisePage(Adw.NavigationPage):
         self._settings_text = ''
         self._shown_at = 0.0
         self._timer = 0
-        self._figure_holder = Adw.Bin()
+        self._figure_holder = self._new_figure_holder()
+        self.audio_available = True
+        """Without sound, ear questions show their written alternative."""
         self._play_label = _('Play')
         self._stats: tuple[int, int, float | None, bool] = (0, 0, None, False)
         self.connect('notify::compact', lambda *_a: self._apply_compact())
@@ -156,9 +158,7 @@ class ExercisePage(Adw.NavigationPage):
             self.ear_panel = EarPanel(context=question.context)
             self.ear_panel.connect('play-requested', self._on_ear_play)
             figure_box.append(self.ear_panel)
-        self._figure_holder = Adw.Bin()
-        self._play_label = _('Play')
-        self._stats: tuple[int, int, float | None, bool] = (0, 0, None, False)
+        self._figure_holder = self._new_figure_holder()
         figure_box.append(self._figure_holder)
         self.figure_slot.set_child(figure_box)
         self._update_figure()
@@ -195,10 +195,25 @@ class ExercisePage(Adw.NavigationPage):
                 self.feedback is not None
                 or self.show_staff_button.get_active()
                 or setting_bool('written-alternative')
+                or not self.audio_available
             )
             figure = (figure or question.written_alternative) if visible else None
-        self._figure_holder.set_child(create_figure_widget(figure))
+        widget = create_figure_widget(figure)
+        widget.connect('head-activated', self._on_head_activated)
+        self._figure_holder.set_child(widget)
         self._figure_holder.set_visible(figure is not None)
+
+    @staticmethod
+    def _new_figure_holder() -> Adw.Bin:
+        holder = Adw.Bin()
+        holder.add_css_class('figure-card')
+        return holder
+
+    def _on_head_activated(self, _view: Gtk.Widget, _staff: int, event: int, _head: int) -> None:
+        """Clicking a note answers questions that ask for one (design 1g)."""
+        select = getattr(self.answer_widget, 'select_target', None)
+        if select is not None and self.feedback is None:
+            select(event)
 
     def _update_subtitle(self) -> None:
         if self.compact:
@@ -230,8 +245,12 @@ class ExercisePage(Adw.NavigationPage):
     # Answering --------------------------------------------------------------------
 
     def _on_answered(self, _widget: AnswerWidget, value: object) -> None:
-        self.response_ms = int((time.monotonic() - self._shown_at) * 1000)
+        self.stop_clock()
         self.emit('answered', value)
+
+    def stop_clock(self) -> None:
+        """Record the response time of the current question in :attr:`response_ms`."""
+        self.response_ms = int((time.monotonic() - self._shown_at) * 1000)
 
     def show_feedback(self, feedback: Feedback, given: object, play_label: str | None = None):
         """Show the graded answer: mark the answer widget and reveal the banner."""

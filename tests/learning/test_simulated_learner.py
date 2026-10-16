@@ -113,7 +113,8 @@ def simulate(skill: float, seed: int = 2026) -> Simulation:
                 sim.reviews[planned.item_id].append(now)
                 sim.answers_by_day[day].append(correct)
                 sim.new_by_day[day] += planned.is_new
-            engine.finish_session()
+            if plan:
+                engine.finish_session()
             clock.advance(timedelta(minutes=30))
             if not plan:
                 break

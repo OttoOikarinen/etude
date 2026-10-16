@@ -186,6 +186,11 @@ class Stats:
     def answered_today(self, now: datetime) -> int:
         return len(self._attempts.between(*self.day_range(self.local_date(now))))
 
+    def best_run_today(self, now: datetime) -> int:
+        """Longest run of correct answers today (the exercise footer's "Best today")."""
+        outcomes = self._attempts.between(*self.day_range(self.local_date(now)))
+        return longest_correct_run(sorted(outcomes, key=lambda o: o.answered_at))
+
     def questions_per_day(self, now: datetime, days: int = 7) -> list[tuple[date, int]]:
         """Answers on each of the last ``days`` local days, oldest first, including today."""
         counts = self._counts_by_day(self._attempts.between(*self.period(now, days)))
