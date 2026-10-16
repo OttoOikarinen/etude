@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Otto Oikarinen
+     SPDX-License-Identifier: CC0-1.0
+     Shared patterns: inline text and notated examples. -->
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+         datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <define name="inline">
+    <interleave>
+      <text/>
+      <zeroOrMore><element name="em"><text/></element></zeroOrMore>
+      <zeroOrMore>
+        <element name="term"><attribute name="ref"><data type="NCName"/></attribute><text/></element>
+      </zeroOrMore>
+      <zeroOrMore><element name="note"><data type="token"><param name="pattern">[A-G](#|##|b|bb|♯|♭|𝄪|𝄫)?(-?[0-9])?</param></data></element></zeroOrMore>
+    </interleave>
+  </define>
+  <define name="lang">
+    <optional><attribute name="xml:lang"/></optional>
+  </define>
+  <define name="figure">
+    <element name="figure">
+      <optional>
+        <attribute name="play"><choice><value>as-written</value><value>melodic</value><value>harmonic</value></choice></attribute>
+      </optional>
+      <optional><attribute name="tempo"><data type="decimal"/></attribute></optional>
+      <oneOrMore>
+        <element name="staff">
+          <optional>
+            <attribute name="clef">
+              <choice><value>treble</value><value>bass</value><value>alto</value><value>tenor</value>
+                <value>treble_8vb</value><value>percussion</value></choice>
+            </attribute>
+          </optional>
+          <optional><attribute name="key"><data type="integer"><param name="minInclusive">-7</param><param name="maxInclusive">7</param></data></attribute></optional>
+          <optional><attribute name="time"><data type="token"><param name="pattern">[0-9]+/[0-9]+</param></data></attribute></optional>
+          <text/>
+        </element>
+      </oneOrMore>
+      <zeroOrMore><element name="description"><ref name="lang"/><text/></element></zeroOrMore>
+      <zeroOrMore><element name="caption"><ref name="lang"/><ref name="inline"/></element></zeroOrMore>
+    </element>
+  </define>
+</grammar>

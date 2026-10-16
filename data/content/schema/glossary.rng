@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Otto Oikarinen
+     SPDX-License-Identifier: CC0-1.0
+     Glossary entries: data/content/glossary/<topic>.xml -->
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+         datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <include href="common.rng"/>
+  <start>
+    <element name="glossary">
+      <optional><attribute name="tags"/></optional>
+      <oneOrMore>
+        <element name="entry">
+          <attribute name="id"><data type="NCName"/></attribute>
+          <attribute name="level"><choice><value>1</value><value>2</value><value>3</value><value>4</value></choice></attribute>
+          <optional><attribute name="tags"/></optional>
+          <oneOrMore><element name="term"><ref name="lang"/><text/></element></oneOrMore>
+          <optional><element name="foreign"><attribute name="lang"><data type="language"/></attribute><text/></element></optional>
+          <oneOrMore><element name="gloss"><ref name="lang"/><text/></element></oneOrMore>
+          <oneOrMore><element name="def"><ref name="lang"/><ref name="inline"/></element></oneOrMore>
+          <optional><element name="abbr"><text/></element></optional>
+          <optional><ref name="figure"/></optional>
+          <zeroOrMore><element name="see"><attribute name="ref"><data type="NCName"/></attribute><empty/></element></zeroOrMore>
+        </element>
+      </oneOrMore>
+    </element>
+  </start>
+</grammar>

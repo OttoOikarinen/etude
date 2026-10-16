@@ -9,9 +9,10 @@ gnome = import('gnome')
 
 application_id = 'fi.oikarinenotto.etude'
 
+# po first: the content in data/ merges its translations (i18n.itstool_join).
+subdir('po')
 subdir('data')
 subdir('src')
-subdir('po')
 
 gnome.post_install(
      glib_compile_schemas: true,

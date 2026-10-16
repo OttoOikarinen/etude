@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+Reference lesson: docs/CONTENT_AUTHORING.md explains every element used here.
+-->
+<lesson id="l1.staff">
+  <title>Staff, Clefs and Note Names</title>
+  <summary>Five lines, two clefs and seven letters are enough to name any note.</summary>
+
+  <section>
+    <title>The staff</title>
+    <p>Music is written on a <term ref="staff">staff</term>: five horizontal lines with four spaces between them. Lines and spaces are counted from the bottom up.</p>
+    <p>A note sits either <em>on</em> a line, with the line through its middle, or <em>in</em> a space. The higher a note is written, the higher it sounds.</p>
+    <figure play="melodic" tempo="100">
+      <staff clef="treble">E4 F4 G4 A4 B4 C5 D5 E5 F5</staff>
+      <caption>Notes on every line and in every space of the staff, from the bottom up.</caption>
+    </figure>
+    <p>Notes are named with the first seven letters of the alphabet. After <note>G</note> the letters start again from <note>A</note>; the next note with the same letter is an <term ref="octave">octave</term> higher.</p>
+  </section>
+
+  <section>
+    <title>Clefs</title>
+    <p>A <term ref="clef">clef</term> at the start of the staff fixes which note belongs to which line. The two most common clefs are the treble clef and the bass clef.</p>
+    <p>The <term ref="treble-clef">treble clef</term> is also called the G clef: its curl wraps around the second line, which is <note>G4</note>, the G above middle C.</p>
+    <figure play="as-written">
+      <staff clef="treble">*G4/w</staff>
+      <caption>The treble clef marks <note>G4</note> on the second line.</caption>
+    </figure>
+    <p>The <term ref="bass-clef">bass clef</term> is the F clef: its two dots sit on either side of the fourth line, which is <note>F3</note>, the F below middle C.</p>
+    <figure play="as-written">
+      <staff clef="bass">*F3/w</staff>
+      <caption>The bass clef marks <note>F3</note> on the fourth line.</caption>
+    </figure>
+    <callout kind="remember">
+      <p>Treble clef lines from the bottom: <note>E</note> <note>G</note> <note>B</note> <note>D</note> <note>F</note>. Spaces: <note>F</note> <note>A</note> <note>C</note> <note>E</note>.</p>
+      <p>Bass clef lines from the bottom: <note>G</note> <note>B</note> <note>D</note> <note>F</note> <note>A</note>. Spaces: <note>A</note> <note>C</note> <note>E</note> <note>G</note>.</p>
+    </callout>
+  </section>
+
+  <section>
+    <title>Reading a note step by step</title>
+    <worked>
+      <title>Name the note on the fourth line of the treble staff</title>
+      <step>
+        <p>Start from the note the clef gives you: <note>G4</note> on the second line.</p>
+      </step>
+      <step>
+        <p>Count up one letter for every line and every space: the second space is <note>A4</note>, the middle line <note>B4</note>, the third space <note>C5</note>.</p>
+      </step>
+      <step>
+        <p>The fourth line comes next, so the note is <note>D5</note>.</p>
+        <figure play="melodic">
+          <staff clef="treble">G4 A4 B4 C5 *D5</staff>
+        </figure>
+      </step>
+    </worked>
+    <p>With practice you will recognise notes at a glance, but counting from the clef's note always works.</p>
+  </section>
+
+  <section>
+    <title>Ledger lines and middle C</title>
+    <p>Notes above or below the staff are written with short <term ref="ledger-line">ledger lines</term>, which extend the staff one line at a time.</p>
+    <p><term ref="middle-c">Middle C</term>, <note>C4</note>, lies between the two staves: on the first ledger line below the treble staff and on the first ledger line above the bass staff. Both notes below sound the same.</p>
+    <figure play="as-written">
+      <staff clef="treble">C4/w</staff>
+      <staff clef="bass">C4/w</staff>
+      <caption>Middle C in the treble clef and in the bass clef.</caption>
+    </figure>
+    <check id="middle-line">
+      <prompt>Which note is on the middle line of the treble staff?</prompt>
+      <figure>
+        <staff clef="treble">B4</staff>
+        <description>Treble staff with one note on the middle line.</description>
+      </figure>
+      <option key="a"><note>A4</note></option>
+      <option key="b" correct="true"><note>B4</note></option>
+      <option key="c"><note>C5</note></option>
+      <explanation>From <note>G4</note> on the second line, the second space is <note>A4</note> and the middle line is <note>B4</note>.</explanation>
+    </check>
+    <check id="bass-top-line">
+      <prompt>Which note is on the top line of the bass staff?</prompt>
+      <option key="a" correct="true"><note>A3</note></option>
+      <option key="b"><note>F3</note></option>
+      <option key="c"><note>G3</note></option>
+      <explanation>The bass clef marks <note>F3</note> on the fourth line; the fourth space is <note>G3</note> and the top line <note>A3</note>.</explanation>
+    </check>
+    <check id="middle-c">
+      <prompt>Where is middle C written in the bass clef?</prompt>
+      <option key="a">On the first ledger line below the staff</option>
+      <option key="b" correct="true">On the first ledger line above the staff</option>
+      <option key="c">In the top space of the staff</option>
+      <explanation>The top line of the bass staff is <note>A3</note>, the space above it <note>B3</note>, and the first ledger line above is <note>C4</note>.</explanation>
+    </check>
+  </section>
+</lesson>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+Glossary: staff notation. Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
+-->
+<glossary tags="notation">
+  <entry id="staff" level="1" tags="staff">
+    <term>staff</term>
+    <gloss>the five lines music is written on</gloss>
+    <def>Five horizontal lines and the four spaces between them. Notes are written on the lines and in the spaces; higher notes sound higher. Also called a stave.</def>
+    <see ref="clef"/>
+    <see ref="ledger-line"/>
+  </entry>
+
+  <entry id="clef" level="1" tags="staff">
+    <term>clef</term>
+    <gloss>sign that fixes the notes of the staff</gloss>
+    <def>A sign at the start of the staff that names one line, and so every line and space. The <term ref="treble-clef">treble clef</term> marks <note>G4</note> and the <term ref="bass-clef">bass clef</term> marks <note>F3</note>.</def>
+  </entry>
+
+  <entry id="treble-clef" level="1" tags="staff">
+    <term>treble clef</term>
+    <gloss>G clef: the second line is G above middle C</gloss>
+    <def>The clef whose curl wraps around the second line, marking it as <note>G4</note>. It is used for higher instruments and voices and for the right hand of piano music.</def>
+    <figure>
+      <staff clef="treble">G4/w</staff>
+    </figure>
+    <see ref="bass-clef"/>
+  </entry>
+
+  <entry id="bass-clef" level="1" tags="staff">
+    <term>bass clef</term>
+    <gloss>F clef: the fourth line is F below middle C</gloss>
+    <def>The clef whose two dots sit on either side of the fourth line, marking it as <note>F3</note>. It is used for lower instruments and voices and for the left hand of piano music.</def>
+    <figure>
+      <staff clef="bass">F3/w</staff>
+    </figure>
+    <see ref="treble-clef"/>
+  </entry>
+
+  <entry id="ledger-line" level="1" tags="staff">
+    <term>ledger line</term>
+    <gloss>short extra line above or below the staff</gloss>
+    <def>A short line that extends the staff for a single note that lies above or below it. Each ledger line continues the pattern of lines and spaces.</def>
+    <figure>
+      <staff clef="treble">C4/q A3/q A5/q C6/q</staff>
+    </figure>
+  </entry>
+
+  <entry id="middle-c" level="1" tags="staff">
+    <term>middle C</term>
+    <gloss>C4, the C between the treble and bass staves</gloss>
+    <def>The C near the middle of the piano keyboard, <note>C4</note> in scientific pitch notation. It is written on the first ledger line below the treble staff or above the bass staff.</def>
+    <figure play="as-written">
+      <staff clef="treble">C4/w</staff>
+      <staff clef="bass">C4/w</staff>
+    </figure>
+  </entry>
+
+  <entry id="octave" level="1" tags="staff intervals">
+    <term>octave</term>
+    <gloss>distance to the next note with the same letter name</gloss>
+    <def>The interval between a note and the next higher or lower note with the same letter, such as <note>C4</note> and <note>C5</note>. The higher note vibrates exactly twice as fast, so the two sound alike.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4/h C5/h</staff>
+    </figure>
+  </entry>
+</glossary>

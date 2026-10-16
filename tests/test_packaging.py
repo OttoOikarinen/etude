@@ -72,6 +72,35 @@ def test_translatable_files_are_in_potfiles() -> None:
         assert (ROOT / entry).exists(), f'po/POTFILES.in lists missing file {entry}'
 
 
+CONTENT = ROOT / 'data' / 'content'
+
+
+def content_files() -> list[Path]:
+    return sorted(p for p in CONTENT.rglob('*.xml') if p.parent.name not in ('schema', 'its'))
+
+
+@pytest.mark.parametrize('path', content_files(), ids=lambda p: str(p.relative_to(CONTENT)))
+def test_content_file_is_installed_and_translated(path: Path) -> None:
+    build = path.parent / 'meson.build'
+    assert build.exists(), f'{path.parent.relative_to(ROOT)} needs a meson.build'
+    assert f"'{path.name}'" in build.read_text(), f'add {path.name!r} to {build.relative_to(ROOT)}'
+    potfiles = (ROOT / 'po' / 'POTFILES.in').read_text().splitlines()
+    assert str(path.relative_to(ROOT)) in potfiles, (
+        f'add {path.relative_to(ROOT)} to po/POTFILES.in'
+    )
+
+
+def test_content_directories_are_built() -> None:
+    for build in CONTENT.rglob('meson.build'):
+        directory = build.parent
+        if directory == CONTENT:
+            continue
+        parent_build = (directory.parent / 'meson.build').read_text()
+        assert f"subdir('{directory.name}')" in parent_build, (
+            f'{directory.relative_to(ROOT)} is not reached by subdir() in its parent meson.build'
+        )
+
+
 def test_fsrs_pin_matches_flatpak_manifest() -> None:
     pyproject = tomllib.loads((ROOT / 'pyproject.toml').read_text())
     pin = next(d for d in pyproject['dependency-groups']['runtime'] if d.startswith('fsrs=='))

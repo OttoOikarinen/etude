@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+The curriculum: levels, their units and what each unit practises.
+Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
+-->
+<curriculum>
+  <level id="level1" number="1">
+    <title>Fundamentals</title>
+    <description>Reading notes and rhythms, keys and scales, intervals and triads, and the basic vocabulary of music.</description>
+
+    <unit id="l1.staff" lesson="l1.staff">
+      <title>Staff, Clefs and Note Names</title>
+      <summary>Read notes in the treble and bass clefs, with ledger lines.</summary>
+      <practice exercise="note-naming">
+        <setting key="clefs" value="treble bass"/>
+        <setting key="ledger-lines" value="1"/>
+        <setting key="accidentals" value="false"/>
+      </practice>
+      <vocabulary tags="staff"/>
+    </unit>
+
+    <unit id="l1.rhythm">
+      <title>Note Values and Rests</title>
+      <summary>Whole, half, quarter, eighth and sixteenth notes, dots and rests.</summary>
+      <vocabulary tags="rhythm"/>
+    </unit>
+
+    <unit id="l1.meter">
+      <title>Beat and Time Signatures</title>
+      <summary>Pulse, bars, simple and compound time.</summary>
+      <vocabulary tags="meter"/>
+    </unit>
+
+    <unit id="l1.accidentals">
+      <title>Accidentals, Half Steps and Whole Steps</title>
+      <summary>Sharps, flats and naturals on the staff and on the keyboard.</summary>
+      <practice exercise="note-naming">
+        <setting key="clefs" value="treble bass"/>
+        <setting key="ledger-lines" value="1"/>
+        <setting key="accidentals" value="true"/>
+      </practice>
+      <vocabulary tags="accidentals"/>
+    </unit>
+
+    <unit id="l1.major">
+      <title>Major Scales and Keys</title>
+      <summary>The major scale, key signatures and the circle of fifths.</summary>
+      <practice exercise="keysig">
+        <setting key="mode" value="major"/>
+        <setting key="max-accidentals" value="7"/>
+      </practice>
+      <vocabulary tags="scales keys"/>
+    </unit>
+
+    <unit id="l1.minor">
+      <title>Minor Scales and Keys</title>
+      <summary>Natural, harmonic and melodic minor; relative and parallel keys.</summary>
+      <practice exercise="keysig">
+        <setting key="mode" value="both"/>
+        <setting key="max-accidentals" value="7"/>
+      </practice>
+      <vocabulary tags="minor"/>
+    </unit>
+
+    <unit id="l1.intervals">
+      <title>Intervals</title>
+      <summary>Number and quality of intervals, on the staff and by ear.</summary>
+      <practice exercise="interval-staff"/>
+      <practice exercise="interval-ear">
+        <setting key="form" value="melodic"/>
+        <setting key="direction" value="asc"/>
+      </practice>
+      <vocabulary tags="intervals"/>
+    </unit>
+
+    <unit id="l1.degrees">
+      <title>Scale Degrees</title>
+      <summary>The names and functions of the degrees of a key.</summary>
+      <practice exercise="scale-degree">
+        <setting key="mode" value="both"/>
+      </practice>
+      <vocabulary tags="degrees"/>
+    </unit>
+
+    <unit id="l1.triads">
+      <title>Triads</title>
+      <summary>Major, minor, diminished and augmented triads and their inversions.</summary>
+      <practice exercise="chord-staff"/>
+      <practice exercise="chord-ear"/>
+      <vocabulary tags="chords"/>
+    </unit>
+
+    <unit id="l1.terms">
+      <title>Tempo, Dynamics and Articulation</title>
+      <summary>The Italian terms and signs that tell how to perform music.</summary>
+      <vocabulary tags="tempo dynamics articulation"/>
+    </unit>
+
+    <exam size="30"/>
+  </level>
+</curriculum>
