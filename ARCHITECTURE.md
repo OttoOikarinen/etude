@@ -12,7 +12,9 @@ where to start when you change something.
 │ etude.main, etude.window, etude.ui        application shell,  │
 │ etude.notation.widget (StaffView)         pages, widgets      │  GTK
 ├───────────────────────────────────────────────────────────────┤
-│ etude.exercises   etude.content   etude.storage               │
+│ etude.exercises   etude.storage                               │
+├───────────────────────────────────────────────────────────────┤
+│ etude.content     (curriculum, lessons, glossary)             │
 ├───────────────────────────────────────────────────────────────┤
 │ etude.learning    etude.notation  etude.audio                 │  pure
 ├───────────────────────────────────────────────────────────────┤  Python
@@ -35,7 +37,7 @@ where to start when you change something.
 | `learning` | FSRS scheduling, ratings derived from answers, session building (interleaving, new vs. review), mastery, placement, statistics. Talks to storage and exercises only through `learning.ports`. |
 | `storage` | SQLite implementation of the `learning.ports` stores, with migrations. |
 | `exercises` | `base` is the framework; `families/` holds the exercises; `registry` discovers them. |
-| `content` | Curriculum, theory lessons and glossary loaded from `data/content/`. |
+| `content` | Curriculum, theory lessons and glossary loaded from `data/content/` (formats: docs/CONTENT_AUTHORING.md); `music_text` reads the compact notation of examples. Below `exercises`, so exercises such as vocabulary flashcards can use the glossary. |
 | `ui` | Pages, widgets and dialogs following the design mockups. |
 
 ## Contracts
@@ -52,6 +54,9 @@ deliberately, in their own pull request, and update this document.
   outcomes, sessions, and the storage and catalogue protocols.
 * `etude/exercises/base.py`: questions, answer specifications, feedback,
   settings and the `ExerciseDefinition` base class.
+* `etude/content/model.py`: curriculum, lessons and glossary as the UI
+  renders them; the XML formats in docs/CONTENT_AUTHORING.md and
+  `data/content/schema/`.
 
 Contract changes so far (all backwards-compatible):
 
@@ -60,6 +65,9 @@ Contract changes so far (all backwards-compatible):
   downbeats.
 * W1 learning: `SessionRecord` and `SessionLog.between()` let statistics
   compute time practised, session counts and personal bests.
+* W3 content: `etude.content` moved below `etude.exercises` in the layers;
+  content model, loaders and XML formats added. W2 follow-up:
+  `Question.playback_style_choice` and `ExerciseDefinition.confusables()`.
 * W2 exercises: `ChipGroup.accidentals`; `ExerciseDefinition.glyph`,
   `play_label`, `item_label()` and `answer_label()` (all with defaults).
   `etude.core.naming` gained a default convention, set from the

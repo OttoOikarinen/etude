@@ -116,11 +116,12 @@ root_package = "etude"
 include_external_packages = true
 
 [[tool.importlinter.contracts]]
-name = "Layers: UI → exercises/content/storage → learning/notation/audio → core"
+name = "Layers: UI → exercises/storage → content → learning/notation/audio → core"
 type = "layers"
 layers = [
     "etude.ui",
-    "etude.exercises | etude.content | etude.storage",
+    "etude.exercises | etude.storage",
+    "etude.content",
     "etude.learning | etude.notation | etude.audio",
     "etude.core",
 ]

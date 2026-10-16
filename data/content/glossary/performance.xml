@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+Glossary: performance directions (tempo, dynamics, articulation).
+-->
+<glossary tags="performance">
+  <entry id="crescendo" level="1" tags="dynamics">
+    <term>crescendo</term>
+    <foreign lang="it">crescendo</foreign>
+    <gloss>gradually louder</gloss>
+    <def>Getting gradually louder. Written as the word, the abbreviation, or a hairpin opening to the right.</def>
+    <abbr>cresc.</abbr>
+    <see ref="diminuendo"/>
+  </entry>
+
+  <entry id="diminuendo" level="1" tags="dynamics">
+    <term>diminuendo</term>
+    <foreign lang="it">diminuendo</foreign>
+    <gloss>gradually softer</gloss>
+    <def>Getting gradually softer; <em>decrescendo</em> means the same. Written as the word, the abbreviation, or a hairpin closing to the right.</def>
+    <abbr>dim.</abbr>
+    <see ref="crescendo"/>
+  </entry>
+</glossary>

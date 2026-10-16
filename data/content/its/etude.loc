@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC0-1.0
+
+Tells xgettext which ITS rules apply to Etude's content files.
+-->
+<locatingRules>
+  <locatingRule name="Etude curriculum" pattern="*.xml">
+    <documentRule localName="curriculum" target="etude.its"/>
+    <documentRule localName="lesson" target="etude.its"/>
+    <documentRule localName="glossary" target="etude.its"/>
+  </locatingRule>
+</locatingRules>

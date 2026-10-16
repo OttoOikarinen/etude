@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Otto Oikarinen
+     SPDX-License-Identifier: CC0-1.0
+     A theory lesson: data/content/lessons/<level>/<unit>.xml -->
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+         datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <include href="common.rng"/>
+  <define name="title"><oneOrMore><element name="title"><ref name="lang"/><text/></element></oneOrMore></define>
+  <define name="p"><element name="p"><ref name="lang"/><ref name="inline"/></element></define>
+  <define name="paras"><oneOrMore><ref name="p"/></oneOrMore></define>
+  <define name="block">
+    <choice>
+      <ref name="p"/>
+      <element name="list">
+        <optional><attribute name="ordered"><choice><value>true</value><value>false</value></choice></attribute></optional>
+        <oneOrMore><element name="li"><ref name="lang"/><ref name="inline"/></element></oneOrMore>
+      </element>
+      <element name="callout">
+        <optional><attribute name="kind"><choice><value>tip</value><value>remember</value><value>warning</value></choice></attribute></optional>
+        <ref name="paras"/>
+      </element>
+      <ref name="figure"/>
+      <element name="worked">
+        <ref name="title"/>
+        <oneOrMore><element name="step"><ref name="paras"/><optional><ref name="figure"/></optional></element></oneOrMore>
+      </element>
+      <element name="check">
+        <attribute name="id"><data type="NCName"/></attribute>
+        <oneOrMore><element name="prompt"><ref name="lang"/><ref name="inline"/></element></oneOrMore>
+        <optional><ref name="figure"/></optional>
+        <oneOrMore>
+          <element name="option">
+            <attribute name="key"><data type="NCName"/></attribute>
+            <optional><attribute name="correct"><value>true</value></attribute></optional>
+            <ref name="lang"/>
+            <ref name="inline"/>
+          </element>
+        </oneOrMore>
+        <zeroOrMore><element name="explanation"><ref name="lang"/><ref name="inline"/></element></zeroOrMore>
+      </element>
+    </choice>
+  </define>
+  <start>
+    <element name="lesson">
+      <attribute name="id"><data type="token"><param name="pattern">l[1-4]\.[a-z0-9-]+</param></data></attribute>
+      <ref name="title"/>
+      <zeroOrMore><element name="summary"><ref name="lang"/><text/></element></zeroOrMore>
+      <oneOrMore>
+        <element name="section"><ref name="title"/><oneOrMore><ref name="block"/></oneOrMore></element>
+      </oneOrMore>
+    </element>
+  </start>
+</grammar>

@@ -24,6 +24,9 @@ jobs:
       - name: Install development tools
         id: install
         run: |
+          sudo apt-get update -q
+          # Content tests: schema validation and the translation pipeline.
+          sudo apt-get install -y -q --no-install-recommends gettext itstool libxml2-utils
           python -m pip install --upgrade pip
           python -m pip install --group dev
       - name: ruff check
@@ -52,7 +55,7 @@ jobs:
       - name: Coverage of the domain packages
         run: >-
           coverage report --fail-under=90
-          --include='src/etude/core/*,src/etude/learning/*,src/etude/exercises/*'
+          --include='src/etude/core/*,src/etude/learning/*,src/etude/exercises/*,src/etude/content/*'
 
   flatpak:
     name: Flatpak build and tests

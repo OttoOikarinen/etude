@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Otto Oikarinen
+     SPDX-License-Identifier: CC0-1.0
+     The curriculum: data/content/curriculum.xml -->
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+         datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <define name="lang"><optional><attribute name="xml:lang"/></optional></define>
+  <define name="text"><ref name="lang"/><text/></define>
+  <start>
+    <element name="curriculum">
+      <oneOrMore>
+        <element name="level">
+          <attribute name="id"><data type="NCName"/></attribute>
+          <attribute name="number"><choice><value>1</value><value>2</value><value>3</value><value>4</value></choice></attribute>
+          <oneOrMore><element name="title"><ref name="text"/></element></oneOrMore>
+          <zeroOrMore><element name="description"><ref name="text"/></element></zeroOrMore>
+          <oneOrMore>
+            <element name="unit">
+              <attribute name="id"><data type="token"><param name="pattern">l[1-4]\.[a-z0-9-]+</param></data></attribute>
+              <optional><attribute name="lesson"/></optional>
+              <oneOrMore><element name="title"><ref name="text"/></element></oneOrMore>
+              <zeroOrMore><element name="summary"><ref name="text"/></element></zeroOrMore>
+              <zeroOrMore><element name="requires"><attribute name="unit"/><empty/></element></zeroOrMore>
+              <zeroOrMore>
+                <element name="practice">
+                  <attribute name="exercise"/>
+                  <zeroOrMore>
+                    <element name="setting"><attribute name="key"/><attribute name="value"/><empty/></element>
+                  </zeroOrMore>
+                </element>
+              </zeroOrMore>
+              <zeroOrMore><element name="vocabulary"><attribute name="tags"/><empty/></element></zeroOrMore>
+            </element>
+          </oneOrMore>
+          <optional><element name="exam"><optional><attribute name="size"><data type="positiveInteger"/></attribute></optional><empty/></element></optional>
+        </element>
+      </oneOrMore>
+    </element>
+  </start>
+</grammar>
