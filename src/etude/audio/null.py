@@ -5,11 +5,11 @@
 
 from __future__ import annotations
 
-import math
 import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
+from .metronome import beats
 from .spec import PlaybackSpec
 
 
@@ -65,8 +65,9 @@ class NullBackend:
         if handle is None or handle.stopped:
             return
         if handle.on_beat is not None:
-            for beat in range(-handle.spec.count_in, math.ceil(handle.spec.length)):
-                handle.on_beat(beat)
+            spec = handle.spec
+            for beat in beats(spec.meter, spec.count_in, spec.length):
+                handle.on_beat(beat.number)
         handle.finished = True
         self.current = None
         if handle.on_finished is not None:

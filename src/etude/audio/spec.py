@@ -10,11 +10,11 @@ backend converts them to milliseconds with ``tempo``.
 from __future__ import annotations
 
 from collections.abc import Iterable
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import Enum
 from fractions import Fraction
 
-from ..core import Pitch
+from ..core import Meter, Pitch
 
 
 class Instrument(Enum):
@@ -39,6 +39,9 @@ class PlaybackNote:
     """Onset in beats from the start of the playback (after any count-in)."""
     length: Fraction
     velocity: int = 90
+    percussion: bool = False
+    """Play on the General MIDI percussion channel (channel 10): ``midi`` is
+    then a GM drum key (76 is a high wood block) and the instrument is ignored."""
 
     def __post_init__(self) -> None:
         if not 0 <= self.midi <= 127:
@@ -59,6 +62,11 @@ class PlaybackSpec:
     """Metronome clicks before the first note (rhythm exercises)."""
     click: bool = False
     """Keep the metronome running during the playback."""
+    meter: Meter | None = None
+    """How the metronome counts. With a meter, beats are the felt pulses
+    (dotted quarters in 6/8, 2+2+3 eighths in 7/8), ``count_in`` counts those
+    pulses and the first beat of each bar is accented. Without one, every
+    quarter note is a beat."""
 
     def __post_init__(self) -> None:
         if self.tempo <= 0:
@@ -103,15 +111,15 @@ class PlaybackSpec:
     @classmethod
     def sequence(cls, *parts: PlaybackSpec, gap: Fraction = Fraction(1)) -> PlaybackSpec:
         """Concatenate playbacks (e.g. a tonic-establishing cadence, then the question).
-        Tempo, instrument and count-in come from the first part."""
+        Tempo, instrument, count-in, click and meter come from the first part."""
         if not parts:
             raise ValueError('nothing to sequence')
         notes: list[PlaybackNote] = []
         offset = Fraction(0)
         for part in parts:
-            notes.extend(
-                PlaybackNote(n.midi, n.start + offset, n.length, n.velocity) for n in part.notes
-            )
+            notes.extend(replace(n, start=n.start + offset) for n in part.notes)
             offset += part.length + gap
         first = parts[0]
-        return cls(tuple(notes), first.tempo, first.instrument, first.count_in, first.click)
+        return cls(
+            tuple(notes), first.tempo, first.instrument, first.count_in, first.click, first.meter
+        )
