@@ -90,6 +90,7 @@ testpaths = ["tests"]
 addopts = ["-ra", "--strict-markers", "--strict-config", "--import-mode=importlib"]
 markers = [
     "gtk: needs PyGObject with GTK 4 and libadwaita, and a display",
+    "audio: needs libfluidsynth and the GeneralUser GS SoundFont (renders offline)",
 ]
 
 [tool.coverage.run]
