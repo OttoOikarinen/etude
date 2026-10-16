@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Otto Oikarinen -->
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  <template class="EtudeExercisePage" parent="AdwNavigationPage">
+    <property name="title" translatable="yes">Exercise</property>
+    <property name="tag">exercise</property>
+    <property name="child">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="title-widget">
+              <object class="AdwWindowTitle" id="window_title"/>
+            </property>
+            <child type="end">
+              <object class="GtkButton" id="close_button">
+                <property name="icon-name">window-close-symbolic</property>
+                <property name="tooltip-text" translatable="yes">End Session</property>
+                <signal name="clicked" handler="_on_close_clicked"/>
+                <accessibility>
+                  <property name="key-shortcuts">Escape</property>
+                </accessibility>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkToggleButton" id="pause_button">
+                <property name="icon-name">media-playback-pause-symbolic</property>
+                <property name="tooltip-text" translatable="yes">Pause</property>
+                <signal name="toggled" handler="_on_pause_toggled"/>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkToggleButton" id="show_staff_button">
+                <property name="label" translatable="yes">Show Staff</property>
+                <property name="visible">false</property>
+                <signal name="toggled" handler="_on_show_staff_toggled"/>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkButton" id="play_button">
+                <property name="visible">false</property>
+                <signal name="clicked" handler="_on_play_clicked"/>
+                <child>
+                  <object class="AdwButtonContent" id="play_content">
+                    <property name="icon-name">media-playback-start-symbolic</property>
+                    <property name="label" translatable="yes">Play</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <property name="content">
+          <object class="AdwBottomSheet" id="bottom_sheet">
+            <property name="can-open">false</property>
+            <property name="content">
+              <object class="GtkStack" id="state_stack">
+                <property name="transition-type">crossfade</property>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">question</property>
+                    <property name="child">
+                      <object class="GtkScrolledWindow">
+                        <property name="hscrollbar-policy">never</property>
+                        <property name="child">
+                          <object class="AdwClamp">
+                            <property name="maximum-size">860</property>
+                            <property name="tightening-threshold">600</property>
+                            <property name="child">
+                              <object class="GtkBox" id="body">
+                                <property name="orientation">vertical</property>
+                                <property name="spacing">20</property>
+                                <style>
+                                  <class name="exercise-body"/>
+                                </style>
+                                <child>
+                                  <object class="GtkLabel" id="prompt_label">
+                                    <property name="wrap">true</property>
+                                    <property name="justify">center</property>
+                                    <style>
+                                      <class name="title-2"/>
+                                    </style>
+                                    <accessibility>
+                                      <property name="level">1</property>
+                                    </accessibility>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwBin" id="figure_slot"/>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="context_label">
+                                    <property name="visible">false</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwBin" id="answer_slot"/>
+                                </child>
+                                <child>
+                                  <object class="GtkRevealer" id="hint_revealer">
+                                    <property name="child">
+                                      <object class="GtkBox">
+                                        <property name="spacing">8</property>
+                                        <property name="halign">center</property>
+                                        <style>
+                                          <class name="hint-box"/>
+                                        </style>
+                                        <child>
+                                          <object class="GtkImage">
+                                            <property name="icon-name">dialog-information-symbolic</property>
+                                            <property name="accessible-role">presentation</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="hint_label">
+                                            <property name="wrap">true</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkRevealer" id="feedback_revealer">
+                                    <property name="transition-type">slide-up</property>
+                                    <property name="child">
+                                      <object class="EtudeFeedbackBanner" id="feedback_banner">
+                                        <signal name="next" handler="_on_next"/>
+                                        <signal name="play" handler="_on_feedback_play"/>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkBox" id="aux_box">
+                                    <property name="spacing">12</property>
+                                    <property name="halign">center</property>
+                                    <child>
+                                      <object class="GtkButton" id="skip_button">
+                                        <signal name="clicked" handler="_on_skip_clicked"/>
+                                        <style>
+                                          <class name="flat"/>
+                                        </style>
+                                        <child>
+                                          <object class="GtkBox">
+                                            <property name="spacing">8</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes" comments="The Space key">Space</property>
+                                                <property name="accessible-role">presentation</property>
+                                                <property name="valign">center</property>
+                                                <style>
+                                                  <class name="accel-badge"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">Skip question</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <accessibility>
+                                          <property name="label" translatable="yes">Skip question</property>
+                                          <property name="key-shortcuts">space</property>
+                                        </accessibility>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="hint_button">
+                                        <signal name="clicked" handler="_on_hint_clicked"/>
+                                        <style>
+                                          <class name="flat"/>
+                                        </style>
+                                        <child>
+                                          <object class="GtkBox">
+                                            <property name="spacing">8</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label">?</property>
+                                                <property name="accessible-role">presentation</property>
+                                                <property name="valign">center</property>
+                                                <style>
+                                                  <class name="accel-badge"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">Hint</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <accessibility>
+                                          <property name="label" translatable="yes">Hint</property>
+                                          <property name="key-shortcuts">question</property>
+                                        </accessibility>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkStackPage">
+                    <property name="name">paused</property>
+                    <property name="child">
+                      <object class="AdwStatusPage">
+                        <property name="icon-name">media-playback-pause-symbolic</property>
+                        <property name="title" translatable="yes">Paused</property>
+                        <property name="description" translatable="yes">The timer is stopped and the question is hidden</property>
+                        <property name="child">
+                          <object class="GtkButton">
+                            <property name="label" translatable="yes">_Resume</property>
+                            <property name="use-underline">true</property>
+                            <property name="halign">center</property>
+                            <signal name="clicked" handler="_on_resume_clicked"/>
+                            <style>
+                              <class name="pill"/>
+                              <class name="suggested-action"/>
+                            </style>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="sheet">
+              <object class="AdwBin" id="sheet_bin"/>
+            </property>
+          </object>
+        </property>
+        <child type="bottom">
+          <object class="GtkBox" id="stats_bar">
+            <property name="spacing">18</property>
+            <style>
+              <class name="stats-bar"/>
+            </style>
+            <child>
+              <object class="GtkBox" id="streak_box">
+                <property name="spacing">6</property>
+                <style>
+                  <class name="streak"/>
+                </style>
+                <child>
+                  <object class="GtkImage" id="streak_icon">
+                    <property name="icon-name">starred-symbolic</property>
+                    <property name="accessible-role">presentation</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="streak_label"/>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="accuracy_label"/>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="hexpand">true</property>
+                <property name="halign">end</property>
+                <property name="spacing">6</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon-name">alarm-symbolic</property>
+                    <property name="accessible-role">presentation</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="timer_label">
+                    <style>
+                      <class name="numeric"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Otto Oikarinen -->
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  <template class="EtudePreferencesDialog" parent="AdwPreferencesDialog">
+    <property name="search-enabled">true</property>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title" translatable="yes">General</property>
+        <property name="icon-name">preferences-system-symbolic</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Notes and Sound</property>
+            <child>
+              <object class="AdwComboRow" id="note_naming_row">
+                <property name="title" translatable="yes">Note names</property>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">Automatic</item>
+                      <item translatable="yes">English (C D E F G A B)</item>
+                      <item translatable="yes">German and Nordic (C D E F G A H)</item>
+                      <item translatable="yes">Fixed do (do re mi)</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwComboRow" id="instrument_row">
+                <property name="title" translatable="yes">Instrument</property>
+                <property name="subtitle" translatable="yes">Timbre used to play examples and questions</property>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">Piano</item>
+                      <item translatable="yes">Organ</item>
+                      <item translatable="yes">Guitar</item>
+                      <item translatable="yes">Strings</item>
+                      <item translatable="yes">Choir</item>
+                      <item translatable="yes">Flute</item>
+                      <item translatable="yes">Varied</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Practice</property>
+            <child>
+              <object class="AdwSpinRow" id="daily_goal_row">
+                <property name="title" translatable="yes">Daily goal</property>
+                <property name="subtitle" translatable="yes">Questions to answer each day to keep the streak</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">5</property>
+                    <property name="upper">500</property>
+                    <property name="value">30</property>
+                    <property name="step-increment">5</property>
+                    <property name="page-increment">25</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSpinRow" id="questions_row">
+                <property name="title" translatable="yes">Questions per session</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">5</property>
+                    <property name="upper">100</property>
+                    <property name="value">20</property>
+                    <property name="step-increment">5</property>
+                    <property name="page-increment">10</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="timed_row">
+                <property name="title" translatable="yes">Timed mode</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="reveal_row">
+                <property name="title" translatable="yes">Reveal answer after mistake</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title" translatable="yes">Accessibility</property>
+        <property name="icon-name">preferences-desktop-accessibility-symbolic</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <child>
+              <object class="AdwSwitchRow" id="large_notation_row">
+                <property name="title" translatable="yes">Large notation</property>
+                <property name="subtitle" translatable="yes">Scale the staff with the system text size</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="written_alternative_row">
+                <property name="title" translatable="yes">Written alternative for audio tasks</property>
+                <property name="subtitle" translatable="yes">Show notation instead of requiring playback</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSwitchRow" id="announce_row">
+                <property name="title" translatable="yes">Announce feedback to screen reader</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

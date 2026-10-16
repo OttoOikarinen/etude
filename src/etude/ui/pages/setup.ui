@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Otto Oikarinen -->
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  <template class="EtudeSetupPage" parent="AdwNavigationPage">
+    <property name="tag">setup</property>
+    <property name="child">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <child type="end">
+              <object class="GtkButton" id="start_button">
+                <property name="label" translatable="yes">_Start</property>
+                <property name="use-underline">true</property>
+                <signal name="clicked" handler="_on_start_clicked"/>
+                <style>
+                  <class name="suggested-action"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <property name="content">
+          <object class="AdwPreferencesPage" id="preferences_page">
+            <child>
+              <object class="AdwPreferencesGroup" id="pool_group">
+                <property name="title" translatable="yes">Question Pool</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesGroup" id="session_group">
+                <property name="title" translatable="yes">Session</property>
+                <child>
+                  <object class="AdwSpinRow" id="questions_row">
+                    <property name="title" translatable="yes">Questions per session</property>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment">
+                        <property name="lower">5</property>
+                        <property name="upper">100</property>
+                        <property name="value">20</property>
+                        <property name="step-increment">5</property>
+                        <property name="page-increment">10</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwSwitchRow" id="timed_row">
+                    <property name="title" translatable="yes">Timed mode</property>
+                    <property name="subtitle" translatable="yes">Answer each question within a time limit</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwSwitchRow" id="reveal_row">
+                    <property name="title" translatable="yes">Reveal answer after mistake</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesGroup" id="accessibility_group">
+                <property name="title" translatable="yes">Accessibility</property>
+                <child>
+                  <object class="AdwSwitchRow" id="large_notation_row">
+                    <property name="title" translatable="yes">Large notation</property>
+                    <property name="subtitle" translatable="yes">Scale the staff with the system text size</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwSwitchRow" id="written_alternative_row">
+                    <property name="title" translatable="yes">Written alternative for audio tasks</property>
+                    <property name="subtitle" translatable="yes">Show notation instead of requiring playback</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwSwitchRow" id="announce_row">
+                    <property name="title" translatable="yes">Announce feedback to screen reader</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+</interface>
