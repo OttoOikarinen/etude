@@ -1,0 +1,570 @@
+{
+ "type": "DisplayList",
+ "items": [
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 3.0,
+   "x2": 34.672,
+   "y2": 3.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 4.0,
+   "x2": 34.672,
+   "y2": 4.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 5.0,
+   "x2": 34.672,
+   "y2": 5.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 6.0,
+   "x2": 34.672,
+   "y2": 6.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 7.0,
+   "x2": 34.672,
+   "y2": 7.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "gClef",
+   "x": 0.8,
+   "y": 6.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "timeSig4",
+   "x": 4.484,
+   "y": 4.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "timeSig4",
+   "x": 4.484,
+   "y": 6.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "BeamItem",
+   "x1": 9.224,
+   "y1": 4.261,
+   "x2": 12.144,
+   "y2": 3.739,
+   "thickness": 0.5,
+   "ink": "foreground"
+  },
+  {
+   "type": "BeamItem",
+   "x1": 14.824,
+   "y1": 2.016,
+   "x2": 17.744,
+   "y2": 1.234,
+   "thickness": 0.5,
+   "ink": "foreground"
+  },
+  {
+   "type": "BeamItem",
+   "x1": 20.424,
+   "y1": 2.505,
+   "x2": 23.812,
+   "y2": 2.245,
+   "thickness": 0.5,
+   "ink": "foreground"
+  },
+  {
+   "type": "BeamItem",
+   "x1": 22.652,
+   "y1": 3.084,
+   "x2": 23.812,
+   "y2": 2.995,
+   "thickness": 0.5,
+   "ink": "foreground"
+  },
+  {
+   "type": "BeamItem",
+   "x1": 24.832,
+   "y1": 8.257,
+   "x2": 31.552,
+   "y2": 7.493,
+   "thickness": 0.5,
+   "ink": "foreground"
+  },
+  {
+   "type": "BeamItem",
+   "x1": 24.832,
+   "y1": 7.507,
+   "x2": 31.552,
+   "y2": 6.743,
+   "thickness": 0.5,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 7.764,
+   "y1": 8.0,
+   "x2": 9.744,
+   "y2": 8.0,
+   "thickness": 0.16,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 8.164,
+   "y": 8.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 9.284,
+   "y1": 7.832,
+   "x2": 9.284,
+   "y2": 4.0,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 10.964,
+   "y": 7.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 12.084,
+   "y1": 6.832,
+   "x2": 12.084,
+   "y2": 3.5,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 13.764,
+   "y": 6.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 14.884,
+   "y1": 5.832,
+   "x2": 14.884,
+   "y2": 1.75,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 16.564,
+   "y": 4.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 17.684,
+   "y1": 4.332,
+   "x2": 17.684,
+   "y2": 1.0,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 19.364,
+   "y": 6.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 20.484,
+   "y1": 5.832,
+   "x2": 20.484,
+   "y2": 2.25,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "augmentationDot",
+   "x": 20.894,
+   "y": 5.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 22.632,
+   "y": 5.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 23.752,
+   "y1": 5.332,
+   "x2": 23.752,
+   "y2": 2.0,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 24.832,
+   "y": 5.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 24.892,
+   "y1": 5.168,
+   "x2": 24.892,
+   "y2": 8.5,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 27.032,
+   "y": 4.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 27.092,
+   "y1": 4.668,
+   "x2": 27.092,
+   "y2": 8.25,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 29.232,
+   "y": 4.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 29.292,
+   "y1": 4.168,
+   "x2": 29.292,
+   "y2": 8.0,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 31.432,
+   "y": 3.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 31.492,
+   "y1": 3.668,
+   "x2": 31.492,
+   "y2": 7.75,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 33.692,
+   "y1": 3.0,
+   "x2": 33.692,
+   "y2": 7.0,
+   "thickness": 0.16,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 34.422,
+   "y1": 3.0,
+   "x2": 34.422,
+   "y2": 7.0,
+   "thickness": 0.5,
+   "ink": "foreground"
+  }
+ ],
+ "width": 34.672,
+ "height": 10.0,
+ "staves": [
+  {
+   "type": "StaffGeometry",
+   "clef": "treble",
+   "top": 3.0,
+   "lines": 5
+  }
+ ],
+ "hit_regions": [
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 0,
+   "head": 0,
+   "x": 8.064,
+   "y": 7.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 0,
+   "head": null,
+   "x": 7.964,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.5
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 1,
+   "head": 0,
+   "x": 10.864,
+   "y": 6.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 1,
+   "head": null,
+   "x": 10.764,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 2,
+   "head": 0,
+   "x": 13.664,
+   "y": 5.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 2,
+   "head": null,
+   "x": 13.564,
+   "y": 1.75,
+   "width": 1.58,
+   "height": 6.25
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 3,
+   "head": 0,
+   "x": 16.464,
+   "y": 3.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 3,
+   "head": null,
+   "x": 16.364,
+   "y": 1.0,
+   "width": 1.58,
+   "height": 7.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 4,
+   "head": 0,
+   "x": 19.264,
+   "y": 5.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 4,
+   "head": null,
+   "x": 19.164,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 5,
+   "head": 0,
+   "x": 22.532,
+   "y": 4.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 5,
+   "head": null,
+   "x": 22.432,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 6,
+   "head": 0,
+   "x": 24.732,
+   "y": 4.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 6,
+   "head": null,
+   "x": 24.632,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.5
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 7,
+   "head": 0,
+   "x": 26.932,
+   "y": 3.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 7,
+   "head": null,
+   "x": 26.832,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.25
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 8,
+   "head": 0,
+   "x": 29.132,
+   "y": 3.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 8,
+   "head": null,
+   "x": 29.032,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 9,
+   "head": 0,
+   "x": 31.332,
+   "y": 2.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 9,
+   "head": null,
+   "x": 31.232,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 10,
+   "head": null,
+   "x": 33.312,
+   "y": 2.0,
+   "width": 1.66,
+   "height": 6
+  }
+ ],
+ "event_x": [
+  [
+   8.754,
+   11.554,
+   14.354,
+   17.154,
+   19.954,
+   23.222,
+   25.422,
+   27.622,
+   29.822,
+   32.022,
+   34.142
+  ]
+ ]
+}

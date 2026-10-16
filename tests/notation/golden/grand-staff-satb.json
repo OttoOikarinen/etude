@@ -1,0 +1,628 @@
+{
+ "type": "DisplayList",
+ "items": [
+  {
+   "type": "LineItem",
+   "x1": 5.099,
+   "y1": 3.0,
+   "x2": 22.371,
+   "y2": 3.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 5.099,
+   "y1": 4.0,
+   "x2": 22.371,
+   "y2": 4.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 5.099,
+   "y1": 5.0,
+   "x2": 22.371,
+   "y2": 5.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 5.099,
+   "y1": 6.0,
+   "x2": 22.371,
+   "y2": 6.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 5.099,
+   "y1": 7.0,
+   "x2": 22.371,
+   "y2": 7.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "gClef",
+   "x": 5.899,
+   "y": 6.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "accidentalSharp",
+   "x": 9.635,
+   "y": 3.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "timeSig2",
+   "x": 11.679,
+   "y": 4.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "timeSig4",
+   "x": 11.631,
+   "y": 6.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 15.311,
+   "y": 5.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 16.431,
+   "y1": 4.832,
+   "x2": 16.431,
+   "y2": 1.5,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 15.311,
+   "y": 6.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 15.371,
+   "y1": 6.168,
+   "x2": 15.371,
+   "y2": 9.5,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 18.911,
+   "y": 5.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 20.031,
+   "y1": 5.332,
+   "x2": 20.031,
+   "y2": 2.0,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 18.911,
+   "y": 6.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "accidentalSharp",
+   "x": 17.695,
+   "y": 6.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 18.971,
+   "y1": 6.668,
+   "x2": 18.971,
+   "y2": 10.0,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 21.391,
+   "y1": 3.0,
+   "x2": 21.391,
+   "y2": 7.0,
+   "thickness": 0.16,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 22.121,
+   "y1": 3.0,
+   "x2": 22.121,
+   "y2": 7.0,
+   "thickness": 0.5,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 5.099,
+   "y1": 16.0,
+   "x2": 22.371,
+   "y2": 16.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 5.099,
+   "y1": 17.0,
+   "x2": 22.371,
+   "y2": 17.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 5.099,
+   "y1": 18.0,
+   "x2": 22.371,
+   "y2": 18.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 5.099,
+   "y1": 19.0,
+   "x2": 22.371,
+   "y2": 19.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 5.099,
+   "y1": 20.0,
+   "x2": 22.371,
+   "y2": 20.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "fClef",
+   "x": 5.899,
+   "y": 17.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "accidentalSharp",
+   "x": 9.635,
+   "y": 17.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "timeSig2",
+   "x": 11.679,
+   "y": 17.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "timeSig4",
+   "x": 11.631,
+   "y": 19.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 14.911,
+   "y1": 15.0,
+   "x2": 16.891,
+   "y2": 15.0,
+   "thickness": 0.16,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 15.311,
+   "y": 14.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 16.431,
+   "y1": 14.332,
+   "x2": 16.431,
+   "y2": 11.0,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 15.311,
+   "y": 16.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 15.371,
+   "y1": 16.668,
+   "x2": 15.371,
+   "y2": 20.0,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 18.511,
+   "y1": 15.0,
+   "x2": 20.491,
+   "y2": 15.0,
+   "thickness": 0.16,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 18.911,
+   "y": 14.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 20.031,
+   "y1": 14.332,
+   "x2": 20.031,
+   "y2": 11.0,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 18.911,
+   "y": 18.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 18.971,
+   "y1": 18.168,
+   "x2": 18.971,
+   "y2": 21.5,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 21.391,
+   "y1": 16.0,
+   "x2": 21.391,
+   "y2": 20.0,
+   "thickness": 0.16,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 22.121,
+   "y1": 16.0,
+   "x2": 22.121,
+   "y2": 20.0,
+   "thickness": 0.5,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 5.179,
+   "y1": 3.0,
+   "x2": 5.179,
+   "y2": 20.0,
+   "thickness": 0.16,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "brace",
+   "x": 3.62,
+   "y": 20.0,
+   "ink": "foreground",
+   "scale": 4.25
+  },
+  {
+   "type": "LineItem",
+   "x1": 21.391,
+   "y1": 7.0,
+   "x2": 21.391,
+   "y2": 16.0,
+   "thickness": 0.16,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 22.121,
+   "y1": 7.0,
+   "x2": 22.121,
+   "y2": 16.0,
+   "thickness": 0.5,
+   "ink": "foreground"
+  },
+  {
+   "type": "TextItem",
+   "text": "S A",
+   "x": 3.02,
+   "y": 5.35,
+   "size": 1.4,
+   "align": "end",
+   "bold": false,
+   "ink": "foreground"
+  },
+  {
+   "type": "TextItem",
+   "text": "T B",
+   "x": 3.02,
+   "y": 18.35,
+   "size": 1.4,
+   "align": "end",
+   "bold": false,
+   "ink": "foreground"
+  }
+ ],
+ "width": 22.371,
+ "height": 23.0,
+ "staves": [
+  {
+   "type": "StaffGeometry",
+   "clef": "treble",
+   "top": 3.0,
+   "lines": 5
+  },
+  {
+   "type": "StaffGeometry",
+   "clef": "bass",
+   "top": 16.0,
+   "lines": 5
+  }
+ ],
+ "hit_regions": [
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 0,
+   "head": 0,
+   "x": 15.211,
+   "y": 4.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 0,
+   "head": null,
+   "x": 15.111,
+   "y": 1.5,
+   "width": 1.58,
+   "height": 6.5
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 3,
+   "head": 0,
+   "x": 15.211,
+   "y": 5.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 3,
+   "head": null,
+   "x": 15.111,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 7.5
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 1,
+   "head": 0,
+   "x": 18.811,
+   "y": 4.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 1,
+   "head": null,
+   "x": 18.711,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 4,
+   "head": 0,
+   "x": 18.811,
+   "y": 5.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 4,
+   "head": null,
+   "x": 17.495,
+   "y": 2.0,
+   "width": 2.796,
+   "height": 8.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 5,
+   "head": null,
+   "x": 21.011,
+   "y": 2.0,
+   "width": 1.66,
+   "height": 6
+  },
+  {
+   "type": "HitRegion",
+   "staff": 1,
+   "event": 0,
+   "head": 0,
+   "x": 15.211,
+   "y": 13.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 1,
+   "event": 0,
+   "head": null,
+   "x": 15.111,
+   "y": 11.0,
+   "width": 1.58,
+   "height": 10.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 1,
+   "event": 3,
+   "head": 0,
+   "x": 15.211,
+   "y": 15.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 1,
+   "event": 3,
+   "head": null,
+   "x": 15.111,
+   "y": 15.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 1,
+   "event": 1,
+   "head": 0,
+   "x": 18.811,
+   "y": 13.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 1,
+   "event": 1,
+   "head": null,
+   "x": 18.711,
+   "y": 11.0,
+   "width": 1.58,
+   "height": 10.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 1,
+   "event": 4,
+   "head": 0,
+   "x": 18.811,
+   "y": 17.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 1,
+   "event": 4,
+   "head": null,
+   "x": 18.711,
+   "y": 15.0,
+   "width": 1.58,
+   "height": 6.5
+  },
+  {
+   "type": "HitRegion",
+   "staff": 1,
+   "event": 5,
+   "head": null,
+   "x": 21.011,
+   "y": 15.0,
+   "width": 1.66,
+   "height": 6
+  }
+ ],
+ "event_x": [
+  [
+   15.901,
+   19.501,
+   5.099,
+   15.901,
+   19.501,
+   21.841
+  ],
+  [
+   15.901,
+   19.501,
+   5.099,
+   15.901,
+   19.501,
+   21.841
+  ]
+ ]
+}

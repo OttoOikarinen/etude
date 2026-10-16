@@ -1,0 +1,472 @@
+{
+ "type": "DisplayList",
+ "items": [
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 3.0,
+   "x2": 35.748,
+   "y2": 3.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 4.0,
+   "x2": 35.748,
+   "y2": 4.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 5.0,
+   "x2": 35.748,
+   "y2": 5.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 6.0,
+   "x2": 35.748,
+   "y2": 6.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 7.0,
+   "x2": 35.748,
+   "y2": 7.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "gClef",
+   "x": 0.8,
+   "y": 6.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "accidentalFlat",
+   "x": 4.484,
+   "y": 5.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "accidentalFlat",
+   "x": 5.468,
+   "y": 3.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "timeSig6",
+   "x": 7.376,
+   "y": 4.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "timeSig8",
+   "x": 7.372,
+   "y": 6.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "BeamItem",
+   "x1": 11.808,
+   "y1": 8.255,
+   "x2": 17.528,
+   "y2": 7.745,
+   "thickness": 0.5,
+   "ink": "foreground"
+  },
+  {
+   "type": "BeamItem",
+   "x1": 20.208,
+   "y1": 6.755,
+   "x2": 25.928,
+   "y2": 6.245,
+   "thickness": 0.5,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 11.808,
+   "y": 5.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "accidentalNatural",
+   "x": 10.916,
+   "y": 5.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 11.868,
+   "y1": 5.168,
+   "x2": 11.868,
+   "y2": 8.5,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 14.608,
+   "y": 4.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 14.668,
+   "y1": 4.668,
+   "x2": 14.668,
+   "y2": 8.25,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 17.408,
+   "y": 4.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 17.468,
+   "y1": 4.168,
+   "x2": 17.468,
+   "y2": 8.0,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 20.208,
+   "y": 3.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "accidentalNatural",
+   "x": 19.316,
+   "y": 3.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 20.268,
+   "y1": 3.668,
+   "x2": 20.268,
+   "y2": 7.0,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 23.008,
+   "y": 3.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 23.068,
+   "y1": 3.168,
+   "x2": 23.068,
+   "y2": 6.75,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 25.808,
+   "y": 2.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 25.868,
+   "y1": 2.668,
+   "x2": 25.868,
+   "y2": 6.5,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 28.068,
+   "y1": 3.0,
+   "x2": 28.068,
+   "y2": 7.0,
+   "thickness": 0.16,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 29.348,
+   "y": 3.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 29.408,
+   "y1": 3.168,
+   "x2": 29.408,
+   "y2": 6.5,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 32.948,
+   "y": 4.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "LineItem",
+   "x1": 33.008,
+   "y1": 4.168,
+   "x2": 33.008,
+   "y2": 7.5,
+   "thickness": 0.12,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "flag8thDown",
+   "x": 32.948,
+   "y": 7.632,
+   "ink": "foreground",
+   "scale": 1.0
+  }
+ ],
+ "width": 35.748,
+ "height": 10.0,
+ "staves": [
+  {
+   "type": "StaffGeometry",
+   "clef": "treble",
+   "top": 3.0,
+   "lines": 5
+  }
+ ],
+ "hit_regions": [
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 0,
+   "head": 0,
+   "x": 11.708,
+   "y": 4.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 0,
+   "head": null,
+   "x": 10.716,
+   "y": 2.0,
+   "width": 2.472,
+   "height": 6.5
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 1,
+   "head": 0,
+   "x": 14.508,
+   "y": 3.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 1,
+   "head": null,
+   "x": 14.408,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.25
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 2,
+   "head": 0,
+   "x": 17.308,
+   "y": 3.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 2,
+   "head": null,
+   "x": 17.208,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 3,
+   "head": 0,
+   "x": 20.108,
+   "y": 2.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 3,
+   "head": null,
+   "x": 19.116,
+   "y": 2.0,
+   "width": 2.472,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 4,
+   "head": 0,
+   "x": 22.908,
+   "y": 2.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 4,
+   "head": null,
+   "x": 22.808,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 5,
+   "head": 0,
+   "x": 25.708,
+   "y": 1.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 5,
+   "head": null,
+   "x": 25.608,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 6,
+   "head": null,
+   "x": 27.688,
+   "y": 2.0,
+   "width": 0.76,
+   "height": 6
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 7,
+   "head": 0,
+   "x": 29.248,
+   "y": 2.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 7,
+   "head": null,
+   "x": 29.148,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 8,
+   "head": 0,
+   "x": 32.848,
+   "y": 3.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 8,
+   "head": null,
+   "x": 32.748,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  }
+ ],
+ "event_x": [
+  [
+   12.398,
+   15.198,
+   17.998,
+   20.798,
+   23.598,
+   26.398,
+   28.068,
+   29.938,
+   33.538
+  ]
+ ]
+}
