@@ -139,6 +139,46 @@ class PitchName:
     def is_enharmonic(self, other: PitchName) -> bool:
         return self.pitch_class == other.pitch_class
 
+    def respell(self, letter: Letter) -> PitchName:
+        """Spell the same pitch class on ``letter``: C♯ on D is D♭, B♯ on C is C.
+
+        Raises :class:`ValueError` when the spelling would need more than a
+        triple sharp or flat.
+        """
+        alter = (self.pitch_class - letter.semitones + 6) % 12 - 6
+        return PitchName(letter, alter)
+
+    def enharmonics(self, *, max_alter: int = 2) -> tuple[PitchName, ...]:
+        """Other spellings of this pitch class with at most ``max_alter`` accidentals.
+
+        Ordered along the line of fifths (flattest first): ``C♯`` gives
+        ``(D♭, B𝄪)``. ``self`` is not included.
+        """
+        found: list[PitchName] = []
+        for letter in Letter:
+            alter = (self.pitch_class - letter.semitones + 6) % 12 - 6
+            if abs(alter) <= max_alter and letter != self.letter:
+                found.append(PitchName(letter, alter))
+        return tuple(sorted(found, key=lambda name: name.line_of_fifths))
+
+    def simplest(self, *, prefer_flats: bool = False) -> PitchName:
+        """The spelling with the fewest accidentals: B♯ → C, E𝄫 → D, F♭ → E.
+
+        A name that already has the fewest accidentals is kept (D♭ stays
+        D♭). Otherwise a tie between a sharp and a flat spelling goes to the
+        sharp unless ``prefer_flats`` is set: B𝄪 → C♯, or D♭ with
+        ``prefer_flats``.
+        """
+        candidates = (self, *self.enharmonics(max_alter=MAX_ALTER))
+        best = min(abs(name.alter) for name in candidates)
+        if abs(self.alter) == best:
+            return self
+        sign = -1 if prefer_flats else 1
+        return min(
+            (name for name in candidates if abs(name.alter) == best),
+            key=lambda name: name.alter * -sign,
+        )
+
     def __str__(self) -> str:
         return self.letter.name + _ASCII_ACCIDENTALS[self.alter]
 
@@ -231,6 +271,26 @@ class Pitch:
 
     def is_enharmonic(self, other: Pitch) -> bool:
         return self.midi == other.midi
+
+    def respell(self, letter: Letter) -> Pitch:
+        """Spell the same sounding pitch on ``letter``: C♯4 → D♭4, B♯3 → C4, C4 → B♯3.
+
+        The octave follows the letter, so the MIDI number never changes.
+        Raises :class:`ValueError` beyond a triple sharp or flat.
+        """
+        alter = (self.pitch_class - letter.semitones + 6) % 12 - 6
+        natural = self.midi - alter
+        return Pitch(letter, alter, (natural - letter.semitones) // 12 - 1)
+
+    def enharmonics(self, *, max_alter: int = 2) -> tuple[Pitch, ...]:
+        """Other spellings of the same sounding pitch (see :meth:`PitchName.enharmonics`)."""
+        return tuple(
+            self.respell(name.letter) for name in self.name.enharmonics(max_alter=max_alter)
+        )
+
+    def simplest(self, *, prefer_flats: bool = False) -> Pitch:
+        """The same sounding pitch with the fewest accidentals: B♯3 → C4."""
+        return self.respell(self.name.simplest(prefer_flats=prefer_flats).letter)
 
     def _key(self) -> tuple[int, int]:
         return (self.midi, self.diatonic_index)
