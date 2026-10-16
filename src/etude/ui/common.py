@@ -5,12 +5,13 @@
 
 from __future__ import annotations
 
+import locale
 from functools import cache
 from gettext import gettext as _
 
 from gi.repository import Gdk, Gio, Gtk
 
-from ..core import PitchName
+from ..core import PitchName, naming
 
 APP_ID = 'fi.oikarinenotto.etude'
 RESOURCE_PATH = '/fi/oikarinenotto/etude'
@@ -106,9 +107,15 @@ def format_duration(ms: int) -> str:
 
 
 def note_label(name: PitchName) -> str:
-    """Display name of a note.
+    """Display name of a note in the learner's naming convention (``note-naming``)."""
+    return naming.pitch_name(name)
 
-    W2: switch to the user's note naming convention (``note-naming`` key) once the
-    theory core's naming helpers land; W1 shows English names with Unicode accidentals.
-    """
-    return name.symbol
+
+def apply_note_naming(settings: Gio.Settings | None) -> None:
+    """Make the ``note-naming`` setting the default for all note, key and chord names."""
+    value = settings.get_string('note-naming') if settings is not None else 'automatic'
+    if value == 'automatic':
+        convention = naming.convention_for_locale(locale.getlocale(locale.LC_MESSAGES)[0])
+    else:
+        convention = naming.NamingConvention(value)
+    naming.set_default_convention(convention)

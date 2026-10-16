@@ -13,7 +13,7 @@ from gettext import ngettext
 from gi.repository import Adw, GObject, Gtk
 
 from ..common import format_percent, ui_resource
-from ..preview import ProgressData
+from ..model import ProgressData
 from ..widgets.bar_chart import BarChart
 
 
@@ -47,8 +47,8 @@ def format_minutes(minutes: int) -> str:
 class ProgressPage(Adw.NavigationPage):
     """Signals: ``drill-requested(item_ids: tuple)``, ``period-changed(period: str)``.
 
-    The page asks for the data of a period through :attr:`data_source` (W1:
-    :func:`etude.ui.preview.progress`; W2: the statistics of the learning engine).
+    The page asks for the data of a period through :attr:`data_source`
+    (:meth:`etude.ui.model.AppModel.progress`).
     """
 
     __gtype_name__ = 'EtudeProgressPage'
@@ -80,6 +80,11 @@ class ProgressPage(Adw.NavigationPage):
         self.charts_box.set_orientation(
             Gtk.Orientation.VERTICAL if self.compact else Gtk.Orientation.HORIZONTAL
         )
+
+    @property
+    def period(self) -> str:
+        """``'week'``, ``'month'`` or ``'all'``."""
+        return self.period_group.get_active_name() or 'week'
 
     def set_data(self, data: ProgressData) -> None:
         self.data = data

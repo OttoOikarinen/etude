@@ -28,7 +28,11 @@ gi.require_version('Adw', '1')
 
 from gi.repository import Adw, Gio, Gtk
 
+from .learning.stats import StatsConfig
+from .services import Services
+from .ui.common import apply_note_naming, get_settings
 from .ui.dialogs.preferences import PreferencesDialog
+from .ui.model import LiveModel
 from .window import EtudeWindow
 
 PROJECT_URL = 'https://github.com/OttoOikarinen/etude'
@@ -44,10 +48,30 @@ class EtudeApplication(Adw.Application):
             resource_base_path='/fi/oikarinenotto/etude',
         )
         self.version = version
+        self.services: Services | None = None
+        self.model: LiveModel | None = None
         self.create_action('quit', lambda *_: self.quit(), ['<control>q'])
         self.create_action('about', self.on_about_action)
         self.create_action('preferences', self.on_preferences_action, ['<control>comma'])
         # app.shortcuts and Ctrl+? come from AdwApplication, which loads shortcuts-dialog.ui.
+
+    def do_startup(self):
+        Adw.Application.do_startup(self)
+        settings = get_settings()
+        apply_note_naming(settings)
+        if settings is not None:
+            settings.connect('changed::note-naming', lambda s, _k: apply_note_naming(s))
+            goal = settings.get_uint('daily-goal')
+        else:
+            goal = StatsConfig().daily_goal
+        self.services = Services.open(stats_config=StatsConfig(daily_goal=goal))
+        self.model = LiveModel(self.services, settings)
+
+    def do_shutdown(self):
+        if self.services is not None:
+            self.services.close()
+            self.services = None
+        Adw.Application.do_shutdown(self)
 
     def do_activate(self):
         """Called when the application is activated.
@@ -57,7 +81,7 @@ class EtudeApplication(Adw.Application):
         """
         win = self.props.active_window
         if not win:
-            win = EtudeWindow(application=self)
+            win = EtudeWindow(self.model, application=self)
         win.present()
 
     def on_about_action(self, *args):

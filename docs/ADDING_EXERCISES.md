@@ -5,13 +5,17 @@ Exercises are data, not UI code. An exercise is a subclass of
 `src/etude/exercises/families/`. The generic exercise page renders any
 question it produces, so a new exercise normally needs no widget code.
 
+The reference exercise is
+[`key_signatures.py`](../src/etude/exercises/families/key_signatures.py):
+read it alongside this guide.
+
 ## 1. Choose items
 
 Decide what the learner should *know*, and give every piece of knowledge
 an item id under a prefix that no other exercise uses:
 
 ```
-keysig.major.0       keysig.major.4s      keysig.minor.3f
+keysig.major.0       keysig.major.4s      keysig.minor.3b
 interval.ear.melodic.asc.m6               interval.ear.harmonic.A4
 ```
 
@@ -33,7 +37,13 @@ session builder introduces earlier items first.
 * Choose an `AnswerSpec`. Give every choice option an accelerator
   (`'1'`–`'9'`, or a mnemonic letter) as the design requires.
 * If the figure would give the answer away to a screen reader, set
-  `description` on the figure yourself.
+  `description` on the figure yourself. The automatic description names
+  every note ("Treble staff, one note: F4"), so a note-naming question
+  must describe the staff without the note.
+* Write note, key, chord and interval names with `etude.core.naming`
+  (`pitch_name`, `key_name`, `chord_name`, `interval_name` …) and never
+  pass a convention: the application sets the learner's convention
+  (English, German/Nordic H/B or fixed do) as the default.
 
 ## 3. Grade with an explanation
 
@@ -47,7 +57,22 @@ that *why* matters more than *whether*, so:
 * For ear training, set `play_expected` and `play_given` so the learner can
   compare.
 
-## 4. Register
+## 4. Describe it for the UI
+
+Optional hooks with sensible defaults:
+
+* `glyph`: the symbol in the home page's icon tile (`'♯'`, `'♪'` …).
+* `play_label`: the play button's label, e.g. "Play chord".
+* `describe_settings(settings)`: the header subtitle, e.g. "Treble clef ·
+  up to 5 accidentals".
+* `item_label(item_id)`: an item's name in "Weakest items", e.g.
+  "6 flats — key signature".
+* `answer_label(question, value)`: how an answer reads in feedback; the
+  default joins option labels.
+* `ChipGroup(accidentals=True)` adds a ♯ / ♭ chip to a group of natural
+  note letters (design 1f).
+
+## 5. Register
 
 Expose the exercises of the module as `EXERCISES`:
 
@@ -59,58 +84,29 @@ The registry discovers the module automatically. Add the file to
 `src/etude/exercises/families/meson.build` and to `po/POTFILES.in`
 (`tests/test_packaging.py` reminds you).
 
-## 5. Test
+## 6. Test
 
-Add `tests/exercises/test_<family>.py` with at least:
+`tests/exercises/test_all_exercises.py` checks every registered exercise
+automatically, under its default settings and each setting at its
+extremes: items are unique and owned by the exercise, questions are
+deterministic for a seed, the expected answer is one of the options,
+accelerators are unique, `grade(expected)` is correct and every wrong
+option is graded wrong, and ear-training questions have a written
+alternative.
 
-* a property test over many seeds and every item: the expected answer is
-  one of the options, options are distinct, `grade(expected)` is correct
-  and a wrong option is graded wrong;
-* tests of the musical facts behind the explanations;
-* a test that ear-training questions have a written alternative.
+Add `tests/exercises/test_<family>.py` for what only you can check: the
+musical facts behind questions and explanations (see
+`test_key_signatures.py`).
 
-## Skeleton
+## 7. Look at it
 
-```python
-# SPDX-FileCopyrightText: 2026 Your Name
-# SPDX-License-Identifier: GPL-3.0-or-later
+Render the exercise as the learner sees it, in light and dark, with a
+question, a correct and a wrong answer:
 
-"""Key signatures: name the key from the accidentals on the staff."""
-
-from __future__ import annotations
-
-import random
-from collections.abc import Mapping, Sequence
-from gettext import gettext as _
-
-from ...learning.model import ItemId
-from ..base import ChoiceAnswer, ExerciseDefinition, Family, Feedback, Modality, Question
-
-
-class KeySignatures(ExerciseDefinition):
-    id = 'key-signatures'
-    item_prefix = 'keysig.'
-    family = Family.NOTATION
-    modality = Modality.EYE
-    level = 1
-    icon_name = 'music-key-signature-symbolic'
-
-    @property
-    def title(self) -> str:
-        return _('Key Signatures')
-
-    @property
-    def description(self) -> str:
-        return _('Name the major or minor key from the sharps and flats on the staff.')
-
-    def items(self, settings: Mapping[str, object]) -> Sequence[ItemId]: ...
-
-    def generate(
-        self, item_id: ItemId, settings: Mapping[str, object], rng: random.Random
-    ) -> Question: ...
-
-    def grade(self, question: Question, given: object) -> Feedback: ...
-
-
-EXERCISES = (KeySignatures(),)
+```sh
+flatpak run --filesystem=$PWD --socket=wayland --command=python3 \
+    org.gnome.Sdk//51 tests/ui/screenshots.py --output build/screenshots --live keysig
 ```
+
+(The SDK has no `fsrs`; put a copy of it on `PYTHONPATH` inside the
+sandbox, for example from your virtual environment.)

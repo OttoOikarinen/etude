@@ -60,6 +60,10 @@ Contract changes so far (all backwards-compatible):
   downbeats.
 * W1 learning: `SessionRecord` and `SessionLog.between()` let statistics
   compute time practised, session counts and personal bests.
+* W2 exercises: `ChipGroup.accidentals`; `ExerciseDefinition.glyph`,
+  `play_label`, `item_label()` and `answer_label()` (all with defaults).
+  `etude.core.naming` gained a default convention, set from the
+  `note-naming` setting.
 * W1 notation: `CurveItem` (ties) joins the display-list `Item` union,
   `GlyphItem.scale` lets a brace span a system, and `StaffSpec.voices`
   adds further voices to a staff (first voice stems up, the rest down).
@@ -82,6 +86,21 @@ ExerciseDefinition.grade(question, given) ──▶ Feedback ──▶ FeedbackB
       ▼
 Outcome ──derive_rating──▶ Rating ──Scheduler.review──▶ Card ──▶ CardStore
 ```
+
+### Who runs a session
+
+* `etude.services.Services` owns the long-lived objects: the SQLite
+  database, the exercise registry, the `LearningEngine` and the audio
+  backend (started on first use).
+* `etude.exercises.runner.SessionRunner` runs one session: it asks the
+  engine for a plan, generates and grades questions with the exercise
+  definitions and records every answer. It has no UI code.
+* `etude.ui.model.LiveModel` turns statistics into page data and starts
+  runners; `etude.ui.preview.PreviewModel` serves the design mockups' fixed
+  data instead, for screenshots and UI tests. The window only sees the
+  `AppModel` protocol.
+* `etude.ui.controller.ExerciseController` connects an `ExercisePage`, a
+  running session and the model's audio, and shows the summary dialog.
 
 ### Knowledge items
 

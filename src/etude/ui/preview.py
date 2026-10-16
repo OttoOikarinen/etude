@@ -1,14 +1,13 @@
 # SPDX-FileCopyrightText: 2026 Otto Oikarinen
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""STUB DATA FOR W1 — fake exercises, statistics, questions and a fake session.
+"""The design mockups' data: fixed exercises, statistics, questions and a session.
 
-The W1 UI shell is built against this module so that every screen of the
-design can be shown and tested before the learning engine, storage and the
-real exercises exist. W2 replaces every use of this module with the
-exercise registry (:mod:`etude.exercises.registry`), the session builder and
-the statistics of :mod:`etude.learning`. Nothing here is real data, and no
-code outside ``etude.ui`` may import it.
+:class:`PreviewModel` is an :class:`~etude.ui.model.AppModel` that shows
+exactly the numbers and questions of the design (1a–1j), so screenshots can
+be compared with the mockups and UI tests have stable expectations. The
+application itself uses :class:`~etude.ui.model.LiveModel`. Nothing here is
+real data, and no code outside ``etude.ui`` and the UI tests may import it.
 """
 
 from __future__ import annotations
@@ -42,26 +41,11 @@ from ..exercises.base import (
     TapAnswer,
     TextAnswer,
 )
-from ..learning.model import ItemId, SessionSummary
+from ..learning.model import ItemId, SessionMode, SessionSummary
 from ..notation.spec import Bracket, Chord, Clef, Head, Ink, StaffSpec
+from .model import ContinueData, ExerciseCardData, ProgressData, StreakData, WeakItem
 
 # Home -------------------------------------------------------------------------
-
-
-@dataclass(frozen=True, slots=True)
-class ExerciseCardData:
-    """What the home page shows for one exercise. W2: from the registry and statistics."""
-
-    id: str
-    title: str
-    description: str
-    family: Family
-    glyph: str
-    """Short symbol drawn in the icon tile (W2: the exercise's ``icon_name``)."""
-    accuracy: float | None
-    sessions: int
-    recency: int
-    """Lower = practised more recently; used by "Sort: Recent"."""
 
 
 def exercise_cards() -> tuple[ExerciseCardData, ...]:
@@ -129,23 +113,8 @@ def exercise_cards() -> tuple[ExerciseCardData, ...]:
     )
 
 
-@dataclass(frozen=True, slots=True)
-class ContinueData:
-    exercise_id: str
-    title: str
-    answered: int
-    total: int
-    accuracy: float
-
-
 def continue_data() -> ContinueData:
     return ContinueData('interval-ear', _('Intervals — by ear'), 7, 20, 0.64)
-
-
-@dataclass(frozen=True, slots=True)
-class StreakData:
-    days: int
-    practised_today: bool
 
 
 def streak() -> StreakData:
@@ -153,29 +122,6 @@ def streak() -> StreakData:
 
 
 # Progress ---------------------------------------------------------------------
-
-
-@dataclass(frozen=True, slots=True)
-class WeakItem:
-    title: str
-    accuracy: float
-    item_id: ItemId
-
-
-@dataclass(frozen=True, slots=True)
-class ProgressData:
-    streak: int
-    longest_streak: int
-    accuracy: float
-    accuracy_change: int
-    """Percentage points compared with the previous period."""
-    minutes: int
-    sessions: int
-    by_exercise: tuple[tuple[str, float], ...]
-    answered: tuple[tuple[str, int], ...]
-    """Questions answered per day (or week); the last entry is the current one."""
-    weakest: tuple[WeakItem, ...]
-    drill_count: int
 
 
 def progress(period: str = 'week') -> ProgressData:
@@ -367,7 +313,7 @@ def preview_questions() -> dict[str, PreviewQuestion]:
         _('Name the chord'),
         ChipsAnswer(
             (
-                ChipGroup('root', _('Root'), letters),
+                ChipGroup('root', _('Root'), letters, accidentals=True),
                 ChipGroup(
                     'quality',
                     _('Quality'),
@@ -648,7 +594,11 @@ class PreviewSession:
     def accuracy(self) -> float:
         return self.correct / self.answered if self.answered else 0.0
 
-    def answer(self, given: object) -> Feedback:
+    @property
+    def title(self) -> str:
+        return self.current.exercise_title
+
+    def answer(self, given: object, *, response_ms: int = 0, hinted: bool = False) -> Feedback:
         feedback = grade(self.current, given)
         self.answered += 1
         if feedback.correct:
@@ -661,12 +611,34 @@ class PreviewSession:
             self.mistakes.append(self.current.question.item_id)
         return feedback
 
+    def skip(self, *, response_ms: int = 0) -> Feedback:
+        item = self.current
+        self.answered += 1
+        self.streak = 0
+        self.mistakes.append(item.question.item_id)
+        label = answer_label(item.question, item.question.expected)
+        return Feedback(
+            False, _('Skipped — the answer is {answer}').format(answer=label), item.detail
+        )
+
+    def answer_label(self, value: object) -> str:
+        return answer_label(self.current.question, value)
+
     def advance(self) -> bool:
         """Move to the next question; ``False`` when the session is over."""
         if self.number >= self.total:
             return False
         self.index += 1
         return True
+
+    def finish(self) -> SessionSummary:
+        return self.summary()
+
+    def again(self) -> PreviewSession:
+        return PreviewSession(self.keys, start=1, total=self.total)
+
+    def review_mistakes(self, summary: SessionSummary) -> PreviewSession:
+        return PreviewSession(self.keys, start=1, total=max(1, len(summary.mistakes)))
 
     def summary(self) -> SessionSummary:
         return SessionSummary(
@@ -757,3 +729,55 @@ class PreviewKeySignatures(ExerciseDefinition):
 
     def grade(self, question: Question, given: object) -> Feedback:
         return grade(preview_questions()['keysig'], given)
+
+
+# The preview model -------------------------------------------------------------------
+
+
+class PreviewModel:
+    """An :class:`~etude.ui.model.AppModel` with the design's fixed data."""
+
+    def __init__(self) -> None:
+        self.played: list[PlaybackSpec] = []
+        """Playbacks requested so far; nothing is heard."""
+        self.started: list[tuple[SessionMode, str | None, tuple[ItemId, ...]]] = []
+
+    def exercise_cards(self) -> tuple[ExerciseCardData, ...]:
+        return exercise_cards()
+
+    def continue_data(self) -> ContinueData | None:
+        return continue_data()
+
+    def streak(self) -> StreakData:
+        return streak()
+
+    def progress(self, period: str) -> ProgressData:
+        return progress(period)
+
+    def definition(self, exercise_id: str) -> ExerciseDefinition | None:
+        return PreviewKeySignatures() if exercise_id == PreviewKeySignatures.id else None
+
+    def start(
+        self,
+        mode: SessionMode,
+        *,
+        exercise_id: str | None = None,
+        item_ids: tuple[ItemId, ...] = (),
+    ) -> PreviewSession:
+        self.started.append((mode, exercise_id, item_ids))
+        questions = preview_questions()
+        key = exercise_id if exercise_id in questions else 'interval-ear'
+        return PreviewSession([key])
+
+    @property
+    def audio_available(self) -> bool:
+        return True
+
+    def new_question(self) -> None:
+        pass
+
+    def play(self, spec: PlaybackSpec) -> None:
+        self.played.append(spec)
+
+    def stop_audio(self) -> None:
+        pass

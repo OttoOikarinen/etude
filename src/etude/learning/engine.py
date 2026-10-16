@@ -104,11 +104,14 @@ class LearningEngine:
         """Plan a session and open it in the session log.
 
         An unfinished previous session is finished first, so its answers keep
-        counting towards time practised.
+        counting towards time practised. When there is nothing to practise the
+        plan is empty and no session is opened.
         """
         if self._active is not None:
             self.finish_session(request.now)
         plan = self._builder.build(request)
+        if not plan:
+            return []
         session_id = self._sessions.start(request.mode, request.exercise_id, request.now)
         self._active = _ActiveSession(
             session_id, request.mode, request.exercise_id, request.now, plan

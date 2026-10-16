@@ -27,10 +27,12 @@ from gettext import ngettext
 from gi.repository import Adw, Gdk, Gio, GObject, Gtk
 
 from .exercises.base import Family
-from .ui import preview
+from .exercises.runner import EmptySessionError
+from .learning.model import ItemId, SessionMode
 from .ui.common import get_settings
-from .ui.controller import PreviewExerciseController
+from .ui.controller import ExerciseController, empty_session_message
 from .ui.dialogs.session_summary import RESPONSE_BACK
+from .ui.model import AppModel
 from .ui.pages.exercise import ExercisePage
 from .ui.pages.home import HomePage
 from .ui.pages.placeholder import create_placeholder_page
@@ -118,8 +120,9 @@ class EtudeWindow(Adw.ApplicationWindow):
 
     compact = GObject.Property(type=bool, default=False)
 
-    def __init__(self, **kwargs):
+    def __init__(self, model: AppModel, **kwargs):
         super().__init__(**kwargs)
+        self.model = model
         self.settings = get_settings()
         if self.settings is not None:
             flags = Gio.SettingsBindFlags.DEFAULT
@@ -127,24 +130,18 @@ class EtudeWindow(Adw.ApplicationWindow):
             self.settings.bind('window-height', self, 'default-height', flags)
             self.settings.bind('window-maximized', self, 'maximized', flags)
 
-        # Stub data for W1; W2 feeds these pages from the registry and statistics.
-        self.cards = preview.exercise_cards()
+        self.cards = list(model.exercise_cards())
         self.home_page = HomePage()
-        self.home_page.set_exercises(self.cards)
-        self.home_page.set_continue(preview.continue_data())
         self.home_page.connect('exercise-activated', self._on_exercise_activated)
         self.home_page.connect('resume-activated', lambda _p, ex: self.start_exercise(ex))
-        self.progress_page = ProgressPage(preview.progress)
+        self.progress_page = ProgressPage(model.progress)
         self.progress_page.connect('drill-requested', self._on_drill_requested)
         for page in (self.home_page, self.progress_page):
             self.bind_property('compact', page, 'compact', GObject.BindingFlags.SYNC_CREATE)
         self._placeholders: dict[str, Adw.NavigationPage] = {}
-        self.controller: PreviewExerciseController | None = None
-
-        streak = preview.streak()
-        self.streak_number.set_label(str(streak.days))
-        self.streak_caption.set_label(ngettext('Day streak', 'Day streak', streak.days))
-        self.practised_box.set_visible(streak.practised_today)
+        self.controller: ExerciseController | None = None
+        self._section = 'all'
+        self.refresh()
 
         self.rows: dict[str, SidebarRow] = {}
         for section in sections():
@@ -159,8 +156,21 @@ class EtudeWindow(Adw.ApplicationWindow):
 
     # Navigation -----------------------------------------------------------------------
 
+    def refresh(self) -> None:
+        """Reload the numbers shown on the home page, sidebar and progress page."""
+        self.cards = list(self.model.exercise_cards())
+        section = next(s for s in sections() if s.id == self._section)
+        self.home_page.set_exercises(self.cards, section.family)
+        self.home_page.set_continue(self.model.continue_data())
+        streak = self.model.streak()
+        self.streak_number.set_label(str(streak.days))
+        self.streak_caption.set_label(ngettext('Day streak', 'Day streak', streak.days))
+        self.practised_box.set_visible(streak.practised_today)
+        self.progress_page.set_data(self.model.progress(self.progress_page.period))
+
     def show_section(self, section_id: str) -> Adw.NavigationPage:
         section = next(s for s in sections() if s.id == section_id)
+        self._section = section_id
         self.sidebar_list.select_row(self.rows[section_id])
         if section_id == 'all' or section.family is not None:
             self.home_page.set_exercises(self.cards, section.family)
@@ -180,27 +190,46 @@ class EtudeWindow(Adw.ApplicationWindow):
         return page
 
     def open_setup(self, exercise_id: str) -> SetupPage:
-        page = SetupPage(preview.PreviewKeySignatures())
+        definition = self.model.definition(exercise_id)
+        assert definition is not None
+        page = SetupPage(definition)
         page.connect('start', lambda _p, ex, _settings: self.start_exercise(ex, replace=True))
         self.nav_view.push(page)
         return page
 
-    def start_exercise(self, exercise_id: str, replace: bool = False) -> ExercisePage:
-        questions = preview.preview_questions()
-        key = exercise_id if exercise_id in questions else 'keysig'
-        item = questions[key]
-        page = ExercisePage(item.exercise_title, item.modality)
+    def start_exercise(self, exercise_id: str, replace: bool = False) -> ExercisePage | None:
+        return self.start_session(SessionMode.EXERCISE, exercise_id=exercise_id, replace=replace)
+
+    def start_session(
+        self,
+        mode: SessionMode,
+        *,
+        exercise_id: str | None = None,
+        item_ids: tuple[ItemId, ...] = (),
+        replace: bool = False,
+    ) -> ExercisePage | None:
+        """Open the exercise page with a new session; ``None`` if there is nothing to do."""
+        try:
+            session = self.model.start(mode, exercise_id=exercise_id, item_ids=item_ids)
+        except EmptySessionError:
+            self.toast_overlay.add_toast(Adw.Toast(title=empty_session_message()))
+            return None
+        page = ExercisePage(session.title)
         self.bind_property('compact', page, 'compact', GObject.BindingFlags.SYNC_CREATE)
-        page.connect('close-requested', lambda _p: self.nav_view.pop_to_tag('main'))
-        session = preview.PreviewSession([key])
-        self.controller = PreviewExerciseController(page, session, self._on_session_finished)
+        page.connect('close-requested', lambda _p: self._close_session())
+        self.controller = ExerciseController(page, session, self.model, self._on_session_finished)
         if replace or self.nav_view.find_page('exercise') is not None:
             self.nav_view.replace([self.nav_view.find_page('main'), page])
         else:
             self.nav_view.push(page)
         return page
 
+    def _close_session(self) -> None:
+        self.nav_view.pop_to_tag('main')
+        self.refresh()
+
     def _on_session_finished(self, response: str) -> None:
+        self.refresh()
         if response == RESPONSE_BACK:
             self.nav_view.pop_to_tag('main')
 
@@ -211,13 +240,14 @@ class EtudeWindow(Adw.ApplicationWindow):
     # Handlers -------------------------------------------------------------------------
 
     def _on_exercise_activated(self, _page: HomePage, exercise_id: str) -> None:
-        if exercise_id == preview.PreviewKeySignatures.id:
+        definition = self.model.definition(exercise_id)
+        if definition is not None and definition.settings:
             self.open_setup(exercise_id)
         else:
             self.start_exercise(exercise_id)
 
-    def _on_drill_requested(self, _page: ProgressPage, _item_ids: tuple) -> None:
-        self.start_exercise('interval-ear')
+    def _on_drill_requested(self, _page: ProgressPage, item_ids: tuple) -> None:
+        self.start_session(SessionMode.DRILL_WEAK, item_ids=tuple(item_ids))
 
     def _on_key_pressed(
         self, _controller: Gtk.EventControllerKey, keyval: int, _code: int, state

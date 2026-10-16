@@ -137,3 +137,11 @@ def test_create_defaults() -> None:
     plan = engine.start_session(SessionRequest(SessionMode.DAILY_REVIEW, now=FakeClock().now))
     assert [q.item_id for q in plan] == ['k.0']
     assert engine.finish_session().total == 0
+
+
+def test_an_empty_plan_opens_no_session() -> None:
+    sessions = FakeSessionLog()
+    engine = LearningEngine.create(FakeCatalog({}), FakeCardStore(), FakeAttemptLog(), sessions)
+    assert engine.start_session(SessionRequest(SessionMode.DAILY_REVIEW, now=FakeClock().now)) == []
+    assert sessions.records == {}
+    assert engine.active_plan is None

@@ -25,7 +25,8 @@ def _gtk() -> tuple[Any, Any, Any]:
     gi.require_version('Adw', '1')
     from gi.repository import Adw, Gdk, Gtk
 
-    if not Gtk.init_check():
+    # GTK 4 can initialise without a display, so check for one explicitly.
+    if not Gtk.init_check() or Gdk.Display.get_default() is None:
         pytest.skip('no display')
     Adw.init()
     return Adw, Gdk, Gtk

@@ -62,9 +62,10 @@ def render(window, path: Path) -> None:
 
 
 def window_at(size: tuple[int, int]):
+    from etude.ui.preview import PreviewModel
     from etude.window import EtudeWindow
 
-    window = EtudeWindow()
+    window = EtudeWindow(PreviewModel())
     window.set_default_size(*size)
     window.present()
     wait(300)
@@ -169,10 +170,65 @@ def shoot(out: Path, scheme: str, size: tuple[int, int], suffix: str) -> None:
     window.destroy()
 
 
+def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
+    """Real exercises from the registry against a throw-away database: the first
+    question, a correct answer and (for choice answers) a wrong one, light and dark."""
+    import random
+
+    from gi.repository import Adw
+
+    from etude.audio.null import NullBackend
+    from etude.exercises.base import ChoiceAnswer
+    from etude.services import Services
+    from etude.ui.common import get_settings
+    from etude.ui.model import LiveModel
+    from etude.window import EtudeWindow
+
+    style = Adw.StyleManager.get_default()
+    with tempfile.TemporaryDirectory() as data_dir:
+        services = Services.open(Path(data_dir))
+        services._audio = NullBackend()
+        services.rng.seed(seed)
+        ids = exercise_ids or list(services.registry.exercise_ids())
+        for scheme in ('light', 'dark'):
+            style.set_color_scheme(
+                Adw.ColorScheme.FORCE_DARK if scheme == 'dark' else Adw.ColorScheme.FORCE_LIGHT
+            )
+            window = EtudeWindow(LiveModel(services, get_settings()))
+            window.set_default_size(*WIDE)
+            window.present()
+            wait(300)
+            for exercise_id in ids:
+                page = window.start_exercise(exercise_id, replace=True)
+                if page is None:
+                    print(f'{exercise_id}: nothing to practise')
+                    continue
+                render(window, out / f'live-{exercise_id}-question-{scheme}.png')
+                page.answer_widget.submit(page.question.expected)
+                render(window, out / f'live-{exercise_id}-correct-{scheme}.png')
+                window.controller.next()
+                answer = page.question.answer
+                if isinstance(answer, ChoiceAnswer):
+                    wrong = random.Random(seed).choice(
+                        [o.key for o in answer.options if o.key != page.question.expected]
+                    )
+                    page.answer_widget.submit(wrong)
+                    render(window, out / f'live-{exercise_id}-wrong-{scheme}.png')
+            window.destroy()
+        services.close()
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=Path('build/screenshots'))
     parser.add_argument('--only', choices=('light', 'dark', 'narrow'), action='append')
+    parser.add_argument(
+        '--live',
+        nargs='*',
+        metavar='EXERCISE',
+        help='shoot real exercises (all registered ones when no id is given)',
+    )
+    parser.add_argument('--seed', type=int, default=1)
     args = parser.parse_args()
     reason = smoke.unavailable_reason()
     if reason:
@@ -182,6 +238,9 @@ def main() -> int:
     with tempfile.TemporaryDirectory() as workdir:
         smoke.prepare(smoke.ROOT, Path(workdir))
         smoke.load_css()
+        if args.live is not None:
+            shoot_live(args.output, args.live, args.seed)
+            return 0
         runs = {
             'light': ('light', WIDE, ''),
             'dark': ('dark', WIDE, ''),
