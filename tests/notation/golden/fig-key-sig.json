@@ -1,0 +1,104 @@
+{
+ "type": "DisplayList",
+ "items": [
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 3.0,
+   "x2": 43.75,
+   "y2": 3.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 4.0,
+   "x2": 43.75,
+   "y2": 4.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 5.0,
+   "x2": 43.75,
+   "y2": 5.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 6.0,
+   "x2": 43.75,
+   "y2": 6.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 7.0,
+   "x2": 43.75,
+   "y2": 7.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "gClef",
+   "x": 0.8,
+   "y": 6.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "accidentalSharp",
+   "x": 4.484,
+   "y": 3.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "accidentalSharp",
+   "x": 5.56,
+   "y": 4.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "accidentalSharp",
+   "x": 6.636,
+   "y": 2.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "accidentalSharp",
+   "x": 7.712,
+   "y": 4.0,
+   "ink": "foreground",
+   "scale": 1.0
+  }
+ ],
+ "width": 43.75,
+ "height": 10.0,
+ "staves": [
+  {
+   "type": "StaffGeometry",
+   "clef": "treble",
+   "top": 3.0,
+   "lines": 5
+  }
+ ],
+ "hit_regions": [],
+ "event_x": [
+  []
+ ]
+}

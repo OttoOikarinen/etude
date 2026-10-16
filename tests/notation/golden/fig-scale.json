@@ -1,0 +1,410 @@
+{
+ "type": "DisplayList",
+ "items": [
+  {
+   "type": "CircleItem",
+   "cx": 20.536,
+   "cy": 6.0,
+   "radius": 1.2,
+   "ink": "accent",
+   "alpha": 0.16
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 3.0,
+   "x2": 43.75,
+   "y2": 3.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 4.0,
+   "x2": 43.75,
+   "y2": 4.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 5.0,
+   "x2": 43.75,
+   "y2": 5.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 6.0,
+   "x2": 43.75,
+   "y2": 6.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.0,
+   "y1": 7.0,
+   "x2": 43.75,
+   "y2": 7.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "gClef",
+   "x": 0.8,
+   "y": 6.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 5.664,
+   "y": 7.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 10.425,
+   "y": 7.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 15.186,
+   "y": 6.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "accidentalSharp",
+   "x": 13.97,
+   "y": 6.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 19.946,
+   "y": 6.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 24.707,
+   "y": 5.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 29.468,
+   "y": 5.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 34.229,
+   "y": 4.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "accidentalSharp",
+   "x": 33.013,
+   "y": 4.5,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteheadBlack",
+   "x": 38.989,
+   "y": 4.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "TextItem",
+   "text": "1",
+   "x": 6.254,
+   "y": 10.4,
+   "size": 1.35,
+   "align": "center",
+   "bold": false,
+   "ink": "dim"
+  },
+  {
+   "type": "TextItem",
+   "text": "2",
+   "x": 11.015,
+   "y": 10.4,
+   "size": 1.35,
+   "align": "center",
+   "bold": false,
+   "ink": "dim"
+  },
+  {
+   "type": "TextItem",
+   "text": "3",
+   "x": 15.776,
+   "y": 10.4,
+   "size": 1.35,
+   "align": "center",
+   "bold": false,
+   "ink": "dim"
+  },
+  {
+   "type": "TextItem",
+   "text": "4",
+   "x": 20.536,
+   "y": 10.4,
+   "size": 1.35,
+   "align": "center",
+   "bold": true,
+   "ink": "accent"
+  },
+  {
+   "type": "TextItem",
+   "text": "5",
+   "x": 25.297,
+   "y": 10.4,
+   "size": 1.35,
+   "align": "center",
+   "bold": false,
+   "ink": "dim"
+  },
+  {
+   "type": "TextItem",
+   "text": "6",
+   "x": 30.058,
+   "y": 10.4,
+   "size": 1.35,
+   "align": "center",
+   "bold": false,
+   "ink": "dim"
+  },
+  {
+   "type": "TextItem",
+   "text": "7",
+   "x": 34.819,
+   "y": 10.4,
+   "size": 1.35,
+   "align": "center",
+   "bold": false,
+   "ink": "dim"
+  },
+  {
+   "type": "TextItem",
+   "text": "8",
+   "x": 39.579,
+   "y": 10.4,
+   "size": 1.35,
+   "align": "center",
+   "bold": false,
+   "ink": "dim"
+  }
+ ],
+ "width": 43.75,
+ "height": 11.238,
+ "staves": [
+  {
+   "type": "StaffGeometry",
+   "clef": "treble",
+   "top": 3.0,
+   "lines": 5
+  }
+ ],
+ "hit_regions": [
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 0,
+   "head": 0,
+   "x": 5.564,
+   "y": 6.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 0,
+   "head": null,
+   "x": 5.464,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 1,
+   "head": 0,
+   "x": 10.325,
+   "y": 6.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 1,
+   "head": null,
+   "x": 10.225,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 2,
+   "head": 0,
+   "x": 15.086,
+   "y": 5.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 2,
+   "head": null,
+   "x": 13.77,
+   "y": 2.0,
+   "width": 2.796,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 3,
+   "head": 0,
+   "x": 19.846,
+   "y": 5.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 3,
+   "head": null,
+   "x": 19.746,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 4,
+   "head": 0,
+   "x": 24.607,
+   "y": 4.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 4,
+   "head": null,
+   "x": 24.507,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 5,
+   "head": 0,
+   "x": 29.368,
+   "y": 4.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 5,
+   "head": null,
+   "x": 29.268,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 6,
+   "head": 0,
+   "x": 34.129,
+   "y": 3.9,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 6,
+   "head": null,
+   "x": 32.813,
+   "y": 2.0,
+   "width": 2.796,
+   "height": 6.0
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 7,
+   "head": 0,
+   "x": 38.889,
+   "y": 3.4,
+   "width": 1.38,
+   "height": 1.2
+  },
+  {
+   "type": "HitRegion",
+   "staff": 0,
+   "event": 7,
+   "head": null,
+   "x": 38.789,
+   "y": 2.0,
+   "width": 1.58,
+   "height": 6.0
+  }
+ ],
+ "event_x": [
+  [
+   6.254,
+   11.015,
+   15.776,
+   20.536,
+   25.297,
+   30.058,
+   34.819,
+   39.579
+  ]
+ ]
+}
