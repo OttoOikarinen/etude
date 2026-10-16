@@ -30,6 +30,42 @@ from ..learning.model import ItemId, SessionMode, SessionRequest, SessionSummary
 from ..learning.stats import EPOCH, Stats
 from ..services import Services
 
+
+def weekday_label(day: date) -> str:
+    """Short weekday in the UI language (not the system's date locale)."""
+    names = (
+        # Translators: short weekday names under the "Questions answered" chart.
+        _('Mon'),
+        _('Tue'),
+        _('Wed'),
+        _('Thu'),
+        _('Fri'),
+        _('Sat'),
+        _('Sun'),
+    )
+    return names[day.weekday()]
+
+
+def month_label(month: int) -> str:
+    """Short month name in the UI language."""
+    names = (
+        # Translators: short month names under the "Questions answered" chart.
+        _('Jan'),
+        _('Feb'),
+        _('Mar'),
+        _('Apr'),
+        _('May'),
+        _('Jun'),
+        _('Jul'),
+        _('Aug'),
+        _('Sep'),
+        _('Oct'),
+        _('Nov'),
+        _('Dec'),
+    )
+    return names[month - 1]
+
+
 # Page data --------------------------------------------------------------------
 
 
@@ -407,7 +443,7 @@ class LiveModel:
         stats = self.stats
         if period == 'week':
             per_day = stats.questions_per_day(now, 7)
-            labels = [day.strftime('%a') for day, _count in per_day[:-1]] + [_('Today')]
+            labels = [weekday_label(day) for day, _count in per_day[:-1]] + [_('Today')]
             return tuple(zip(labels, (c for _d, c in per_day), strict=True))
         if period == 'month':
             # Four bars that add up to the 30 days of the other numbers: the
@@ -425,7 +461,7 @@ class LiveModel:
         for day, count in per_day:
             months[(day.year, day.month)] = months.get((day.year, day.month), 0) + count
         keys = sorted(months)[-5:]
-        labels = [date(y, m, 1).strftime('%b') for y, m in keys[:-1]] + [_('This month')]
+        labels = [month_label(m) for _y, m in keys[:-1]] + [_('This month')]
         return tuple(zip(labels, (months[k] for k in keys), strict=True))
 
     # Exercises and sessions

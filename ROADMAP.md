@@ -33,9 +33,9 @@ installable Flatpak bundle from CI for testing. The first public release
 ## W2 — Integration and the designed exercises
 
 - [x] Generic exercise page wired to the framework, scheduler and storage
-- [ ] Key signatures, note naming, intervals (staff and ear), chords, scale degrees
-- [ ] Today review, progress page, session summary, generated setup page
-- [ ] All 14 design mockups work with real data
+- [x] Key signatures, note naming, intervals (staff and ear), chords, scale degrees
+- [x] Today review, progress page, session summary, generated setup page
+- [x] All 14 design mockups work with real data
 
 ## W3 — Level 1 (fundamentals)
 
