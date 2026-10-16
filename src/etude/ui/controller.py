@@ -114,14 +114,17 @@ class ExerciseController:
 
     def finish(self) -> Adw.AlertDialog:
         self.summary = summary = self.session.finish()
-        shown = self.session.current
-        parts = [shown.exercise_title, questions_text(summary.total)]
-        if shown.settings_text and shown.settings_text != shown.exercise_title:
-            parts.append(shown.settings_text)
-        dialog = create_session_summary_dialog(summary, ' · '.join(p for p in parts if p))
+        dialog = create_session_summary_dialog(
+            summary, summary_subtitle(self.session, summary), mixed=self.is_mixed
+        )
         dialog.connect('response', self._on_response)
         dialog.present(self.page)
         return dialog
+
+    @property
+    def is_mixed(self) -> bool:
+        """Whether the session mixes exercises (daily review, weakest items, mistakes)."""
+        return self.session.title != self.session.current.exercise_title
 
     def _on_response(self, _dialog: Adw.AlertDialog, response: str) -> None:
         try:
@@ -141,6 +144,17 @@ class ExerciseController:
         self.page.window_title.set_title(session.title)
         self.page.set_elapsed(0)
         self.show_current()
+
+
+def summary_subtitle(session: SessionSource, summary: SessionSummary) -> str:
+    """E.g. "Key Signatures · 20 questions · Treble clef" or "Daily Review · 20 questions"."""
+    shown = session.current
+    parts = [session.title, questions_text(summary.total)]
+    # A one-exercise session describes its settings; in mixed sessions the
+    # settings text is just the exercise's title.
+    if shown.settings_text and shown.settings_text != shown.exercise_title:
+        parts.append(shown.settings_text)
+    return ' · '.join(p for p in parts if p)
 
 
 def empty_session_message() -> str:

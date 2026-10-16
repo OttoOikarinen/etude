@@ -447,6 +447,328 @@ def check_live_session() -> None:
             services.close()
 
 
+def check_today_preview() -> None:
+    from gi.repository import Gtk
+
+    from etude.learning.model import SessionMode
+    from etude.ui.preview import PreviewModel
+
+    window = new_window()
+    try:
+        assert window.rows['today'].count_label.get_visible()
+        assert window.rows['today'].count_label.get_label() == '24'
+        page = window.show_section('today')
+        assert page is window.today_page
+        assert page.hero_stack.get_visible_child_name() == 'review'
+        assert page.due_label.get_label() == '24 items due'
+        assert page.review_detail.get_label() == '5 new items to learn · 20 questions per session'
+        assert page.start_button.get_label() == '_Start Review'
+        assert page.goal_number.get_label() == '18 of 30'
+        assert page.goal_bar.get_value() == 18
+        assert not page.goal_icon.get_visible()
+        assert page.goal_detail.get_label() == '12 more questions to reach today’s goal'
+        assert page.streak_detail.get_label() == 'Meet today’s goal to make it 13 days'
+        assert len(page._due_rows) == 4
+        assert page.due_group.get_visible()
+        window.compact = True
+        assert page.review_box.get_orientation() == Gtk.Orientation.VERTICAL
+        assert page.start_button.get_halign() == Gtk.Align.FILL
+        window.compact = False
+        assert page.review_box.get_orientation() == Gtk.Orientation.HORIZONTAL
+        page._due_rows[1].emit('activated')
+        assert window.model.started[-1][:2] == (SessionMode.EXERCISE, 'keysig')
+        window.nav_view.pop_to_tag('main')
+        page.start_button.emit('clicked')
+        pump()
+        assert window.model.started[-1][0] is SessionMode.DAILY_REVIEW
+        assert window.visible_exercise_page() is not None
+    finally:
+        window.destroy()
+
+    window = new_window(PreviewModel(caught_up=True))
+    try:
+        assert not window.rows['today'].count_label.get_visible()
+        page = window.show_section('today')
+        assert page.hero_stack.get_visible_child_name() == 'caught-up'
+        assert page.caught_up_detail.get_label().startswith('Nothing is due for review.')
+        assert not page.due_group.get_visible()
+        assert page.goal_icon.get_visible()
+        assert page.goal_bar.has_css_class('goal-met')
+        assert page.goal_detail.get_label() == 'Today’s goal is met'
+        page.browse_button.emit('clicked')
+        assert window.split_view.get_content() is window.home_page
+    finally:
+        window.destroy()
+
+
+def check_continue_banner_preview() -> None:
+    window = new_window()
+    try:
+        home = window.home_page
+        assert home.continue_revealer.get_reveal_child()
+        assert home.continue_title.get_label() == 'Intervals — by ear'
+        assert home.continue_detail.get_label() == '7 of 20 answered · 64% accuracy'
+        home.resume_button.emit('clicked')
+        pump()
+        page = window.visible_exercise_page()
+        assert page is not None
+        assert not home.continue_revealer.get_reveal_child()
+        assert press(page, 'Escape')
+        pump()
+        assert window.visible_exercise_page() is None
+        assert home.continue_revealer.get_reveal_child(), 'closing keeps the session'
+        home.dismiss_button.emit('clicked')
+        assert not home.continue_revealer.get_reveal_child()
+        assert window.model.continue_data() is None
+    finally:
+        window.destroy()
+
+
+def check_progress_empty() -> None:
+    from etude.ui import preview
+    from etude.ui.pages.progress import ProgressPage
+
+    page = ProgressPage(preview.empty_progress)
+    assert not page.drill_button.get_visible()
+    assert page.accuracy_empty.get_visible()
+    assert page.weakest_group.get_description().startswith('No weak items yet.')
+    accuracy_card = _children(page.stat_cards)[1].get_child()
+    labels = [w.get_label() for w in _children(accuracy_card)]
+    assert labels[1] == '—', labels
+    assert labels[2] == 'No answers yet', labels
+    page.period_group.set_active_name('all')
+    assert not page.drill_button.get_visible()
+    # With data, the empty notes go away again.
+    page.set_data(preview.progress('week'))
+    assert page.drill_button.get_visible()
+    assert not page.accuracy_empty.get_visible()
+    assert not page.weakest_group.get_description()
+
+
+class _Clock:
+    """A clock for LiveModel that the test moves forward."""
+
+    def __init__(self) -> None:
+        from datetime import UTC, datetime
+
+        self.now = datetime.now(UTC)
+
+    def __call__(self):
+        return self.now
+
+    def advance(self, **kwargs) -> None:
+        from datetime import timedelta
+
+        self.now += timedelta(**kwargs)
+
+
+def _live_window(data_dir: str, clock=None):
+    from etude.audio.null import NullBackend
+    from etude.services import Services
+    from etude.ui.common import get_settings
+    from etude.ui.model import LiveModel
+
+    services = Services.open(Path(data_dir))
+    services._audio = NullBackend()
+    model = LiveModel(services, get_settings(), clock=clock)
+    get_settings().set_uint('questions-per-session', 5)
+    return new_window(model), services
+
+
+def _close_live(window, services) -> None:
+    from etude.ui.common import get_settings
+
+    for key in ('questions-per-session', 'daily-goal'):
+        get_settings().reset(key)
+    window.model.shutdown()
+    window.destroy()
+    services.close()
+
+
+def _answer(page, count: int, *, last: bool = False) -> None:
+    """Answer ``count`` questions correctly; move on after each one unless ``last``."""
+    for n in range(count):
+        page.answer_widget.submit(page.question.expected)
+        assert page.feedback is not None
+        assert page.feedback.correct, page.feedback.title
+        if n < count - 1 or not last:
+            assert press(page, 'Return')
+    pump()
+
+
+def check_live_new_learner() -> None:
+    """Empty states with real data: home cards, Today and progress for a brand-new learner."""
+    import tempfile
+
+    from etude.ui.pages.home import ExerciseCard
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        window, services = _live_window(data_dir)
+        try:
+            assert all(c.accuracy is None and c.sessions == 0 for c in window.cards)
+            card = next(
+                c.get_child()
+                for c in _children(window.home_page.card_grid)
+                if isinstance(c.get_child(), ExerciseCard)
+            )
+            texts = [w.get_label() for w in _children(_children(card.get_child())[-1])]
+            assert texts == ['Not started'], texts
+            assert not window.home_page.continue_revealer.get_reveal_child()
+            today = window.model.today()
+            assert today.due == 0
+            assert today.new > 0
+            page = window.show_section('today')
+            assert page.hero_stack.get_visible_child_name() == 'review'
+            assert page.start_button.get_label() == '_Learn New Items'
+            assert not page.due_group.get_visible()
+            assert page.goal_number.get_label() == '0 of 30'
+            assert not window.rows['today'].count_label.get_visible()
+            progress = window.model.progress('week')
+            assert progress.accuracy is None
+            assert progress.accuracy_change is None
+            assert progress.weakest == ()
+            assert progress.drill_count == 0
+            window.show_section('progress')
+            assert not window.progress_page.drill_button.get_visible()
+            for period in ('month', 'all'):
+                window.progress_page.period_group.set_active_name(period)
+                assert window.progress_page.data.sessions == 0
+            window.progress_page.period_group.set_active_name('week')
+        finally:
+            _close_live(window, services)
+
+
+def check_live_resume_session() -> None:
+    """Close a real session after two answers, resume it from the banner and finish it."""
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        clock = _Clock()
+        window, services = _live_window(data_dir, clock)
+        model = window.model
+        home = window.home_page
+        try:
+            page = window.start_exercise('keysig')
+            _answer(page, 2)
+            assert page.window_title.get_subtitle().startswith('Question 3 of 5')
+            clock.advance(minutes=1)
+            assert press(page, 'Escape')
+            pump()
+            assert window.visible_exercise_page() is None
+            data = model.continue_data()
+            assert data is not None
+            assert (data.exercise_id, data.answered, data.total) == ('keysig', 2, 5)
+            assert home.continue_revealer.get_reveal_child()
+            assert home.continue_title.get_label() == 'Key Signatures'
+            assert home.continue_detail.get_label() == '2 of 5 answered · 100% accuracy'
+            assert model.progress('week').sessions == 0, 'not finished yet'
+            clock.advance(hours=2)  # away: not practice
+            home.resume_button.emit('clicked')
+            pump()
+            page = window.visible_exercise_page()
+            assert page is not None
+            assert page.window_title.get_subtitle().startswith('Question 3 of 5')
+            assert not home.continue_revealer.get_reveal_child()
+            _answer(page, 3, last=True)
+            assert press(page, 'Return')
+            pump()
+            summary = window.controller.summary
+            assert summary is not None
+            assert (summary.total, summary.correct) == (5, 5), summary
+            assert summary.duration_ms < 60 * 60 * 1000, 'the two hours away do not count'
+            dialog = window.get_visible_dialog()
+            assert dialog.get_body().startswith('Key Signatures · 5 questions · '), (
+                dialog.get_body()
+            )
+            assert not dialog.has_response('review'), 'no mistakes, nothing to review'
+            dialog.close()
+            pump()
+            assert window.visible_exercise_page() is None
+            assert model.continue_data() is None
+            assert model.progress('week').sessions == 1
+            card = next(c for c in window.cards if c.id == 'keysig')
+            assert (card.accuracy, card.sessions) == (1.0, 1)
+
+            # Close after one answer, then dismiss: the session is finished and counts.
+            page = window.start_exercise('keysig')
+            _answer(page, 1)
+            window.nav_view.pop_to_tag('main')  # any way of leaving keeps the session
+            pump()
+            assert home.continue_revealer.get_reveal_child()
+            home.dismiss_button.emit('clicked')
+            assert model.continue_data() is None
+            assert model.progress('week').sessions == 2
+
+            # Close before answering: nothing to resume, no session counted.
+            page = window.start_exercise('keysig')
+            assert press(page, 'Escape')
+            pump()
+            assert model.continue_data() is None
+            assert model.progress('week').sessions == 2
+
+            # Starting another session finishes an interrupted one.
+            page = window.start_exercise('keysig')
+            _answer(page, 1)
+            assert press(page, 'Escape')
+            pump()
+            assert model.continue_data() is not None
+            window.start_exercise('keysig')
+            assert model.continue_data() is None
+            assert model.progress('week').sessions == 3
+        finally:
+            _close_live(window, services)
+
+
+def check_live_today_review() -> None:
+    """Due items on the Today page, the daily review, and the daily-goal setting."""
+    import tempfile
+
+    from etude.ui.common import get_settings
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        clock = _Clock()
+        window, services = _live_window(data_dir, clock)
+        model = window.model
+        try:
+            page = window.start_exercise('keysig')
+            _answer(page, 5, last=True)
+            assert press(page, 'Return')
+            pump()
+            window.get_visible_dialog().close()
+            pump()
+            clock.advance(days=60)  # fast correct answers are scheduled far ahead
+            window.refresh()
+            today = model.today()
+            assert today.due > 0
+            assert today.by_exercise[0].exercise_id == 'keysig'
+            assert window.rows['today'].count_label.get_label() == str(today.due)
+            assert today.answered_today == 0, 'a new day'
+            page = window.show_section('today')
+            assert page.due_label.get_label().endswith('due')
+            assert page.start_button.get_label() == '_Start Review'
+            page.start_button.emit('clicked')
+            pump()
+            exercise = window.visible_exercise_page()
+            assert exercise is not None
+            assert exercise.get_title() == 'Daily Review'
+            total = window.controller.session.total
+            _answer(exercise, total, last=True)
+            assert press(exercise, 'Return')
+            pump()
+            dialog = window.get_visible_dialog()
+            assert dialog.get_body() == f'Daily Review · {total} questions', dialog.get_body()
+            dialog.close()
+            pump()
+            assert model.today().answered_today == total
+            # The daily goal applies without a restart.
+            get_settings().set_uint('daily-goal', 5)
+            assert model.stats.config.daily_goal == 5
+            assert window.today_page.data.daily_goal == 5
+            assert window.today_page.data.goal_met == (total >= 5)
+        finally:
+            _close_live(window, services)
+
+
 CHECKS: list[Callable[[], None]] = [
     check_window_and_sections,
     check_keysig_correct_then_next,
@@ -460,6 +782,12 @@ CHECKS: list[Callable[[], None]] = [
     check_dialogs,
     check_session_summary_flow,
     check_live_session,
+    check_today_preview,
+    check_continue_banner_preview,
+    check_progress_empty,
+    check_live_new_learner,
+    check_live_resume_session,
+    check_live_today_review,
 ]
 
 

@@ -78,7 +78,6 @@ image.success {
   padding: 16px;
   border-radius: 12px;
 }
-
 /* Exercise page ---------------------------------------------------------------- */
 
 .exercise-body {
@@ -276,6 +275,74 @@ levelbar.accuracy-bar block.filled {
 .weak-percent {
   color: var(--error-color);
   font-weight: bold;
+}
+
+.empty-note {
+  padding: 4px 0;
+}
+
+/* Today ------------------------------------------------------------------------ */
+
+.today-body {
+  margin: 24px 24px 36px 24px;
+}
+
+.compact .today-body {
+  margin: 12px 12px 24px 12px;
+}
+
+.today-hero {
+  padding: 20px 22px;
+  border-radius: 12px;
+  background-color: color-mix(in srgb, var(--accent-bg-color) 10%, var(--card-bg-color));
+}
+
+.today-hero.caught-up {
+  padding: 32px 22px 28px 22px;
+  background-color: var(--card-bg-color);
+}
+
+.hero-tile {
+  min-width: 56px;
+  min-height: 56px;
+  border-radius: 16px;
+  color: var(--accent-color);
+  background-color: color-mix(in srgb, var(--accent-bg-color) 14%, transparent);
+}
+
+.hero-tile.success {
+  color: var(--success-color);
+  background-color: color-mix(in srgb, var(--success-bg-color) 16%, transparent);
+}
+
+/* 48 px touch targets: pill buttons have 10 px of vertical padding. */
+.compact .today-body button.pill {
+  min-height: 28px;
+}
+
+levelbar.goal-bar > * {
+  min-height: 10px;
+  border-radius: 5px;
+}
+
+levelbar.goal-bar block.filled {
+  background-color: var(--accent-bg-color);
+  border-radius: 5px;
+}
+
+levelbar.goal-bar.goal-met block.filled {
+  background-color: var(--success-bg-color);
+}
+
+/* Sidebar count of due items next to "Today". */
+.sidebar-count {
+  font-size: 0.85em;
+  font-weight: bold;
+  min-width: 14px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  color: var(--accent-color);
+  background-color: color-mix(in srgb, var(--accent-bg-color) 14%, transparent);
 }
 
 /* Session summary */

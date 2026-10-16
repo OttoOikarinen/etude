@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Otto Oikarinen -->
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  <template class="EtudeTodayPage" parent="AdwNavigationPage">
+    <property name="title" translatable="yes">Today</property>
+    <property name="tag">today</property>
+    <property name="child">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar"/>
+        </child>
+        <property name="content">
+          <object class="GtkScrolledWindow">
+            <property name="hscrollbar-policy">never</property>
+            <property name="child">
+              <object class="AdwClamp">
+                <property name="maximum-size">840</property>
+                <property name="tightening-threshold">600</property>
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">24</property>
+                    <style>
+                      <class name="today-body"/>
+                    </style>
+                    <child>
+                      <object class="GtkStack" id="hero_stack">
+                        <property name="vhomogeneous">false</property>
+                        <property name="transition-type">crossfade</property>
+                        <child>
+                          <object class="GtkStackPage">
+                            <property name="name">review</property>
+                            <property name="child">
+                              <object class="GtkBox" id="review_box">
+                                <property name="spacing">18</property>
+                                <style>
+                                  <class name="card"/>
+                                  <class name="today-hero"/>
+                                </style>
+                                <child>
+                                  <object class="GtkImage" id="review_icon">
+                                    <property name="icon-name">x-office-calendar-symbolic</property>
+                                    <property name="pixel-size">28</property>
+                                    <property name="valign">center</property>
+                                    <property name="halign">start</property>
+                                    <property name="accessible-role">presentation</property>
+                                    <style>
+                                      <class name="hero-tile"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="orientation">vertical</property>
+                                    <property name="spacing">2</property>
+                                    <property name="hexpand">true</property>
+                                    <property name="valign">center</property>
+                                    <child>
+                                      <object class="GtkLabel">
+                                        <property name="label" translatable="yes">Daily Review</property>
+                                        <property name="xalign">0</property>
+                                        <style>
+                                          <class name="caption-heading"/>
+                                          <class name="accent"/>
+                                        </style>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel" id="due_label">
+                                        <property name="xalign">0</property>
+                                        <property name="wrap">true</property>
+                                        <style>
+                                          <class name="title-1"/>
+                                        </style>
+                                        <accessibility>
+                                          <property name="level">2</property>
+                                        </accessibility>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel" id="review_detail">
+                                        <property name="xalign">0</property>
+                                        <property name="wrap">true</property>
+                                        <style>
+                                          <class name="dim-label"/>
+                                        </style>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="start_button">
+                                    <property name="valign">center</property>
+                                    <property name="use-underline">true</property>
+                                    <signal name="clicked" handler="_on_start_clicked"/>
+                                    <style>
+                                      <class name="pill"/>
+                                      <class name="suggested-action"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkStackPage">
+                            <property name="name">caught-up</property>
+                            <property name="child">
+                              <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <property name="spacing">12</property>
+                                <style>
+                                  <class name="card"/>
+                                  <class name="today-hero"/>
+                                  <class name="caught-up"/>
+                                </style>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon-name">object-select-symbolic</property>
+                                    <property name="pixel-size">32</property>
+                                    <property name="halign">center</property>
+                                    <property name="accessible-role">presentation</property>
+                                    <style>
+                                      <class name="hero-tile"/>
+                                      <class name="success"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label" translatable="yes">All Caught Up</property>
+                                    <property name="wrap">true</property>
+                                    <property name="justify">center</property>
+                                    <style>
+                                      <class name="title-2"/>
+                                    </style>
+                                    <accessibility>
+                                      <property name="level">2</property>
+                                    </accessibility>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="caught_up_detail">
+                                    <property name="wrap">true</property>
+                                    <property name="justify">center</property>
+                                    <property name="max-width-chars">48</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="browse_button">
+                                    <property name="label" translatable="yes">_Browse Exercises</property>
+                                    <property name="use-underline">true</property>
+                                    <property name="halign">center</property>
+                                    <property name="margin-top">6</property>
+                                    <signal name="clicked" handler="_on_browse_clicked"/>
+                                    <style>
+                                      <class name="pill"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="stats_box">
+                        <property name="spacing">12</property>
+                        <!-- Keeps the streak caption's vexpand inside the card. -->
+                        <property name="vexpand">false</property>
+                        <property name="homogeneous">true</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">6</property>
+                            <style>
+                              <class name="card"/>
+                              <class name="stat-card"/>
+                            </style>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Daily goal</property>
+                                <property name="xalign">0</property>
+                                <style>
+                                  <class name="dim-label"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="goal_number">
+                                <property name="xalign">0</property>
+                                <style>
+                                  <class name="title-1"/>
+                                  <class name="numeric"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLevelBar" id="goal_bar">
+                                <property name="margin-top">4</property>
+                                <property name="margin-bottom">2</property>
+                                <style>
+                                  <class name="goal-bar"/>
+                                </style>
+                                <accessibility>
+                                  <property name="label" translatable="yes">Daily goal</property>
+                                </accessibility>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">6</property>
+                                <child>
+                                  <object class="GtkImage" id="goal_icon">
+                                    <property name="icon-name">object-select-symbolic</property>
+                                    <property name="accessible-role">presentation</property>
+                                    <style>
+                                      <class name="success"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="goal_detail">
+                                    <property name="xalign">0</property>
+                                    <property name="wrap">true</property>
+                                    <property name="hexpand">true</property>
+                                    <style>
+                                      <class name="caption"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">6</property>
+                            <style>
+                              <class name="card"/>
+                              <class name="stat-card"/>
+                            </style>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Day streak</property>
+                                <property name="xalign">0</property>
+                                <style>
+                                  <class name="dim-label"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="streak_number">
+                                <property name="xalign">0</property>
+                                <style>
+                                  <class name="title-1"/>
+                                  <class name="numeric"/>
+                                  <class name="accent"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="streak_detail">
+                                <property name="xalign">0</property>
+                                <property name="wrap">true</property>
+                                <property name="vexpand">true</property>
+                                <property name="valign">end</property>
+                                <style>
+                                  <class name="caption"/>
+                                  <class name="dim-label"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwPreferencesGroup" id="due_group">
+                        <property name="title" translatable="yes">Due by Exercise</property>
+                        <property name="description" translatable="yes">Practise one exercise on its own, due items first</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+</interface>

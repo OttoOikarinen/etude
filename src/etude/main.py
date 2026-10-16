@@ -28,7 +28,6 @@ gi.require_version('Adw', '1')
 
 from gi.repository import Adw, Gio, Gtk
 
-from .learning.stats import StatsConfig
 from .services import Services
 from .ui.common import apply_note_naming, get_settings
 from .ui.dialogs.preferences import PreferencesDialog
@@ -61,13 +60,14 @@ class EtudeApplication(Adw.Application):
         apply_note_naming(settings)
         if settings is not None:
             settings.connect('changed::note-naming', lambda s, _k: apply_note_naming(s))
-            goal = settings.get_uint('daily-goal')
-        else:
-            goal = StatsConfig().daily_goal
-        self.services = Services.open(stats_config=StatsConfig(daily_goal=goal))
+        self.services = Services.open()
+        # The model applies the daily-goal setting now and whenever it changes.
         self.model = LiveModel(self.services, settings)
 
     def do_shutdown(self):
+        if self.model is not None:
+            self.model.shutdown()  # an interrupted session is finished so that it counts
+            self.model = None
         if self.services is not None:
             self.services.close()
             self.services = None

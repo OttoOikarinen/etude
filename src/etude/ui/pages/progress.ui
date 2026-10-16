@@ -89,6 +89,18 @@
                               </object>
                             </child>
                             <child>
+                              <object class="GtkLabel" id="accuracy_empty">
+                                <property name="label" translatable="yes">Answer a few questions to see your accuracy in each exercise.</property>
+                                <property name="xalign">0</property>
+                                <property name="wrap">true</property>
+                                <property name="visible">false</property>
+                                <style>
+                                  <class name="dim-label"/>
+                                  <class name="empty-note"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
                               <object class="GtkGrid" id="accuracy_grid">
                                 <property name="column-spacing">12</property>
                                 <property name="row-spacing">10</property>

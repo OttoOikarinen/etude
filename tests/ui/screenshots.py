@@ -61,11 +61,11 @@ def render(window, path: Path) -> None:
     print(path)
 
 
-def window_at(size: tuple[int, int]):
+def window_at(size: tuple[int, int], model=None):
     from etude.ui.preview import PreviewModel
     from etude.window import EtudeWindow
 
-    window = EtudeWindow(PreviewModel())
+    window = EtudeWindow(model if model is not None else PreviewModel())
     window.set_default_size(*size)
     window.present()
     wait(300)
@@ -92,15 +92,24 @@ def shoot(out: Path, scheme: str, size: tuple[int, int], suffix: str) -> None:
         page._shown_at -= 1.8  # the design shows "Answered in 1.8 s."
         page.answer_widget.submit(given)
 
+    # Empty states: nothing due, the goal met, a brand-new learner's progress
+    from etude.ui.preview import PreviewModel
+
+    window = window_at(size, PreviewModel(caught_up=True))
+    window.show_section('today')
+    render(window, out / f'1k-today-caught-up-{name}.png')
+    window.show_section('progress')
+    render(window, out / f'1h-progress-empty-{name}.png')
+    window.destroy()
+
     # 1a / 3a home
     window = window_at(size)
     render(window, out / f'1a-home-{name}.png')
-    if size == WIDE:
-        window.show_section('progress')
-        render(window, out / f'1h-progress-{name}.png')
-        window.show_section('today')
-        render(window, out / f'1k-today-placeholder-{name}.png')
-        window.show_section('all')
+    window.show_section('progress')
+    render(window, out / f'1h-progress-{name}.png')
+    window.show_section('today')
+    render(window, out / f'1k-today-{name}.png')
+    window.show_section('all')
     # 1j setup
     window.open_setup('keysig')
     render(window, out / f'1j-setup-{name}.png')
@@ -185,16 +194,41 @@ def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
     from etude.window import EtudeWindow
 
     style = Adw.StyleManager.get_default()
+
+    def set_scheme(scheme: str) -> None:
+        style.set_color_scheme(
+            Adw.ColorScheme.FORCE_DARK if scheme == 'dark' else Adw.ColorScheme.FORCE_LIGHT
+        )
+
+    def sections(window, prefix: str, scheme: str) -> None:
+        render(window, out / f'{prefix}-home-{scheme}.png')
+        for section in ('today', 'progress'):
+            window.show_section(section)
+            render(window, out / f'{prefix}-{section}-{scheme}.png')
+        window.show_section('all')
+
     with tempfile.TemporaryDirectory() as data_dir:
         services = Services.open(Path(data_dir))
         services._audio = NullBackend()
         services.rng.seed(seed)
         ids = exercise_ids or list(services.registry.exercise_ids())
-        for scheme in ('light', 'dark'):
-            style.set_color_scheme(
-                Adw.ColorScheme.FORCE_DARK if scheme == 'dark' else Adw.ColorScheme.FORCE_LIGHT
-            )
+        # A brand-new learner: empty states with real data.
+        for scheme, size, suffix in (
+            ('light', WIDE, ''),
+            ('dark', WIDE, ''),
+            ('light', NARROW, '-narrow'),
+        ):
+            set_scheme(scheme)
             window = EtudeWindow(LiveModel(services, get_settings()))
+            window.set_default_size(*size)
+            window.present()
+            wait(300)
+            sections(window, 'live-new', scheme + suffix)
+            window.destroy()
+        for scheme in ('light', 'dark'):
+            set_scheme(scheme)
+            model = LiveModel(services, get_settings())
+            window = EtudeWindow(model)
             window.set_default_size(*WIDE)
             window.present()
             wait(300)
@@ -214,6 +248,10 @@ def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
                     )
                     page.answer_widget.submit(wrong)
                     render(window, out / f'live-{exercise_id}-wrong-{scheme}.png')
+            # Leave the last session unfinished: the Continue banner offers it.
+            window.nav_view.pop_to_tag('main')
+            sections(window, 'live-after', scheme)
+            model.shutdown()
             window.destroy()
         services.close()
 

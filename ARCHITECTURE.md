@@ -64,6 +64,11 @@ Contract changes so far (all backwards-compatible):
   `play_label`, `item_label()` and `answer_label()` (all with defaults).
   `etude.core.naming` gained a default convention, set from the
   `note-naming` setting.
+* W2 sessions: `SessionRunner.pause()`, `resume()`, `is_open` and
+  `is_answered`; `finish()` now refuses to close a session that the engine
+  already finished because another one started. `LearningEngine` gained
+  `pause_session()`, `resume_session()`, `active_session_id` and
+  `new_items()`; `Stats.session_summary()` takes the paused time.
 * W1 notation: `CurveItem` (ties) joins the display-list `Item` union,
   `GlyphItem.scale` lets a brace span a system, and `StaffSpec.voices`
   adds further voices to a staff (first voice stems up, the rest down).
@@ -101,6 +106,20 @@ Outcome ──derive_rating──▶ Rating ──Scheduler.review──▶ Card
   `AppModel` protocol.
 * `etude.ui.controller.ExerciseController` connects an `ExercisePage`, a
   running session and the model's audio, and shows the summary dialog.
+* Leaving an exercise page before the end *interrupts* its session:
+  `LiveModel.close_session()` pauses the runner (the engine keeps the
+  session open, and paused time is not practice) and the home page's
+  Continue banner offers it. Resume continues the same runner, so the
+  summary covers every answer; dismissing it, starting any other session,
+  or quitting finishes it so that its answers and time count. A session
+  closed before its first answer is finished empty, and statistics ignore
+  sessions without answers. Interrupted sessions live in memory only: the
+  engine's open session cannot outlive the process, and persisting it
+  would need a storage change.
+* The Today page (`etude.ui.pages.today`) shows `LiveModel.today()`: due
+  cards per exercise (`CardStore.due`), the new items daily reviews may
+  still introduce (`LearningEngine.new_items`), the daily goal and the
+  streak. Its button starts a `DAILY_REVIEW`.
 
 ### Knowledge items
 

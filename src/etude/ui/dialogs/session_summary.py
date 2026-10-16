@@ -31,8 +31,11 @@ def _big_number(value: str, caption: str) -> Gtk.Widget:
     return box
 
 
-def create_session_summary_dialog(summary: SessionSummary, subtitle: str) -> Adw.AlertDialog:
-    """``subtitle`` describes the session, e.g. "Key Signatures · 20 questions · treble clef".
+def create_session_summary_dialog(
+    summary: SessionSummary, subtitle: str, *, mixed: bool = False
+) -> Adw.AlertDialog:
+    """``subtitle`` describes the session, e.g. "Key Signatures · 20 questions · treble clef";
+    ``mixed`` sessions (daily review, drills) practise several exercises.
 
     Responses: :data:`RESPONSE_AGAIN` (suggested), :data:`RESPONSE_REVIEW` (only when
     there were mistakes) and :data:`RESPONSE_BACK`.
@@ -50,7 +53,8 @@ def create_session_summary_dialog(summary: SessionSummary, subtitle: str) -> Adw
     # Translators: e.g. "Best streak 11".
     streak = _('Best streak {n}').format(n=summary.best_streak)
     if summary.personal_best:
-        streak = f'{streak} · {_("New personal best for this exercise")}'
+        best = _('New personal best') if mixed else _('New personal best for this exercise')
+        streak = f'{streak} · {best}'
     streak_box = Gtk.Box(spacing=6, halign=Gtk.Align.CENTER)
     if summary.personal_best:
         icon = Gtk.Image(
