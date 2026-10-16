@@ -8,6 +8,7 @@ install_data(
     'layout.py',
     'smufl.py',
     'spec.py',
+    'widget.py',
   ],
   install_dir: moduledir / 'notation',
 )
