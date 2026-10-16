@@ -6,6 +6,8 @@ data/fi.oikarinenotto.etude.metainfo.xml.in
 src/etude/core/naming.py
 src/etude/exercises/base.py
 src/etude/exercises/families/key_signatures.py
+src/etude/exercises/families/note_naming.py
+src/etude/exercises/families/scale_degrees.py
 src/etude/exercises/runner.py
 src/etude/main.py
 src/etude/notation/a11y.py
