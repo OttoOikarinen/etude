@@ -225,11 +225,17 @@ def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
             wait(300)
             sections(window, 'live-new', scheme + suffix)
             window.destroy()
-        for scheme in ('light', 'dark'):
-            set_scheme(scheme)
+        for scheme, size, suffix in (
+            ('light', WIDE, ''),
+            ('dark', WIDE, ''),
+            ('light', NARROW, '-narrow'),
+        ):
+            scheme_name = scheme
+            scheme += suffix
+            set_scheme(scheme_name)
             model = LiveModel(services, get_settings())
             window = EtudeWindow(model)
-            window.set_default_size(*WIDE)
+            window.set_default_size(*size)
             window.present()
             wait(300)
             for exercise_id in ids:

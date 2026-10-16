@@ -132,6 +132,7 @@
                                       <object class="EtudeFeedbackBanner" id="feedback_banner">
                                         <signal name="next" handler="_on_next"/>
                                         <signal name="play" handler="_on_feedback_play"/>
+                                        <signal name="play-given" handler="_on_feedback_play_given"/>
                                       </object>
                                     </property>
                                   </object>

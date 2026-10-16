@@ -163,26 +163,8 @@ def _ear_order(key: str) -> tuple[float, int]:
     return (float(semitones(key)), 0)
 
 
-_NAME_CACHE: dict[str, dict[str, str]] = {}
-
-
 def _name(interval: Interval) -> str:
-    """:func:`~etude.core.naming.interval_name`, memoised per translation.
-
-    ``interval_name`` translates its whole table of about eighty names on every
-    call, which made generating and grading noticeably slow; the cache is keyed
-    by a translated probe string so it follows the language.
-    """
-    probe = _('Tritone')
-    names = _NAME_CACHE.get(probe)
-    if names is None:
-        _NAME_CACHE.clear()
-        names = _NAME_CACHE.setdefault(probe, {})
-    key = str(interval)
-    name = names.get(key)
-    if name is None:
-        name = names[key] = interval_name(interval)
-    return name
+    return interval_name(interval)
 
 
 def interval_label(key: str) -> str:

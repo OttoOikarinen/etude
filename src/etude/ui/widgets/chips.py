@@ -118,9 +118,11 @@ class ChipGroups(AnswerWidget):
         return box
 
     def _on_accidental(self, button: Gtk.Button, group: ChipGroup) -> None:
-        alter = {0: 1, 1: -1, -1: 0}[self._alter[group.key]]
+        self._set_alter(group, {0: 1, 1: -1, -1: 0}[self._alter[group.key]])
+
+    def _set_alter(self, group: ChipGroup, alter: int) -> None:
         self._alter[group.key] = alter
-        button.set_label(_ACCIDENTAL_SYMBOL[alter])
+        self._accidental_chips[group.key].set_label(_ACCIDENTAL_SYMBOL[alter])
         for option in group.options:
             chip = self.chips[group.key][option.key]
             name = PitchName.parse(option.key)
@@ -155,6 +157,9 @@ class ChipGroups(AnswerWidget):
         for group in self.spec.groups:
             for option in group.options:
                 if keyval_matches(keyval, option.accel):
+                    if group.accidentals:
+                        # As on the piano: a letter is natural, Shift + letter sharp.
+                        self._set_alter(group, 1 if state & Gdk.ModifierType.SHIFT_MASK else 0)
                     self.chips[group.key][option.key].set_active(True)
                     return True
         return False
@@ -174,10 +179,25 @@ class ChipGroups(AnswerWidget):
             right = str(expected_map.get(group.key, ''))
             chosen = str(given_map.get(group.key, ''))
             chips = self.chips[group.key]
-            if chosen != right and chosen in chips:
-                chips[chosen].mark('error')
-            if right in chips:
-                chips[right].mark('success')
+
+            def base(key: str, group: ChipGroup = group) -> str:
+                # Values of accidental groups are letters with '#' or 'b' appended.
+                return key[:1] if group.accidentals else key
+
+            if base(chosen) != base(right) and base(chosen) in chips:
+                chips[base(chosen)].mark('error')
+            if base(right) in chips:
+                if group.accidentals:
+                    chips[base(right)].label.set_label(note_label(PitchName.parse(right)))
+                chips[base(right)].mark('success')
+                if group.accidentals and chosen != right and base(chosen) == base(right):
+                    # Right letter, wrong accidental: the ♯ / ♭ chip carries the mistake.
+                    accidental = self._accidental_chips[group.key]
+                    accidental.add_css_class('error')
+                    accidental.set_label({1: '♯', -1: '♭'}.get(PitchName.parse(right).alter, '♮'))
+                    accidental.update_property(
+                        [Gtk.AccessibleProperty.DESCRIPTION], [_('Wrong accidental')]
+                    )
             for chip in chips.values():
                 chip.set_can_target(False)
         self.check_button.set_sensitive(False)

@@ -21,7 +21,7 @@ _ACCIDENTAL_SYMBOLS = {0: '', 1: '♯', -1: '♭'}
 class PianoKey(Gtk.Button):
     __gtype_name__ = 'EtudePianoKey'
 
-    def __init__(self, pitch: Pitch) -> None:
+    def __init__(self, pitch: Pitch, octave_label: bool = False) -> None:
         super().__init__(focus_on_click=False)
         self.pitch = pitch
         self.black = pitch.alter != 0
@@ -31,8 +31,11 @@ class PianoKey(Gtk.Button):
         self._icon = Gtk.Image(visible=False, accessible_role=Gtk.AccessibleRole.PRESENTATION)
         box.append(self._icon)
         if not self.black:
-            box.append(Gtk.Label(label=note_label(pitch.name)))
             name = note_label(pitch.name)
+            # When the octave is part of the answer, C keys carry their octave number.
+            text = f'{name}{pitch.octave}' if octave_label and pitch.letter is Letter.C else name
+            box.append(Gtk.Label(label=text))
+            name = f'{name}{pitch.octave}' if octave_label else name
         else:
             flat = Pitch.from_midi(pitch.midi, prefer_flats=True)
             name = f'{note_label(pitch.name)} / {note_label(flat.name)}'
@@ -69,13 +72,13 @@ class PianoKeyboard(Gtk.Widget):
         'key-activated': (GObject.SignalFlags.RUN_FIRST, None, (object,)),
     }
 
-    def __init__(self, low: Pitch, high: Pitch) -> None:
+    def __init__(self, low: Pitch, high: Pitch, octave_labels: bool = False) -> None:
         super().__init__(hexpand=True, accessible_role=Gtk.AccessibleRole.GROUP)
         self.add_css_class('piano-keyboard')
         self.update_property([Gtk.AccessibleProperty.LABEL], [_('Piano keyboard')])
         pitches = [Pitch.from_midi(m) for m in range(low.midi, high.midi + 1)]
-        self.keys = [PianoKey(p) for p in pitches if p.alter == 0]
-        self.keys += [PianoKey(p) for p in pitches if p.alter != 0]
+        self.keys = [PianoKey(p, octave_labels) for p in pitches if p.alter == 0]
+        self.keys += [PianoKey(p, octave_labels) for p in pitches if p.alter != 0]
         # White keys first so that black keys are drawn and picked on top.
         for key in self.keys:
             key.set_parent(self)
@@ -193,7 +196,7 @@ class PianoAnswerView(AnswerWidget):
         self._sheet: Gtk.Widget | None = None
 
     def _new_keyboard(self) -> PianoKeyboard:
-        keyboard = PianoKeyboard(self.spec.low, self.spec.high)
+        keyboard = PianoKeyboard(self.spec.low, self.spec.high, self.spec.octave_matters)
         keyboard.connect('key-activated', lambda _k, pitch: self.submit(self._value(pitch)))
         self._keyboards.append(keyboard)
         return keyboard
@@ -238,19 +241,25 @@ class PianoAnswerView(AnswerWidget):
                 keyboard.mark(given, 'error')
             if isinstance(expected, Pitch | PitchName):
                 keyboard.mark(expected, 'success')
+
+        def name_of(value: object) -> object:
+            return value.name if isinstance(value, Pitch) else value
+
         for letter, button in self.letter_buttons.items():
             name = PitchName(letter, self._alter)
-            for value, css in ((given, 'error'), (expected, 'success')):
-                value_name = value.name if isinstance(value, Pitch) else value
-                if value_name == name and (css == 'success' or not correct):
-                    self._mark_letter(button, css)
+            if name_of(expected) == name:
+                # Right letter, perhaps in the wrong octave: the button is still the answer.
+                self._mark_letter(button, 'success')
+            elif not correct and name_of(given) == name:
+                self._mark_letter(button, 'error')
 
     @staticmethod
     def _mark_letter(button: Gtk.Button, css: str) -> None:
         """Colour, icon and accessible text on a letter button."""
         label = button.get_label() or ''
         button.add_css_class(css)
-        box = Gtk.Box(spacing=4, halign=Gtk.Align.CENTER)
+        # Icon above the letter, so marking never widens the button (narrow layout).
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2, halign=Gtk.Align.CENTER)
         icon = 'object-select-symbolic' if css == 'success' else 'window-close-symbolic'
         box.append(Gtk.Image(icon_name=icon, accessible_role=Gtk.AccessibleRole.PRESENTATION))
         box.append(Gtk.Label(label=label))

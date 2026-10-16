@@ -35,12 +35,28 @@ from ..widgets.feedback import FeedbackBanner
 from ..widgets.simple import create_answer_widget
 
 
+def is_harmonic(spec: PlaybackSpec) -> bool:
+    """Whether every note of a playback of several notes starts together."""
+    return len(spec.notes) > 1 and len({n.start for n in spec.notes}) == 1
+
+
 def adjust_playback(spec: PlaybackSpec, *, harmonic: bool, tempo: int) -> PlaybackSpec:
-    """Apply the ear panel's Melodic/Harmonic and tempo choices to a playback."""
+    """Apply the ear panel's Melodic/Harmonic and tempo choices to a playback.
+
+    Harmonic sounds each pitch once, together; melodic spreads a harmonic
+    playback upwards one beat per note and leaves a melodic one as written.
+    """
     notes = spec.notes
-    if harmonic:
-        length = max(n.length for n in notes) if notes else Fraction(2)
-        notes = tuple(dataclasses.replace(n, start=Fraction(0), length=length) for n in notes)
+    if harmonic and not is_harmonic(spec) and notes:
+        length = max(n.length for n in notes)
+        unique = {n.midi: n for n in notes}.values()
+        notes = tuple(dataclasses.replace(n, start=Fraction(0), length=length) for n in unique)
+    elif not harmonic and is_harmonic(spec):
+        ordered = sorted(notes, key=lambda n: n.midi)
+        notes = tuple(
+            dataclasses.replace(n, start=Fraction(i), length=Fraction(1))
+            for i, n in enumerate(ordered)
+        )
     return dataclasses.replace(spec, notes=notes, tempo=float(tempo))
 
 
@@ -113,6 +129,7 @@ class ExercisePage(Adw.NavigationPage):
         self._play_label = _('Play')
         self._stats: tuple[int, int, float | None, bool] = (0, 0, None, False)
         self.connect('notify::compact', lambda *_a: self._apply_compact())
+        self.feedback_revealer.connect('notify::child-revealed', self._on_feedback_revealed)
         self.connect('map', lambda *_a: self._start_timer())
         self.connect('unmap', lambda *_a: self._stop_timer())
         self.set_stats(0, 0, None)
@@ -155,7 +172,13 @@ class ExercisePage(Adw.NavigationPage):
         self.ear_panel = None
         figure_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         if ear:
-            self.ear_panel = EarPanel(context=question.context)
+            playback = question.playback
+            self.ear_panel = EarPanel(
+                context=question.context,
+                tempo=round(playback.tempo) if playback is not None else 80,
+                harmonic=playback is not None and is_harmonic(playback),
+                style_choice=question.playback_style_choice,
+            )
             self.ear_panel.connect('play-requested', self._on_ear_play)
             figure_box.append(self.ear_panel)
         self._figure_holder = self._new_figure_holder()
@@ -248,6 +271,10 @@ class ExercisePage(Adw.NavigationPage):
         self.stop_clock()
         self.emit('answered', value)
 
+    def _on_feedback_revealed(self, revealer: Gtk.Revealer, _pspec: object) -> None:
+        if revealer.get_child_revealed() and self.feedback is not None:
+            self.feedback_banner.next_button.grab_focus()
+
     def stop_clock(self) -> None:
         """Record the response time of the current question in :attr:`response_ms`."""
         self.response_ms = int((time.monotonic() - self._shown_at) * 1000)
@@ -265,7 +292,10 @@ class ExercisePage(Adw.NavigationPage):
         self.feedback_revealer.set_reveal_child(True)
         self.aux_box.set_visible(False)
         self._update_figure()
-        self.feedback_banner.next_button.grab_focus()
+        # Focus Next once the banner is fully revealed: focusing it scrolls the page so
+        # that the explanation is in view, which it cannot do while the revealer is closed.
+        if self.feedback_revealer.get_child_revealed():
+            self.feedback_banner.next_button.grab_focus()
 
     def set_stats(
         self, streak: int, best_today: int, accuracy: float | None, streak_reset: bool = False
@@ -406,6 +436,11 @@ class ExercisePage(Adw.NavigationPage):
     def _on_feedback_play(self, banner: FeedbackBanner) -> None:
         if self.feedback is not None and self.feedback.play_expected is not None:
             self.emit('play-requested', self.feedback.play_expected)
+
+    @Gtk.Template.Callback()
+    def _on_feedback_play_given(self, banner: FeedbackBanner) -> None:
+        if self.feedback is not None and self.feedback.play_given is not None:
+            self.emit('play-requested', self.feedback.play_given)
 
     @Gtk.Template.Callback()
     def _on_next(self, _banner: FeedbackBanner) -> None:

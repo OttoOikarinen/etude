@@ -96,3 +96,11 @@ def test_default_registry_loads_every_family_module() -> None:
     assert registry is default_registry()
     for definition in registry:
         assert definition.items(definition.default_settings()), definition.id
+
+
+def test_confusables_come_from_the_owning_exercise() -> None:
+    registry = default_registry()
+    partners = registry.confusables(ItemId('interval.ear.melodic.asc.M6'))
+    assert ItemId('interval.ear.melodic.asc.m6') in partners
+    assert registry.confusables(ItemId('keysig.major.4s')) == ()
+    assert registry.confusables(ItemId('nobody.owns.this')) == ()
