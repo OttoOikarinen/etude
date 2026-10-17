@@ -9,13 +9,13 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Beat and bar</title>
-    <p>The beat is the steady pulse you tap your foot to. In most music some beats feel stronger than others, and the strong beats return regularly: every second, third or fourth beat.</p>
-    <p>Bar lines divide the music into bars of equal length, each starting with a strong beat, the downbeat. American English calls a bar a measure. A double bar line marks the end of a section, and a final bar line, thin and thick, the end of the piece.</p>
+    <p>The <term ref="beat">beat</term> is the steady pulse you tap your foot to. In most music some beats feel stronger than others, and the strong beats return regularly: every second, third or fourth beat.</p>
+    <p><term ref="barline">Barlines</term> divide the music into bars of equal length, each starting with a strong beat, the <term ref="downbeat">downbeat</term>. American English calls a bar a measure. A <term ref="double-barline">double barline</term> marks the end of a section, and a <term ref="final-barline">final barline</term>, thin and thick, the end of the piece.</p>
     <figure play="as-written" tempo="96">
       <staff clef="treble" time="4/4">*E4/q G4/q C5/q B4/q | *A4/h G4/h | *F4/q A4/q G4/q D4/q | *C4/w |.</staff>
       <caption>Four bars of four beats. The downbeat of every bar is highlighted.</caption>
     </figure>
-    <p>The grouping of beats is called the meter: two beats to a bar is duple meter, three is triple meter and four is quadruple meter.</p>
+    <p>The grouping of beats is called the <term ref="meter">meter</term>: two beats to a bar is <term ref="duple-meter">duple meter</term>, three is <term ref="triple-meter">triple meter</term> and four is <term ref="quadruple-meter">quadruple meter</term>.</p>
     <check id="triple-meter">
       <prompt>The strong beat returns on every third beat. What is the meter?</prompt>
       <option key="a">Duple</option>
@@ -27,10 +27,10 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Simple time signatures</title>
-    <p>The time signature at the start of the music shows the meter with two numbers. Some American textbooks call it the meter signature. In simple time, the two numbers mean:</p>
+    <p>The <term ref="time-signature">time signature</term> at the start of the music shows the meter with two numbers. Some American textbooks call it the meter signature. In <term ref="simple-meter">simple time</term>, the two numbers mean:</p>
     <list>
       <li>The top number: how many beats there are in a bar.</li>
-      <li>The bottom number: which note value gets one beat. 2 means a half note, 4 a quarter note and 8 an eighth note.</li>
+      <li>The bottom number: which <term ref="note-value">note value</term> gets one beat. 2 means a <term ref="half-note">half note</term>, 4 a <term ref="quarter-note">quarter note</term> and 8 an <term ref="eighth-note">eighth note</term>.</li>
     </list>
     <p>So 3/4 has three quarter-note beats in a bar, 2/4 two, and 4/4 four. In 2/2 the beat is a half note.</p>
     <figure play="as-written" tempo="96">
@@ -38,8 +38,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <caption>Triple meter in 3/4: strong, weak, weak.</caption>
     </figure>
     <p>In duple meter the beats go strong, weak. In triple meter they go strong, weak, weak. In quadruple meter the third beat is a little stronger than the second and fourth: strong, weak, medium, weak.</p>
-    <p>Two signs replace numbers. Common time, a sign shaped like a large C, means 4/4. The same sign with a vertical stroke through it is cut time, or alla breve, and means 2/2.</p>
-    <p>A bar in which nothing is played is written with a whole rest, even when the bar is shorter than a whole note.</p>
+    <p>Two signs replace numbers. <term ref="common-time">Common time</term>, a sign shaped like a large C, means 4/4. The same sign with a vertical stroke through it is <term ref="cut-time">cut time</term>, or alla breve, and means 2/2.</p>
+    <p>A bar in which nothing is played is written with a whole rest, even when the bar is shorter than a <term ref="whole-note">whole note</term>. Only for bars longer than a whole note, such as 4/2, do some editors use a double whole rest instead.</p>
     <figure>
       <staff clef="treble" time="3/4">E5/q D5/q C5/q | r/h. | G4/h. |.</staff>
       <caption>In 3/4, the silent middle bar has a whole rest in the middle of the bar.</caption>
@@ -48,7 +48,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <prompt>What does the bottom number of the time signature 3/2 tell you?</prompt>
       <option key="a" correct="true">That a half note gets one beat</option>
       <option key="b">That there are two beats in a bar</option>
-      <option key="c">That every beat divides into two</option>
+      <option key="c">That a quarter note gets one beat</option>
       <explanation>The top number counts the beats and the bottom number names the note value of one beat: 2 stands for a half note. 3/2 has three half-note beats in a bar.</explanation>
     </check>
     <check id="which-signature">
@@ -66,7 +66,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Compound time</title>
-    <p>In simple time each beat divides into two equal parts. In compound time each beat divides into three. The beat is then a dotted note: a dotted quarter note divides into three eighth notes.</p>
+    <p>In simple time each beat divides into two equal parts. In <term ref="compound-meter">compound time</term> each beat divides into three. The beat is then a dotted note: a dotted quarter note divides into three eighth notes.</p>
     <p>Compound time signatures have 6, 9 or 12 as the top number. They count the divisions, not the beats: 6/8 has six eighth notes in a bar, grouped as two dotted-quarter beats.</p>
     <figure play="as-written" tempo="72">
       <staff clef="treble" time="6/8">C5/e D5/e E5/e F5/e E5/e D5/e | C5/q. G4/q. |.</staff>
@@ -97,14 +97,14 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       </step>
     </worked>
     <callout kind="remember">
-      <p>Top number 2, 3 or 4: simple time, and the top number counts the beats. Top number 6, 9 or 12: compound time, and the top number divided by three counts the beats.</p>
+      <p>Top number 2, 3 or 4: simple time, and the top number counts the beats; so 3/8 is simple triple, with three eighth-note beats. Top number 6, 9 or 12: compound time, and the top number divided by three counts the beats.</p>
     </callout>
     <check id="six-eight-beats">
       <prompt>At a moderate tempo, how many beats does a bar of 6/8 have?</prompt>
       <option key="a" correct="true">Two</option>
       <option key="b">Three</option>
       <option key="c">Six</option>
-      <explanation>6/8 is compound duple: six eighth notes grouped in two dotted-quarter beats. Only at a very slow tempo do performers count all six eighth notes.</explanation>
+      <explanation>6/8 is compound duple: six eighth notes grouped in two dotted-quarter beats. At a very slow tempo performers may count all six eighth notes, but the bar still falls into two groups of three.</explanation>
     </check>
     <check id="twelve-eight">
       <prompt>How is the meter of 12/8 described?</prompt>
@@ -117,14 +117,14 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>The upbeat</title>
-    <p>Music does not always begin on a downbeat. Notes before the first full bar form an upbeat, also called an anacrusis or a pickup. They lead into the first downbeat.</p>
-    <p>The upbeat is counted as the end of an incomplete bar. Often the last bar of the piece is shortened by the same amount, so that the first and last bars together make one full bar.</p>
+    <p>Music does not always begin on a downbeat. Notes before the first full bar form an upbeat, also called an <term ref="anacrusis">anacrusis</term> or a pickup. They lead into the first downbeat.</p>
+    <p>The upbeat is counted as the end of an incomplete bar. Traditionally the last bar of the piece is then shortened by the same amount, so that the first and last bars together make one full bar; this matters most when a passage is repeated. Many pieces, however, simply end with a full bar.</p>
     <figure play="as-written" tempo="96">
       <staff clef="treble" time="3/4">E4/q | *A4/h B4/q | C5/q B4/q A4/q | E5/h D5/q | C5/h |.</staff>
       <caption>A one-beat upbeat in 3/4 leads into the downbeat; the last bar has the two remaining beats.</caption>
     </figure>
     <check id="anacrusis">
-      <prompt>A piece in 4/4 starts with one quarter note before the first bar line. What is this note called?</prompt>
+      <prompt>A piece in 4/4 starts with one quarter note before the first barline. What is this note called?</prompt>
       <option key="a" correct="true">An upbeat</option>
       <option key="b">A downbeat</option>
       <option key="c">A whole bar</option>

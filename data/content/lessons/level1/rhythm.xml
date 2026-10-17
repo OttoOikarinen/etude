@@ -9,8 +9,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Note values</title>
-    <p>The position of a note on the staff gives its pitch; its shape gives its length. The parts of a note are the notehead, which is hollow or filled, the stem, and the flags on the stem of the shortest notes.</p>
-    <p>Each note value lasts half as long as the one before it: one whole note equals two half notes, four quarter notes or eight eighth notes.</p>
+    <p>The position of a note on the <term ref="staff">staff</term> gives its pitch; its shape gives its length. The parts of a note are the <term ref="notehead">notehead</term>, which is hollow or filled, the <term ref="stem">stem</term>, and the <term ref="flag">flags</term> on the stem of the shortest notes.</p>
+    <p>Each <term ref="note-value">note value</term> lasts half as long as the one before it: one <term ref="whole-note">whole note</term> equals two <term ref="half-note">half notes</term>, four <term ref="quarter-note">quarter notes</term> or eight <term ref="eighth-note">eighth notes</term>.</p>
     <figure play="as-written" tempo="80">
       <staff clef="treble" time="4/4">C5/w | C5/h C5/h | C5/q C5/q C5/q C5/q | C5/e C5/e C5/e C5/e C5/e C5/e C5/e C5/e |.</staff>
       <caption>One whole note, two half notes, four quarter notes and eight eighth notes take the same time.</caption>
@@ -20,7 +20,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <li>Half note: a hollow notehead with a stem.</li>
       <li>Quarter note: a filled notehead with a stem.</li>
       <li>Eighth note: a filled notehead with a stem and one flag.</li>
-      <li>Sixteenth note: a filled notehead with a stem and two flags.</li>
+      <li><term ref="sixteenth-note">Sixteenth note</term>: a filled notehead with a stem and two flags.</li>
     </list>
     <p>Names differ between countries. British English, for example, calls these notes the semibreve, minim, crotchet, quaver and semiquaver.</p>
     <check id="quarter-shape">
@@ -34,8 +34,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Stems, flags and beams</title>
-    <p>Stems point up from notes below the middle line of the staff and down from notes above it. Notes on the middle line usually have a stem pointing down.</p>
-    <p>Eighth notes and shorter notes can be joined by beams instead of flags. A beam replaces one flag, so two beams mean sixteenth notes. Beams group the notes of one beat together so that the beat is easy to see.</p>
+    <p>Stems point up from notes below the middle line of the staff and down from notes above it. Notes on the middle line usually have a stem pointing down, although the stem may point up when the neighbouring notes have up-stems.</p>
+    <p>Eighth notes and shorter notes can be joined by <term ref="beam">beams</term> instead of flags. A beam replaces one flag, so two beams mean sixteenth notes. Beams group the notes of one <term ref="beat">beat</term> together so that the beat is easy to see.</p>
     <figure play="as-written" tempo="72">
       <staff clef="treble" time="2/4">G4/e A4/e B4/e C5/e | D5/s C5/s B4/s A4/s G4/q |.</staff>
       <caption>Eighth notes beamed in pairs, then four sixteenth notes with two beams: each group fills one quarter-note beat.</caption>
@@ -59,13 +59,13 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Rests</title>
-    <p>A rest is a silence with a definite length. Every note value has a rest of the same length.</p>
+    <p>A <term ref="rest">rest</term> is a silence with a definite length. Every note value has a rest of the same length.</p>
     <figure>
       <staff clef="treble" time="4/4">r/w | r/h r/h | r/q r/q r/q r/q | r/e r/e r/e r/e r/s r/s r/s r/s r/q |.</staff>
-      <caption>A whole rest, two half rests, four quarter rests, then eighth, sixteenth and quarter rests.</caption>
+      <caption>A <term ref="whole-rest">whole rest</term>, two <term ref="half-rest">half rests</term>, four <term ref="quarter-rest">quarter rests</term>, then eighth, sixteenth and quarter rests.</caption>
     </figure>
     <p>The whole rest and the half rest look alike. The whole rest hangs below the fourth line; the half rest sits on the middle line.</p>
-    <p>A whole rest also stands for a whole bar of silence in almost every time signature, as the next lesson explains.</p>
+    <p>A whole rest also stands for a whole <term ref="bar">bar</term> of silence in any <term ref="time-signature">time signature</term>, whatever the length of the bar, as the next lesson explains.</p>
     <callout kind="remember">
       <p>The whole rest hangs, the half rest sits.</p>
     </callout>
@@ -80,7 +80,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Dots and ties</title>
-    <p>A dot after a note makes it half as long again. A dotted half note lasts a half note plus a quarter note; a dotted quarter note lasts a quarter note plus an eighth note. Rests can be dotted in the same way.</p>
+    <p>A <term ref="dot">dot</term> after a note makes it half as long again. A dotted half note lasts a half note plus a quarter note; a dotted quarter note lasts a quarter note plus an eighth note. Rests can be dotted in the same way.</p>
     <figure play="as-written" tempo="80">
       <staff clef="treble" time="4/4">G4/h. A4/q | B4/q. A4/e G4/h |.</staff>
       <caption>A dotted half note fills three beats; a dotted quarter note and an eighth note together fill two.</caption>
@@ -101,12 +101,12 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       </step>
     </worked>
     <p>A second dot adds half of what the first dot added: a double-dotted half note lasts a half note, a quarter note and an eighth note.</p>
-    <p>A tie is a curved line joining two notes of the same pitch. They are played as one note that lasts as long as both together. Ties carry a note over a bar line, where a dot cannot.</p>
+    <p>A <term ref="tie">tie</term> is a curved line joining two notes of the same pitch. They are played as one note that lasts as long as both together. Ties carry a note over a <term ref="barline">barline</term>, where a dot cannot.</p>
     <figure>
       <staff clef="treble" time="4/4">E5/q D5/q C5/h~ | C5/h B4/h |.</staff>
-      <caption>The tied <note>C5</note> is sounded once and held for four beats, across the bar line.</caption>
+      <caption>The tied <note>C5</note> is sounded once and held for four beats, across the barline.</caption>
     </figure>
-    <p>A similar curve joining notes of <em>different</em> pitches is a slur. It is not a tie: it asks for the notes to be played smoothly connected.</p>
+    <p>A similar curve joining notes of <em>different</em> pitches is a <term ref="slur">slur</term>. It is not a tie: it asks for the notes to be played smoothly connected.</p>
     <check id="dotted-half">
       <prompt>A dotted half note lasts as long as how many quarter notes?</prompt>
       <option key="a">Two</option>

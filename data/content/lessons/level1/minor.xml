@@ -9,16 +9,16 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>The natural minor scale</title>
-    <p>The natural minor scale follows this pattern of whole steps (W) and half steps (H):</p>
+    <p>The <term ref="natural-minor-scale">natural minor scale</term> follows this pattern of <term ref="whole-step">whole steps</term> (W) and <term ref="half-step">half steps</term> (H):</p>
     <callout kind="remember">
       <p>W H W W H W W. The half steps lie between the second and third notes and between the fifth and sixth.</p>
     </callout>
-    <p>Played on the white keys from <note>A</note> to <note>A</note>, the scale fits the pattern without any sharps or flats.</p>
+    <p>Played on the white <term ref="key">keys</term> from <note>A</note> to <note>A</note>, the scale fits the pattern without any <term ref="sharp">sharps</term> or <term ref="flat">flats</term>.</p>
     <figure play="melodic" tempo="100">
       <staff clef="treble">A4{1} *B4{2} *C5{3} D5{4} *E5{5} *F5{6} G5{7} A5{8}</staff>
       <caption>The <note>A</note> natural minor scale. The highlighted pairs are the half steps, 2–3 and 5–6.</caption>
     </figure>
-    <p>Compared with the major scale on the same tonic, the natural minor scale has a lower third, sixth and seventh note, each by a half step. The lower third gives minor its characteristic darker colour.</p>
+    <p>Compared with the <term ref="major-scale">major scale</term> on the same <term ref="tonic">tonic</term>, the natural minor scale has a lower third, sixth and seventh note, each by a half step. The lower third gives minor its characteristic darker colour.</p>
     <figure play="melodic" tempo="100">
       <staff clef="treble">C4 D4 E4 F4 G4 A4 B4 C5</staff>
       <caption>The <note>C</note> major scale.</caption>
@@ -38,9 +38,9 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Relative and parallel keys</title>
-    <p>Every minor key shares its key signature with a major key, its relative major. <note>A</note> minor and <note>C</note> major both have no sharps or flats; they use the same notes from different tonics.</p>
+    <p>Every minor key shares its <term ref="key-signature">key signature</term> with a major key, its <term ref="relative-key">relative major</term>. <note>A</note> minor and <note>C</note> major both have no sharps or flats; they use the same notes from different tonics.</p>
     <p>The tonic of the relative minor is the sixth note of the major scale. Counted the other way, it lies three half steps below the major tonic, on the letter two below it: from <note>C</note> down to <note>A</note>.</p>
-    <p>Parallel keys share the same tonic instead: <note>C</note> major and <note>C</note> minor. The parallel minor has three more flats, or three fewer sharps, than the major key.</p>
+    <p><term ref="parallel-key">Parallel keys</term> share the same tonic instead: <note>C</note> major and <note>C</note> minor. The parallel minor has three more flats, or three fewer sharps, than the major key; counting across zero, <note>G</note> major has one sharp and <note>G</note> minor two flats.</p>
     <worked>
       <title>Find the key signature of a minor key</title>
       <step>
@@ -89,20 +89,20 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>The harmonic minor scale</title>
-    <p>In major, the seventh note lies a half step below the tonic and pulls strongly up to it; it is called the leading tone. In natural minor the seventh note is a whole step below the tonic, and that pull is weak.</p>
-    <p>The harmonic minor scale raises the seventh note by a half step to make it a leading tone. The raised note is written as an accidental in the music; it never appears in the key signature. The name comes from the chords built on the scale, as the triads lesson shows.</p>
+    <p>In major, the seventh note lies a half step below the tonic and pulls strongly up to it; it is called the <term ref="leading-tone">leading tone</term>. In natural minor the seventh note is a whole step below the tonic, and that pull is weak. North American textbooks call this lowered seventh the <term ref="subtonic">subtonic</term>; the scale degrees lesson explains the names.</p>
+    <p>The <term ref="harmonic-minor-scale">harmonic minor scale</term> raises the seventh note by a half step to make it a leading tone. The raised note is written as an <term ref="accidental">accidental</term> in the music; it never appears in the key signature. The name comes from the chords built on the scale, as the triads lesson shows.</p>
     <figure play="melodic" tempo="100">
       <staff clef="treble">A4 B4 C5 D5 E5 *F5 *G#5 A5</staff>
       <caption>The <note>A</note> harmonic minor scale. Between the sixth and seventh notes, <note>F5</note> and <note>G#5</note>, lies a gap of three half steps.</caption>
     </figure>
-    <p>The raised seventh leaves a gap of three half steps between the sixth and seventh notes, which gives the harmonic minor scale its distinctive sound.</p>
+    <p>The raised seventh leaves a gap of three half steps between the sixth and seventh notes. Written with neighbouring letters, this gap is an <term ref="augmented-interval">augmented second</term>, as the intervals lesson explains; it gives the harmonic minor scale its distinctive sound.</p>
     <worked>
       <title>Write a harmonic minor scale</title>
       <step>
         <p>Take <note>C</note> minor and start from its natural minor scale. It has three flats, so the scale is <note>C</note> <note>D</note> <note>Eb</note> <note>F</note> <note>G</note> <note>Ab</note> <note>Bb</note> <note>C</note>.</p>
       </step>
       <step>
-        <p>Raise the seventh note by a half step: <note>Bb</note> becomes <note>B</note>. With the key signature of three flats, the raised note needs a natural sign.</p>
+        <p>Raise the seventh note by a half step: <note>Bb</note> becomes <note>B</note>. With the key signature of three flats, the raised note needs a <term ref="natural">natural</term> sign.</p>
         <figure play="melodic" tempo="100">
           <staff clef="treble" key="-3">C4 D4 Eb4 F4 G4 Ab4 *B4 C5</staff>
         </figure>
@@ -119,7 +119,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>The melodic minor scale</title>
-    <p>In a melody the gap of three half steps in harmonic minor can sound awkward. The melodic minor scale smooths it out: going up, it raises both the sixth and the seventh notes. Going down, the leading tone does not need to rise to the tonic, so the scale returns to the natural minor form.</p>
+    <p>Common-practice melodies avoid the augmented second of harmonic minor. The <term ref="melodic-minor-scale">melodic minor scale</term> removes it: going up, it raises the sixth note as well as the seventh. Going down, the seventh note does not need to lead up to the tonic, so the scale returns to the natural minor form.</p>
     <figure play="melodic" tempo="100">
       <staff clef="treble">A4 B4 C5 D5 E5 *F#5 *G#5 A5 *G5 *F5 E5 D5 C5 B4 A4</staff>
       <caption>The <note>A</note> melodic minor scale: <note>F#</note> and <note>G#</note> going up, <note>G</note> and <note>F</note> going down.</caption>

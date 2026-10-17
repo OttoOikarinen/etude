@@ -9,7 +9,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Stacking thirds</title>
-    <p>A triad is a chord of three notes stacked in thirds. The bottom note of the stack is the root, which names the triad. The note a third above the root is the third, and the note a fifth above the root is the fifth.</p>
+    <p>A <term ref="triad">triad</term> is a <term ref="chord">chord</term> of three notes stacked in thirds. The bottom note of the stack is the <term ref="root">root</term>, which names the triad. The note a third above the root is the <term ref="chord-third">third</term>, and the note a fifth above the root is the <term ref="chord-fifth">fifth</term>.</p>
     <figure play="harmonic">
       <staff clef="treble">[C4 E4 G4]/w</staff>
       <caption>A triad on <note>C</note>: the root <note>C</note>, the third <note>E</note> and the fifth <note>G</note>.</caption>
@@ -35,9 +35,9 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     </list>
     <figure play="as-written" tempo="60">
       <staff clef="treble">[C4 E4 G4]/h | [C4 Eb4 G4]/h | [C4 Eb4 Gb4]/h | [C4 E4 G#4]/h</staff>
-      <caption>Major, minor, diminished and augmented triads on <note>C</note>.</caption>
+      <caption>Major, minor, diminished and <term ref="augmented-triad">augmented triads</term> on <note>C</note>.</caption>
     </figure>
-    <p>Major triads sound bright and minor triads darker. Diminished triads sound tense and augmented triads unsettled; both are much rarer than major and minor.</p>
+    <p><term ref="major-triad">Major triads</term> sound bright and <term ref="minor-triad">minor triads</term> darker. <term ref="diminished-triad">Diminished triads</term> sound tense and augmented triads unsettled; both are much rarer than major and minor.</p>
     <worked>
       <title>Identify the quality of a triad</title>
       <step>
@@ -77,9 +77,9 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <title>Inversions</title>
     <p>The lowest note of a chord, the bass, need not be the root. Which chord member is in the bass decides the position of the triad:</p>
     <list>
-      <li>Root position: the root is in the bass.</li>
-      <li>First inversion: the third is in the bass.</li>
-      <li>Second inversion: the fifth is in the bass.</li>
+      <li><term ref="root-position">Root position</term>: the root is in the bass.</li>
+      <li><term ref="first-inversion">First inversion</term>: the third is in the bass.</li>
+      <li><term ref="second-inversion">Second inversion</term>: the fifth is in the bass.</li>
     </list>
     <figure play="as-written" tempo="60">
       <staff clef="treble">[C4 E4 G4]/h [E4 G4 C5]/h [G4 C5 E5]/h</staff>
@@ -91,7 +91,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <staff clef="bass">E3/w</staff>
       <caption>With <note>E</note> in the bass, this spread <note>C</note> major triad is in first inversion.</caption>
     </figure>
-    <p>Inversions are also named after the intervals above the bass, as in figured bass: a first-inversion triad is a six-three or simply a six chord, and a second-inversion triad a six-four chord.</p>
+    <p>Inversions are also named after the intervals above the bass, as in figured bass: a first-inversion triad is a six-three chord (6/3, usually shortened to 6, a six chord), and a second-inversion triad a six-four chord (6/4).</p>
     <worked>
       <title>Find the root of an inverted triad</title>
       <step>
@@ -132,18 +132,18 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Triads in a key</title>
-    <p>A triad can be built on every degree of a scale, using only the notes of the key. Roman numerals name these triads by the degree of their root. Upper case means major, lower case minor; a small circle (°) means diminished and a plus sign (+) augmented.</p>
+    <p>A triad can be built on every degree of a scale, using only the notes of the key. <term ref="roman-numeral">Roman numerals</term> name these triads by the degree of their root. Upper case means major, lower case minor; a small circle (°) means diminished and a plus sign (+) augmented.</p>
     <figure play="as-written" tempo="72">
       <staff clef="treble">[C4 E4 G4]/h{I} [D4 F4 A4]/h{ii} [E4 G4 B4]/h{iii} [F4 A4 C5]/h{IV} [G4 B4 D5]/h{V} [A4 C5 E5]/h{vi} [B4 D5 F5]/h{vii°}</staff>
       <caption>The triads of <note>C</note> major.</caption>
     </figure>
-    <p>Every major key has the same pattern: I, IV and V are major; ii, iii and vi are minor; vii° is diminished. The three major triads, on the tonic, subdominant and dominant, are the primary triads of the key.</p>
-    <p>In minor keys the seventh degree varies, and so do the triads that contain it. The usual triads in minor take the raised seventh, the leading tone, for V and vii°, and the lowered seventh for III: i, ii°, III, iv, V, VI and vii°. The leading tone makes V a major triad, which pulls more strongly to the tonic.</p>
+    <p>Every major key has the same pattern: I, IV and V are major; ii, iii and vi are minor; vii° is diminished. The three major triads, on the <term ref="tonic">tonic</term>, <term ref="subdominant">subdominant</term> and <term ref="dominant">dominant</term>, are the primary triads of the key.</p>
+    <p>In minor keys the seventh degree varies, and so do the triads that contain it. The usual triads in minor take the raised seventh, the <term ref="leading-tone">leading tone</term>, for V and vii°, and the lowered seventh for III: i, ii°, III, iv, V, VI and vii°. The leading tone makes V a major triad, which pulls more strongly to the tonic.</p>
     <figure play="as-written" tempo="72">
       <staff clef="bass">[A2 C3 E3]/h{i} [B2 D3 F3]/h{ii°} [C3 E3 G3]/h{III} [D3 F3 A3]/h{iv} [E3 G#3 B3]/h{V} [F3 A3 C4]/h{VI} [G#3 B3 D4]/h{vii°}</staff>
       <caption>The usual triads of <note>A</note> minor. V and vii° contain the leading tone <note>G#</note>.</caption>
     </figure>
-    <p>Natural minor without the raised seventh gives a minor v and a major VII instead; both occur, but less often in common-practice music.</p>
+    <p>The lowered seventh of <term ref="natural-minor-scale">natural minor</term> gives a minor v and a major VII instead. Both occur in common-practice music, but less often and mostly in particular contexts: VII, for example, often leads to III. With the raised seventh, III becomes augmented, III+, which is rare.</p>
     <check id="vi-quality">
       <prompt>In <note>G</note> major, what is the quality of the triad on the sixth degree?</prompt>
       <option key="a">Major</option>
@@ -163,7 +163,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <option key="a" correct="true">Major</option>
       <option key="b">Minor</option>
       <option key="c">Diminished</option>
-      <explanation>In <note>A</note> minor, V is <note>E</note>–<note>G#</note>–<note>B</note>: a major third and a minor third, so a major triad. With the subtonic <note>G</note> it would be the minor v.</explanation>
+      <explanation>In <note>A</note> minor, V is <note>E</note>–<note>G#</note>–<note>B</note>: a major third and a minor third, so a major triad. With the <term ref="subtonic">subtonic</term> <note>G</note> it would be the minor v.</explanation>
     </check>
   </section>
 </lesson>

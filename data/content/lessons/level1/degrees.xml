@@ -9,7 +9,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Degree numbers</title>
-    <p>The notes of a scale are its scale degrees, numbered upward from the tonic: the tonic is 1, the next note 2, and so on up to 7. The tonic an octave higher is 1 again. In textbooks the numbers are often written with a caret above them.</p>
+    <p>The notes of a scale are its <term ref="scale-degree">scale degrees</term>, numbered upward from the <term ref="tonic">tonic</term>: the tonic is 1, the next note 2, and so on up to 7. The tonic an <term ref="octave">octave</term> higher is 1 again. In textbooks the numbers are often written with a caret above them.</p>
     <p>The numbers describe a note's place in the key, not its pitch. In <note>D</note> major, <note>A</note> is degree 5; in <note>A</note> major, <note>A</note> is degree 1.</p>
     <figure play="melodic" tempo="100">
       <staff clef="treble" key="2">*D4{1} E4{2} F#4{3} G4{4} A4{5} B4{6} C#5{7} *D5{1}</staff>
@@ -22,12 +22,12 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <p>Each degree also has a name:</p>
     <list ordered="true">
       <li>Tonic: the home note of the key.</li>
-      <li>Supertonic: the note just above the tonic.</li>
-      <li>Mediant: halfway from the tonic up to the dominant.</li>
-      <li>Subdominant: a fifth below the tonic, the dominant's mirror image.</li>
+      <li><term ref="supertonic">Supertonic</term>: the note just above the tonic.</li>
+      <li><term ref="mediant">Mediant</term>: halfway from the tonic up to the <term ref="dominant">dominant</term>.</li>
+      <li><term ref="subdominant">Subdominant</term>: a fifth below the tonic, the dominant's mirror image.</li>
       <li>Dominant: a fifth above the tonic; after the tonic, the most important degree.</li>
-      <li>Submediant: halfway from the tonic down to the subdominant.</li>
-      <li>Leading tone: a half step below the tonic, leading up to it. British English calls it the leading note.</li>
+      <li><term ref="submediant">Submediant</term>: halfway from the tonic down to the subdominant.</li>
+      <li><term ref="leading-tone">Leading tone</term>: a <term ref="half-step">half step</term> below the tonic, leading up to it. British English calls it the leading note.</li>
     </list>
     <p>The names are arranged around the tonic. The dominant lies a fifth above it and the subdominant a fifth below. The mediant lies a third above the tonic and the submediant a third below.</p>
     <figure play="melodic" tempo="90">
@@ -63,8 +63,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Degrees in minor</title>
-    <p>Minor keys use the same names for degrees 1 to 6. The mediant and submediant are a half step lower than in the parallel major key.</p>
-    <p>The seventh degree has two forms. In natural minor it lies a whole step below the tonic and is called the subtonic. Raised by a half step, as in harmonic and melodic minor, it is a leading tone, as in major.</p>
+    <p>Minor keys use the same names for degrees 1 to 6. The mediant is a half step lower than in the <term ref="parallel-key">parallel major</term> key, and so is the submediant, except where ascending <term ref="melodic-minor-scale">melodic minor</term> raises it.</p>
+    <p>The seventh degree has two forms. In <term ref="natural-minor-scale">natural minor</term> it lies a <term ref="whole-step">whole step</term> below the tonic and is called the <term ref="subtonic">subtonic</term>. Raised by a half step, as in <term ref="harmonic-minor-scale">harmonic minor</term> and ascending melodic minor, it is a leading tone, as in major.</p>
     <figure play="melodic" tempo="90">
       <staff clef="treble">*G4{7} A4{1} *G#4{7} A4{1}</staff>
       <caption>In <note>A</note> minor: the subtonic <note>G</note>, a whole step below the tonic, and the leading tone <note>G#</note>, a half step below.</caption>
@@ -84,7 +84,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <p>Degrees 1, 3 and 5 are stable: a melody can rest on them, and the tonic is the most restful of all. The other degrees are unstable and tend to move to a stable neighbour.</p>
     <list>
       <li>The leading tone (7) rises a half step to the tonic. This is the strongest pull in the key.</li>
-      <li>The subdominant (4) tends to fall a half step to the mediant in major.</li>
+      <li>The subdominant (4) tends to fall to the mediant: a half step in major, a whole step in minor.</li>
       <li>The supertonic (2) tends to fall to the tonic, or rise to the mediant.</li>
       <li>The submediant (6) tends to fall to the dominant. In minor this is a half step and the pull is strong.</li>
     </list>
@@ -99,7 +99,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
         <p>Take <note>Ab</note> major. The leading tone is degree 7, a half step below the tonic, on the letter below it: some kind of <note>G</note>.</p>
       </step>
       <step>
-        <p>The key signature of <note>Ab</note> major has four flats: <note>Bb</note> <note>Eb</note> <note>Ab</note> <note>Db</note>. <note>G</note> is not among them, so the seventh degree is <note>G</note>.</p>
+        <p>The <term ref="key-signature">key signature</term> of <note>Ab</note> major has four flats: <note>Bb</note> <note>Eb</note> <note>Ab</note> <note>Db</note>. <note>G</note> is not among them, so the seventh degree is <note>G</note>.</p>
       </step>
       <step>
         <p>Check the distance: <note>G</note> up to <note>Ab</note> is a half step. The leading tone of <note>Ab</note> major is <note>G</note>.</p>

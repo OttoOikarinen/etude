@@ -9,14 +9,14 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Interval numbers</title>
-    <p>An interval is the distance between two notes. Played one after the other, the notes form a melodic interval; played together, a harmonic interval.</p>
-    <p>The number of an interval counts the letter names from the lower note to the upper note, counting both. From <note>C</note> up to <note>E</note> is a third: <note>C</note>, <note>D</note>, <note>E</note>. Two notes on the same line or space are a unison, and notes eight letters apart are an <term ref="octave">octave</term>.</p>
+    <p>An <term ref="interval">interval</term> is the distance between two notes. Played one after the other, the notes form a <term ref="melodic-interval">melodic interval</term>; played together, a <term ref="harmonic-interval">harmonic interval</term>.</p>
+    <p>The <term ref="interval-number">number</term> of an interval counts the letter names from the lower note to the upper note, counting both. From <note>C</note> up to <note>E</note> is a third: <note>C</note>, <note>D</note>, <note>E</note>. Two notes on the same line or space are a <term ref="unison">unison</term>, and from one note to the next note with the same letter, eight letters counting both, is an <term ref="octave">octave</term>.</p>
     <figure play="melodic" tempo="110">
       <staff clef="treble">[C4 D4]{2} [C4 E4]{3} [C4 F4]{4} [C4 G4]{5} [C4 A4]{6} [C4 B4]{7} [C4 C5]{8}</staff>
       <caption>A second, third, fourth, fifth, sixth, seventh and octave above <note>C4</note>.</caption>
     </figure>
     <p>On the staff, odd-numbered intervals (thirds, fifths, sevenths) have both notes on lines or both in spaces. Even-numbered intervals (seconds, fourths, sixths, octaves) have one note on a line and the other in a space.</p>
-    <p>Accidentals do not change the number. <note>C</note>–<note>E</note>, <note>C</note>–<note>Eb</note> and <note>C#</note>–<note>E</note> are all thirds, because they span the same three letters.</p>
+    <p><term ref="accidental">Accidentals</term> do not change the number. <note>C</note>–<note>E</note>, <note>C</note>–<note>Eb</note> and <note>C#</note>–<note>E</note> are all thirds, because they span the same three letters.</p>
     <check id="number-sixth">
       <prompt>What is the number of this interval?</prompt>
       <figure>
@@ -32,24 +32,24 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Interval quality</title>
-    <p>Intervals with the same number can differ in size. <note>D</note>–<note>F#</note> and <note>D</note>–<note>F</note> are both thirds, but the first spans four half steps and the second only three. The quality tells them apart.</p>
+    <p>Intervals with the same number can differ in size. <note>D</note>–<note>F#</note> and <note>D</note>–<note>F</note> are both thirds, but the first spans four <term ref="half-step">half steps</term> and the second only three. The <term ref="interval-quality">quality</term> tells them apart.</p>
     <figure play="as-written" tempo="72">
       <staff clef="treble">[D4 F#4]/h [D4 F4]/h</staff>
-      <caption>A major third, <note>D4</note>–<note>F#4</note>, and a minor third, <note>D4</note>–<note>F4</note>.</caption>
+      <caption>A <term ref="major-third">major third</term>, <note>D4</note>–<note>F#4</note>, and a <term ref="minor-third">minor third</term>, <note>D4</note>–<note>F4</note>.</caption>
     </figure>
-    <p>Unisons, fourths, fifths and octaves are called perfect. Seconds, thirds, sixths and sevenths are major or minor, the minor interval being a half step smaller.</p>
+    <p>Unisons, fourths, fifths and octaves are called <term ref="perfect-interval">perfect</term>. Seconds, thirds, sixths and sevenths are <term ref="major-interval">major</term> or <term ref="minor-interval">minor</term>, the minor interval being a half step smaller.</p>
     <list>
       <li>Perfect unison: 0 half steps.</li>
-      <li>Minor second: 1; major second: 2.</li>
+      <li><term ref="minor-second">Minor second</term>: 1; <term ref="major-second">major second</term>: 2.</li>
       <li>Minor third: 3; major third: 4.</li>
-      <li>Perfect fourth: 5.</li>
-      <li>Perfect fifth: 7.</li>
-      <li>Minor sixth: 8; major sixth: 9.</li>
-      <li>Minor seventh: 10; major seventh: 11.</li>
+      <li><term ref="perfect-fourth">Perfect fourth</term>: 5.</li>
+      <li><term ref="perfect-fifth">Perfect fifth</term>: 7.</li>
+      <li><term ref="minor-sixth">Minor sixth</term>: 8; <term ref="major-sixth">major sixth</term>: 9.</li>
+      <li><term ref="minor-seventh">Minor seventh</term>: 10; <term ref="major-seventh">major seventh</term>: 11.</li>
       <li>Perfect octave: 12.</li>
     </list>
     <p>Qualities are often abbreviated: P for perfect, M for major and m for minor, so a major third is M3 and a perfect fifth P5.</p>
-    <p>A quick way to find the quality uses the major scale. Above the tonic of a major scale, every note forms a major or a perfect interval: the second, third, sixth and seventh are major, the fourth, fifth and octave perfect.</p>
+    <p>A quick way to find the quality uses the major scale. Above the <term ref="tonic">tonic</term> of a major scale, every note forms a major or a perfect interval: the second, third, sixth and seventh are major, the fourth, fifth and octave perfect.</p>
     <worked>
       <title>Find the number and quality of an interval</title>
       <step>
@@ -89,10 +89,10 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <title>Augmented, diminished and the tritone</title>
     <p>Two more qualities describe intervals that are larger or smaller still:</p>
     <list>
-      <li>Augmented: a half step larger than major or perfect.</li>
-      <li>Diminished: a half step smaller than minor or perfect.</li>
+      <li><term ref="augmented-interval">Augmented</term>: a half step larger than major or perfect.</li>
+      <li><term ref="diminished-interval">Diminished</term>: a half step smaller than minor or perfect.</li>
     </list>
-    <p>The letters, and so the number, stay the same; only the accidentals change. <note>C</note>–<note>G#</note> is an augmented fifth and <note>C</note>–<note>Gb</note> a diminished fifth.</p>
+    <p>The letters, and so the number, stay the same; only the accidentals change. <note>C</note>–<note>G#</note> is an augmented fifth and <note>C</note>–<note>Gb</note> a <term ref="diminished-fifth">diminished fifth</term>.</p>
     <worked>
       <title>Recognise an augmented interval</title>
       <step>
@@ -102,13 +102,13 @@ SPDX-License-Identifier: CC-BY-SA-4.0
         <p><note>F</note> major has <note>Bb</note>, so <note>F</note>–<note>Bb</note> is a perfect fourth.</p>
       </step>
       <step>
-        <p><note>B</note> is a half step higher than <note>Bb</note>, and a perfect interval made a half step larger becomes augmented. <note>F</note>–<note>B</note> is an augmented fourth, six half steps.</p>
+        <p><note>B</note> is a half step higher than <note>Bb</note>, and a perfect interval made a half step larger becomes augmented. <note>F</note>–<note>B</note> is an <term ref="augmented-fourth">augmented fourth</term>, six half steps.</p>
         <figure play="as-written" tempo="72">
           <staff clef="treble">[F4 Bb4]/h *[F4 B4]/h</staff>
         </figure>
       </step>
     </worked>
-    <p>An interval of six half steps, three whole steps, is called a tritone. It divides the octave exactly in half. Written as a fourth it is an augmented fourth; written as a fifth, a diminished fifth. Among the white keys, the only tritone is between <note>F</note> and <note>B</note>.</p>
+    <p>An interval of six half steps, three <term ref="whole-step">whole steps</term>, is called a <term ref="tritone">tritone</term>. It divides the octave exactly in half. Written as a fourth it is an augmented fourth; written as a fifth, a diminished fifth. Among the white keys, only <note>F</note> and <note>B</note> form a tritone: <note>F</note> up to <note>B</note>, or <note>B</note> up to <note>F</note>.</p>
     <figure play="as-written" tempo="72">
       <staff clef="treble">[F4 B4]/h [B4 F5]/h</staff>
       <caption>The augmented fourth <note>F4</note>–<note>B4</note> and the diminished fifth <note>B4</note>–<note>F5</note>: both are tritones.</caption>
@@ -128,7 +128,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Inverting intervals</title>
-    <p>An interval is inverted by moving its lower note up an octave, or its upper note down an octave. <note>C</note>–<note>E</note> becomes <note>E</note>–<note>C</note>.</p>
+    <p>An interval is <term ref="inversion">inverted</term> by moving its lower note up an octave, or its upper note down an octave. <note>C</note>–<note>E</note> becomes <note>E</note>–<note>C</note>.</p>
     <figure play="as-written" tempo="72">
       <staff clef="treble">[C4 E4]/h{3} [E4 C5]/h{6}</staff>
       <caption>The major third <note>C4</note>–<note>E4</note> inverts to the minor sixth <note>E4</note>–<note>C5</note>.</caption>
@@ -157,18 +157,18 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Compound intervals and listening</title>
-    <p>Intervals larger than an octave are compound intervals. A ninth is an octave plus a second, and a tenth an octave plus a third; subtract seven from the number to find the simple interval. The quality stays the same: <note>C4</note>–<note>E5</note> is a major tenth.</p>
+    <p>Intervals larger than an octave are <term ref="compound-interval">compound intervals</term>. A ninth is an octave plus a second, and a tenth an octave plus a third; subtract seven from the number to find the simple interval. The quality stays the same: <note>C4</note>–<note>E5</note> is a major tenth.</p>
     <figure play="as-written" tempo="72">
       <staff clef="treble">[C4 D5]/h{9} [C4 E5]/h{10}</staff>
       <caption>A major ninth and a major tenth above <note>C4</note>.</caption>
     </figure>
     <p>Each interval has its own sound. Some listening hints:</p>
     <list>
-      <li>Perfect unisons, fifths and octaves sound open and stable; they are the perfect consonances.</li>
+      <li>Perfect unisons, fifths and octaves sound open and stable; they are the perfect <term ref="consonance">consonances</term>.</li>
       <li>Thirds and sixths sound full and sweet; they are the imperfect consonances. Major thirds and sixths sound brighter than minor ones.</li>
-      <li>Seconds and sevenths clash and want to move on; they are dissonances. The minor second and the major seventh are the sharpest.</li>
-      <li>The tritone sounds restless and unresolved.</li>
-      <li>The perfect fourth is a special case. It sounds open, but in common-practice harmony it counts as a dissonance when its lower note is the lowest note sounding.</li>
+      <li>Seconds and sevenths clash and want to move on; they are <term ref="dissonance">dissonances</term>. The minor second and the major seventh are the sharpest.</li>
+      <li>The tritone sounds restless and unresolved; like all augmented and diminished intervals, it is a dissonance.</li>
+      <li>The perfect fourth is a special case. It sounds open and is consonant between upper voices, but in common-practice harmony and counterpoint a fourth above the lowest note sounding counts as a dissonance.</li>
     </list>
     <p>To find an interval by ear, sing the lower note and then up the scale, counting notes until you reach the upper one. With practice you will hear intervals as wholes.</p>
     <check id="compound-ninth">

@@ -9,8 +9,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>The major scale pattern</title>
-    <p>A scale is a series of notes in order of pitch, from a starting note, the tonic, up to the tonic an <term ref="octave">octave</term> higher. In major and minor scales each letter is used once before the tonic returns.</p>
-    <p>The major scale follows this pattern of whole steps (W) and half steps (H):</p>
+    <p>A <term ref="scale">scale</term> is a series of notes in order of <term ref="pitch">pitch</term>, from a starting note, the <term ref="tonic">tonic</term>, up to the tonic an <term ref="octave">octave</term> higher. In major and minor scales each letter is used once before the tonic returns.</p>
+    <p>The <term ref="major-scale">major scale</term> follows this pattern of <term ref="whole-step">whole steps</term> (W) and <term ref="half-step">half steps</term> (H):</p>
     <callout kind="remember">
       <p>W W H W W W H. The half steps lie between the third and fourth notes and between the seventh and eighth.</p>
     </callout>
@@ -24,7 +24,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Building a major scale</title>
-    <p>A major scale can start on any note. Write the letters in order, then add sharps or flats until the steps match the pattern.</p>
+    <p>A major scale can start on any note. Write the letters in order, then add <term ref="sharp">sharps</term> or <term ref="flat">flats</term> until the steps match the pattern.</p>
     <worked>
       <title>Build a major scale that needs sharps</title>
       <step>
@@ -53,7 +53,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     </figure>
     <p>A major scale uses either sharps or flats, never both.</p>
     <check id="g-major-accidental">
-      <prompt>Which note needs an accidental in the <note>G</note> major scale?</prompt>
+      <prompt>Which note needs an <term ref="accidental">accidental</term> in the <note>G</note> major scale?</prompt>
       <option key="a" correct="true"><note>F#</note></option>
       <option key="b"><note>C#</note></option>
       <option key="c"><note>Bb</note></option>
@@ -70,12 +70,12 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Key signatures</title>
-    <p>Music in a major key uses the notes of its major scale. Instead of writing the same sharps or flats again and again, they are collected in a key signature at the start of every staff, right after the clef.</p>
+    <p>Music in a major <term ref="key">key</term> uses the notes of its major scale. Instead of writing the same sharps or flats again and again, they are collected in a <term ref="key-signature">key signature</term> at the start of every <term ref="staff">staff</term>, right after the <term ref="clef">clef</term>.</p>
     <p>A sharp or flat in the key signature applies to every note with that letter, in every octave, until the key signature changes.</p>
     <p>Sharps and flats always appear in the same order. A key with two sharps has the first two sharps of the order, a key with five flats the first five flats.</p>
     <callout kind="remember">
-      <p>Order of sharps: <note>F#</note> <note>C#</note> <note>G#</note> <note>D#</note> <note>A#</note> <note>E#</note> <note>B#</note>.</p>
-      <p>Order of flats, the same letters backwards: <note>Bb</note> <note>Eb</note> <note>Ab</note> <note>Db</note> <note>Gb</note> <note>Cb</note> <note>Fb</note>.</p>
+      <p><term ref="order-of-sharps">Order of sharps</term>: <note>F#</note> <note>C#</note> <note>G#</note> <note>D#</note> <note>A#</note> <note>E#</note> <note>B#</note>.</p>
+      <p><term ref="order-of-flats">Order of flats</term>, the same letters backwards: <note>Bb</note> <note>Eb</note> <note>Ab</note> <note>Db</note> <note>Gb</note> <note>Cb</note> <note>Fb</note>.</p>
     </callout>
     <figure>
       <staff clef="treble" key="7"></staff>
@@ -131,13 +131,13 @@ SPDX-License-Identifier: CC-BY-SA-4.0
   <section>
     <title>The circle of fifths</title>
     <p>A fifth is the distance from one note to the fifth letter above it, counting both: from <note>C</note> up to <note>G</note> is a fifth. The intervals lesson explains it fully.</p>
-    <p>Start on <note>C</note> major and go up a fifth at a time: each new key has one more sharp. Go down a fifth at a time instead, and each new key has one more flat. Arranged in a circle like the hours of a clock, with <note>C</note> at the top, the keys form the circle of fifths.</p>
+    <p>Start on <note>C</note> major and go up a fifth at a time: each new key has one more sharp. Go down a fifth at a time instead, and each new key has one more flat. Arranged in a circle like the hours of a clock, with <note>C</note> at the top, the keys form the <term ref="circle-of-fifths">circle of fifths</term>.</p>
     <list>
       <li>Sharp keys, going up in fifths: <note>G</note> (1), <note>D</note> (2), <note>A</note> (3), <note>E</note> (4), <note>B</note> (5), <note>F#</note> (6), <note>C#</note> (7).</li>
       <li>Flat keys, going down in fifths: <note>F</note> (1), <note>Bb</note> (2), <note>Eb</note> (3), <note>Ab</note> (4), <note>Db</note> (5), <note>Gb</note> (6), <note>Cb</note> (7).</li>
     </list>
     <p>The new sharp in each sharp key is its seventh note, and the new flat in each flat key is its fourth note.</p>
-    <p>At the bottom of the circle the two sides overlap. Three pairs of keys sound the same but are written differently: <note>B</note> major (5 sharps) and <note>Cb</note> major (7 flats), <note>F#</note> major (6 sharps) and <note>Gb</note> major (6 flats), <note>C#</note> major (7 sharps) and <note>Db</note> major (5 flats). These are enharmonic keys. Counting <note>C</note>, there are fifteen major key signatures.</p>
+    <p>At the bottom of the circle the two sides overlap. Three pairs of keys sound the same but are written differently: <note>B</note> major (5 sharps) and <note>Cb</note> major (7 flats), <note>F#</note> major (6 sharps) and <note>Gb</note> major (6 flats), <note>C#</note> major (7 sharps) and <note>Db</note> major (5 flats). These are <term ref="enharmonic">enharmonic</term> keys. Counting <note>C</note>, there are fifteen major key signatures.</p>
     <check id="a-major-sharps">
       <prompt>How many sharps does <note>A</note> major have?</prompt>
       <option key="a">Two</option>

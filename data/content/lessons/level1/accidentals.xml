@@ -10,7 +10,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
   <section>
     <title>Half steps and whole steps</title>
     <p>On the piano keyboard, the white keys carry the seven note names. The black keys sit between them in groups of two and three. <note>C</note> is the white key just to the left of a group of two black keys.</p>
-    <p>The distance from one key to the very next key, white or black, is a half step, also called a semitone. Two half steps make a whole step, or whole tone.</p>
+    <p>The distance from one key to the very next key, white or black, is a <term ref="half-step">half step</term>, also called a semitone. Two half steps make a <term ref="whole-step">whole step</term>, or whole tone.</p>
     <p>Most neighbouring white keys have a black key between them, so they are a whole step apart. Two pairs have no black key between them: <note>E</note> and <note>F</note>, and <note>B</note> and <note>C</note>. These are half steps.</p>
     <figure play="melodic" tempo="100">
       <staff clef="treble">C4 D4 *E4 *F4 G4 A4 *B4 *C5</staff>
@@ -27,19 +27,19 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Sharps, flats and naturals</title>
-    <p>Accidentals change a note by half steps:</p>
+    <p><term ref="accidental">Accidentals</term> change a note by half steps:</p>
     <list>
-      <li>A sharp (♯) raises a note by a half step.</li>
-      <li>A flat (♭) lowers a note by a half step.</li>
-      <li>A natural (♮) cancels a sharp or flat and gives back the plain note.</li>
+      <li>A <term ref="sharp">sharp</term> (♯) raises a note by a half step.</li>
+      <li>A <term ref="flat">flat</term> (♭) lowers a note by a half step.</li>
+      <li>A <term ref="natural">natural</term> (♮) cancels a sharp or flat and gives back the plain note.</li>
     </list>
-    <p>On the staff the accidental is written <em>before</em> the note, on the same line or space. In words it comes after the letter: <note>F#</note>, <note>Bb</note>.</p>
+    <p>On the <term ref="staff">staff</term> the accidental is written <em>before</em> the note, on the same line or space. In words it comes after the letter: <note>F#</note>, <note>Bb</note>.</p>
     <figure play="as-written" tempo="80">
       <staff clef="treble" time="4/4">F4/q F#4/q G4/h | B4/q Bb4/q A4/h | C5/q C#5/q C5/h |.</staff>
       <caption><note>F</note> raised to <note>F#</note>, <note>B</note> lowered to <note>Bb</note>, and <note>C#</note> cancelled by a natural.</caption>
     </figure>
     <p>Every black key has two names: the key between <note>C</note> and <note>D</note> is both <note>C#</note> and <note>Db</note>. White keys can have such names too. Because there is no black key between <note>E</note> and <note>F</note>, <note>E#</note> is the same key as <note>F</note> and <note>Fb</note> the same key as <note>E</note>; likewise <note>B#</note> is <note>C</note> and <note>Cb</note> is <note>B</note>.</p>
-    <p>Two rarer signs move a note by two half steps. A double sharp (𝄪) raises it by a whole step and a double flat (𝄫) lowers it by a whole step: <note>F##</note> sounds like <note>G</note>, and <note>Bbb</note> like <note>A</note>.</p>
+    <p>Two rarer signs move a note by two half steps. A <term ref="double-sharp">double sharp</term> (𝄪) raises it by a whole step and a <term ref="double-flat">double flat</term> (𝄫) lowers it by a whole step: <note>F##</note> sounds like <note>G</note>, and <note>Bbb</note> like <note>A</note>.</p>
     <figure play="melodic" tempo="80">
       <staff clef="treble">F##4 G4 Bbb4 A4</staff>
       <caption><note>F##4</note> and <note>G4</note> sound the same, as do <note>Bbb4</note> and <note>A4</note>.</caption>
@@ -55,7 +55,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Writing half and whole steps</title>
-    <p>A half step can be written in two ways. With two different letters, such as <note>E</note>–<note>F</note> or <note>C#</note>–<note>D</note>, it is a diatonic half step. With the same letter, such as <note>C</note>–<note>C#</note>, it is a chromatic half step.</p>
+    <p>A half step can be written in two ways. With two different letters, such as <note>E</note>–<note>F</note> or <note>C#</note>–<note>D</note>, it is a <term ref="diatonic-half-step">diatonic half step</term>. With the same letter, such as <note>C</note>–<note>C#</note>, it is a <term ref="chromatic-half-step">chromatic half step</term>.</p>
     <p>A whole step is written with two neighbouring letters, adding an accidental where needed: <note>C</note>–<note>D</note>, <note>E</note>–<note>F#</note>, <note>Bb</note>–<note>C</note>.</p>
     <figure play="melodic" tempo="90">
       <staff clef="treble">E4/h F4/h | C5/h C#5/h || E4/h F#4/h | Bb4/h C5/h |.</staff>
@@ -87,7 +87,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Enharmonic notes</title>
-    <p>Notes that sound the same but are written differently, such as <note>C#</note> and <note>Db</note>, are enharmonic equivalents. Which name is right depends on the context: the key, the scale or the interval being written, as the next lessons show.</p>
+    <p>Notes that sound the same but are written differently, such as <note>C#</note> and <note>Db</note>, are <term ref="enharmonic">enharmonic</term> equivalents. Which name is right depends on the context: the key, the scale or the interval being written, as the next lessons show.</p>
     <figure play="melodic" tempo="90">
       <staff clef="treble">C#4/h Db4/h | G#4/h Ab4/h | B#4/h C5/h |.</staff>
       <caption>Three enharmonic pairs: each pair is one key on the piano.</caption>
@@ -103,11 +103,11 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>How long an accidental lasts</title>
-    <p>An accidental applies to its note and to every later note on the same line or space until the end of the bar. The bar line cancels it. A tie carries it over the bar line, but only for the tied note.</p>
-    <p>Strictly, an accidental affects only its own octave: a note an octave higher or lower needs its own sign. Careful editors add a reminder, a courtesy accidental, wherever a reader might be unsure.</p>
+    <p>An accidental applies to its note and to every later note on the same line or space until the end of the <term ref="bar">bar</term>. The <term ref="barline">barline</term> cancels it. A <term ref="tie">tie</term> carries it over the barline, but only for the tied note.</p>
+    <p>Because it belongs to one line or space, an accidental does not affect the same letter in another <term ref="octave">octave</term>: a note an octave higher or lower needs its own sign. This is the modern convention; older editions were less consistent, so careful editors add a reminder, a courtesy accidental, wherever a reader might be unsure.</p>
     <figure play="as-written" tempo="90">
       <staff clef="treble" time="4/4">F#4/q G4/q F#4/q F4/q | E4/q F4/q G4/h |.</staff>
-      <caption>The second <note>F#4</note> needs no sign, because the sharp still applies; the natural on the fourth beat cancels it. After the bar line, <note>F4</note> needs no sign.</caption>
+      <caption>The second <note>F#4</note> needs no sign, because the sharp still applies; the natural on the fourth beat cancels it. After the barline, <note>F4</note> needs no sign.</caption>
     </figure>
     <check id="accidental-in-bar">
       <prompt>What is the third note of this bar?</prompt>
