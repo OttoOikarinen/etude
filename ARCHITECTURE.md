@@ -77,6 +77,15 @@ Contract changes so far (all backwards-compatible):
   already finished because another one started. `LearningEngine` gained
   `pause_session()`, `resume_session()`, `active_session_id` and
   `new_items()`; `Stats.session_summary()` takes the paused time.
+* W3 learning path: `SessionMode.PLACEMENT` and `LEVEL_EXAM` are implemented
+  (explicit `SessionRequest.item_ids`: the placement test keeps their order,
+  the exam shuffles and interleaves them, neither limits new items), and
+  `DAILY_REVIEW` with `item_ids` is restricted to that set (practising one
+  curriculum unit; filled with the set's least-recalled known items when
+  little is due or new). New pure module `learning.placement`
+  (`PASS_FRACTION`, `balanced_sample`, `PlacementWalk`). `SessionRunner` gained
+  an optional `title` and `drop_upcoming()`; `ExamRunner` and
+  `PlacementRunner` in `exercises.path` subclass it.
 * W1 notation: `CurveItem` (ties) joins the display-list `Item` union,
   `GlyphItem.scale` lets a brace span a system, and `StaffSpec.voices`
   adds further voices to a staff (first voice stems up, the rest down).
@@ -124,6 +133,22 @@ Outcome ──derive_rating──▶ Rating ──Scheduler.review──▶ Card
   sessions without answers. Interrupted sessions live in memory only: the
   engine's open session cannot outlive the process, and persisting it
   would need a storage change.
+* The learning path (`etude.exercises.path.LearningPath`) turns curriculum
+  units into knowledge items (the union of their practices' items under the
+  practice settings, plus vocabulary items `vocab.<entry-id>.<direction>`
+  of the unit's glossary entries), and computes mastery and unlocking: a
+  unit is complete at 80 % mastered items (`learning.mastery`), when placed
+  out or when its level exam was passed; it unlocks when the units it
+  requires are complete. Units without items pass on the state of the units
+  before them. Unit practice is a `DAILY_REVIEW` restricted to the unit's
+  items, run with the unit's practice settings on top of the learner's.
+  The Path page (`ui.pages.path`) shows it; Theory (`ui.pages.lessons`)
+  lists the lessons, which `ui.pages.lesson` renders with the widgets of
+  `ui.content`; the Glossary page searches all entries and opens them in
+  `ui.dialogs.glossary_entry`. Passed levels, placed-out units and
+  completed lessons are GSettings string lists (`passed-levels`,
+  `placed-units`, `completed-lessons`), not database tables. Lesson check
+  questions are not scheduled; answering all of them completes the lesson.
 * The Today page (`etude.ui.pages.today`) shows `LiveModel.today()`: due
   cards per exercise (`CardStore.due`), the new items daily reviews may
   still introduce (`LearningEngine.new_items`), the daily goal and the

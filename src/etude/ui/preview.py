@@ -13,12 +13,15 @@ real data, and no code outside ``etude.ui`` and the UI tests may import it.
 from __future__ import annotations
 
 import random
+import xml.etree.ElementTree as ET
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from fractions import Fraction
 from gettext import gettext as _
 
 from ..audio.spec import PlaybackSpec
+from ..content.loaders import parse_glossary, parse_lesson
+from ..content.model import GlossaryEntry, Lesson
 from ..core import KeySignature, Meter, Pitch, PitchName
 from ..core.pitch import Letter
 from ..exercises.base import (
@@ -47,11 +50,18 @@ from .model import (
     ContinueData,
     DueExercise,
     ExerciseCardData,
+    GlossaryData,
+    LevelData,
+    PathData,
     ProgressData,
+    SessionOutcome,
     SessionSource,
     StreakData,
     TodayData,
+    UnitData,
     WeakItem,
+    exam_outcome,
+    placement_outcome,
 )
 
 # Home -------------------------------------------------------------------------
@@ -239,6 +249,170 @@ def empty_progress(period: str = 'week') -> ProgressData:
     else:
         answered = ((_('This month'), 0),)
     return ProgressData(0, 0, None, None, 0, 0, (), answered, (), 0)
+
+
+# The learning path -------------------------------------------------------------
+
+_UNITS = (
+    ('l1.staff', _('Staff, Clefs and Note Names'), _('Read notes in the treble and bass clefs.')),
+    ('l1.rhythm', _('Note Values and Rests'), _('Whole, half, quarter and eighth notes.')),
+    ('l1.meter', _('Beat and Time Signatures'), _('Pulse, bars, simple and compound time.')),
+    ('l1.accidentals', _('Accidentals, Half Steps and Whole Steps'), _('Sharps, flats, naturals.')),
+    ('l1.major', _('Major Scales and Keys'), _('The major scale and the circle of fifths.')),
+    ('l1.minor', _('Minor Scales and Keys'), _('Natural, harmonic and melodic minor.')),
+    ('l1.intervals', _('Intervals'), _('Number and quality, on the staff and by ear.')),
+    ('l1.triads', _('Triads'), _('Major, minor, diminished and augmented triads.')),
+)
+
+
+def path(*, new_learner: bool = False) -> PathData:
+    """Level 1 of a learner half-way through it, or of a brand-new learner."""
+    units = []
+    for number, (unit_id, title, summary) in enumerate(_UNITS):
+        lesson = unit_id == 'l1.staff'
+        items = {'l1.rhythm': 0, 'l1.meter': 0}.get(unit_id, 24 + 4 * number)
+        if new_learner:
+            mastered, unlocked, complete = 0, number == 0, False
+        else:
+            mastered = {'l1.staff': items, 'l1.accidentals': 22}.get(unit_id, 0)
+            unlocked = number <= 3
+            complete = unit_id in ('l1.staff', 'l1.rhythm', 'l1.meter')
+        # Lesson-only units pass on the lock of the unit before them.
+        previous = _UNITS[0][1] if new_learner else _UNITS[3][1]
+        units.append(
+            UnitData(
+                id=unit_id,
+                title=title,
+                summary=summary,
+                lesson_id='l1.staff' if lesson else None,
+                lesson_title=title if lesson else '',
+                lesson_summary=_('Five lines, two clefs and seven letters name any note.')
+                if lesson
+                else '',
+                lesson_done=lesson and not new_learner,
+                items=items,
+                mastered=mastered,
+                complete=complete,
+                unlocked=unlocked,
+                missing=() if unlocked else (previous,),
+            )
+        )
+    level = LevelData(
+        id='level1',
+        number=1,
+        title=_('Fundamentals'),
+        description=_('Reading notes and rhythms, keys and scales, intervals and triads.'),
+        units=tuple(units),
+        exam_questions=30,
+        exam_ready=False,
+        passed=False,
+    )
+    return PathData((level,), placement_available=new_learner)
+
+
+_GLOSSARY = """
+<glossary>
+  <entry id="staff" level="1"><term>staff</term>
+    <gloss>the five lines music is written on</gloss>
+    <def>Five horizontal lines and the four spaces between them. Notes are written on the
+      lines and in the spaces; higher notes sound higher.</def>
+    <see ref="clef"/><see ref="ledger-line"/></entry>
+  <entry id="clef" level="1"><term>clef</term>
+    <gloss>sign that fixes the notes of the staff</gloss>
+    <def>A sign at the start of the staff that names one line. The
+      <term ref="treble-clef">treble clef</term> marks <note>G4</note>.</def></entry>
+  <entry id="treble-clef" level="1"><term>treble clef</term>
+    <gloss>G clef: the second line is G above middle C</gloss>
+    <def>The clef whose curl wraps around the second line, marking it as <note>G4</note>.</def>
+    <figure play="as-written"><staff clef="treble">G4/w</staff></figure>
+    <see ref="clef"/></entry>
+  <entry id="ledger-line" level="1"><term>ledger line</term>
+    <gloss>short extra line above or below the staff</gloss>
+    <def>A short line that extends the staff for a single note above or below it.</def></entry>
+  <entry id="octave" level="1"><term>octave</term>
+    <gloss>the distance to the next note with the same letter</gloss>
+    <def>From one note to the next with the same letter, such as <note>C4</note> to
+      <note>C5</note>.</def></entry>
+  <entry id="crescendo" level="1"><term>crescendo</term><foreign lang="it">crescendo</foreign>
+    <gloss>gradually louder</gloss>
+    <def>Getting gradually louder. The opposite is <term ref="diminuendo">diminuendo</term>.</def>
+    <abbr>cresc.</abbr><see ref="diminuendo"/></entry>
+  <entry id="diminuendo" level="1"><term>diminuendo</term><foreign lang="it">diminuendo</foreign>
+    <gloss>gradually softer</gloss>
+    <def>Getting gradually softer; also called decrescendo.</def>
+    <abbr>dim.</abbr><see ref="crescendo"/></entry>
+  <entry id="allegro" level="1"><term>fast</term><foreign lang="it">Allegro</foreign>
+    <gloss>fast and lively</gloss><def>A fast, lively tempo.</def></entry>
+  <entry id="lied" level="2"><term>art song</term><foreign lang="de">Lied</foreign>
+    <gloss>a song for voice and piano</gloss>
+    <def>A song for solo voice and piano, usually setting a poem.</def></entry>
+</glossary>
+"""
+
+_LESSON = """
+<lesson id="l1.staff">
+  <title>Staff, Clefs and Note Names</title>
+  <summary>Five lines, two clefs and seven letters are enough to name any note.</summary>
+  <section>
+    <title>The staff</title>
+    <p>Music is written on a <term ref="staff">staff</term>: five lines with four spaces
+      between them. A note sits either <em>on</em> a line or <em>in</em> a space.</p>
+    <figure play="melodic" tempo="100">
+      <staff clef="treble">E4 F4 G4 A4 B4 C5 D5 E5 F5</staff>
+      <caption>Every line and space of the staff, from the bottom up.</caption>
+    </figure>
+    <list>
+      <li>Lines and spaces are counted from the bottom up.</li>
+      <li>After <note>G</note> the letters start again from <note>A</note>.</li>
+    </list>
+    <callout kind="tip"><p>Say the letters aloud as you climb the staff.</p></callout>
+  </section>
+  <section>
+    <title>Clefs</title>
+    <p>A <term ref="clef">clef</term> fixes which note belongs to which line. The
+      <term ref="treble-clef">treble clef</term> marks <note>G4</note> on the second line.</p>
+    <callout kind="remember"><p>Treble clef lines from the bottom: <note>E</note> <note>G</note>
+      <note>B</note> <note>D</note> <note>F</note>.</p></callout>
+    <callout kind="warning"><p>The bass clef marks <note>F3</note>, not <note>G</note>.</p>
+    </callout>
+    <worked>
+      <title>Name the note on the fourth line of the treble staff</title>
+      <step><p>Start from <note>G4</note> on the second line.</p></step>
+      <step><p>Count up: <note>A4</note>, <note>B4</note>, <note>C5</note>.</p></step>
+      <step><p>The fourth line comes next, so the note is <note>D5</note>.</p>
+        <figure play="melodic"><staff clef="treble">G4 A4 B4 C5 *D5</staff></figure></step>
+    </worked>
+    <check id="middle-line">
+      <prompt>Which note is on the middle line of the treble staff?</prompt>
+      <figure><staff clef="treble">B4</staff>
+        <description>Treble staff with one note on the middle line.</description></figure>
+      <option key="a"><note>A4</note></option>
+      <option key="b" correct="true"><note>B4</note></option>
+      <option key="c"><note>C5</note></option>
+      <explanation>From <note>G4</note> on the second line, the second space is
+        <note>A4</note> and the middle line is <note>B4</note>.</explanation>
+    </check>
+  </section>
+</lesson>
+"""
+
+
+def lesson() -> Lesson:
+    """A short lesson with every kind of block (English sample content)."""
+    return parse_lesson(ET.fromstring(_LESSON), 'preview lesson')
+
+
+def glossary_entries() -> tuple[GlossaryEntry, ...]:
+    entries = parse_glossary(ET.fromstring(_GLOSSARY), 'preview glossary')
+    return tuple(sorted(entries, key=lambda e: e.headword.casefold()))
+
+
+def glossary() -> GlossaryData:
+    return GlossaryData(
+        glossary_entries(),
+        {1: _('Fundamentals'), 2: _('Diatonic Harmony')},
+        vocabulary_available=True,
+    )
 
 
 # Questions ---------------------------------------------------------------------
@@ -636,6 +810,10 @@ class PreviewSession:
     correct: int = 11
     best_streak: int = 6
     mistakes: list[ItemId] = field(default_factory=list)
+    name: str = ''
+    """Title of the session (a unit, an exam); the current exercise's title when empty."""
+    outcome: SessionOutcome | None = None
+    """What the session decides when it ends (exams and the placement test)."""
 
     @property
     def current(self) -> PreviewQuestion:
@@ -651,7 +829,7 @@ class PreviewSession:
 
     @property
     def title(self) -> str:
-        return self.current.exercise_title
+        return self.name or self.current.exercise_title
 
     def answer(self, given: object, *, response_ms: int = 0, hinted: bool = False) -> Feedback:
         feedback = grade(self.current, given)
@@ -797,8 +975,12 @@ class PreviewModel:
         """Playbacks requested so far; nothing is heard."""
         self.started: list[tuple[SessionMode, str | None, tuple[ItemId, ...]]] = []
         self.caught_up = caught_up
-        """Show the Today page's "All caught up" state and a brand-new learner's progress."""
+        """Show the Today page's "All caught up" state and a brand-new learner's progress
+        and path (with the placement test)."""
         self._continue: ContinueData | None = continue_data()
+        self.completed_lessons: set[str] = set()
+        self.path_started: list[tuple[str, str]] = []
+        """Path sessions started: ``('unit', id)``, ``('exam', id)`` or ``('placement', '')``."""
 
     def exercise_cards(self) -> tuple[ExerciseCardData, ...]:
         return exercise_cards()
@@ -850,6 +1032,70 @@ class PreviewModel:
 
     def dismiss_continue(self) -> None:
         self._continue = None
+
+    # The learning path
+
+    def path(self) -> PathData:
+        data = path(new_learner=self.caught_up)
+        if not self.completed_lessons:
+            return data
+        levels = tuple(
+            replace(
+                level,
+                units=tuple(
+                    replace(u, lesson_done=u.lesson_done or u.lesson_id in self.completed_lessons)
+                    for u in level.units
+                ),
+            )
+            for level in data.levels
+        )
+        return PathData(levels, data.placement_available)
+
+    def lesson(self, lesson_id: str) -> Lesson | None:
+        return lesson() if lesson_id == 'l1.staff' else None
+
+    def glossary(self) -> GlossaryData:
+        return glossary()
+
+    def glossary_entry(self, entry_id: str) -> GlossaryEntry | None:
+        return next((e for e in glossary_entries() if e.id == entry_id), None)
+
+    def complete_lesson(self, lesson_id: str) -> None:
+        self.completed_lessons.add(lesson_id)
+
+    def _path_session(
+        self, kind: str, key: str, keys: list[str], **kwargs: object
+    ) -> PreviewSession:
+        self.path_started.append((kind, key))
+        self._continue = None
+        return PreviewSession(keys, start=1, **kwargs)  # type: ignore[arg-type]
+
+    def start_unit(self, unit_id: str) -> PreviewSession:
+        title = next(t for u, t, _s in _UNITS if u == unit_id)
+        return self._path_session('unit', unit_id, ['note-naming'], name=title)
+
+    def start_exam(self, level_id: str) -> PreviewSession:
+        return self._path_session(
+            'exam',
+            level_id,
+            ['keysig', 'note-naming', 'interval-staff'],
+            total=30,
+            name=_('Level {number} Exam').format(number=1),
+            outcome=exam_outcome(1, 26, 30, complete=True),
+        )
+
+    def start_placement(self) -> PreviewSession:
+        return self._path_session(
+            'placement',
+            '',
+            ['note-naming', 'keysig'],
+            total=15,
+            name=_('Placement Test'),
+            outcome=placement_outcome(3, _UNITS[3][1]),
+        )
+
+    def session_outcome(self, session: SessionSource) -> SessionOutcome | None:
+        return session.outcome if isinstance(session, PreviewSession) else None
 
     @property
     def audio_available(self) -> bool:

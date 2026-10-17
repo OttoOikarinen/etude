@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Otto Oikarinen -->
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  <template class="EtudeGlossaryPage" parent="AdwNavigationPage">
+    <property name="title" translatable="yes">Glossary</property>
+    <property name="tag">glossary</property>
+    <property name="child">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar"/>
+        </child>
+        <property name="content">
+          <object class="GtkScrolledWindow">
+            <property name="hscrollbar-policy">never</property>
+            <property name="child">
+              <object class="AdwClamp">
+                <property name="maximum-size">840</property>
+                <property name="tightening-threshold">600</property>
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">24</property>
+                    <style>
+                      <class name="glossary-body"/>
+                    </style>
+                    <child>
+                      <object class="GtkBox" id="top_box">
+                        <property name="spacing">12</property>
+                        <child>
+                          <object class="GtkSearchEntry" id="search_entry">
+                            <property name="hexpand">true</property>
+                            <property name="valign">center</property>
+                            <property name="placeholder-text" translatable="yes">Search terms and meanings</property>
+                            <signal name="search-changed" handler="_on_search_changed"/>
+                            <accessibility>
+                              <property name="label" translatable="yes">Search the glossary</property>
+                            </accessibility>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="practise_button">
+                            <property name="label" translatable="yes">_Practise Vocabulary</property>
+                            <property name="use-underline">true</property>
+                            <property name="visible">false</property>
+                            <signal name="clicked" handler="_on_practise_clicked"/>
+                            <style>
+                              <class name="pill"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkStack" id="results_stack">
+                        <property name="vhomogeneous">false</property>
+                        <child>
+                          <object class="GtkStackPage">
+                            <property name="name">list</property>
+                            <property name="child">
+                              <object class="GtkBox" id="groups_box">
+                                <property name="orientation">vertical</property>
+                                <property name="spacing">24</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkStackPage">
+                            <property name="name">empty</property>
+                            <property name="child">
+                              <object class="AdwStatusPage" id="empty_page">
+                                <property name="icon-name">system-search-symbolic</property>
+                                <property name="title" translatable="yes">No Matching Terms</property>
+                                <property name="description" translatable="yes">Try a shorter word, or search for a meaning such as “louder”</property>
+                                <style>
+                                  <class name="compact"/>
+                                </style>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+</interface>

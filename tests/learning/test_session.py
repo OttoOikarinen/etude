@@ -361,10 +361,87 @@ def test_review_mistakes_is_shuffled() -> None:
     assert len(orders) > 1
 
 
-@pytest.mark.parametrize('mode', [SessionMode.PLACEMENT, SessionMode.LEVEL_EXAM])
-def test_placement_and_exams_are_not_implemented_yet(mode: SessionMode) -> None:
-    with pytest.raises(NotImplementedError, match='W3'):
-        World().build(mode)
+# DAILY_REVIEW restricted to a unit's items
+
+UNIT = tuple(ItemId(i) for i in ('keys.0', 'keys.1', 'keys.2', 'notes.0', 'notes.1'))
+
+
+def test_unit_review_takes_due_and_new_items_only_from_the_set() -> None:
+    world = World()
+    world.due('keys.0', days_overdue=3)
+    world.due('keys.9', days_overdue=30)  # due, but outside the unit
+    world.due('ivl.0', days_overdue=30)
+    plan = world.build(size=10, item_ids=UNIT)
+    assert {q.item_id for q in plan} <= set(UNIT)
+    assert 'keys.0' in {q.item_id for q in plan if not q.is_new}
+    new = [q.item_id for q in plan if q.is_new]
+    assert len(new) == 4
+    # New items keep the unit's teaching order within each exercise.
+    assert [i for i in new if i.startswith('keys')] == ['keys.1', 'keys.2']
+    assert [i for i in new if i.startswith('notes')] == ['notes.0', 'notes.1']
+
+
+def test_unit_review_respects_the_new_item_budget() -> None:
+    world = World(config=SessionConfig(session_new_limit=2))
+    plan = world.build(size=10, item_ids=UNIT)
+    assert len(plan) == 2
+    assert all(q.is_new for q in plan)
+
+
+def test_unit_review_lets_a_learner_start_a_unit_after_todays_new_items() -> None:
+    world = World(config=SessionConfig(daily_new_limit=0, session_new_limit=3))
+    plan = world.build(size=10, item_ids=UNIT)
+    assert len(plan) == 3, 'a unit the learner has not started can always be begun'
+
+
+def test_unit_review_fills_with_the_least_recalled_known_items() -> None:
+    world = World()
+    for n, item in enumerate(UNIT):
+        world.later(item, days=n + 1, stability=float(n + 1))
+    world.answers(0, 20)  # below the accuracy target: no new items
+    plan = world.build(size=3, item_ids=UNIT)
+    assert len(plan) == 3
+    assert {q.item_id for q in plan} == {'keys.0', 'keys.1', 'keys.2'}
+    assert not any(q.is_new for q in plan)
+
+
+def test_unit_review_ignores_items_of_unknown_exercises() -> None:
+    plan = World().build(size=10, item_ids=(ItemId('gone.1'), ItemId('keys.0')))
+    assert [q.item_id for q in plan] == ['keys.0']
+
+
+def test_daily_review_without_items_is_unchanged_by_units() -> None:
+    world = World()
+    world.due('ivl.3')
+    world.answers(0, 20)
+    assert [q.item_id for q in world.build(size=5)] == ['ivl.3']
+
+
+# LEVEL_EXAM and PLACEMENT
+
+
+def test_level_exam_asks_every_given_item_without_a_new_item_limit() -> None:
+    world = World(config=SessionConfig(daily_new_limit=0, session_new_limit=0))
+    world.answers(0, 20)
+    items = tuple(ItemId(f'{e}.{n}') for e in ('keys', 'notes', 'ivl') for n in range(4))
+    plan = world.build(SessionMode.LEVEL_EXAM, size=12, item_ids=items)
+    assert sorted(q.item_id for q in plan) == sorted(items)
+    assert all(q.is_new for q in plan)
+    assert exercise_switches(plan) == 11, 'exam questions are interleaved'
+
+
+def test_level_exam_is_cut_to_its_size() -> None:
+    items = tuple(ItemId(f'keys.{n}') for n in range(10))
+    assert len(World().build(SessionMode.LEVEL_EXAM, size=4, item_ids=items)) == 4
+
+
+def test_placement_keeps_the_given_order() -> None:
+    items = tuple(ItemId(i) for i in ('notes.0', 'notes.1', 'keys.0', 'keys.1', 'ivl.0'))
+    world = World()
+    world.later('keys.0')
+    plan = world.build(SessionMode.PLACEMENT, size=10, item_ids=items)
+    assert [q.item_id for q in plan] == list(items)
+    assert [q.is_new for q in plan] == [True, True, False, True, True]
 
 
 # Confusables

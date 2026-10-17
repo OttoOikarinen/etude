@@ -2,6 +2,7 @@ install_data(
   [
     '__init__.py',
     'common.py',
+    'content.py',
     'controller.py',
     'figure.py',
     'model.py',

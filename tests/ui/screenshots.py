@@ -61,6 +61,42 @@ def render(window, path: Path) -> None:
     print(path)
 
 
+def scroll_to(page, fraction: float) -> None:
+    """Scroll a lesson page to ``fraction`` of its length (0 = top, 1 = bottom)."""
+    adjustment = page.scroller.get_vadjustment()
+    wait(200)
+    span = adjustment.get_upper() - adjustment.get_page_size()
+    adjustment.set_value(max(0.0, span * fraction))
+
+
+def shoot_lesson(window, out: Path, prefix: str, name: str) -> None:
+    """A lesson from the top, its worked example and its checks (one answered)."""
+    page = window.open_lesson('l1.staff')
+    wait(300)  # the page slides in
+    render(window, out / f'{prefix}-lesson-{name}.png')
+    for worked in page.worked:
+        worked.reveal_next()
+    if page.checks:
+        check = page.checks[0]
+        wrong = next(o.key for o in check.check.options if not o.correct)
+        check.choose(wrong)
+    scroll_to(page, 0.55)
+    render(window, out / f'{prefix}-lesson-middle-{name}.png')
+    scroll_to(page, 1.0)
+    render(window, out / f'{prefix}-lesson-end-{name}.png')
+    window.nav_view.pop_to_tag('main')
+
+
+def shoot_path_pages(window, out: Path, prefix: str, name: str, *, entry: str) -> None:
+    for section in ('path', 'theory', 'glossary'):
+        window.show_section(section)
+        render(window, out / f'{prefix}-{section}-{name}.png')
+    dialog = window.show_glossary_entry(entry)
+    render(window, out / f'{prefix}-glossary-entry-{name}.png')
+    dialog.force_close()
+    shoot_lesson(window, out, prefix, name)
+
+
 def window_at(size: tuple[int, int], model=None):
     from etude.ui.preview import PreviewModel
     from etude.window import EtudeWindow
@@ -100,6 +136,24 @@ def shoot(out: Path, scheme: str, size: tuple[int, int], suffix: str) -> None:
     render(window, out / f'1k-today-caught-up-{name}.png')
     window.show_section('progress')
     render(window, out / f'1h-progress-empty-{name}.png')
+    window.show_section('path')
+    render(window, out / f'4a-path-new-{name}.png')
+    window.destroy()
+
+    # 4 the learning path: curriculum map, lessons, glossary
+    window = window_at(size)
+    shoot_path_pages(window, out, '4', name, entry='crescendo')
+    window.show_section('path')
+    window.path_page.unit_cards['l1.major'].practise_button.emit('clicked')
+    render(window, out / f'4-path-confirm-{name}.png')
+    window.confirm_dialog.force_close()
+    window.path_page.exam_cards['level1'].button.emit('clicked')
+    window.confirm_dialog.emit('response', 'practise')
+    controller = window.controller
+    controller.session.index = controller.session.total
+    summary = controller.finish()
+    render(window, out / f'4-exam-summary-{name}.png')
+    summary.force_close()
     window.destroy()
 
     # 1a / 3a home
@@ -202,7 +256,7 @@ def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
 
     def sections(window, prefix: str, scheme: str) -> None:
         render(window, out / f'{prefix}-home-{scheme}.png')
-        for section in ('today', 'progress'):
+        for section in ('today', 'progress', 'path'):
             window.show_section(section)
             render(window, out / f'{prefix}-{section}-{scheme}.png')
         window.show_section('all')
@@ -224,6 +278,7 @@ def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
             window.present()
             wait(300)
             sections(window, 'live-new', scheme + suffix)
+            shoot_path_pages(window, out, 'live', scheme + suffix, entry='crescendo')
             window.destroy()
         for scheme, size, suffix in (
             ('light', WIDE, ''),

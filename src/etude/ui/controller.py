@@ -115,7 +115,10 @@ class ExerciseController:
     def finish(self) -> Adw.AlertDialog:
         self.summary = summary = self.session.finish()
         dialog = create_session_summary_dialog(
-            summary, summary_subtitle(self.session, summary), mixed=self.is_mixed
+            summary,
+            summary_subtitle(self.session, summary),
+            mixed=self.is_mixed,
+            outcome=self.model.session_outcome(self.session),
         )
         dialog.connect('response', self._on_response)
         dialog.present(self.page)

@@ -4,6 +4,7 @@ install_data(
     'engine.py',
     'mastery.py',
     'model.py',
+    'placement.py',
     'ports.py',
     'rating.py',
     'scheduler.py',
