@@ -3,9 +3,249 @@
 SPDX-FileCopyrightText: 2026 Otto Oikarinen
 SPDX-License-Identifier: CC-BY-SA-4.0
 
-Glossary: performance directions (tempo, dynamics, articulation).
+Glossary: performance directions (tempo, dynamics, articulation, expression
+and navigation through a score).
 -->
 <glossary tags="performance">
+  <!-- Tempo -->
+
+  <entry id="tempo" level="1" tags="tempo">
+    <term>tempo</term>
+    <gloss>the speed of the beat</gloss>
+    <def>The speed of the <term ref="beat">beat</term>. It is shown by an Italian word such as <term ref="allegro">allegro</term>, by a <term ref="metronome-mark">metronome mark</term>, or by both.</def>
+    <see ref="metronome-mark"/>
+  </entry>
+
+  <entry id="metronome-mark" level="1" tags="tempo">
+    <term>metronome mark</term>
+    <gloss>the tempo in beats per minute</gloss>
+    <def>A <term ref="tempo">tempo</term> given exactly as a note value and a number of beats per minute: a quarter note = 60 means sixty quarter-note beats in a minute, one each second. M.M. stands for Maelzel's metronome.</def>
+    <abbr>M.M.</abbr>
+  </entry>
+
+  <entry id="largo" level="1" tags="tempo">
+    <term>largo</term>
+    <foreign lang="it">largo</foreign>
+    <gloss>broadly and very slowly</gloss>
+    <def>Very slow and broad; the word means <em>broad</em>. Larghetto, <em>a little broad</em>, is somewhat less slow.</def>
+    <see ref="lento"/>
+    <see ref="adagio"/>
+  </entry>
+
+  <entry id="lento" level="1" tags="tempo">
+    <term>lento</term>
+    <foreign lang="it">lento</foreign>
+    <gloss>slowly</gloss>
+    <def>Slow. Composers have not agreed on the order of the slow terms <term ref="largo">largo</term>, lento and <term ref="adagio">adagio</term>, so treat them as roughly equally slow.</def>
+    <see ref="adagio"/>
+  </entry>
+
+  <entry id="adagio" level="1" tags="tempo">
+    <term>adagio</term>
+    <foreign lang="it">adagio</foreign>
+    <gloss>slowly, at ease</gloss>
+    <def>Slow; the word means <em>at ease</em>. It is slower than <term ref="andante">andante</term>.</def>
+    <see ref="andante"/>
+  </entry>
+
+  <entry id="andante" level="1" tags="tempo">
+    <term>andante</term>
+    <foreign lang="it">andante</foreign>
+    <gloss>at a walking pace</gloss>
+    <def>At a walking pace, from the Italian <em>andare</em>, to walk: a moderate, flowing tempo, slower than <term ref="moderato">moderato</term>. Andantino, <em>a little andante</em>, is today usually taken as a little faster than andante, but in the 18th century it could also mean a little slower.</def>
+    <see ref="adagio"/>
+    <see ref="moderato"/>
+  </entry>
+
+  <entry id="moderato" level="1" tags="tempo">
+    <term>moderato</term>
+    <foreign lang="it">moderato</foreign>
+    <gloss>at a moderate speed</gloss>
+    <def>At a moderate speed, between <term ref="andante">andante</term> and <term ref="allegro">allegro</term>. It also tempers another term: <em>allegro moderato</em> is moderately fast.</def>
+  </entry>
+
+  <entry id="allegretto" level="1" tags="tempo">
+    <term>allegretto</term>
+    <foreign lang="it">allegretto</foreign>
+    <gloss>fairly fast; slower than allegro</gloss>
+    <def>Fairly fast: a little slower and usually lighter than <term ref="allegro">allegro</term>.</def>
+    <see ref="allegro"/>
+  </entry>
+
+  <entry id="allegro" level="1" tags="tempo">
+    <term>allegro</term>
+    <foreign lang="it">allegro</foreign>
+    <gloss>fast and bright</gloss>
+    <def>Fast and lively; the word means <em>cheerful</em>. It is the most common fast tempo.</def>
+    <see ref="allegretto"/>
+    <see ref="vivace"/>
+  </entry>
+
+  <entry id="vivace" level="1" tags="tempo">
+    <term>vivace</term>
+    <foreign lang="it">vivace</foreign>
+    <gloss>lively and quick</gloss>
+    <def>Lively and quick. Today it usually means faster than <term ref="allegro">allegro</term>, but in Baroque music it often describes a lively character at a more moderate speed.</def>
+    <see ref="presto"/>
+  </entry>
+
+  <entry id="presto" level="1" tags="tempo">
+    <term>presto</term>
+    <foreign lang="it">presto</foreign>
+    <gloss>very fast</gloss>
+    <def>Very fast, faster than <term ref="allegro">allegro</term>. Prestissimo means as fast as possible.</def>
+    <see ref="vivace"/>
+  </entry>
+
+  <entry id="con-moto" level="1" tags="tempo">
+    <term>con moto</term>
+    <foreign lang="it">con moto</foreign>
+    <gloss>with movement</gloss>
+    <def>With movement: flowing, a little faster than the tempo word alone would suggest, as in <em>andante con moto</em>.</def>
+  </entry>
+
+  <entry id="accelerando" level="1" tags="tempo">
+    <term>accelerando</term>
+    <foreign lang="it">accelerando</foreign>
+    <gloss>gradually faster</gloss>
+    <def>Getting gradually faster.</def>
+    <abbr>accel.</abbr>
+    <see ref="ritardando"/>
+  </entry>
+
+  <entry id="ritardando" level="1" tags="tempo">
+    <term>ritardando</term>
+    <foreign lang="it">ritardando</foreign>
+    <gloss>gradually slower</gloss>
+    <def>Getting gradually slower; the word means <em>delaying</em>. Also abbreviated ritard.</def>
+    <abbr>rit.</abbr>
+    <see ref="rallentando"/>
+    <see ref="ritenuto"/>
+    <see ref="a-tempo"/>
+  </entry>
+
+  <entry id="rallentando" level="1" tags="tempo">
+    <term>rallentando</term>
+    <foreign lang="it">rallentando</foreign>
+    <gloss>slowing down little by little, like ritardando</gloss>
+    <def>Getting gradually slower; the word means <em>slowing down</em>. In practice it means the same as <term ref="ritardando">ritardando</term>.</def>
+    <abbr>rall.</abbr>
+    <see ref="ritardando"/>
+  </entry>
+
+  <entry id="ritenuto" level="1" tags="tempo">
+    <term>ritenuto</term>
+    <foreign lang="it">ritenuto</foreign>
+    <gloss>held back: slower at once</gloss>
+    <def>Held back: slower straight away rather than gradually, unlike <term ref="ritardando">ritardando</term>. Because rit. normally stands for ritardando, ritenuto is abbreviated riten.</def>
+    <abbr>riten.</abbr>
+    <see ref="ritardando"/>
+  </entry>
+
+  <entry id="a-tempo" level="1" tags="tempo">
+    <term>a tempo</term>
+    <foreign lang="it">a tempo</foreign>
+    <gloss>back to the previous tempo</gloss>
+    <def>In time: return to the tempo that was in use before a change such as a <term ref="ritardando">ritardando</term> or an <term ref="accelerando">accelerando</term>.</def>
+  </entry>
+
+  <entry id="rubato" level="1" tags="tempo">
+    <term>rubato</term>
+    <foreign lang="it">rubato</foreign>
+    <gloss>flexible tempo for expression</gloss>
+    <def>Freely stretching and pressing the tempo for expression, lengthening some notes and shortening others while the music keeps its sense of pulse. From <em>tempo rubato</em>, robbed time.</def>
+  </entry>
+
+  <entry id="fermata" level="1" tags="tempo">
+    <term>fermata</term>
+    <foreign lang="it">fermata</foreign>
+    <gloss>hold longer than the written value</gloss>
+    <def>A curve with a dot under it, written over a note or rest: hold it longer than its written value, for as long as the performer or conductor chooses. Called a pause in British English.</def>
+  </entry>
+
+  <!-- Dynamics -->
+
+  <entry id="dynamics" level="1" tags="dynamics">
+    <term>dynamics</term>
+    <gloss>loudness and the signs that show it</gloss>
+    <def>How loud or soft music is, and the signs that show it: letters such as p and f, words such as <term ref="crescendo">crescendo</term>, and hairpins.</def>
+    <see ref="piano"/>
+    <see ref="forte"/>
+  </entry>
+
+  <entry id="pianissimo" level="1" tags="dynamics">
+    <term>pianissimo</term>
+    <foreign lang="it">pianissimo</foreign>
+    <gloss>very soft</gloss>
+    <def>Very soft, softer than <term ref="piano">piano</term>. Even softer levels are written ppp.</def>
+    <abbr>pp</abbr>
+    <see ref="fortissimo"/>
+  </entry>
+
+  <entry id="piano" level="1" tags="dynamics">
+    <term>piano</term>
+    <foreign lang="it">piano</foreign>
+    <gloss>soft</gloss>
+    <def>Soft. The instrument's name is short for pianoforte, <em>soft–loud</em>, because it could play both.</def>
+    <abbr>p</abbr>
+    <see ref="forte"/>
+  </entry>
+
+  <entry id="mezzo-piano" level="1" tags="dynamics">
+    <term>mezzo-piano</term>
+    <foreign lang="it">mezzo piano</foreign>
+    <gloss>moderately soft</gloss>
+    <def>Moderately soft, between <term ref="piano">piano</term> and <term ref="mezzo-forte">mezzo-forte</term>; <em>mezzo</em> means half.</def>
+    <abbr>mp</abbr>
+    <see ref="mezzo-forte"/>
+  </entry>
+
+  <entry id="mezzo-forte" level="1" tags="dynamics">
+    <term>mezzo-forte</term>
+    <foreign lang="it">mezzo forte</foreign>
+    <gloss>moderately loud</gloss>
+    <def>Moderately loud, between <term ref="mezzo-piano">mezzo-piano</term> and <term ref="forte">forte</term>.</def>
+    <abbr>mf</abbr>
+    <see ref="mezzo-piano"/>
+  </entry>
+
+  <entry id="forte" level="1" tags="dynamics">
+    <term>forte</term>
+    <foreign lang="it">forte</foreign>
+    <gloss>loud</gloss>
+    <def>Loud; the word means <em>strong</em>.</def>
+    <abbr>f</abbr>
+    <see ref="piano"/>
+  </entry>
+
+  <entry id="fortissimo" level="1" tags="dynamics">
+    <term>fortissimo</term>
+    <foreign lang="it">fortissimo</foreign>
+    <gloss>very loud</gloss>
+    <def>Very loud, louder than <term ref="forte">forte</term>. Even louder levels are written fff.</def>
+    <abbr>ff</abbr>
+    <see ref="pianissimo"/>
+  </entry>
+
+  <entry id="sforzando" level="1" tags="dynamics">
+    <term>sforzando</term>
+    <foreign lang="it">sforzando</foreign>
+    <gloss>a sudden strong accent on one note</gloss>
+    <def>Forcing: a sudden, strong accent on a single note or chord, written sfz or sf. How strong it is depends on the dynamic around it.</def>
+    <abbr>sfz</abbr>
+    <see ref="accent"/>
+    <see ref="fortepiano"/>
+  </entry>
+
+  <entry id="fortepiano" level="1" tags="dynamics">
+    <term>fortepiano</term>
+    <foreign lang="it">fortepiano</foreign>
+    <gloss>loud, then immediately soft</gloss>
+    <def>Loud and then at once soft: the note begins <term ref="forte">forte</term> and drops straight to <term ref="piano">piano</term>. The same word is also a name for the early piano.</def>
+    <abbr>fp</abbr>
+    <see ref="sforzando"/>
+  </entry>
+
   <entry id="crescendo" level="1" tags="dynamics">
     <term>crescendo</term>
     <foreign lang="it">crescendo</foreign>
@@ -22,5 +262,200 @@ Glossary: performance directions (tempo, dynamics, articulation).
     <def>Getting gradually softer; <em>decrescendo</em> means the same. Written as the word, the abbreviation, or a hairpin closing to the right.</def>
     <abbr>dim.</abbr>
     <see ref="crescendo"/>
+  </entry>
+
+  <!-- Articulation -->
+
+  <entry id="articulation" level="1" tags="articulation">
+    <term>articulation</term>
+    <gloss>how notes are begun, joined or separated</gloss>
+    <def>How notes are started, connected and separated, and the signs that show it, such as <term ref="staccato">staccato</term> dots, <term ref="accent">accents</term> and <term ref="slur">slurs</term>.</def>
+  </entry>
+
+  <entry id="staccato" level="1" tags="articulation">
+    <term>staccato</term>
+    <foreign lang="it">staccato</foreign>
+    <gloss>short and detached</gloss>
+    <def>Detached: the note is shortened, leaving a gap before the next one, without changing the rhythm. Shown by a dot above or below the notehead, on the side away from the stem.</def>
+    <abbr>stacc.</abbr>
+    <see ref="legato"/>
+    <see ref="dot"/>
+  </entry>
+
+  <entry id="legato" level="1" tags="articulation">
+    <term>legato</term>
+    <foreign lang="it">legato</foreign>
+    <gloss>smoothly connected</gloss>
+    <def>Smoothly connected, with no gap between the notes; the word means <em>bound</em>. Shown by a <term ref="slur">slur</term> or by the word.</def>
+    <see ref="staccato"/>
+  </entry>
+
+  <entry id="accent" level="1" tags="articulation">
+    <term>accent</term>
+    <gloss>stressed more than the notes around it</gloss>
+    <def>A sign shaped like &gt; above or below a note: play it with more emphasis than the notes around it.</def>
+    <see ref="marcato"/>
+    <see ref="sforzando"/>
+  </entry>
+
+  <entry id="tenuto" level="1" tags="articulation">
+    <term>tenuto</term>
+    <foreign lang="it">tenuto</foreign>
+    <gloss>held for its full value</gloss>
+    <def>Held: a short horizontal line above or below a note asks for its full value, often with a slight stress.</def>
+    <abbr>ten.</abbr>
+  </entry>
+
+  <entry id="marcato" level="1" tags="articulation">
+    <term>marcato</term>
+    <foreign lang="it">marcato</foreign>
+    <gloss>strongly accented, marked</gloss>
+    <def>Marked: played with a strong accent. Shown by the word or by a sign shaped like ^ above the note, a stronger <term ref="accent">accent</term> than &gt;.</def>
+    <see ref="accent"/>
+  </entry>
+
+  <entry id="slur" level="1" tags="articulation">
+    <term>slur</term>
+    <gloss>curved line over notes to be played legato</gloss>
+    <def>A curved line over or under two or more notes of different pitches, which are played <term ref="legato">legato</term>: string players take them in one bow, and wind players tongue only the first note. A curve joining two notes of the same pitch is a <term ref="tie">tie</term>.</def>
+    <see ref="tie"/>
+  </entry>
+
+  <!-- Expression -->
+
+  <entry id="dolce" level="1" tags="directions">
+    <term>dolce</term>
+    <foreign lang="it">dolce</foreign>
+    <gloss>sweetly</gloss>
+    <def>Sweetly: soft and gentle in tone.</def>
+  </entry>
+
+  <entry id="cantabile" level="1" tags="directions">
+    <term>cantabile</term>
+    <foreign lang="it">cantabile</foreign>
+    <gloss>in a singing style</gloss>
+    <def>In a singing style: with a smooth, flowing line that brings out the melody.</def>
+  </entry>
+
+  <entry id="espressivo" level="1" tags="directions">
+    <term>espressivo</term>
+    <foreign lang="it">espressivo</foreign>
+    <gloss>expressively</gloss>
+    <def>Expressively, with feeling.</def>
+    <abbr>espress.</abbr>
+  </entry>
+
+  <entry id="grazioso" level="1" tags="directions">
+    <term>grazioso</term>
+    <foreign lang="it">grazioso</foreign>
+    <gloss>gracefully</gloss>
+    <def>Gracefully, with elegance.</def>
+  </entry>
+
+  <entry id="maestoso" level="1" tags="directions">
+    <term>maestoso</term>
+    <foreign lang="it">maestoso</foreign>
+    <gloss>majestically</gloss>
+    <def>Majestically: stately and dignified, usually at a broad tempo.</def>
+  </entry>
+
+  <!-- Words that modify other directions -->
+
+  <entry id="molto" level="1" tags="directions">
+    <term>molto</term>
+    <foreign lang="it">molto</foreign>
+    <gloss>very, much</gloss>
+    <def>Very, much: <em>molto allegro</em> is very fast and <em>molto rit.</em> slows down a lot.</def>
+    <see ref="poco"/>
+  </entry>
+
+  <entry id="poco" level="1" tags="directions">
+    <term>poco</term>
+    <foreign lang="it">poco</foreign>
+    <gloss>a little</gloss>
+    <def>A little: <em>poco rit.</em> means slowing down slightly.</def>
+    <see ref="poco-a-poco"/>
+    <see ref="molto"/>
+  </entry>
+
+  <entry id="poco-a-poco" level="1" tags="directions">
+    <term>poco a poco</term>
+    <foreign lang="it">poco a poco</foreign>
+    <gloss>little by little</gloss>
+    <def>Little by little, gradually: <em>cresc. poco a poco</em> asks for a slow, steady build in loudness.</def>
+    <see ref="poco"/>
+  </entry>
+
+  <entry id="piu" level="1" tags="directions">
+    <term>più</term>
+    <foreign lang="it">più</foreign>
+    <gloss>more</gloss>
+    <def>More: <em>più forte</em> is louder and <em>più mosso</em>, with more motion, is faster.</def>
+    <see ref="meno"/>
+  </entry>
+
+  <entry id="meno" level="1" tags="directions">
+    <term>meno</term>
+    <foreign lang="it">meno</foreign>
+    <gloss>less</gloss>
+    <def>Less: <em>meno mosso</em>, with less motion, is slower and <em>meno forte</em> is less loud.</def>
+    <see ref="piu"/>
+  </entry>
+
+  <entry id="sempre" level="1" tags="directions">
+    <term>sempre</term>
+    <foreign lang="it">sempre</foreign>
+    <gloss>always</gloss>
+    <def>Always, throughout: <em>sempre staccato</em> means keep playing staccato.</def>
+  </entry>
+
+  <entry id="subito" level="1" tags="directions">
+    <term>subito</term>
+    <foreign lang="it">subito</foreign>
+    <gloss>suddenly, at once</gloss>
+    <def>Suddenly, immediately: <em>subito piano</em> means become soft at once.</def>
+    <abbr>sub.</abbr>
+  </entry>
+
+  <entry id="non-troppo" level="1" tags="directions">
+    <term>non troppo</term>
+    <foreign lang="it">non troppo</foreign>
+    <gloss>not too much</gloss>
+    <def>Not too much: <em>allegro ma non troppo</em> means fast, but not too fast.</def>
+  </entry>
+
+  <!-- Finding your way through the score -->
+
+  <entry id="da-capo" level="1" tags="directions">
+    <term>da capo</term>
+    <foreign lang="it">da capo</foreign>
+    <gloss>go back to the beginning</gloss>
+    <def>From the beginning: go back to the start of the piece. <em>D.C. al fine</em> means repeat from the beginning and stop at <term ref="fine">fine</term>; <em>D.C. al coda</em> means repeat from the beginning to the coda mark, then jump to the <term ref="coda">coda</term>.</def>
+    <abbr>D.C.</abbr>
+    <see ref="dal-segno"/>
+    <see ref="repeat-sign"/>
+  </entry>
+
+  <entry id="dal-segno" level="1" tags="directions">
+    <term>dal segno</term>
+    <foreign lang="it">dal segno</foreign>
+    <gloss>go back to the sign</gloss>
+    <def>From the sign: go back to the segno, a slanted S with a line and two dots, and play on from there, to <term ref="fine">fine</term> (<em>D.S. al fine</em>) or to the coda mark (<em>D.S. al coda</em>).</def>
+    <abbr>D.S.</abbr>
+    <see ref="da-capo"/>
+  </entry>
+
+  <entry id="fine" level="1" tags="directions">
+    <term>fine</term>
+    <foreign lang="it">fine</foreign>
+    <gloss>the end, after a da capo or dal segno</gloss>
+    <def>The end: marks where the piece finishes after a <term ref="da-capo">da capo</term> or <term ref="dal-segno">dal segno</term>, which may be before the last bar on the page. An Italian word, pronounced in two syllables.</def>
+  </entry>
+
+  <entry id="coda" level="1" tags="directions">
+    <term>coda</term>
+    <foreign lang="it">coda</foreign>
+    <gloss>closing section of a piece</gloss>
+    <def>A closing section added at the end of a piece or movement; the word means <em>tail</em>. In a <term ref="da-capo">da capo</term> or <term ref="dal-segno">dal segno</term> repeat, the coda mark, a circle crossed by two lines, shows where to jump to the coda.</def>
   </entry>
 </glossary>

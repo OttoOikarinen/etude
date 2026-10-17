@@ -96,7 +96,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
     <unit id="l1.terms">
       <title>Tempo, Dynamics and Articulation</title>
       <summary>The Italian terms and signs that tell how to perform music.</summary>
-      <vocabulary tags="tempo dynamics articulation"/>
+      <vocabulary tags="tempo dynamics articulation directions"/>
     </unit>
 
     <exam size="30"/>

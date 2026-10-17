@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+Glossary: rhythm, beat and meter. Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
+-->
+<glossary tags="time">
+  <entry id="rhythm" level="1" tags="rhythm">
+    <term>rhythm</term>
+    <gloss>the pattern of long and short sounds in time</gloss>
+    <def>The pattern of durations of notes and rests in music, heard against the steady <term ref="beat">beat</term>. Notation shows rhythm with <term ref="note-value">note values</term> and <term ref="rest">rests</term>.</def>
+    <figure play="as-written">
+      <staff clef="percussion" time="4/4">B4/q B4/e B4/e B4/q r/q | B4/q. B4/e B4/h |.</staff>
+    </figure>
+    <see ref="meter"/>
+  </entry>
+
+  <entry id="beat" level="1" tags="meter">
+    <term>beat</term>
+    <gloss>the steady pulse of music</gloss>
+    <def>The regular pulse that listeners feel and tap along to, also called the pulse. In 2/4, 3/4 and 4/4 time the beat is a <term ref="quarter-note">quarter note</term>; in 6/8 time it is a dotted quarter note.</def>
+    <see ref="tempo"/>
+    <see ref="meter"/>
+  </entry>
+
+  <entry id="meter" level="1" tags="meter">
+    <term>meter</term>
+    <gloss>the grouping of beats into strong and weak</gloss>
+    <def>The organization of <term ref="beat">beats</term> into a repeating pattern of strong and weak beats, which <term ref="bar">bars</term> and the <term ref="time-signature">time signature</term> show. Meters are described by the number of beats in a bar (<term ref="duple-meter">duple</term>, <term ref="triple-meter">triple</term>, <term ref="quadruple-meter">quadruple</term>) and how each beat divides (<term ref="simple-meter">simple</term> or <term ref="compound-meter">compound</term>). Spelled metre in British English; also called time.</def>
+  </entry>
+
+  <entry id="time-signature" level="1" tags="meter">
+    <term>time signature</term>
+    <gloss>two stacked numbers that set the meter</gloss>
+    <def>Two numbers, one above the other, written after the clef and <term ref="key-signature">key signature</term>. The lower number names a note value (2 for a half note, 4 for a quarter note, 8 for an eighth note) and the upper number says how many of them fill a <term ref="bar">bar</term>: 3/4 has three quarter notes in each bar.</def>
+    <figure>
+      <staff clef="treble" time="3/4">G4/q A4/q B4/q | C5/h. |.</staff>
+    </figure>
+    <see ref="meter"/>
+    <see ref="common-time"/>
+  </entry>
+
+  <entry id="simple-meter" level="1" tags="meter">
+    <term>simple meter</term>
+    <gloss>meter whose beat divides into two</gloss>
+    <def>A <term ref="meter">meter</term> in which each beat divides into two equal parts, so the beat is a note without a dot. 2/4, 3/4 and 4/4 are simple duple, triple and quadruple meters, each with a quarter-note beat divided into two eighth notes. Called simple time in British English.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="2/4">C5/e D5/e E5/e C5/e | D5/q G4/q |.</staff>
+    </figure>
+    <see ref="compound-meter"/>
+  </entry>
+
+  <entry id="compound-meter" level="1" tags="meter">
+    <term>compound meter</term>
+    <gloss>meter whose beat divides into three</gloss>
+    <def>A <term ref="meter">meter</term> in which each beat divides into three equal parts, so the beat is a dotted note. 6/8, 9/8 and 12/8 have two, three and four dotted quarter-note beats, each divided into three eighth notes; the upper number counts the eighth notes, not the beats. Called compound time in British English.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="6/8">C5/e D5/e E5/e F5/e E5/e D5/e | C5/q. G4/q. |.</staff>
+      <caption>Two beats in each bar, each beat a group of three eighth notes.</caption>
+    </figure>
+    <see ref="simple-meter"/>
+  </entry>
+
+  <entry id="duple-meter" level="1" tags="meter">
+    <term>duple meter</term>
+    <gloss>two beats in a bar</gloss>
+    <def>A <term ref="meter">meter</term> with two beats in each bar, strong–weak, as in 2/4, 2/2 and 6/8. Marches are often in duple meter.</def>
+    <see ref="triple-meter"/>
+    <see ref="quadruple-meter"/>
+  </entry>
+
+  <entry id="triple-meter" level="1" tags="meter">
+    <term>triple meter</term>
+    <gloss>three beats in a bar</gloss>
+    <def>A <term ref="meter">meter</term> with three beats in each bar, strong–weak–weak, as in 3/4, 3/2 and 9/8. Waltzes and minuets are in triple meter.</def>
+    <see ref="duple-meter"/>
+    <see ref="quadruple-meter"/>
+  </entry>
+
+  <entry id="quadruple-meter" level="1" tags="meter">
+    <term>quadruple meter</term>
+    <gloss>four beats in a bar</gloss>
+    <def>A <term ref="meter">meter</term> with four beats in each bar, as in 4/4 and 12/8. The first beat is the strongest and the third is stronger than the second and fourth.</def>
+    <see ref="duple-meter"/>
+    <see ref="triple-meter"/>
+  </entry>
+
+  <entry id="common-time" level="1" tags="meter">
+    <term>common time</term>
+    <gloss>4/4 time, written as a C-shaped sign</gloss>
+    <def>Another name for 4/4 time, which can be written with a sign like a capital C instead of numbers. The sign is not a letter C for <em>common</em>: it comes from the half circle that marked duple time in medieval and Renaissance notation, where a full circle marked triple time.</def>
+    <see ref="cut-time"/>
+    <see ref="time-signature"/>
+  </entry>
+
+  <entry id="cut-time" level="1" tags="meter">
+    <term>cut time</term>
+    <gloss>2/2 time, written as a C with a vertical line</gloss>
+    <def>2/2 time: two half-note beats in each bar. It is written as the <term ref="common-time">common time</term> sign with a vertical line through it, and is also called <em>alla breve</em>.</def>
+    <see ref="common-time"/>
+  </entry>
+
+  <entry id="downbeat" level="1" tags="meter">
+    <term>downbeat</term>
+    <gloss>the first, strongest beat of a bar</gloss>
+    <def>The first beat of a <term ref="bar">bar</term>, normally the strongest. Conductors show it with a downward stroke.</def>
+    <see ref="anacrusis"/>
+  </entry>
+
+  <entry id="anacrusis" level="1" tags="meter">
+    <term>anacrusis</term>
+    <gloss>note or notes before the first full bar</gloss>
+    <def>One or more notes before the first <term ref="downbeat">downbeat</term> of a piece or phrase, written in an incomplete first bar. Also called an upbeat or a pickup. The last bar is often shortened by the same amount, so that the first and last bars together make one full bar.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="3/4">D4/q | G4/q G4/q A4/q | B4/h |.</staff>
+      <caption>A one-beat anacrusis in 3/4; the last bar is one beat short.</caption>
+    </figure>
+    <see ref="downbeat"/>
+  </entry>
+
+  <entry id="syncopation" level="1" tags="meter rhythm">
+    <term>syncopation</term>
+    <gloss>stress on a weak beat or between beats</gloss>
+    <def>An accent placed where the <term ref="meter">meter</term> leads us not to expect one: on a weak beat or between beats, often with nothing new on the following strong beat.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">C5/q D5/h C5/q | E5/e D5/q E5/e~ E5/h |.</staff>
+      <caption>The half note on the weak second beat is held through the strong third beat; in the second bar, notes begin between the beats.</caption>
+    </figure>
+  </entry>
+</glossary>

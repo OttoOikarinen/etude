@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+Glossary: scales, keys and key signatures. Format: docs/CONTENT_AUTHORING.md,
+schema: schema/glossary.rng.
+-->
+<glossary tags="tonality">
+  <!-- Scales -->
+
+  <entry id="scale" level="1" tags="scales">
+    <term>scale</term>
+    <gloss>notes in step order from a note to its octave</gloss>
+    <def>A series of notes in step order, rising or falling from a starting note to its <term ref="octave">octave</term>, with a fixed pattern of <term ref="whole-step">whole steps</term> and <term ref="half-step">half steps</term>. The pattern gives the scale its type, such as <term ref="major-scale">major</term> or <term ref="natural-minor-scale">minor</term>.</def>
+    <see ref="scale-degree"/>
+  </entry>
+
+  <entry id="major-scale" level="1" tags="scales">
+    <term>major scale</term>
+    <gloss>pattern of steps W-W-H-W-W-W-H</gloss>
+    <def>The seven-note scale with the pattern whole, whole, half, whole, whole, whole, half step, so its half steps lie between the third and fourth and the seventh and eighth <term ref="scale-degree">degrees</term>. On the white keys of the piano it runs from <note>C</note> to <note>C</note>.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">C4{1} D4{2} E4{3} F4{4} G4{5} A4{6} B4{7} C5{8}</staff>
+      <caption>The <note>C</note> major scale: half steps between 3 and 4 and between 7 and 8.</caption>
+    </figure>
+    <see ref="natural-minor-scale"/>
+  </entry>
+
+  <entry id="natural-minor-scale" level="1" tags="minor">
+    <term>natural minor scale</term>
+    <gloss>pattern of steps W-H-W-W-H-W-W</gloss>
+    <def>The minor scale with the pattern whole, half, whole, whole, half, whole, whole step; its half steps lie between degrees 2 and 3 and degrees 5 and 6. It has the same notes as its <term ref="relative-key">relative</term> major scale, starting on that scale's sixth degree. Also called the Aeolian mode.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">A4{1} B4{2} C5{3} D5{4} E5{5} F5{6} G5{7} A5{8}</staff>
+      <caption>The <note>A</note> natural minor scale.</caption>
+    </figure>
+    <see ref="harmonic-minor-scale"/>
+    <see ref="melodic-minor-scale"/>
+  </entry>
+
+  <entry id="harmonic-minor-scale" level="1" tags="minor">
+    <term>harmonic minor scale</term>
+    <gloss>natural minor with a raised seventh</gloss>
+    <def>The <term ref="natural-minor-scale">natural minor scale</term> with its seventh degree raised by a half step, which gives the minor key a <term ref="leading-tone">leading tone</term>. The raised seventh leaves an <term ref="augmented-interval">augmented second</term>, three half steps, between the sixth and seventh degrees.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">A4 B4 C5 D5 E5 F5 *G#5 A5</staff>
+      <caption>The <note>A</note> harmonic minor scale, with <note>G#</note> as its raised seventh.</caption>
+    </figure>
+    <see ref="melodic-minor-scale"/>
+  </entry>
+
+  <entry id="melodic-minor-scale" level="1" tags="minor">
+    <term>melodic minor scale</term>
+    <gloss>raised sixth and seventh going up, natural minor going down</gloss>
+    <def>A minor scale whose sixth and seventh degrees are raised on the way up, avoiding the augmented second of the <term ref="harmonic-minor-scale">harmonic minor</term>, and which descends as the <term ref="natural-minor-scale">natural minor scale</term>. In jazz the raised form is used in both directions.</def>
+    <figure play="melodic" tempo="132">
+      <staff clef="treble">A4 B4 C5 D5 E5 *F#5 *G#5 A5 *G5 *F5 E5 D5 C5 B4 A4</staff>
+      <caption>The <note>A</note> melodic minor scale, up and down.</caption>
+    </figure>
+    <see ref="harmonic-minor-scale"/>
+  </entry>
+
+  <entry id="chromatic-scale" level="1" tags="scales">
+    <term>chromatic scale</term>
+    <gloss>all twelve notes, in half steps</gloss>
+    <def>A scale made only of <term ref="half-step">half steps</term>, using all twelve notes of the octave. It is usually written with sharps going up and flats going down.</def>
+    <figure play="melodic" tempo="144">
+      <staff clef="treble">C4 C#4 D4 D#4 E4 F4 F#4 G4 G#4 A4 A#4 B4 C5</staff>
+    </figure>
+    <see ref="chromatic"/>
+  </entry>
+
+  <!-- Keys -->
+
+  <entry id="key" level="1" tags="keys">
+    <term>key</term>
+    <gloss>the home note and scale a piece is built on</gloss>
+    <def>The <term ref="tonic">tonic</term> and the scale that a piece or passage is based on: music in <note>G</note> major uses the notes of the <note>G</note> major scale and treats <note>G</note> as its home. The <term ref="key-signature">key signature</term> shows the key's sharps or flats.</def>
+    <see ref="diatonic"/>
+  </entry>
+
+  <entry id="key-signature" level="1" tags="keys">
+    <term>key signature</term>
+    <gloss>sharps or flats at the start of every staff</gloss>
+    <def>The sharps or flats written after the clef at the start of every staff. They apply to every note with those letter names, in every octave, unless an <term ref="accidental">accidental</term> cancels them. Each key signature belongs to one major key and its <term ref="relative-key">relative</term> minor.</def>
+    <figure>
+      <staff clef="treble" key="-3"/>
+      <caption>Three flats: the key signature of <note>Eb</note> major and <note>C</note> minor.</caption>
+    </figure>
+    <see ref="order-of-sharps"/>
+    <see ref="order-of-flats"/>
+  </entry>
+
+  <entry id="order-of-sharps" level="1" tags="keys">
+    <term>order of sharps</term>
+    <gloss>each new sharp a fifth above the last</gloss>
+    <def>Sharps always appear in a key signature in the same order, each a fifth above the one before: <note>F#</note> <note>C#</note> <note>G#</note> <note>D#</note> <note>A#</note> <note>E#</note> <note>B#</note>. The last sharp is the <term ref="leading-tone">leading tone</term> of the major key, a half step below its tonic.</def>
+    <figure>
+      <staff clef="treble" key="7"/>
+    </figure>
+    <see ref="order-of-flats"/>
+  </entry>
+
+  <entry id="order-of-flats" level="1" tags="keys">
+    <term>order of flats</term>
+    <gloss>each new flat a fifth below the last</gloss>
+    <def>Flats always appear in a key signature in the same order, each a fifth below the one before: <note>Bb</note> <note>Eb</note> <note>Ab</note> <note>Db</note> <note>Gb</note> <note>Cb</note> <note>Fb</note>, the order of sharps backwards. With two or more flats, the second-to-last flat names the major key.</def>
+    <figure>
+      <staff clef="treble" key="-7"/>
+    </figure>
+    <see ref="order-of-sharps"/>
+  </entry>
+
+  <entry id="circle-of-fifths" level="1" tags="keys">
+    <term>circle of fifths</term>
+    <gloss>the keys arranged in a circle a fifth apart</gloss>
+    <def>The keys arranged in a circle: going clockwise from <note>C</note> major, each key's tonic is a <term ref="perfect-fifth">perfect fifth</term> higher and its signature has one more sharp or one fewer flat. The sharp and flat keys meet at the bottom, where three pairs of keys are <term ref="enharmonic">enharmonic</term>.</def>
+    <see ref="key-signature"/>
+  </entry>
+
+  <entry id="relative-key" level="1" tags="minor">
+    <term>relative key</term>
+    <gloss>major and minor keys that share a key signature</gloss>
+    <def>A major key and a minor key with the same <term ref="key-signature">key signature</term>, such as <note>C</note> major and <note>A</note> minor. The tonic of the relative minor is the sixth degree of the major key, a <term ref="minor-third">minor third</term> below the major tonic.</def>
+    <see ref="parallel-key"/>
+  </entry>
+
+  <entry id="parallel-key" level="1" tags="minor">
+    <term>parallel key</term>
+    <gloss>major and minor keys with the same tonic</gloss>
+    <def>A major key and a minor key with the same <term ref="tonic">tonic</term>, such as <note>C</note> major and <note>C</note> minor. Their key signatures differ by three accidentals: <note>C</note> major has none and <note>C</note> minor has three flats. Called the tonic major or tonic minor in British English.</def>
+    <see ref="relative-key"/>
+  </entry>
+
+  <entry id="diatonic" level="1" tags="keys scales">
+    <term>diatonic</term>
+    <gloss>using only the notes of the key</gloss>
+    <def>Belonging to the key: using only the seven notes of its scale, without added accidentals. In minor keys the raised sixth and seventh degrees of the <term ref="melodic-minor-scale">melodic minor scale</term> also count as diatonic. The opposite of <term ref="chromatic">chromatic</term>.</def>
+    <see ref="key"/>
+  </entry>
+</glossary>

@@ -1,6 +1,11 @@
 content_dir_files = [
+  'chords.xml',
+  'intervals.xml',
   'notation.xml',
   'performance.xml',
+  'pitch.xml',
+  'rhythm-meter.xml',
+  'scales-keys.xml',
 ]
 content_schema = 'glossary'
 content_relative_dir = 'glossary'

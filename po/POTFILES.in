@@ -1,8 +1,13 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
 data/content/curriculum.xml
+data/content/glossary/chords.xml
+data/content/glossary/intervals.xml
 data/content/glossary/notation.xml
 data/content/glossary/performance.xml
+data/content/glossary/pitch.xml
+data/content/glossary/rhythm-meter.xml
+data/content/glossary/scales-keys.xml
 data/content/lessons/level1/staff.xml
 data/fi.oikarinenotto.etude.desktop.in
 data/fi.oikarinenotto.etude.gschema.xml

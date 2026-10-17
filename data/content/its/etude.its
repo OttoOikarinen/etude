@@ -33,4 +33,15 @@ translators. Used by xgettext (via etude.loc) and itstool (i18n.itstool_join).
   <its:locNoteRule locNoteType="description" selector="//p | //li | //explanation">
     <its:locNote>Text of a music theory lesson. Keep the &lt;note&gt; elements: the application writes note names in the learner's naming convention (C D E… or H/B or do re mi).</its:locNote>
   </its:locNoteRule>
+  <its:locNoteRule locNoteType="description"
+      selector="//entry[@id='parallel-key']/term | //entry[@id='parallel-key']/gloss">
+    <its:locNote>English "parallel key" = same tonic, different key signature (C major / C minor). In German and Finnish the word for "parallel" (Paralleltonart, rinnakkaissävellaji) means the RELATIVE key; use your language's term for the same-tonic key (e.g. Varianttonart, samanniminen sävellaji).</its:locNote>
+  </its:locNoteRule>
+  <its:locNoteRule locNoteType="description"
+      selector="//entry[@id='relative-key']/term | //entry[@id='relative-key']/gloss">
+    <its:locNote>English "relative key" = same key signature, different tonic (C major / A minor). In German this is Paralleltonart, in Finnish rinnakkaissävellaji.</its:locNote>
+  </its:locNoteRule>
+  <its:locNoteRule locNoteType="description" selector="//entry[@id='middle-c']/term">
+    <its:locNote>The usual name for C4 in your language (e.g. "do central", "eingestrichenes c", "yksiviivainen c").</its:locNote>
+  </its:locNoteRule>
 </its:rules>
