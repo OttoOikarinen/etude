@@ -109,3 +109,14 @@ def test_fsrs_pin_matches_flatpak_manifest() -> None:
     module = next(m for m in manifest['modules'] if m['name'] == 'python3-fsrs')
     urls = [s['url'] for s in module['sources']]
     assert any(url.endswith(f'/fsrs-{version}-py3-none-any.whl') for url in urls)
+
+
+def test_style_css_rules_are_balanced() -> None:
+    """A merge can split a CSS rule; GTK then drops the rest of the stylesheet."""
+    depth = 0
+    for number, line in enumerate((PACKAGE / 'ui' / 'style.css').read_text().splitlines(), 1):
+        opens, closes = line.count('{'), line.count('}')
+        assert not (opens and depth), f'style.css:{number}: a rule starts inside another rule'
+        depth += opens - closes
+        assert depth >= 0, f'style.css:{number}: unmatched closing brace'
+    assert depth == 0, 'style.css: a rule is not closed'

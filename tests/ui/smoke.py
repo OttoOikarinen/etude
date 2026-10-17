@@ -1504,7 +1504,22 @@ def check_calibration() -> None:
         window.destroy()
 
 
+def check_style_css_parses() -> None:
+    """GTK parses the whole stylesheet without errors (a broken rule silently drops
+    every rule after it)."""
+    from gi.repository import Gtk
+
+    errors: list[str] = []
+    provider = Gtk.CssProvider()
+    provider.connect(
+        'parsing-error', lambda _p, section, error: errors.append(f'{section}: {error.message}')
+    )
+    provider.load_from_resource('/fi/oikarinenotto/etude/style.css')
+    assert not errors, errors
+
+
 CHECKS: list[Callable[[], None]] = [
+    check_style_css_parses,
     check_window_and_sections,
     check_keysig_correct_then_next,
     check_interval_wrong,
