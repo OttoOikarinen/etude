@@ -66,6 +66,7 @@ TOPICS = (
     'tempo',
     'dynamics',
     'articulation',
+    'directions',
 )
 """The vocabulary tags of the curriculum's units. With every topic selected, entries
 with other tags are included too."""
@@ -98,6 +99,11 @@ def normalize(text: str) -> str:
     stripped = ''.join(c for c in decomposed if not unicodedata.combining(c))
     words = stripped.casefold().replace('-', ' ').replace('’', "'").split()
     return ' '.join(words).strip('.\'"“”‘ ')
+
+
+def _capitalized(text: str) -> str:
+    """``text`` at the start of a sentence."""
+    return text[:1].upper() + text[1:]
 
 
 def _linked(a: GlossaryEntry, b: GlossaryEntry) -> bool:
@@ -198,6 +204,7 @@ class Vocabulary(ExerciseDefinition):
                 Option('tempo', _('Tempo')),
                 Option('dynamics', _('Dynamics')),
                 Option('articulation', _('Articulation')),
+                Option('directions', _('Performance directions')),
             ),
             TOPICS,
         ),
@@ -392,7 +399,7 @@ class Vocabulary(ExerciseDefinition):
                 # this card is for diminuendo."
                 sentences.append(
                     _('{given} is right too; this card is for {term}.').format(
-                        given=match, term=entry.headword
+                        given=_capitalized(match), term=entry.headword
                     )
                 )
             elif correct and str(given).strip() != entry.headword:
@@ -410,7 +417,9 @@ class Vocabulary(ExerciseDefinition):
         # Translators: a glossary definition in feedback, e.g. "Crescendo: Getting gradually
         # louder."
         sentences.append(
-            _('{term}: {definition}').format(term=entry.headword, definition=_definition(entry))
+            _('{term}: {definition}').format(
+                term=_capitalized(entry.headword), definition=_definition(entry)
+            )
         )
         if entry.abbreviation:
             sentences.append(
@@ -421,7 +430,9 @@ class Vocabulary(ExerciseDefinition):
             # Translators: what the learner's choice means, e.g. "Diminuendo means “gradually
             # softer”."
             sentences.append(
-                _('{term} means “{gloss}”.').format(term=other.headword, gloss=other.gloss)
+                _('{term} means “{gloss}”.').format(
+                    term=_capitalized(other.headword), gloss=other.gloss
+                )
             )
         example = entry.example
         return Feedback(

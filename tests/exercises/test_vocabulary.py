@@ -147,7 +147,7 @@ def test_typed_synonym_with_the_same_gloss_counts() -> None:
     q = exercise.generate('vocab.diminuendo.term', TYPING, random.Random(0))
     feedback = exercise.grade(q, 'Decrescendo')
     assert feedback.correct
-    assert 'decrescendo is right too; this card is for diminuendo.' in feedback.detail
+    assert 'Decrescendo is right too; this card is for diminuendo.' in feedback.detail
 
 
 def test_normalize() -> None:
