@@ -17,6 +17,7 @@ from .spec import (
     Clef,
     Event,
     Figure,
+    GlyphFigure,
     Head,
     Ink,
     Rest,
@@ -35,6 +36,8 @@ def describe(figure: Figure, name_pitch: Callable[[Pitch], str] = str) -> str:
     of a question that asks for exactly that information: exercises set
     ``description`` explicitly in such cases.
     """
+    if isinstance(figure, GlyphFigure):
+        return figure.description
     if figure.description:
         return figure.description
     if isinstance(figure, StaffSpec):

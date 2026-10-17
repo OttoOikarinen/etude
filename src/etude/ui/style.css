@@ -155,6 +155,25 @@ entry.success {
   padding: 24px;
 }
 
+/* Staff input */
+.staff-input-canvas {
+  padding: 4px 12px;
+}
+
+.staff-input-canvas:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.accidental-toggle {
+  min-width: 48px;
+  font-size: 1.15em;
+}
+
+.accidental-toggle .accel-badge {
+  font-size: 0.75em;
+}
+
 /* Feedback banner */
 .feedback-banner {
   padding: 14px 16px;

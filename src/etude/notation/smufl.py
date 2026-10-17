@@ -53,6 +53,9 @@ CODEPOINTS: dict[str, str] = {
     'noteheadWhole': '',
     'noteheadHalf': '',
     'noteheadBlack': '',
+    # Individual notes
+    'noteQuarterUp': '\ue1d5',
+    'noteQuarterDown': '\ue1d6',
     # Augmentation dot
     'augmentationDot': '',
     # Flags
@@ -72,6 +75,16 @@ CODEPOINTS: dict[str, str] = {
     'accidentalDoubleFlat': '',
     'accidentalTripleSharp': '',
     'accidentalTripleFlat': '',
+    # Articulation
+    'articAccentAbove': '\ue4a0',
+    'articAccentBelow': '\ue4a1',
+    'articStaccatoAbove': '\ue4a2',
+    'articStaccatoBelow': '\ue4a3',
+    'articTenutoAbove': '\ue4a4',
+    'articTenutoBelow': '\ue4a5',
+    # Holds and pauses
+    'fermataAbove': '\ue4c0',
+    'fermataBelow': '\ue4c1',
     # Rests
     'restDoubleWhole': '',
     'restWhole': '',
@@ -81,6 +94,15 @@ CODEPOINTS: dict[str, str] = {
     'rest16th': '',
     'rest32nd': '',
     'rest64th': '',
+    # Dynamics
+    'dynamicPiano': '\ue520',
+    'dynamicForte': '\ue522',
+    'dynamicPP': '\ue52b',
+    'dynamicMP': '\ue52c',
+    'dynamicMF': '\ue52d',
+    'dynamicFF': '\ue52f',
+    'dynamicCrescendoHairpin': '\ue53e',
+    'dynamicDiminuendoHairpin': '\ue53f',
     # Tuplets
     'tuplet0': '',
     'tuplet1': '',

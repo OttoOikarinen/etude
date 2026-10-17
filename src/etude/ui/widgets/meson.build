@@ -10,6 +10,8 @@ install_data(
     'piano.py',
     'rhythm_input.py',
     'simple.py',
+    'staff_entry.py',
+    'staff_input.py',
     'tap_pad.py',
   ],
   install_dir: moduledir / 'ui' / 'widgets',

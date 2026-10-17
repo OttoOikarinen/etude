@@ -282,7 +282,12 @@ def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
     from gi.repository import Adw
 
     from etude.audio.null import NullBackend
-    from etude.exercises.base import ChoiceAnswer, RhythmInputAnswer, TapAnswer
+    from etude.exercises.base import (
+        ChoiceAnswer,
+        RhythmInputAnswer,
+        StaffInputAnswer,
+        TapAnswer,
+    )
     from etude.services import Services
     from etude.ui.common import get_settings
     from etude.ui.model import LiveModel
@@ -354,6 +359,15 @@ def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
                     rhythm_shots(window, page, out / f'live-{exercise_id}-{{}}-{scheme}.png')
                 elif isinstance(answer, RhythmInputAnswer):
                     entry_shots(window, page, out / f'live-{exercise_id}-{{}}-{scheme}.png')
+                elif isinstance(answer, StaffInputAnswer):
+                    # Write a wrong note with a real click, then check it.
+                    widget = page.answer_widget
+                    (expected,) = page.question.expected[0]
+                    position = widget.entry.clef.staff_position(expected) + 1
+                    smoke._click_position(widget, position)
+                    render(window, out / f'live-{exercise_id}-entering-{scheme}.png')
+                    widget.activate_default()
+                    render(window, out / f'live-{exercise_id}-wrong-{scheme}.png')
             # Leave the last session unfinished: the Continue banner offers it.
             window.nav_view.pop_to_tag('main')
             sections(window, 'live-after', scheme)

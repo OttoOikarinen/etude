@@ -46,7 +46,7 @@ from .displaylist import (  # noqa: E402
     LineItem,
     TextItem,
 )
-from .layout import layout  # noqa: E402
+from .layout import MARGIN, MIN_ABOVE, MIN_BELOW, layout  # noqa: E402
 from .smufl import FontMetrics  # noqa: E402
 from .spec import Figure, Ink  # noqa: E402
 
@@ -344,7 +344,10 @@ class Renderer:
             (region.height + 2 * pad) * px,
         )
         radius = Graphene.Size().init(0.4 * px, 0.4 * px)
-        rounded = Gsk.RoundedRect().init(rect, radius, radius, radius, radius)
+        # GskRoundedRect is a plain struct: chaining .init() on a temporary
+        # returns a pointer into freed memory, so keep the instance.
+        rounded = Gsk.RoundedRect()
+        rounded.init(rect, radius, radius, radius, radius)
         builder = Gsk.PathBuilder.new()
         builder.add_rounded_rect(rounded)
         stroke = Gsk.Stroke.new(max(2.0, 0.16 * px))
@@ -388,6 +391,7 @@ class StaffView(Gtk.Widget):
         self._focus_index: int | None = None
         self._renderer: Renderer | None = None
         self._name_pitch: Callable[[Pitch], str] = str
+        self._reserved: tuple[int, int] | None = None
         self.set_focusable(True)
         self.set_overflow(Gtk.Overflow.HIDDEN)
 
@@ -455,6 +459,29 @@ class StaffView(Gtk.Widget):
         self._name_pitch = name_pitch
         self._update_accessible()
 
+    def reserve_positions(self, low: int, high: int) -> None:
+        """Keep room for notes from staff position ``low`` up to ``high``.
+
+        The staves then stay where they are when notes (and their ledger lines)
+        appear in that range, instead of moving as the figure grows: staff input
+        adds notes under the pointer.
+        """
+        self._reserved = (low, high)
+        self.queue_resize()
+        self.queue_draw()
+
+    def _reserve(self, display: DisplayList) -> tuple[float, float]:
+        """Space to add above the figure and the total height, in staff spaces."""
+        if self._reserved is None or not display.staves:
+            return 0.0, display.height
+        low, high = self._reserved
+        first, last = display.staves[0], display.staves[-1]
+        above = MARGIN + max(MIN_ABOVE, (high - 2 * (first.lines - 1)) / 2 + 1)
+        below = max(MIN_BELOW, -low / 2 + 1) + MARGIN
+        shift = max(0.0, above - first.top)
+        span = last.top + last.lines - 1 - first.top
+        return shift, max(shift + display.height, above + span + below)
+
     @property
     def display_list(self) -> DisplayList | None:
         return self._display
@@ -501,9 +528,9 @@ class StaffView(Gtk.Widget):
             natural = math.ceil(display.width * px)
             # Shrink down to MIN_FIT of the requested size rather than overflow.
             return math.ceil(natural * MIN_FIT), natural, -1, -1
-        height = display.height
+        height = self._reserve(display)[1]
         if self._display is not None:
-            height = max(height, self._display.height)
+            height = max(height, self._reserve(self._display)[1])
         if self._fill_width:
             pixels = math.ceil(height * px)
             return pixels, pixels, -1, -1
@@ -532,9 +559,42 @@ class StaffView(Gtk.Widget):
         if display is None:
             return 0.0, 0.0
         px = self.pixels_per_space
+        shift, height = self._reserve(display)
         x = max(0.0, (self.get_width() - display.width * px) / 2)
-        y = max(0.0, (self.get_height() - display.height * px) / 2)
+        y = max(0.0, (self.get_height() - height * px) / 2) + shift * px
         return x, y
+
+    def display_point(self, x: float, y: float) -> tuple[float, float] | None:
+        """A point in widget pixels in display-list coordinates (staff spaces).
+
+        Accounts for the centring origin and the current :attr:`pixels_per_space`,
+        so it stays right when the figure shrinks to a narrow window. ``None``
+        without a figure.
+        """
+        if self._display is None:
+            return None
+        ox, oy = self._origin()
+        px = self.pixels_per_space
+        return (x - ox) / px, (y - oy) / px
+
+    def staff_position_at(self, x: float, y: float) -> tuple[int, int] | None:
+        """``(staff index, staff position)`` under a point in widget pixels.
+
+        The staff is the one whose middle line is nearest vertically; the
+        position counts diatonic steps from its bottom line (see
+        :class:`~etude.notation.displaylist.StaffGeometry`). Staff input uses
+        this to map clicks to pitches. ``None`` without a staff.
+        """
+        point = self.display_point(x, y)
+        if point is None or self._display is None or not self._display.staves:
+            return None
+        _x, sy = point
+        staves = self._display.staves
+        index = min(
+            range(len(staves)),
+            key=lambda i: abs(staves[i].top + (staves[i].lines - 1) / 2 - sy),
+        )
+        return index, staves[index].position_at(sy)
 
     # -- drawing --
 

@@ -19,18 +19,39 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
         <setting key="ledger-lines" value="1"/>
         <setting key="accidentals" value="false"/>
       </practice>
+      <practice exercise="note-placement">
+        <setting key="clefs" value="treble bass"/>
+        <setting key="ledger-lines" value="1"/>
+        <setting key="accidentals" value="false"/>
+      </practice>
       <vocabulary tags="staff"/>
     </unit>
 
     <unit id="l1.rhythm" lesson="l1.rhythm">
       <title>Note Values and Rests</title>
       <summary>Whole, half, quarter, eighth and sixteenth notes, dots and rests.</summary>
+      <practice exercise="note-values"/>
+      <practice exercise="rhythm-tap">
+        <setting key="vocabulary" value="quarters halves eighths rests dotted-quarter"/>
+        <setting key="meters" value="2/4 3/4 4/4"/>
+      </practice>
+      <practice exercise="rhythm-dictation">
+        <setting key="vocabulary" value="halves eighths rests"/>
+        <setting key="meters" value="2/4 3/4 4/4"/>
+      </practice>
       <vocabulary tags="rhythm"/>
     </unit>
 
     <unit id="l1.meter" lesson="l1.meter">
       <title>Beat and Time Signatures</title>
       <summary>Pulse, bars, simple and compound time.</summary>
+      <practice exercise="meter-ear">
+        <setting key="compound" value="true"/>
+      </practice>
+      <practice exercise="rhythm-tap">
+        <setting key="vocabulary" value="quarters halves eighths rests dotted-quarter sixteenths"/>
+        <setting key="meters" value="2/4 3/4 4/4 6/8"/>
+      </practice>
       <vocabulary tags="meter"/>
     </unit>
 
@@ -38,6 +59,11 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
       <title>Accidentals, Half Steps and Whole Steps</title>
       <summary>Sharps, flats and naturals on the staff and on the keyboard.</summary>
       <practice exercise="note-naming">
+        <setting key="clefs" value="treble bass"/>
+        <setting key="ledger-lines" value="1"/>
+        <setting key="accidentals" value="true"/>
+      </practice>
+      <practice exercise="note-placement">
         <setting key="clefs" value="treble bass"/>
         <setting key="ledger-lines" value="1"/>
         <setting key="accidentals" value="true"/>
@@ -62,6 +88,13 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
         <setting key="mode" value="both"/>
         <setting key="max-accidentals" value="7"/>
       </practice>
+      <practice exercise="scale-staff">
+        <setting key="modes" value="false"/>
+      </practice>
+      <practice exercise="scale-ear">
+        <setting key="modes" value="false"/>
+        <setting key="pentatonic" value="false"/>
+      </practice>
       <vocabulary tags="minor"/>
     </unit>
 
@@ -73,6 +106,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
         <setting key="form" value="melodic"/>
         <setting key="direction" value="asc"/>
       </practice>
+      <practice exercise="interval-construction"/>
       <vocabulary tags="intervals"/>
     </unit>
 
@@ -80,6 +114,9 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
       <title>Scale Degrees</title>
       <summary>The names and functions of the degrees of a key.</summary>
       <practice exercise="scale-degree">
+        <setting key="mode" value="both"/>
+      </practice>
+      <practice exercise="degree-ear">
         <setting key="mode" value="both"/>
       </practice>
       <vocabulary tags="degrees"/>
@@ -96,6 +133,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
     <unit id="l1.terms" lesson="l1.terms">
       <title>Tempo, Dynamics and Articulation</title>
       <summary>The Italian terms and signs that tell how to perform music.</summary>
+      <practice exercise="symbols"/>
       <vocabulary tags="tempo dynamics articulation directions"/>
     </unit>
 
