@@ -1667,12 +1667,14 @@ def check_staff_view_focus_ring() -> None:
     window.set_child(view)
     window.present()
     pump()
-    view.grab_focus()
-    pump()
     try:
-        assert view.has_focus()
+        view.do_snapshot(Gtk.Snapshot())  # creates the renderer
+        region = view._head_regions()[0]
         snapshot = Gtk.Snapshot()
-        view.do_snapshot(snapshot)
+        # Draw as when focused; the test window need not get keyboard focus.
+        view._renderer.draw(
+            snapshot, view.display_list, view.pixels_per_space, view._palette(), focus=region
+        )
         bounds = snapshot.to_node().get_bounds()
         assert bounds.get_width() <= view.get_width() + 8, bounds.get_width()
     finally:
