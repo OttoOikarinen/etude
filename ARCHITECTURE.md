@@ -66,7 +66,7 @@ Contract changes so far (all backwards-compatible):
   downbeats.
 * W1 learning: `SessionRecord` and `SessionLog.between()` let statistics
   compute time practised, session counts and personal bests.
-* W4: `StaffInputAnswer` gained `staves`, `voice_staves` and `given_voices`
+* W4: `StaffInputAnswer` gained `staves`, `voice_staves`, `given_voices` and `rhythm` (slot durations for dictation)
   for four-part writing on a grand staff (values list one pitch per voice,
   top voice first); new package `etude.checkers` with the voice-leading
   checker's API (`Rule`, `Severity`, `Violation`, `Context`, `check`).
