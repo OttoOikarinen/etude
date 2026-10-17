@@ -39,10 +39,10 @@ installable Flatpak bundle from CI for testing. The first public release
 
 ## W3 — Level 1 (fundamentals)
 
-- [ ] Rhythm: tapping, timing windows, rhythm engraving
-- [ ] Lessons: XML schema, renderer, ITS/gettext pipeline
-- [ ] Glossary and flashcards, curriculum map, placement test, level exam
-- [ ] Remaining level 1 exercises and all level 1 lessons and vocabulary, fact-checked
+- [x] Rhythm: tapping, timing windows, rhythm engraving
+- [x] Lessons: XML schema, renderer, ITS/gettext pipeline
+- [x] Glossary and flashcards, curriculum map, placement test, level exam
+- [x] Remaining level 1 exercises and all level 1 lessons and vocabulary, fact-checked
 
 ## W4 — Level 2 (intermediate)
 
