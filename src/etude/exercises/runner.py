@@ -69,13 +69,17 @@ class SessionRunner:
         settings_for: SettingsProvider | None = None,
         rng: random.Random | None = None,
         clock: Callable[[], datetime] = _utc_now,
+        title: str | None = None,
     ) -> None:
+        """``title`` names the session on the exercise page instead of the
+        exercise or the kind of session (e.g. a curriculum unit)."""
         self.engine = engine
         self.registry = registry
         self.request = request
         self._settings_for = settings_for
         self._rng = rng if rng is not None else random.Random()
         self._clock = clock
+        self._title = title
         self._plan = [p for p in engine.start_session(request) if self._known(p)]
         self._session_id = engine.active_session_id
         self.index = 0
@@ -90,6 +94,8 @@ class SessionRunner:
     @property
     def title(self) -> str:
         """Title of the exercise page: the exercise, or the kind of mixed session."""
+        if self._title is not None:
+            return self._title
         if self.request.exercise_id is not None:
             return self.registry.get(self.request.exercise_id).title
         return {
@@ -194,6 +200,15 @@ class SessionRunner:
             del self._plan[self.index]
         return False
 
+    def drop_upcoming(self, drop: Callable[[PlannedQuestion], bool]) -> None:
+        """Remove the questions after the current one for which ``drop`` is true.
+
+        Adaptive sessions (the placement test) use it to skip what no longer
+        needs asking; :attr:`total` shrinks accordingly.
+        """
+        upcoming = self._plan[self.index + 1 :]
+        self._plan[self.index + 1 :] = [p for p in upcoming if not drop(p)]
+
     def finish(self) -> SessionSummary:
         """Close the session; the summary covers every answer, also from before a pause."""
         self._require_open()
@@ -209,7 +224,7 @@ class SessionRunner:
     # Follow-up sessions (design 1i)
 
     def again(self) -> SessionRunner:
-        return self._follow_up(replace(self.request, now=self._clock()))
+        return self._follow_up(replace(self.request, now=self._clock()), title=self._title)
 
     def review_mistakes(self, summary: SessionSummary) -> SessionRunner:
         request = SessionRequest(
@@ -220,7 +235,7 @@ class SessionRunner:
         )
         return self._follow_up(request)
 
-    def _follow_up(self, request: SessionRequest) -> SessionRunner:
+    def _follow_up(self, request: SessionRequest, title: str | None = None) -> SessionRunner:
         return SessionRunner(
             self.engine,
             self.registry,
@@ -228,6 +243,7 @@ class SessionRunner:
             settings_for=self._settings_for,
             rng=self._rng,
             clock=self._clock,
+            title=title,
         )
 
     # Internals

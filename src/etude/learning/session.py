@@ -17,6 +17,21 @@ The builder puts the principles of ``docs/PEDAGOGY.md`` into practice:
 
 The chosen questions are shuffled before they are interleaved, except that
 new items keep their teaching order.
+
+Explicit items (:attr:`SessionRequest.item_ids`):
+
+* ``DAILY_REVIEW`` restricted to a set of items practises one curriculum
+  unit: due and new items both come only from the set (new ones in the
+  set's order, which is the unit's teaching order). When less is due or new
+  than fits, the session is filled with the set's known items that are
+  least likely recalled now, as ``EXERCISE`` sessions are, so a unit can
+  always be practised. Without items it is the Today page's daily review.
+* ``LEVEL_EXAM`` asks exactly the given items (sampled evenly from the
+  level's units by the caller, see :func:`etude.learning.placement.balanced_sample`),
+  with no limit on new items, shuffled and interleaved.
+* ``PLACEMENT`` asks the given items in the given order (unit by unit, see
+  :class:`etude.learning.placement.PlacementWalk`): neither shuffled nor
+  interleaved.
 """
 
 from __future__ import annotations
@@ -99,9 +114,11 @@ class SessionBuilder:
                 questions = self._drill_weak(request)
             case SessionMode.REVIEW_MISTAKES:
                 questions = self._planned(request.item_ids)
-            case SessionMode.PLACEMENT | SessionMode.LEVEL_EXAM:
-                # Placement tests and level exams need the curriculum (W3).
-                raise NotImplementedError(f'{request.mode.value} sessions are planned for W3')
+            case SessionMode.LEVEL_EXAM:
+                questions = self._planned(request.item_ids[: request.size])
+            case SessionMode.PLACEMENT:
+                # The walk decides unit by unit, so the order is kept as given.
+                return self._planned(request.item_ids[: request.size])
         teaching = request.mode in {SessionMode.DAILY_REVIEW, SessionMode.EXERCISE}
         introduced = [q for q in questions if q.is_new] if teaching else []
         # Shuffle for variety, but introduce new items in teaching order.
@@ -111,6 +128,8 @@ class SessionBuilder:
     # Modes
 
     def _daily_review(self, request: SessionRequest) -> list[PlannedQuestion]:
+        if request.item_ids:
+            return self._unit_review(request)
         questions: list[PlannedQuestion] = []
         for card in self._cards.due(request.now, limit=request.size):
             exercise = self._exercise_for(card.item_id)
@@ -121,6 +140,35 @@ class SessionBuilder:
             return questions
         budget = min(slots, self._new_budget(request.now, exercise_id=None))
         return questions + self._round_robin_new(self._daily_candidates(), budget)
+
+    def _unit_review(self, request: SessionRequest) -> list[PlannedQuestion]:
+        """A daily review restricted to ``request.item_ids`` (one curriculum unit)."""
+        owned = [(item, self._exercise_for(item)) for item in dict.fromkeys(request.item_ids)]
+        items = [(item, exercise) for item, exercise in owned if exercise is not None]
+        known = self._cards.get_many(item for item, _exercise in items)
+        owner = dict(items)
+        questions = [
+            PlannedQuestion(owner[c.item_id], c.item_id)
+            for c in due_first(known, request.now)[: request.size]
+        ]
+        new_budget = self._new_budget(request.now, exercise_id=None)
+        if not known and new_budget == 0:
+            # The learner chose to start this unit: let them, a few items at a time
+            # (autonomy, as for an exercise they have not started).
+            new_budget = self.config.session_new_limit
+        unseen: dict[str, list[ItemId]] = {}
+        for item, exercise in items:
+            if item not in known:
+                unseen.setdefault(exercise, []).append(item)
+        budget = min(request.size - len(questions), new_budget)
+        questions += self._round_robin_new(unseen.items(), budget)
+        chosen = {q.item_id for q in questions}
+        rest = sorted(
+            (c for c in known.values() if c.item_id not in chosen),
+            key=lambda c: (self._scheduler.retrievability(c, request.now), c.item_id),
+        )
+        questions += [PlannedQuestion(owner[c.item_id], c.item_id) for c in rest]
+        return questions[: request.size]
 
     def _daily_candidates(self) -> list[tuple[str, list[ItemId]]]:
         """Unseen items, in teaching order, of the exercises daily reviews draw new items from.

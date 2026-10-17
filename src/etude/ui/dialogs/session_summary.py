@@ -12,6 +12,7 @@ from gi.repository import Adw, Gtk
 
 from ...learning.model import SessionSummary
 from ..common import format_duration, format_percent
+from ..model import SessionOutcome
 
 RESPONSE_AGAIN = 'again'
 RESPONSE_REVIEW = 'review'
@@ -31,11 +32,39 @@ def _big_number(value: str, caption: str) -> Gtk.Widget:
     return box
 
 
+def _outcome_box(outcome: SessionOutcome) -> Gtk.Widget:
+    """What an exam or the placement test decided: colour, icon and text."""
+    box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+    box.add_css_class('feedback-banner')
+    box.add_css_class('session-outcome')
+    box.add_css_class('feedback-success' if outcome.passed else 'feedback-info')
+    top = Gtk.Box(spacing=8, halign=Gtk.Align.CENTER)
+    icon = Gtk.Image(
+        icon_name='object-select-symbolic' if outcome.passed else 'dialog-information-symbolic',
+        accessible_role=Gtk.AccessibleRole.PRESENTATION,
+    )
+    icon.add_css_class('feedback-icon')
+    top.append(icon)
+    title = Gtk.Label(label=outcome.title, wrap=True, justify=Gtk.Justification.CENTER)
+    title.add_css_class('heading')
+    title.add_css_class('feedback-title')
+    top.append(title)
+    box.append(top)
+    detail = Gtk.Label(label=outcome.detail, wrap=True, justify=Gtk.Justification.CENTER)
+    box.append(detail)
+    return box
+
+
 def create_session_summary_dialog(
-    summary: SessionSummary, subtitle: str, *, mixed: bool = False
+    summary: SessionSummary,
+    subtitle: str,
+    *,
+    mixed: bool = False,
+    outcome: SessionOutcome | None = None,
 ) -> Adw.AlertDialog:
     """``subtitle`` describes the session, e.g. "Key Signatures · 20 questions · treble clef";
-    ``mixed`` sessions (daily review, drills) practise several exercises.
+    ``mixed`` sessions (daily review, drills) practise several exercises; ``outcome``
+    is what a level exam or the placement test decided.
 
     Responses: :data:`RESPONSE_AGAIN` (suggested), :data:`RESPONSE_REVIEW` (only when
     there were mistakes) and :data:`RESPONSE_BACK`.
@@ -49,6 +78,8 @@ def create_session_summary_dialog(
     numbers.append(_big_number(format_percent(accuracy), _('Accuracy')))
     numbers.append(_big_number(format_duration(summary.duration_ms), _('Time')))
     content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+    if outcome is not None:
+        content.append(_outcome_box(outcome))
     content.append(numbers)
     # Translators: e.g. "Best streak 11".
     streak = _('Best streak {n}').format(n=summary.best_streak)

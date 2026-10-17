@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-FileCopyrightText: 2026 Otto Oikarinen -->
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="Adw" version="1.0"/>
+  <template class="EtudeLessonsPage" parent="AdwNavigationPage">
+    <property name="title" translatable="yes">Theory</property>
+    <property name="tag">theory</property>
+    <property name="child">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar"/>
+        </child>
+        <property name="content">
+          <object class="GtkStack" id="stack">
+            <child>
+              <object class="GtkStackPage">
+                <property name="name">lessons</property>
+                <property name="child">
+                  <object class="GtkScrolledWindow">
+                    <property name="hscrollbar-policy">never</property>
+                    <property name="child">
+                      <object class="AdwClamp">
+                        <property name="maximum-size">840</property>
+                        <property name="tightening-threshold">600</property>
+                        <property name="child">
+                          <object class="GtkBox" id="groups_box">
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">24</property>
+                            <style>
+                              <class name="lessons-body"/>
+                            </style>
+                            <child>
+                              <object class="GtkLabel" id="coming_label">
+                                <property name="label" translatable="yes">Lessons for the other units arrive in later versions. Their practice is on the Path page already.</property>
+                                <property name="xalign">0</property>
+                                <property name="wrap">true</property>
+                                <style>
+                                  <class name="dim-label"/>
+                                  <class name="caption"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackPage">
+                <property name="name">empty</property>
+                <property name="child">
+                  <object class="AdwStatusPage">
+                    <property name="icon-name">x-office-document-symbolic</property>
+                    <property name="title" translatable="yes">No Lessons Yet</property>
+                    <property name="description" translatable="yes">Theory lessons arrive in a later version</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+</interface>

@@ -225,3 +225,26 @@ def test_a_session_closes_when_another_one_starts(world: World) -> None:
         first.resume()
     assert world.sessions.records[1].summary is not None
     assert world.sessions.records[1].summary.total == 1
+
+
+def test_a_title_names_the_session_and_its_repeats(world: World) -> None:
+    request = SessionRequest(SessionMode.DAILY_REVIEW, now=world.clock(), size=3)
+    runner = SessionRunner(
+        world.engine, world.registry, request, clock=world.clock, title='Major Keys'
+    )
+    assert runner.title == 'Major Keys'
+    play_through(runner, world.clock, wrong_every=2)
+    summary = runner.finish()
+    assert summary.mistakes
+    assert runner.again().title == 'Major Keys'
+    assert runner.review_mistakes(summary).title == 'Review Mistakes'
+
+
+def test_drop_upcoming_removes_later_questions_only(world: World) -> None:
+    runner = world.runner(size=5)
+    first = runner.current.question.item_id
+    runner.drop_upcoming(lambda planned: True)
+    assert runner.total == 1
+    assert runner.current.question.item_id == first
+    runner.answer(runner.current.question.expected, response_ms=1000)
+    assert not runner.advance()

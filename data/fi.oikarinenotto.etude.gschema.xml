@@ -66,6 +66,22 @@
       <description>Question pool settings of each exercise, keyed by exercise id.</description>
     </key>
 
+    <key name="passed-levels" type="as">
+      <default>[]</default>
+      <summary>Passed levels</summary>
+      <description>Curriculum levels whose level exam the learner has passed, by level id.</description>
+    </key>
+    <key name="placed-units" type="as">
+      <default>[]</default>
+      <summary>Placed-out units</summary>
+      <description>Curriculum units the placement test showed the learner already knows, by unit id.</description>
+    </key>
+    <key name="completed-lessons" type="as">
+      <default>[]</default>
+      <summary>Completed lessons</summary>
+      <description>Theory lessons whose check questions the learner has answered, by lesson id.</description>
+    </key>
+
     <key name="large-notation" type="b">
       <default>false</default>
       <summary>Large notation</summary>

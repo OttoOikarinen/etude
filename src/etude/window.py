@@ -20,6 +20,7 @@
 
 """The main window: sidebar navigation, section pages and pushed exercise pages."""
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from gettext import gettext as _
 from gettext import ngettext
@@ -31,14 +32,20 @@ from .exercises.runner import EmptySessionError
 from .learning.model import ItemId, SessionMode
 from .ui.common import get_settings
 from .ui.controller import ExerciseController, empty_session_message
+from .ui.dialogs.glossary_entry import GlossaryEntryDialog
 from .ui.dialogs.session_summary import RESPONSE_BACK
 from .ui.model import AppModel, SessionSource
 from .ui.pages.exercise import ExercisePage
+from .ui.pages.glossary import GlossaryPage
 from .ui.pages.home import HomePage
-from .ui.pages.placeholder import create_placeholder_page
+from .ui.pages.lesson import LessonPage
+from .ui.pages.lessons import LessonsPage
+from .ui.pages.path import PathPage
 from .ui.pages.progress import ProgressPage
 from .ui.pages.setup import SetupPage
 from .ui.pages.today import TodayPage
+
+RESPONSE_PRACTISE = 'practise'
 
 
 @dataclass(frozen=True)
@@ -69,11 +76,18 @@ def sections() -> tuple[Section, ...]:
     )
 
 
-PLACEHOLDERS = {
-    'path': ('find-location-symbolic', _('The curriculum map arrives soon')),
-    'theory': ('x-office-document-symbolic', _('Theory lessons arrive soon')),
-    'glossary': ('accessories-dictionary-symbolic', _('The glossary arrives soon')),
-}
+def quoted_units(titles: tuple[str, ...]) -> str:
+    """“Staff, Clefs and Note Names”, or “Intervals” and 2 more units."""
+    if not titles:
+        return ''
+    # Translators: a unit title in quotes.
+    first = _('“{unit}”').format(unit=titles[0])
+    if len(titles) == 1:
+        return first
+    others = len(titles) - 1
+    return ngettext('{unit} and {n} more unit', '{unit} and {n} more units', others).format(
+        unit=first, n=others
+    )
 
 
 class SidebarRow(Gtk.ListBoxRow):
@@ -153,9 +167,28 @@ class EtudeWindow(Adw.ApplicationWindow):
         self.today_page.connect('browse-requested', lambda _p: self.show_section('all'))
         self.progress_page = ProgressPage(model.progress)
         self.progress_page.connect('drill-requested', self._on_drill_requested)
-        for page in (self.home_page, self.today_page, self.progress_page):
+        self.path_page = PathPage()
+        self.path_page.connect('lesson-requested', lambda _p, unit: self.open_lesson(unit))
+        self.path_page.connect('practise-requested', lambda _p, unit: self.practise_unit(unit))
+        self.path_page.connect('exam-requested', lambda _p, level: self.take_exam(level))
+        self.path_page.connect('placement-requested', lambda _p: self.take_placement())
+        self.lessons_page = LessonsPage()
+        self.lessons_page.connect('lesson-requested', lambda _p, unit: self.open_lesson(unit))
+        self.glossary_page = GlossaryPage()
+        self.glossary_page.connect('entry-activated', lambda _p, e: self.show_glossary_entry(e))
+        self.glossary_page.connect('practise-requested', lambda _p: self.practise_vocabulary())
+        for page in (
+            self.home_page,
+            self.today_page,
+            self.progress_page,
+            self.path_page,
+            self.lessons_page,
+            self.glossary_page,
+        ):
             self.bind_property('compact', page, 'compact', GObject.BindingFlags.SYNC_CREATE)
-        self._placeholders: dict[str, Adw.NavigationPage] = {}
+        self.confirm_dialog: Adw.AlertDialog | None = None
+        self.glossary_dialog: GlossaryEntryDialog | None = None
+        self._glossary_loaded = False
         self.controller: ExerciseController | None = None
         self._paused_elapsed = 0
         """Seconds on the clock of the interrupted session, restored on resume."""
@@ -192,6 +225,14 @@ class EtudeWindow(Adw.ApplicationWindow):
         self.practised_box.set_visible(streak.practised_today)
         self.progress_page.set_data(self.model.progress(self.progress_page.period))
         self._refresh_today()
+        if self._section in ('path', 'theory'):
+            self._refresh_path()
+
+    def _refresh_path(self) -> None:
+        """Mastery and unlocking change with every answer: reload the curriculum map."""
+        data = self.model.path()
+        self.path_page.set_data(data)
+        self.lessons_page.set_data(data)
 
     def _watch_daily_goal(self, watch: bool) -> None:
         """Show a changed ``daily-goal`` at once (the model applies it first: it
@@ -229,13 +270,16 @@ class EtudeWindow(Adw.ApplicationWindow):
             page = self.today_page
         elif section_id == 'progress':
             page = self.progress_page
+        elif section_id in ('path', 'theory'):
+            self._refresh_path()
+            page = self.path_page if section_id == 'path' else self.lessons_page
+        elif section_id == 'glossary':
+            if not self._glossary_loaded:
+                self.glossary_page.set_data(self.model.glossary())
+                self._glossary_loaded = True
+            page = self.glossary_page
         else:
-            if section_id not in self._placeholders:
-                icon, description = PLACEHOLDERS[section_id]
-                self._placeholders[section_id] = create_placeholder_page(
-                    section_id, section.title, icon, description
-                )
-            page = self._placeholders[section_id]
+            raise KeyError(section_id)
         if self.split_view.get_content() is not page:
             self.split_view.set_content(page)
         self.split_view.set_show_content(True)
@@ -261,13 +305,120 @@ class EtudeWindow(Adw.ApplicationWindow):
         replace: bool = False,
     ) -> ExercisePage | None:
         """Open the exercise page with a new session; ``None`` if there is nothing to do."""
+        return self._start(
+            lambda: self.model.start(mode, exercise_id=exercise_id, item_ids=item_ids),
+            replace=replace,
+        )
+
+    def _start(
+        self, factory: Callable[[], SessionSource], *, replace: bool = False
+    ) -> ExercisePage | None:
         try:
-            session = self.model.start(mode, exercise_id=exercise_id, item_ids=item_ids)
+            session = factory()
         except EmptySessionError:
             self.toast_overlay.add_toast(Adw.Toast(title=empty_session_message()))
             self.refresh()  # starting finished an interrupted session
             return None
         return self._open_session(session, replace=replace)
+
+    # The learning path --------------------------------------------------------------
+
+    def open_lesson(self, unit_id: str) -> LessonPage | None:
+        """Push the lesson of a unit; reading is never locked."""
+        unit = self.model.path().unit(unit_id)
+        lesson = self.model.lesson(unit.lesson_id) if unit.lesson_id else None
+        if lesson is None:
+            return None
+        page = LessonPage(lesson, unit, done=unit.lesson_done)
+        self.bind_property('compact', page, 'compact', GObject.BindingFlags.SYNC_CREATE)
+        page.connect('term-activated', lambda _p, entry: self.show_glossary_entry(entry))
+        page.connect('play-requested', lambda _p, spec: self.model.play(spec))
+        page.connect('practise-requested', lambda _p, u: self.practise_unit(u))
+        page.connect('completed', self._on_lesson_completed)
+        page.connect('hidden', lambda _p: self.model.stop_audio())
+        self.nav_view.push(page)
+        if not lesson.checks and not unit.lesson_done:
+            self._on_lesson_completed(page, lesson.id)  # nothing to answer: reading completes it
+        return page
+
+    def _on_lesson_completed(self, _page: LessonPage, lesson_id: str) -> None:
+        self.model.complete_lesson(lesson_id)
+        self._refresh_path()
+
+    def visible_lesson_page(self) -> LessonPage | None:
+        page = self.nav_view.get_visible_page()
+        return page if isinstance(page, LessonPage) else None
+
+    def practise_unit(self, unit_id: str) -> ExercisePage | None:
+        """Practise a unit's items; a locked unit asks first (the lock is advice)."""
+        unit = self.model.path().unit(unit_id)
+
+        def start() -> ExercisePage | None:
+            return self._start(lambda: self.model.start_unit(unit_id))
+
+        if unit.unlocked:
+            return start()
+        # Translators: confirmation before practising a locked unit; {units} are
+        # unit titles in quotes, e.g. “Staff, Clefs and Note Names”.
+        body = _('You haven’t mastered {units} yet. Practise anyway?').format(
+            units=quoted_units(unit.missing)
+        )
+        self._confirm(_('Unit Not Unlocked Yet'), body, _('_Practise Anyway'), start)
+        return None
+
+    def take_exam(self, level_id: str) -> ExercisePage | None:
+        level = self.model.path().level(level_id)
+
+        def start() -> ExercisePage | None:
+            return self._start(lambda: self.model.start_exam(level_id))
+
+        if level.exam_ready or level.passed:
+            return start()
+        self._confirm(
+            _('Take the Exam Early?'),
+            _('Some units of this level are not unlocked yet. Take the exam anyway?'),
+            _('_Take Exam'),
+            start,
+        )
+        return None
+
+    def take_placement(self) -> ExercisePage | None:
+        return self._start(self.model.start_placement)
+
+    def practise_vocabulary(self) -> ExercisePage | None:
+        return self.start_session(SessionMode.EXERCISE, exercise_id='vocabulary')
+
+    def _confirm(self, heading: str, body: str, accept: str, action: Callable[[], object]) -> None:
+        dialog = Adw.AlertDialog(heading=heading, body=body)
+        dialog.add_response('cancel', _('_Cancel'))
+        dialog.add_response(RESPONSE_PRACTISE, accept)
+        dialog.set_response_appearance(RESPONSE_PRACTISE, Adw.ResponseAppearance.SUGGESTED)
+        dialog.set_default_response(RESPONSE_PRACTISE)
+        dialog.set_close_response('cancel')
+
+        def on_response(_dialog: Adw.AlertDialog, response: str) -> None:
+            self.confirm_dialog = None
+            if response == RESPONSE_PRACTISE:
+                action()
+
+        dialog.connect('response', on_response)
+        self.confirm_dialog = dialog
+        dialog.present(self)
+
+    def show_glossary_entry(self, entry_id: str) -> GlossaryEntryDialog | None:
+        if self.model.glossary_entry(entry_id) is None:
+            return None
+        if self.glossary_dialog is not None:
+            self.glossary_dialog.show_entry(entry_id)
+            return self.glossary_dialog
+        dialog = GlossaryEntryDialog(self.model.glossary_entry, self.model.play, entry_id)
+        dialog.connect('closed', self._on_glossary_closed)
+        self.glossary_dialog = dialog
+        dialog.present(self)
+        return dialog
+
+    def _on_glossary_closed(self, _dialog: GlossaryEntryDialog) -> None:
+        self.glossary_dialog = None
 
     def resume_session(self) -> ExercisePage | None:
         """Go on with the interrupted session of the Continue banner."""

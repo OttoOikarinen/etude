@@ -849,6 +849,425 @@ def check_reveal_details() -> None:
     assert not button.has_css_class('error')
 
 
+# The learning path -------------------------------------------------------------
+
+
+def _finish_session(window, page) -> None:
+    """Answer every remaining question correctly until the summary dialog shows."""
+    for _ in range(200):
+        page.answer_widget.submit(page.question.expected)
+        assert page.feedback is not None
+        assert press(page, 'Return')
+        pump()
+        if window.controller.summary is not None:
+            return
+    raise AssertionError('the session did not end')
+
+
+def _reset_path_settings() -> None:
+    from etude.ui.common import get_settings
+
+    for key in ('passed-levels', 'placed-units', 'completed-lessons'):
+        get_settings().reset(key)
+
+
+def check_lesson_preview() -> None:
+    """Every kind of lesson block, glossary links, fading worked steps and checks."""
+    from etude.ui.content import CheckView, WorkedExampleView
+    from etude.ui.preview import PreviewModel
+
+    window = new_window(PreviewModel(caught_up=True))  # the lesson is not completed yet
+    try:
+        page = window.open_lesson('l1.staff')
+        pump()
+        assert window.visible_lesson_page() is page
+        assert page.title_label.get_label() == 'Staff, Clefs and Note Names'
+        sections = _children(page.sections_box)
+        assert len(sections) == 2
+        css = {
+            name
+            for section in sections
+            for child in _children(section)
+            for name in child.get_css_classes()
+        }
+        assert {'callout-tip', 'callout-remember', 'callout-warning', 'lesson-figure'} <= css
+        assert {'lesson-list', 'worked-example', 'check-card'} <= css
+        text = _children(sections[0])[1].get_label()
+        assert '<a href="term:staff">staff</a>' in text, text
+        assert '<i>on</i>' in text
+
+        worked = page.worked[0]
+        assert isinstance(worked, WorkedExampleView)
+        assert worked.shown == 1
+        assert worked.next_button.get_label() == '_Next Step (2 of 3)'
+        worked.next_button.emit('clicked')
+        worked.next_button.emit('clicked')
+        assert worked.shown == 3
+        assert not worked.next_button.get_visible()
+
+        check = page.checks[0]
+        assert isinstance(check, CheckView)
+        completed = []
+        page.connect('completed', lambda _p, lesson_id: completed.append(lesson_id))
+        check.buttons['a'].emit('clicked')  # wrong
+        assert check.buttons['a'].has_css_class('error')
+        assert check.buttons['b'].has_css_class('success')
+        assert check.feedback.has_css_class('feedback-error')
+        assert check.feedback_title.get_label() == 'Not quite — the answer is B4'
+        assert check.retry_button.get_visible()
+        assert completed == ['l1.staff'], 'answering every check completes the lesson'
+        assert window.model.completed_lessons == {'l1.staff'}
+        check.retry_button.emit('clicked')
+        assert check.chosen is None
+        check.buttons['b'].emit('clicked')
+        assert check.feedback.has_css_class('feedback-success')
+        assert not check.retry_button.get_visible()
+        assert page.end_icon.has_css_class('success')
+
+        # Playing an example goes through the model.
+        figure = next(
+            child for child in _children(sections[0]) if child.has_css_class('lesson-figure')
+        )
+        _children(figure)[-1].emit('clicked')
+        assert window.model.played, 'the example was not played'
+
+        # A term opens the glossary dialog; links inside it open further entries.
+        page.emit('term-activated', 'clef')
+        pump()
+        dialog = window.glossary_dialog
+        assert dialog is not None
+        assert window.get_visible_dialog() is dialog
+        assert dialog.shown == ['clef']
+        assert dialog.show_entry('treble-clef')
+        assert dialog.shown == ['clef', 'treble-clef']
+        dialog.nav_view.pop()
+        pump()
+        assert dialog.shown == ['clef']
+        dialog.force_close()
+        pump()
+        assert window.glossary_dialog is None
+
+        page.compact = True
+        assert page.practise_button.get_halign().value_nick == 'fill'
+        page.practise_button.emit('clicked')
+        pump()
+        assert window.model.path_started[-1] == ('unit', 'l1.staff')
+        assert window.visible_exercise_page() is not None
+    finally:
+        window.destroy()
+
+
+def check_glossary_search() -> None:
+    from etude.learning.model import SessionMode
+
+    window = new_window()
+    try:
+        page = window.show_section('glossary')
+        assert page is window.glossary_page
+        assert page.practise_button.get_visible()
+        assert len(page.visible_entries) == 9
+        assert page.results_stack.get_visible_child_name() == 'list'
+        page.search_entry.set_text('louder')
+        page._filter()
+        assert page.visible_entries == ['crescendo']
+        page.search_entry.set_text('CRESC.')
+        page._filter()
+        assert page.visible_entries == ['crescendo'], 'abbreviations are found too'
+        page.search_entry.set_text('lied')
+        page._filter()
+        assert page.visible_entries == ['lied']
+        group = page._groups[1][0]
+        assert group.get_title() == 'Level 2 · Diatonic Harmony'
+        assert not page._groups[0][0].get_visible(), 'a group without matches hides'
+        page.search_entry.set_text('zzz')
+        page._filter()
+        assert page.results_stack.get_visible_child_name() == 'empty'
+        page.search_entry.set_text('')
+        page._filter()
+        page.rows['crescendo'].emit('activated')
+        pump()
+        dialog = window.glossary_dialog
+        assert dialog is not None
+        assert dialog.get_title() == 'crescendo'
+        dialog.force_close()
+        page.practise_button.emit('clicked')
+        pump()
+        assert window.model.started[-1][:2] == (SessionMode.EXERCISE, 'vocabulary')
+    finally:
+        window.destroy()
+
+
+def check_path_preview() -> None:
+    from etude.ui.preview import PreviewModel
+
+    window = new_window()
+    try:
+        page = window.show_section('path')
+        assert page is window.path_page
+        assert not page.placement_box.get_visible()
+        assert len(page.unit_cards) == 8
+        current = page.unit_cards['l1.accidentals']
+        assert current.has_css_class('current-unit')
+        assert current.practise_button.has_css_class('suggested-action')
+        assert current.status_label.get_label() == '61% mastered · 22 of 36 items'
+        staff = page.unit_cards['l1.staff']
+        assert staff.status_label.get_label() == 'Mastered'
+        assert staff.lesson_button is not None
+        rhythm = page.unit_cards['l1.rhythm']
+        assert rhythm.practise_button is None, 'a lesson-only unit has nothing to practise'
+        locked = page.unit_cards['l1.major']
+        assert locked.has_css_class('locked')
+        assert locked.status_label.get_label().startswith('Master “Accidentals')
+        exam = page.exam_cards['level1']
+        assert exam.button.get_label() == 'Take Exam'
+        # Theory lists the units with lessons.
+        theory = window.show_section('theory')
+        assert list(theory.rows) == ['l1.staff']
+        assert theory.coming_label.get_visible()
+        theory.rows['l1.staff'].emit('activated')
+        pump()
+        assert window.visible_lesson_page() is not None
+        window.nav_view.pop_to_tag('main')
+        pump()
+        window.show_section('path')
+        # Practising a locked unit asks first; cancelling does nothing.
+        locked.practise_button.emit('clicked')
+        pump()
+        dialog = window.confirm_dialog
+        assert dialog is not None
+        assert dialog.get_body().startswith('You haven’t mastered “Accidentals')
+        dialog.emit('response', 'cancel')
+        assert window.model.path_started == []
+        page.unit_cards['l1.major'].practise_button.emit('clicked')
+        window.confirm_dialog.emit('response', 'practise')
+        pump()
+        assert window.model.path_started[-1] == ('unit', 'l1.major')
+        exercise = window.visible_exercise_page()
+        assert exercise.get_title() == 'Major Scales and Keys'
+        window.nav_view.pop_to_tag('main')
+        pump()
+        # The exam before every unit is unlocked also asks, then shows its outcome.
+        page.exam_cards['level1'].button.emit('clicked')
+        window.confirm_dialog.emit('response', 'practise')
+        pump()
+        assert window.model.path_started[-1] == ('exam', 'level1')
+        controller = window.controller
+        controller.session.index = controller.session.total
+        summary = controller.finish()
+        pump()
+        labels = _all_labels(summary.get_extra_child())
+        assert 'Level 1 Passed' in labels, labels
+        summary.force_close()
+        window.nav_view.pop_to_tag('main')
+        pump()
+        window.compact = True  # cards were rebuilt when the sessions ended
+        card = page.unit_cards['l1.accidentals']
+        assert card is not current
+        assert card.main.get_orientation().value_nick == 'vertical'
+        assert card.actions.get_homogeneous()
+        window.compact = False
+    finally:
+        window.destroy()
+
+    window = new_window(PreviewModel(caught_up=True))
+    try:
+        page = window.show_section('path')
+        assert page.placement_box.get_visible()
+        assert page.unit_cards['l1.staff'].practise_button.has_css_class('suggested-action')
+        page.placement_button.emit('clicked')
+        pump()
+        assert window.model.path_started[-1] == ('placement', '')
+        controller = window.controller
+        assert controller.session.title == 'Placement Test'
+        controller.session.index = controller.session.total
+        summary = controller.finish()
+        pump()
+        assert 'You Placed Out of 3 Units' in _all_labels(summary.get_extra_child())
+        summary.force_close()
+    finally:
+        window.destroy()
+
+
+def _all_labels(widget) -> list[str]:
+    from gi.repository import Gtk
+
+    found = []
+    if isinstance(widget, Gtk.Label):
+        found.append(widget.get_label())
+    for child in _children(widget):
+        found.extend(_all_labels(child))
+    return found
+
+
+def check_live_lesson_and_glossary() -> None:
+    """The real reference lesson and glossary against a fresh database."""
+    import tempfile
+
+    from etude.ui.common import get_settings
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        window, services = _live_window(data_dir)
+        try:
+            data = window.model.path()
+            staff = data.unit('l1.staff')
+            assert staff.lesson_id == 'l1.staff'
+            assert staff.unlocked
+            assert not staff.lesson_done
+            page = window.open_lesson('l1.staff')
+            pump()
+            assert page.title_label.get_label() == 'Staff, Clefs and Note Names'
+            assert len(page.checks) == 3
+            assert len(page.worked) == 1
+            assert page.practise_button.get_visible()
+            for check in page.checks:
+                check.buttons[check.check.answer].emit('clicked')
+                assert check.answered_correctly
+            assert 'l1.staff' in get_settings().get_strv('completed-lessons')
+            assert window.model.path().unit('l1.staff').lesson_done
+            page.emit('term-activated', 'middle-c')
+            pump()
+            assert window.glossary_dialog is not None
+            window.glossary_dialog.force_close()
+            glossary = window.show_section('glossary')
+            assert len(glossary.visible_entries) == len(window.model.glossary().entries)
+            assert glossary.practise_button.get_visible() == (
+                'vocabulary' in services.registry.exercise_ids()
+            )
+            glossary.search_entry.set_text('ledger')
+            glossary._filter()
+            assert 'ledger-line' in glossary.visible_entries
+        finally:
+            _reset_path_settings()
+            _close_live(window, services)
+
+
+def check_live_path_unit_practice() -> None:
+    """A unit session asks only the unit's items; locked units are locked."""
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        window, services = _live_window(data_dir)
+        try:
+            page = window.show_section('path')
+            data = window.model.path()
+            assert data.placement_available
+            assert data.current_unit == 'l1.staff'
+            assert not data.unit('l1.accidentals').unlocked
+            assert data.unit('l1.rhythm').missing == ('Staff, Clefs and Note Names',)
+            assert page.placement_box.get_visible()
+            page.unit_cards['l1.staff'].practise_button.emit('clicked')
+            pump()
+            exercise = window.visible_exercise_page()
+            assert exercise is not None
+            assert exercise.get_title() == 'Staff, Clefs and Note Names'
+            session = window.controller.session
+            assert 0 < session.total <= 5
+            items = set(
+                window.model.learning_path.unit_items(
+                    window.model.library.curriculum.unit('l1.staff')
+                )
+            )
+            assert all(q.item_id in items for q in session._plan)
+            _finish_session(window, exercise)
+            window.get_visible_dialog().close()
+            pump()
+            assert window.split_view.get_content() is window.path_page
+            # Accidentals is locked: practising asks first.
+            page.unit_cards['l1.accidentals'].practise_button.emit('clicked')
+            assert window.confirm_dialog is not None
+            window.confirm_dialog.emit('response', 'cancel')
+        finally:
+            _close_live(window, services)
+
+
+def check_live_placement_and_exam() -> None:
+    """Placement places out of every unit answered well; the level exam passes the level."""
+    import tempfile
+
+    from etude.ui.common import get_settings
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        window, services = _live_window(data_dir)
+        try:
+            page = window.show_section('path')
+            page.placement_button.emit('clicked')
+            pump()
+            exercise = window.visible_exercise_page()
+            assert exercise.get_title() == 'Placement Test'
+            _finish_session(window, exercise)
+            dialog = window.get_visible_dialog()
+            labels = _all_labels(dialog.get_extra_child())
+            placed = get_settings().get_strv('placed-units')
+            assert 'l1.staff' in placed
+            assert 'l1.triads' in placed
+            assert f'You Placed Out of {len(placed)} Units' in labels, labels
+            dialog.close()
+            pump()
+            data = window.model.path()
+            assert not data.placement_available
+            assert all(u.unlocked for u in data.levels[0].units)
+            assert data.levels[0].exam_ready
+            assert window.path_page.exam_cards['level1'].button.has_css_class('suggested-action')
+            window.path_page.exam_cards['level1'].button.emit('clicked')
+            pump()
+            exercise = window.visible_exercise_page()
+            assert exercise.get_title() == 'Level 1 Exam'
+            assert window.controller.session.total == 30
+            _finish_session(window, exercise)
+            dialog = window.get_visible_dialog()
+            assert 'Level 1 Passed' in _all_labels(dialog.get_extra_child())
+            assert get_settings().get_strv('passed-levels') == ['level1']
+            dialog.close()
+            pump()
+            assert window.model.path().levels[0].passed
+        finally:
+            _reset_path_settings()
+            _close_live(window, services)
+
+
+def check_path_pages_fit_narrow() -> None:
+    """Path, Theory, Glossary and a lesson fit the 400 px layout."""
+    import tempfile
+
+    from gi.repository import Gtk
+
+    from etude.ui.preview import PreviewModel
+
+    def min_width(widget) -> int:
+        return widget.measure(Gtk.Orientation.HORIZONTAL, -1)[0]
+
+    def check(window) -> None:
+        window.compact = True
+        for section in ('path', 'theory', 'glossary'):
+            page = window.show_section(section)
+            pump()
+            assert min_width(page) <= 400, (section, min_width(page))
+        page = window.open_lesson('l1.staff')
+        pump()
+        for check_view in page.checks:
+            check_view.choose(next(o.key for o in check_view.check.options if not o.correct))
+        for worked in page.worked:
+            worked.reveal_next()
+            worked.reveal_next()
+        pump()
+        assert min_width(page) <= 400, ('lesson', min_width(page))
+        window.nav_view.pop_to_tag('main')
+
+    for model in (PreviewModel(), PreviewModel(caught_up=True)):
+        window = new_window(model)
+        try:
+            check(window)
+        finally:
+            window.destroy()
+    with tempfile.TemporaryDirectory() as data_dir:
+        window, services = _live_window(data_dir)
+        try:
+            check(window)
+        finally:
+            _reset_path_settings()
+            _close_live(window, services)
+
+
 CHECKS: list[Callable[[], None]] = [
     check_window_and_sections,
     check_keysig_correct_then_next,
@@ -870,6 +1289,13 @@ CHECKS: list[Callable[[], None]] = [
     check_live_new_learner,
     check_live_resume_session,
     check_live_today_review,
+    check_lesson_preview,
+    check_glossary_search,
+    check_path_preview,
+    check_live_lesson_and_glossary,
+    check_live_path_unit_practice,
+    check_live_placement_and_exam,
+    check_path_pages_fit_narrow,
 ]
 
 

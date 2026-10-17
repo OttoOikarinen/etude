@@ -15,18 +15,31 @@ from __future__ import annotations
 import dataclasses
 import random
 from collections import Counter
-from collections.abc import Callable, Sequence
-from dataclasses import dataclass
+from collections.abc import Callable, Mapping, Sequence
+from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta
 from gettext import gettext as _
+from gettext import ngettext
 from typing import ClassVar, Protocol
 
 from gi.repository import Gio
 
 from ..audio.spec import Instrument, PlaybackSpec
+from ..content.library import ContentLibrary, default_library
+from ..content.model import GlossaryEntry, Lesson, Unit
 from ..exercises.base import ExerciseDefinition, Family, Feedback, Question
-from ..exercises.runner import SessionRunner
+from ..exercises.path import (
+    VOCABULARY_EXERCISE,
+    ExamRunner,
+    LearningPath,
+    PathRecord,
+    PlacementRunner,
+    merged_settings,
+)
+from ..exercises.runner import EmptySessionError, SessionRunner
+from ..learning.mastery import Mastery
 from ..learning.model import ItemId, SessionMode, SessionRequest, SessionSummary
+from ..learning.placement import needed
 from ..learning.stats import EPOCH, Stats
 from ..services import Services
 
@@ -166,6 +179,146 @@ class ProgressData:
     """What "Drill these N items" practises; the listed items when empty."""
 
 
+@dataclass(frozen=True, slots=True)
+class UnitData:
+    """One unit on the Path page (and in the Theory index)."""
+
+    id: str
+    title: str
+    summary: str
+    lesson_id: str | None
+    lesson_title: str = ''
+    lesson_summary: str = ''
+    lesson_done: bool = False
+    """Every check question of the lesson was answered."""
+    items: int = 0
+    mastered: int = 0
+    complete: bool = False
+    unlocked: bool = False
+    placed: bool = False
+    missing: tuple[str, ...] = ()
+    """Titles of the units to complete before this one unlocks."""
+
+    @property
+    def fraction(self) -> float | None:
+        """Share of mastered items; ``None`` for a unit without practice."""
+        return self.mastered / self.items if self.items else None
+
+    @property
+    def practisable(self) -> bool:
+        return self.items > 0
+
+
+@dataclass(frozen=True, slots=True)
+class LevelData:
+    id: str
+    number: int
+    title: str
+    description: str
+    units: tuple[UnitData, ...]
+    exam_questions: int
+    """Questions in the level exam: its size, or fewer when the level has fewer items."""
+    exam_ready: bool
+    """Every unit of the level is unlocked (taking the exam earlier asks first)."""
+    passed: bool
+
+    @property
+    def completed(self) -> int:
+        return sum(u.complete for u in self.units)
+
+    @property
+    def exam_needed(self) -> int:
+        return needed(self.exam_questions)
+
+
+@dataclass(frozen=True, slots=True)
+class PathData:
+    levels: tuple[LevelData, ...]
+    placement_available: bool
+    """A new learner: the Path page offers the placement test ("Skip ahead")."""
+
+    def unit(self, unit_id: str) -> UnitData:
+        return next(u for level in self.levels for u in level.units if u.id == unit_id)
+
+    def level(self, level_id: str) -> LevelData:
+        return next(level for level in self.levels if level.id == level_id)
+
+    @property
+    def current_unit(self) -> str | None:
+        """The first unlocked unit with practice that is not complete yet."""
+        for level in self.levels:
+            for unit in level.units:
+                if unit.unlocked and unit.practisable and not unit.complete:
+                    return unit.id
+        return None
+
+
+@dataclass(frozen=True, slots=True)
+class GlossaryData:
+    entries: tuple[GlossaryEntry, ...]
+    """Sorted by headword."""
+    level_titles: Mapping[int, str] = field(default_factory=dict)
+    vocabulary_available: bool = False
+    """A vocabulary exercise is registered: offer "Practise Vocabulary"."""
+
+
+@dataclass(frozen=True, slots=True)
+class SessionOutcome:
+    """What a level exam or the placement test decided, for the summary dialog."""
+
+    passed: bool
+    title: str
+    detail: str
+
+
+def exam_outcome(level_number: int, correct: int, total: int, *, complete: bool) -> SessionOutcome:
+    if not complete:
+        return SessionOutcome(
+            False,
+            _('Exam Not Finished'),
+            ngettext(
+                'Answer the {n} question to complete the exam.',
+                'Answer all {n} questions to complete the exam.',
+                total,
+            ).format(n=total),
+        )
+    if correct >= needed(total):
+        return SessionOutcome(
+            True,
+            # Translators: e.g. "Level 1 Passed".
+            _('Level {number} Passed').format(number=level_number),
+            _('Every unit of the level is now open, and your reviews keep it fresh.'),
+        )
+    return SessionOutcome(
+        False,
+        _('Not Passed Yet'),
+        # Translators: e.g. "22 correct — 24 pass. Practise …".
+        _(
+            '{correct} correct — {needed} pass. Practise the units of this level, then try again.'
+        ).format(correct=correct, needed=needed(total)),
+    )
+
+
+def placement_outcome(placed: int, next_title: str | None) -> SessionOutcome:
+    if placed:
+        title = ngettext(
+            'You Placed Out of {n} Unit', 'You Placed Out of {n} Units', placed
+        ).format(n=placed)
+        if next_title:
+            # Translators: after the placement test, e.g. "Continue with “Intervals”."
+            detail = _('Continue with “{unit}”.').format(unit=next_title)
+        else:
+            detail = _('You know everything the path teaches so far.')
+        return SessionOutcome(True, title, detail)
+    return SessionOutcome(
+        False,
+        _('Start From the Beginning'),
+        _('Begin with “{unit}”: its lesson and practice will get you going.').format(
+            unit=next_title or ''
+        ),
+    )
+
+
 # Sessions -------------------------------------------------------------------------
 
 
@@ -238,6 +391,23 @@ class AppModel(Protocol):
     def dismiss_continue(self) -> None:
         """Finish the interrupted session without resuming it; its answers count."""
 
+    # The learning path
+
+    def path(self) -> PathData: ...
+    def lesson(self, lesson_id: str) -> Lesson | None: ...
+    def glossary(self) -> GlossaryData: ...
+    def glossary_entry(self, entry_id: str) -> GlossaryEntry | None: ...
+    def complete_lesson(self, lesson_id: str) -> None:
+        """Every check question of the lesson was answered."""
+
+    def start_unit(self, unit_id: str) -> SessionSource:
+        """Practise exactly the unit's items (a daily review restricted to them)."""
+
+    def start_exam(self, level_id: str) -> SessionSource: ...
+    def start_placement(self) -> SessionSource: ...
+    def session_outcome(self, session: SessionSource) -> SessionOutcome | None:
+        """What a finished exam or placement test decided; ``None`` for other sessions."""
+
     @property
     def audio_available(self) -> bool: ...
     def new_question(self) -> None: ...
@@ -286,6 +456,10 @@ class LiveModel:
         self._varied = Instrument.PIANO
         self._paused: SessionRunner | None = None
         self._goal_handler = 0
+        self._library: ContentLibrary | None = None
+        self._learning_path: LearningPath | None = None
+        self._memory: dict[str, frozenset[str]] = {}
+        """String-list settings when there is no GSettings schema."""
         if settings is not None:
             self._apply_daily_goal(settings)
             self._goal_handler = settings.connect('changed::daily-goal', self._on_goal_changed)
@@ -526,6 +700,179 @@ class LiveModel:
         runner, self._paused = self._paused, None
         if runner is not None and runner.is_open:
             runner.finish()
+
+    # The learning path
+
+    PATH_KEYS = ('passed-levels', 'placed-units', 'completed-lessons')
+
+    @property
+    def library(self) -> ContentLibrary:
+        if self._library is None:
+            self._library = default_library()
+        return self._library
+
+    @property
+    def learning_path(self) -> LearningPath:
+        if self._learning_path is None:
+            mastery = Mastery(self.services.cards, self.services.attempts)
+            self._learning_path = LearningPath(self.library, self.services.registry, mastery)
+        return self._learning_path
+
+    def _strings(self, key: str) -> frozenset[str]:
+        if self.settings is None:
+            return self._memory.get(key, frozenset())
+        return frozenset(self.settings.get_strv(key))
+
+    def _add_string(self, key: str, value: str) -> None:
+        values = self._strings(key)
+        if value in values:
+            return
+        if self.settings is None:
+            self._memory[key] = values | {value}
+        else:
+            self.settings.set_strv(key, sorted(values | {value}))
+
+    def path_record(self) -> PathRecord:
+        """Passed levels and placed-out units (GSettings ``passed-levels``, ``placed-units``)."""
+        return PathRecord(self._strings('passed-levels'), self._strings('placed-units'))
+
+    def path(self) -> PathData:
+        library = self.library
+        record = self.path_record()
+        read = self._strings('completed-lessons')
+        levels = []
+        for status in self.learning_path.status(record):
+            units = []
+            for unit in status.units:
+                lesson = library.lesson_for(unit.unit)
+                units.append(
+                    UnitData(
+                        id=unit.unit.id,
+                        title=unit.unit.title,
+                        summary=unit.unit.summary,
+                        lesson_id=lesson.id if lesson else None,
+                        lesson_title=lesson.title if lesson else '',
+                        lesson_summary=lesson.summary if lesson else '',
+                        lesson_done=lesson is not None and lesson.id in read,
+                        items=len(unit.items),
+                        mastered=unit.mastered,
+                        complete=unit.complete,
+                        unlocked=unit.unlocked,
+                        placed=unit.placed,
+                        missing=tuple(u.title for u in unit.missing),
+                    )
+                )
+            level = status.level
+            levels.append(
+                LevelData(
+                    id=level.id,
+                    number=level.number,
+                    title=level.title,
+                    description=level.description,
+                    units=tuple(units),
+                    exam_questions=min(level.exam_size, len(status.items)),
+                    exam_ready=status.exam_ready,
+                    passed=status.passed,
+                )
+            )
+        started = any(u.complete and u.items for level in levels for u in level.units)
+        has_items = any(u.items for level in levels for u in level.units)
+        new_learner = not (record.placed_units or record.passed_levels or started)
+        return PathData(tuple(levels), new_learner and has_items)
+
+    def lesson(self, lesson_id: str) -> Lesson | None:
+        return self.library.lessons.get(lesson_id)
+
+    def glossary(self) -> GlossaryData:
+        library = self.library
+        return GlossaryData(
+            entries=tuple(library.entries()),
+            level_titles={level.number: level.title for level in library.curriculum.levels},
+            vocabulary_available=VOCABULARY_EXERCISE in self.services.registry.exercise_ids(),
+        )
+
+    def glossary_entry(self, entry_id: str) -> GlossaryEntry | None:
+        return self.library.glossary.get(entry_id)
+
+    def complete_lesson(self, lesson_id: str) -> None:
+        self._add_string('completed-lessons', lesson_id)
+
+    def _path_settings(self, units: Sequence[Unit]) -> Callable[[str], dict[str, object]]:
+        return merged_settings(
+            lambda e: exercise_settings(self.settings, e), self.learning_path.settings_for(units)
+        )
+
+    def start_unit(self, unit_id: str) -> SessionRunner:
+        self._finish_paused()
+        unit = self.library.curriculum.unit(unit_id)
+        items = self.learning_path.unit_items(unit)
+        if not items:
+            raise EmptySessionError  # without items it would be the whole daily review
+        request = SessionRequest(
+            SessionMode.DAILY_REVIEW, now=self._clock(), size=self._session_size(), item_ids=items
+        )
+        return SessionRunner(
+            self.services.engine,
+            self.services.registry,
+            request,
+            settings_for=self._path_settings([unit]),
+            rng=self.services.rng,
+            clock=self._clock,
+            title=unit.title,
+        )
+
+    def start_exam(self, level_id: str) -> ExamRunner:
+        self._finish_paused()
+        level = next(lv for lv in self.library.curriculum.levels if lv.id == level_id)
+        items = self.learning_path.exam_items(level, self.services.rng)
+        if not items:
+            raise EmptySessionError
+        request = SessionRequest(
+            SessionMode.LEVEL_EXAM, now=self._clock(), size=len(items), item_ids=items
+        )
+        return ExamRunner(
+            self.services.engine,
+            self.services.registry,
+            request,
+            level=level,
+            on_passed=lambda passed: self._add_string('passed-levels', passed),
+            settings_for=self._path_settings(level.units),
+            rng=self.services.rng,
+            clock=self._clock,
+        )
+
+    def start_placement(self) -> PlacementRunner:
+        self._finish_paused()
+        plan = self.learning_path.placement_plan(self.path_record(), self.services.rng)
+        if not plan.items:
+            raise EmptySessionError
+        request = SessionRequest(
+            SessionMode.PLACEMENT, now=self._clock(), size=len(plan.items), item_ids=plan.items
+        )
+        units = [u for level in self.library.curriculum.levels for u in level.units]
+        return PlacementRunner(
+            self.services.engine,
+            self.services.registry,
+            request,
+            plan=plan,
+            on_placed=lambda unit_id: self._add_string('placed-units', unit_id),
+            settings_for=self._path_settings(units),
+            rng=self.services.rng,
+            clock=self._clock,
+        )
+
+    def session_outcome(self, session: SessionSource) -> SessionOutcome | None:
+        if isinstance(session, ExamRunner) and session.result is not None:
+            result = session.result
+            return exam_outcome(
+                session.level.number, result.correct, result.total, complete=result.complete
+            )
+        if isinstance(session, PlacementRunner):
+            path = self.path()
+            current = path.current_unit
+            title = path.unit(current).title if current else None
+            return placement_outcome(len(session.result.placed), title)
+        return None
 
     # Audio
 

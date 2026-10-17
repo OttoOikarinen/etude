@@ -7,7 +7,11 @@
     <file alias="style.css">ui/style.css</file>
     <file preprocess="xml-stripblanks">ui/dialogs/preferences.ui</file>
     <file preprocess="xml-stripblanks">ui/pages/exercise.ui</file>
+    <file preprocess="xml-stripblanks">ui/pages/glossary.ui</file>
     <file preprocess="xml-stripblanks">ui/pages/home.ui</file>
+    <file preprocess="xml-stripblanks">ui/pages/lesson.ui</file>
+    <file preprocess="xml-stripblanks">ui/pages/lessons.ui</file>
+    <file preprocess="xml-stripblanks">ui/pages/path.ui</file>
     <file preprocess="xml-stripblanks">ui/pages/progress.ui</file>
     <file preprocess="xml-stripblanks">ui/pages/setup.ui</file>
     <file preprocess="xml-stripblanks">ui/pages/today.ui</file>

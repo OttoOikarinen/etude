@@ -86,7 +86,9 @@ class SessionMode(Enum):
     REVIEW_MISTAKES = 'review_mistakes'
     """Repeat the items missed in a just-finished session (design 1i)."""
     PLACEMENT = 'placement'
+    """The placement test: given items unit by unit, in order (``learning.placement``)."""
     LEVEL_EXAM = 'level_exam'
+    """A level exam: given items sampled across the level's units, interleaved."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -97,7 +99,9 @@ class SessionRequest:
     exercise_id: str | None = None
     settings: Mapping[str, object] = field(default_factory=dict, hash=False)
     item_ids: tuple[ItemId, ...] = ()
-    """Explicit items for ``REVIEW_MISTAKES`` and ``DRILL_WEAK``."""
+    """Explicit items for ``REVIEW_MISTAKES``, ``DRILL_WEAK``, ``LEVEL_EXAM`` and
+    ``PLACEMENT``; for ``DAILY_REVIEW`` they restrict due and new items to this set
+    (practising one curriculum unit, see ``etude.learning.session``)."""
 
 
 @dataclass(frozen=True, slots=True)
