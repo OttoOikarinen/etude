@@ -23,7 +23,7 @@ from ..audio.null import NullBackend, NullHandle
 from ..audio.spec import PlaybackSpec
 from ..content.loaders import parse_glossary, parse_lesson
 from ..content.model import GlossaryEntry, Lesson
-from ..core import KeySignature, Meter, Pitch, PitchName
+from ..core import KeySignature, Pitch, PitchName
 from ..core.pitch import Letter
 from ..exercises.base import (
     BoolSetting,
