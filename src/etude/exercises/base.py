@@ -107,7 +107,11 @@ class ChipsAnswer:
 @dataclass(frozen=True, slots=True)
 class StaffInputAnswer:
     """Place notes on a staff: construction, dictation, SATB, counterpoint.
-    Value: ``tuple[tuple[Pitch, ...], ...]``, one chord (or single note) per slot."""
+
+    Value: ``tuple[tuple[Pitch, ...], ...]``, one chord (or single note) per slot.
+    With several ``voices`` each chord lists one pitch per voice, from the top
+    voice down (soprano, alto, tenor, bass), including the ``given_voices``.
+    """
 
     clef: Clef
     key_signature: KeySignature | None = None
@@ -116,6 +120,22 @@ class StaffInputAnswer:
     voices: int = 1
     given: Figure | None = None
     """Notes already printed that the learner adds to (a bass line, a cantus firmus)."""
+    staves: tuple[Clef, ...] = ()
+    """Clefs of a system (``(TREBLE, BASS)`` for SATB on a grand staff); empty means
+    one staff in ``clef``."""
+    voice_staves: tuple[int, ...] = ()
+    """Staff of each voice, top voice first; default for four voices on two staves:
+    soprano and alto on the upper staff, tenor and bass on the lower."""
+    given_voices: Mapping[int, tuple[Pitch, ...]] = field(default_factory=dict, hash=False)
+    """Voices printed in advance (voice index → one pitch per slot), e.g. the bass of
+    a figured-bass realisation; the learner writes the other voices."""
+
+    def staff_of_voice(self, voice: int) -> int:
+        if self.voice_staves:
+            return self.voice_staves[voice]
+        if len(self.staves) < 2:
+            return 0
+        return 0 if voice < (self.voices + 1) // 2 else len(self.staves) - 1
 
 
 @dataclass(frozen=True, slots=True)

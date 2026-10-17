@@ -16,7 +16,7 @@ where to start when you change something.
 ├───────────────────────────────────────────────────────────────┤
 │ etude.content     (curriculum, lessons, glossary)             │
 ├───────────────────────────────────────────────────────────────┤
-│ etude.learning    etude.notation  etude.audio                 │  pure
+│ etude.learning  etude.notation  etude.audio  etude.checkers   │  pure
 ├───────────────────────────────────────────────────────────────┤  Python
 │ etude.core        (music theory value types)                  │
 └───────────────────────────────────────────────────────────────┘
@@ -36,6 +36,7 @@ where to start when you change something.
 | `audio` | `spec` describes what to play; `backend` is the interface; FluidSynth plays it, `null` stands in for tests and machines without sound. |
 | `learning` | FSRS scheduling, ratings derived from answers, session building (interleaving, new vs. review), mastery, placement, statistics. Talks to storage and exercises only through `learning.ports`. |
 | `storage` | SQLite implementation of the `learning.ports` stores, with migrations. |
+| `checkers` | Rule checkers for written music: four-part voice leading (W4) and species counterpoint (W5). Pure, on top of `core`. |
 | `exercises` | `base` is the framework; `families/` holds the exercises; `registry` discovers them. |
 | `content` | Curriculum, theory lessons and glossary loaded from `data/content/` (formats: docs/CONTENT_AUTHORING.md); `music_text` reads the compact notation of examples. Below `exercises`, so exercises such as vocabulary flashcards can use the glossary. |
 | `ui` | Pages, widgets and dialogs following the design mockups. |
@@ -65,6 +66,10 @@ Contract changes so far (all backwards-compatible):
   downbeats.
 * W1 learning: `SessionRecord` and `SessionLog.between()` let statistics
   compute time practised, session counts and personal bests.
+* W4: `StaffInputAnswer` gained `staves`, `voice_staves` and `given_voices`
+  for four-part writing on a grand staff (values list one pitch per voice,
+  top voice first); new package `etude.checkers` with the voice-leading
+  checker's API (`Rule`, `Severity`, `Violation`, `Context`, `check`).
 * W3 content: `etude.content` moved below `etude.exercises` in the layers;
   content model, loaders and XML formats added. W2 follow-up:
   `Question.playback_style_choice` and `ExerciseDefinition.confusables()`.

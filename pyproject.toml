@@ -73,6 +73,7 @@ files = [
     "src/etude/notation",
     "src/etude/audio",
     "src/etude/learning",
+    "src/etude/checkers",
     "src/etude/storage",
     "src/etude/exercises",
     "src/etude/content",
@@ -123,7 +124,7 @@ layers = [
     "etude.ui",
     "etude.exercises | etude.storage",
     "etude.content",
-    "etude.learning | etude.notation | etude.audio",
+    "etude.learning | etude.notation | etude.audio | etude.checkers",
     "etude.core",
 ]
 
@@ -139,6 +140,7 @@ source_modules = [
     "etude.notation.a11y",
     "etude.audio",
     "etude.learning",
+    "etude.checkers",
     "etude.storage",
     "etude.exercises",
     "etude.content",
