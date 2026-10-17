@@ -132,6 +132,9 @@ def example_card(
     box.add_css_class('figure-card')
     box.add_css_class('lesson-figure')
     figure = create_figure_widget(example.figure)
+    # Lesson figures are not answered by clicking noteheads: keep them out of the
+    # focus chain (the description still reaches screen readers).
+    figure.set_focusable(False)
     figure.update_property([Gtk.AccessibleProperty.DESCRIPTION], [describe_figure(example.figure)])
     box.append(figure)
     if example.caption:
