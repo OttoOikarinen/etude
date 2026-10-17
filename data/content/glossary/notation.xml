@@ -6,6 +6,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 Glossary: staff notation. Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
 -->
 <glossary tags="notation">
+  <!-- The staff and clefs -->
+
   <entry id="staff" level="1" tags="staff">
     <term>staff</term>
     <gloss>the five lines music is written on</gloss>
@@ -40,6 +42,17 @@ Glossary: staff notation. Format: docs/CONTENT_AUTHORING.md, schema: schema/glos
     <see ref="treble-clef"/>
   </entry>
 
+  <entry id="grand-staff" level="1" tags="staff">
+    <term>grand staff</term>
+    <gloss>treble and bass staves joined by a brace</gloss>
+    <def>A <term ref="treble-clef">treble</term> staff above a <term ref="bass-clef">bass</term> staff, joined at the left by a brace and a line. It is used for piano music; <term ref="middle-c">middle C</term> lies between the two staves. Called the great stave in British English.</def>
+    <figure play="as-written">
+      <staff clef="treble">[C5 E5 G5]/w</staff>
+      <staff clef="bass">C3/w</staff>
+    </figure>
+    <see ref="middle-c"/>
+  </entry>
+
   <entry id="ledger-line" level="1" tags="staff">
     <term>ledger line</term>
     <gloss>short extra line above or below the staff</gloss>
@@ -47,12 +60,13 @@ Glossary: staff notation. Format: docs/CONTENT_AUTHORING.md, schema: schema/glos
     <figure>
       <staff clef="treble">C4/q A3/q A5/q C6/q</staff>
     </figure>
+    <see ref="ottava"/>
   </entry>
 
   <entry id="middle-c" level="1" tags="staff">
     <term>middle C</term>
     <gloss>C4, the C between the treble and bass staves</gloss>
-    <def>The C near the middle of the piano keyboard, <note>C4</note> in scientific pitch notation. It is written on the first ledger line below the treble staff or above the bass staff.</def>
+    <def>The <note>C</note> near the middle of the piano keyboard, <note>C4</note> in <term ref="scientific-pitch-notation">scientific pitch notation</term>. It is written on the first ledger line below the treble staff or above the bass staff.</def>
     <figure play="as-written">
       <staff clef="treble">C4/w</staff>
       <staff clef="bass">C4/w</staff>
@@ -66,5 +80,260 @@ Glossary: staff notation. Format: docs/CONTENT_AUTHORING.md, schema: schema/glos
     <figure play="melodic">
       <staff clef="treble">C4/h C5/h</staff>
     </figure>
+    <see ref="compound-interval"/>
+  </entry>
+
+  <entry id="ottava" level="1" tags="staff">
+    <term>ottava sign</term>
+    <foreign lang="it">ottava</foreign>
+    <gloss>play an octave higher or lower than written</gloss>
+    <def>The sign 8va with a dashed line above the staff means that the notes under the line sound an <term ref="octave">octave</term> higher than written; 8vb or 8va bassa below the staff means an octave lower. It saves many <term ref="ledger-line">ledger lines</term>.</def>
+    <abbr>8va</abbr>
+  </entry>
+
+  <!-- Note values -->
+
+  <entry id="note-value" level="1" tags="rhythm">
+    <term>note value</term>
+    <gloss>how long a note lasts compared with others</gloss>
+    <def>The length of a note in relation to other notes, shown by its shape. Each common value is half the one before: <term ref="whole-note">whole</term>, <term ref="half-note">half</term>, <term ref="quarter-note">quarter</term>, <term ref="eighth-note">eighth</term> and <term ref="sixteenth-note">sixteenth</term> note. How long a value lasts in seconds depends on the <term ref="tempo">tempo</term>.</def>
+    <figure play="as-written" tempo="80">
+      <staff clef="treble" time="4/4">A4/w | A4/h A4/h | A4/q A4/q A4/q A4/q | A4/e A4/e A4/e A4/e A4/e A4/e A4/e A4/e |.</staff>
+      <caption>One whole note, two half notes, four quarter notes and eight eighth notes fill the same time.</caption>
+    </figure>
+    <see ref="rest"/>
+  </entry>
+
+  <entry id="notehead" level="1" tags="rhythm">
+    <term>notehead</term>
+    <gloss>the oval part of a note</gloss>
+    <def>The oval part of a note, written on a line or in a space to show the pitch. Whole and half notes have hollow noteheads; quarter notes and shorter values have filled ones.</def>
+    <see ref="stem"/>
+  </entry>
+
+  <entry id="stem" level="1" tags="rhythm">
+    <term>stem</term>
+    <gloss>vertical line attached to a notehead</gloss>
+    <def>The thin vertical line attached to the <term ref="notehead">notehead</term> of every note shorter than a whole note. Notes below the middle line of the staff have stems going up on the right; notes above it have stems going down on the left, and notes on the middle line usually do too.</def>
+    <figure>
+      <staff clef="treble">E4/q G4/q B4/q D5/q</staff>
+    </figure>
+    <see ref="flag"/>
+    <see ref="beam"/>
+  </entry>
+
+  <entry id="flag" level="1" tags="rhythm">
+    <term>flag</term>
+    <gloss>curved tail at the end of a stem</gloss>
+    <def>A curved tail at the end of the <term ref="stem">stem</term> of a single short note, always on the right of the stem. An <term ref="eighth-note">eighth note</term> has one flag and a <term ref="sixteenth-note">sixteenth note</term> two; each flag halves the value.</def>
+    <figure>
+      <staff clef="treble">A4/e r/e A4/s r/s r/e</staff>
+    </figure>
+    <see ref="beam"/>
+  </entry>
+
+  <entry id="beam" level="1" tags="rhythm">
+    <term>beam</term>
+    <gloss>thick line joining the stems of short notes</gloss>
+    <def>A thick line that joins the stems of eighth notes and shorter values into groups, usually one group per beat. Eighth notes have one beam and sixteenth notes two, just as they would have one or two <term ref="flag">flags</term>.</def>
+    <figure>
+      <staff clef="treble" time="2/4">A4/e B4/e C5/e D5/e | E5/s D5/s C5/s B4/s A4/s B4/s C5/s A4/s |.</staff>
+    </figure>
+  </entry>
+
+  <entry id="whole-note" level="1" tags="rhythm">
+    <term>whole note</term>
+    <gloss>hollow note without a stem: four quarter notes</gloss>
+    <def>A note with a hollow notehead and no stem, as long as two <term ref="half-note">half notes</term> or four <term ref="quarter-note">quarter notes</term>. In 4/4 time it fills a whole bar. Called a semibreve in British English.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">B4/w |.</staff>
+    </figure>
+    <see ref="whole-rest"/>
+  </entry>
+
+  <entry id="half-note" level="1" tags="rhythm">
+    <term>half note</term>
+    <gloss>hollow note with a stem: two quarter notes</gloss>
+    <def>A note with a hollow notehead and a stem, half as long as a <term ref="whole-note">whole note</term> and as long as two <term ref="quarter-note">quarter notes</term>. Called a minim in British English.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">G4/h B4/h |.</staff>
+    </figure>
+    <see ref="half-rest"/>
+  </entry>
+
+  <entry id="quarter-note" level="1" tags="rhythm">
+    <term>quarter note</term>
+    <gloss>filled note with a stem: one beat in 4/4</gloss>
+    <def>A note with a filled notehead and a stem, a quarter of a <term ref="whole-note">whole note</term>. In 2/4, 3/4 and 4/4 time it lasts one <term ref="beat">beat</term>. Called a crotchet in British English.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">G4/q A4/q B4/q C5/q |.</staff>
+    </figure>
+    <see ref="quarter-rest"/>
+  </entry>
+
+  <entry id="eighth-note" level="1" tags="rhythm">
+    <term>eighth note</term>
+    <gloss>note with one flag or beam: half a quarter note</gloss>
+    <def>A note with a filled notehead, a stem and one <term ref="flag">flag</term>, or one <term ref="beam">beam</term> when grouped; two eighth notes last as long as a <term ref="quarter-note">quarter note</term>. Called a quaver in British English.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="2/4">A4/e r/e A4/e B4/e |.</staff>
+    </figure>
+    <see ref="eighth-rest"/>
+  </entry>
+
+  <entry id="sixteenth-note" level="1" tags="rhythm">
+    <term>sixteenth note</term>
+    <gloss>note with two flags or beams: a quarter of a quarter note</gloss>
+    <def>A note with two <term ref="flag">flags</term>, or two <term ref="beam">beams</term> when grouped; four sixteenth notes last as long as a <term ref="quarter-note">quarter note</term>. Called a semiquaver in British English.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="2/4">A4/s r/s r/e A4/s B4/s C5/s D5/s |.</staff>
+    </figure>
+    <see ref="sixteenth-rest"/>
+  </entry>
+
+  <!-- Rests -->
+
+  <entry id="rest" level="1" tags="rhythm">
+    <term>rest</term>
+    <gloss>a measured silence</gloss>
+    <def>A sign for silence that lasts as long as a <term ref="note-value">note value</term>. Every note value has a matching rest, and a <term ref="dot">dot</term> lengthens a rest as it does a note.</def>
+    <figure>
+      <staff clef="treble" time="4/4">r/w | r/h r/q r/e r/s r/s |.</staff>
+      <caption>A whole rest, then a half, a quarter, an eighth and two sixteenth rests.</caption>
+    </figure>
+  </entry>
+
+  <entry id="whole-rest" level="1" tags="rhythm">
+    <term>whole rest</term>
+    <gloss>block hanging from the fourth line</gloss>
+    <def>A rest as long as a <term ref="whole-note">whole note</term>: a small block hanging below the fourth line of the staff. It also marks a whole bar of rest in any time signature. Called a semibreve rest in British English.</def>
+    <figure>
+      <staff clef="treble" time="3/4">r/w | G4/h. |.</staff>
+      <caption>A whole rest fills a bar of 3/4 as well.</caption>
+    </figure>
+    <see ref="half-rest"/>
+  </entry>
+
+  <entry id="half-rest" level="1" tags="rhythm">
+    <term>half rest</term>
+    <gloss>block sitting on the middle line</gloss>
+    <def>A rest as long as a <term ref="half-note">half note</term>: a small block sitting on the middle line of the staff. Called a minim rest in British English.</def>
+    <figure>
+      <staff clef="treble" time="4/4">r/h G4/h |.</staff>
+    </figure>
+    <see ref="whole-rest"/>
+  </entry>
+
+  <entry id="quarter-rest" level="1" tags="rhythm">
+    <term>quarter rest</term>
+    <gloss>zigzag rest worth a quarter note</gloss>
+    <def>A rest as long as a <term ref="quarter-note">quarter note</term>, drawn as a vertical zigzag. Called a crotchet rest in British English.</def>
+    <figure>
+      <staff clef="treble" time="4/4">G4/q r/q G4/q r/q |.</staff>
+    </figure>
+  </entry>
+
+  <entry id="eighth-rest" level="1" tags="rhythm">
+    <term>eighth rest</term>
+    <gloss>rest with one hook: half a quarter rest</gloss>
+    <def>A rest as long as an <term ref="eighth-note">eighth note</term>, drawn as a slanted stroke with one hook. Called a quaver rest in British English.</def>
+    <figure>
+      <staff clef="treble" time="2/4">r/e A4/e r/e A4/e |.</staff>
+    </figure>
+  </entry>
+
+  <entry id="sixteenth-rest" level="1" tags="rhythm">
+    <term>sixteenth rest</term>
+    <gloss>rest with two hooks: a quarter of a quarter rest</gloss>
+    <def>A rest as long as a <term ref="sixteenth-note">sixteenth note</term>, drawn as a slanted stroke with two hooks. Called a semiquaver rest in British English.</def>
+    <figure>
+      <staff clef="treble" time="2/4">r/s A4/s A4/s A4/s r/s A4/s A4/s A4/s |.</staff>
+    </figure>
+  </entry>
+
+  <!-- Lengthening notes -->
+
+  <entry id="dot" level="1" tags="rhythm">
+    <term>dot</term>
+    <gloss>adds half the value of the note</gloss>
+    <def>A dot after a note or rest makes it half as long again: a dotted half note lasts three quarter notes, and a dotted quarter note three eighth notes. A dot above or below a notehead is a different sign, <term ref="staccato">staccato</term>.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="3/4">G4/h. | A4/q. B4/e C5/q |.</staff>
+      <caption>A dotted half note fills a bar of 3/4; a dotted quarter note and an eighth note fill two beats.</caption>
+    </figure>
+    <see ref="tie"/>
+  </entry>
+
+  <entry id="tie" level="1" tags="rhythm">
+    <term>tie</term>
+    <gloss>curve joining two notes of the same pitch into one</gloss>
+    <def>A curved line joining two neighboring notes of the same pitch: the second note is not played again, so the two sound as one note lasting their combined value. Ties are needed to carry a note across a <term ref="barline">barline</term>.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">C5/q D5/q E5/h~ | E5/q D5/q C5/h |.</staff>
+      <caption>The tie carries the <note>E</note> across the barline: it lasts three beats.</caption>
+    </figure>
+    <see ref="slur"/>
+    <see ref="dot"/>
+  </entry>
+
+  <!-- Bars and barlines -->
+
+  <entry id="bar" level="1" tags="meter">
+    <term>bar</term>
+    <gloss>a group of beats between two barlines</gloss>
+    <def>A unit of musical time holding the number of beats that the <term ref="time-signature">time signature</term> gives, marked off by <term ref="barline">barlines</term>. Called a measure in American English.</def>
+    <figure>
+      <staff clef="treble" time="3/4">G4/q A4/q B4/q | C5/h B4/q | A4/h. |.</staff>
+      <caption>Three bars of 3/4, each holding three quarter-note beats.</caption>
+    </figure>
+    <see ref="beat"/>
+  </entry>
+
+  <entry id="barline" level="1" tags="meter">
+    <term>barline</term>
+    <gloss>vertical line that ends a bar</gloss>
+    <def>A vertical line through the staff that separates one <term ref="bar">bar</term> from the next. An accidental lasts until the next barline.</def>
+    <see ref="double-barline"/>
+    <see ref="final-barline"/>
+  </entry>
+
+  <entry id="double-barline" level="1" tags="meter">
+    <term>double barline</term>
+    <gloss>two thin lines that end a section</gloss>
+    <def>Two thin <term ref="barline">barlines</term> close together. They mark the end of a section, often where the key signature or time signature changes.</def>
+    <figure>
+      <staff clef="treble" time="4/4">G4/h A4/h || B4/w |.</staff>
+    </figure>
+    <see ref="final-barline"/>
+  </entry>
+
+  <entry id="final-barline" level="1" tags="meter">
+    <term>final barline</term>
+    <gloss>thin and thick line that ends a piece</gloss>
+    <def>A thin line followed by a thick line, marking the end of a piece or movement.</def>
+    <figure>
+      <staff clef="treble" time="4/4">E4/h D4/h | C4/w |.</staff>
+    </figure>
+    <see ref="double-barline"/>
+  </entry>
+
+  <!-- Repeats -->
+
+  <entry id="repeat-sign" level="1" tags="directions">
+    <term>repeat sign</term>
+    <gloss>double barline with two dots: play the passage again</gloss>
+    <def>A double barline with two dots beside it. The music between a start-repeat sign (dots after the lines) and an end-repeat sign (dots before them) is played twice; if there is no start-repeat sign, repeat from the beginning.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">|: C5/q D5/q E5/q F5/q | G5/w :|</staff>
+    </figure>
+    <see ref="volta"/>
+    <see ref="da-capo"/>
+  </entry>
+
+  <entry id="volta" level="1" tags="directions">
+    <term>first and second endings</term>
+    <gloss>numbered brackets: different endings for a repeat</gloss>
+    <def>Brackets numbered 1 and 2 over the last bars of a repeated passage. The first time, play the bars under bracket 1; after the <term ref="repeat-sign">repeat sign</term>, skip them and play the bars under bracket 2 instead. Also called volta brackets.</def>
+    <see ref="repeat-sign"/>
   </entry>
 </glossary>

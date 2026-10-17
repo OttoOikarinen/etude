@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+Glossary: intervals. Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
+-->
+<glossary tags="intervals">
+  <!-- Intervals in general -->
+
+  <entry id="interval" level="1">
+    <term>interval</term>
+    <gloss>the distance in pitch between two notes</gloss>
+    <def>The distance in pitch between two notes. An interval is named by its <term ref="interval-number">number</term>, counted in letter names, and its <term ref="interval-quality">quality</term>: <note>C</note> up to <note>E</note> is a <term ref="major-third">major third</term>.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 E4</staff>
+    </figure>
+    <see ref="melodic-interval"/>
+    <see ref="harmonic-interval"/>
+  </entry>
+
+  <entry id="melodic-interval" level="1">
+    <term>melodic interval</term>
+    <gloss>two notes sounded one after the other</gloss>
+    <def>An <term ref="interval">interval</term> between two notes played one after the other, as in a melody.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4/h G4/h</staff>
+    </figure>
+    <see ref="harmonic-interval"/>
+  </entry>
+
+  <entry id="harmonic-interval" level="1">
+    <term>harmonic interval</term>
+    <gloss>two notes sounded together</gloss>
+    <def>An <term ref="interval">interval</term> between two notes played at the same time.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[C4 G4]/w</staff>
+    </figure>
+    <see ref="melodic-interval"/>
+  </entry>
+
+  <entry id="interval-number" level="1">
+    <term>interval number</term>
+    <gloss>interval size counted in letter names</gloss>
+    <def>The size of an <term ref="interval">interval</term> found by counting letter names from the lower note to the upper, both included: <note>C</note>–<note>E</note> is a third (<note>C</note>, <note>D</note>, <note>E</note>). Accidentals do not change the number: <note>C</note>–<note>Eb</note> and <note>C#</note>–<note>E</note> are thirds too. Also called the generic interval.</def>
+    <see ref="interval-quality"/>
+  </entry>
+
+  <entry id="interval-quality" level="1">
+    <term>interval quality</term>
+    <gloss>perfect, major, minor, augmented or diminished</gloss>
+    <def>The word that, together with the <term ref="interval-number">number</term>, gives an interval's exact size in half steps: <term ref="perfect-interval">perfect</term>, <term ref="major-interval">major</term>, <term ref="minor-interval">minor</term>, <term ref="augmented-interval">augmented</term> or <term ref="diminished-interval">diminished</term>.</def>
+  </entry>
+
+  <entry id="perfect-interval" level="1">
+    <term>perfect interval</term>
+    <gloss>quality of unisons, fourths, fifths and octaves</gloss>
+    <def>The quality of the <term ref="unison">unison</term>, fourth, fifth and <term ref="octave">octave</term> in the sizes found above the tonic of a major scale. These intervals have no major or minor form: made a half step larger they are augmented, a half step smaller diminished.</def>
+    <see ref="major-interval"/>
+  </entry>
+
+  <entry id="major-interval" level="1">
+    <term>major interval</term>
+    <gloss>second, third, sixth or seventh as in the major scale</gloss>
+    <def>The quality of a second, third, sixth or seventh in the size found above the tonic of a major scale, such as <note>C</note>–<note>E</note>. Made a half step smaller, without changing the letters, it becomes <term ref="minor-interval">minor</term>.</def>
+    <see ref="minor-interval"/>
+  </entry>
+
+  <entry id="minor-interval" level="1">
+    <term>minor interval</term>
+    <gloss>a major interval made a half step smaller</gloss>
+    <def>A second, third, sixth or seventh one half step smaller than <term ref="major-interval">major</term>, with the same letter names: <note>C</note>–<note>E</note> is a major third and <note>C</note>–<note>Eb</note> a minor third.</def>
+    <see ref="major-interval"/>
+  </entry>
+
+  <entry id="augmented-interval" level="1">
+    <term>augmented interval</term>
+    <gloss>a perfect or major interval made a half step larger</gloss>
+    <def>An interval one half step larger than <term ref="perfect-interval">perfect</term> or <term ref="major-interval">major</term>, with the same letter names: <note>C</note>–<note>F#</note> is an augmented fourth and <note>F</note>–<note>G#</note> an augmented second.</def>
+    <see ref="diminished-interval"/>
+  </entry>
+
+  <entry id="diminished-interval" level="1">
+    <term>diminished interval</term>
+    <gloss>a perfect or minor interval made a half step smaller</gloss>
+    <def>An interval one half step smaller than <term ref="perfect-interval">perfect</term> or <term ref="minor-interval">minor</term>, with the same letter names: <note>C</note>–<note>Gb</note> is a diminished fifth and <note>C#</note>–<note>Bb</note> a diminished seventh.</def>
+    <see ref="augmented-interval"/>
+  </entry>
+
+  <!-- Intervals by size -->
+
+  <entry id="unison" level="1">
+    <term>unison</term>
+    <gloss>two notes at the same pitch</gloss>
+    <def>Two notes at the same pitch with the same letter name; as an interval, the perfect unison. Playing or singing <em>in unison</em> means performing the same notes together.</def>
+    <figure play="melodic">
+      <staff clef="treble">G4/h G4/h</staff>
+    </figure>
+  </entry>
+
+  <entry id="minor-second" level="1">
+    <term>minor second</term>
+    <gloss>a second of one half step</gloss>
+    <def>The interval of one <term ref="half-step">half step</term> between neighboring letter names, such as <note>E</note>–<note>F</note>, <note>B</note>–<note>C</note> or <note>C</note>–<note>Db</note>; the <term ref="diatonic-half-step">diatonic half step</term>. It inverts to a <term ref="major-seventh">major seventh</term>.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 Db4</staff>
+    </figure>
+    <see ref="major-second"/>
+  </entry>
+
+  <entry id="major-second" level="1">
+    <term>major second</term>
+    <gloss>a second of two half steps</gloss>
+    <def>The interval of two half steps, a <term ref="whole-step">whole step</term>, between neighboring letter names, such as <note>C</note>–<note>D</note> or <note>E</note>–<note>F#</note>. It inverts to a <term ref="minor-seventh">minor seventh</term>.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 D4</staff>
+    </figure>
+    <see ref="minor-second"/>
+  </entry>
+
+  <entry id="minor-third" level="1">
+    <term>minor third</term>
+    <gloss>a third of three half steps</gloss>
+    <def>A third of three half steps, such as <note>C</note>–<note>Eb</note> or <note>A</note>–<note>C</note>. It is the lower third of a <term ref="minor-triad">minor triad</term> and inverts to a <term ref="major-sixth">major sixth</term>.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 Eb4</staff>
+    </figure>
+    <see ref="major-third"/>
+  </entry>
+
+  <entry id="major-third" level="1">
+    <term>major third</term>
+    <gloss>a third of four half steps</gloss>
+    <def>A third of four half steps, two whole steps, such as <note>C</note>–<note>E</note> or <note>F</note>–<note>A</note>. It is the lower third of a <term ref="major-triad">major triad</term> and inverts to a <term ref="minor-sixth">minor sixth</term>.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 E4</staff>
+    </figure>
+    <see ref="minor-third"/>
+  </entry>
+
+  <entry id="perfect-fourth" level="1">
+    <term>perfect fourth</term>
+    <gloss>a fourth of five half steps</gloss>
+    <def>A fourth of five half steps, such as <note>C</note>–<note>F</note> or <note>G</note>–<note>C</note>. It inverts to a <term ref="perfect-fifth">perfect fifth</term>.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 F4</staff>
+    </figure>
+    <see ref="augmented-fourth"/>
+  </entry>
+
+  <entry id="augmented-fourth" level="1">
+    <term>augmented fourth</term>
+    <gloss>a fourth of six half steps</gloss>
+    <def>A <term ref="perfect-fourth">perfect fourth</term> made a half step larger, such as <note>C</note>–<note>F#</note> or <note>F</note>–<note>B</note>: six half steps, a <term ref="tritone">tritone</term>. It is enharmonic with the <term ref="diminished-fifth">diminished fifth</term>, its inversion.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 F#4</staff>
+    </figure>
+    <see ref="diminished-fifth"/>
+  </entry>
+
+  <entry id="tritone" level="1">
+    <term>tritone</term>
+    <gloss>an interval of three whole steps</gloss>
+    <def>An interval of three <term ref="whole-step">whole steps</term>, six half steps: an <term ref="augmented-fourth">augmented fourth</term> or its enharmonic equivalent, the <term ref="diminished-fifth">diminished fifth</term>. In a major key it lies between the fourth and seventh degrees, such as <note>F</note> and <note>B</note> in <note>C</note> major.</def>
+    <figure play="melodic">
+      <staff clef="treble">F4 B4</staff>
+    </figure>
+    <see ref="perfect-fifth"/>
+  </entry>
+
+  <entry id="diminished-fifth" level="1">
+    <term>diminished fifth</term>
+    <gloss>a fifth of six half steps</gloss>
+    <def>A <term ref="perfect-fifth">perfect fifth</term> made a half step smaller, such as <note>C</note>–<note>Gb</note> or <note>B</note>–<note>F</note>: six half steps, a <term ref="tritone">tritone</term>. It is the fifth of a <term ref="diminished-triad">diminished triad</term> and inverts to an <term ref="augmented-fourth">augmented fourth</term>.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 Gb4</staff>
+    </figure>
+    <see ref="augmented-fourth"/>
+  </entry>
+
+  <entry id="perfect-fifth" level="1">
+    <term>perfect fifth</term>
+    <gloss>a fifth of seven half steps</gloss>
+    <def>A fifth of seven half steps, such as <note>C</note>–<note>G</note> or <note>D</note>–<note>A</note>. It is the fifth of major and minor triads, separates neighboring keys on the <term ref="circle-of-fifths">circle of fifths</term>, and inverts to a <term ref="perfect-fourth">perfect fourth</term>.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 G4</staff>
+    </figure>
+    <see ref="tritone"/>
+  </entry>
+
+  <entry id="minor-sixth" level="1">
+    <term>minor sixth</term>
+    <gloss>a sixth of eight half steps</gloss>
+    <def>A sixth of eight half steps, such as <note>C</note>–<note>Ab</note> or <note>E</note>–<note>C</note>. It inverts to a <term ref="major-third">major third</term>.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 Ab4</staff>
+    </figure>
+    <see ref="major-sixth"/>
+  </entry>
+
+  <entry id="major-sixth" level="1">
+    <term>major sixth</term>
+    <gloss>a sixth of nine half steps</gloss>
+    <def>A sixth of nine half steps, such as <note>C</note>–<note>A</note> or <note>F</note>–<note>D</note>. It inverts to a <term ref="minor-third">minor third</term>.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 A4</staff>
+    </figure>
+    <see ref="minor-sixth"/>
+  </entry>
+
+  <entry id="minor-seventh" level="1">
+    <term>minor seventh</term>
+    <gloss>a seventh of ten half steps</gloss>
+    <def>A seventh of ten half steps, a whole step less than an <term ref="octave">octave</term>, such as <note>C</note>–<note>Bb</note> or <note>G</note>–<note>F</note>. It inverts to a <term ref="major-second">major second</term>.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 Bb4</staff>
+    </figure>
+    <see ref="major-seventh"/>
+  </entry>
+
+  <entry id="major-seventh" level="1">
+    <term>major seventh</term>
+    <gloss>a seventh of eleven half steps</gloss>
+    <def>A seventh of eleven half steps, a half step less than an <term ref="octave">octave</term>, such as <note>C</note>–<note>B</note> or <note>F</note>–<note>E</note>. It inverts to a <term ref="minor-second">minor second</term>.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 B4</staff>
+    </figure>
+    <see ref="minor-seventh"/>
+  </entry>
+
+  <!-- Working with intervals -->
+
+  <entry id="inversion" level="1">
+    <term>inversion</term>
+    <gloss>an interval turned upside down</gloss>
+    <def>Turning an <term ref="interval">interval</term> upside down by moving its lower note up an octave, or its upper note down. The numbers of an interval and its inversion add up to nine; major becomes minor and augmented diminished, and the reverse, while perfect stays perfect: a major third inverts to a minor sixth. Chords are inverted too: see <term ref="first-inversion">first inversion</term>.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4/h E4/h | E4/h C5/h</staff>
+      <caption>The major third <note>C</note>–<note>E</note> inverts to the minor sixth <note>E</note>–<note>C</note>.</caption>
+    </figure>
+    <see ref="compound-interval"/>
+  </entry>
+
+  <entry id="compound-interval" level="1">
+    <term>compound interval</term>
+    <gloss>an interval larger than an octave</gloss>
+    <def>An interval larger than an <term ref="octave">octave</term>, such as a ninth: an octave plus a second. It has the same quality as the simple interval an octave smaller, so <note>C4</note>–<note>D5</note> is a major ninth. Intervals of an octave or less are called simple.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 D5</staff>
+    </figure>
+  </entry>
+
+  <entry id="consonance" level="1">
+    <term>consonance</term>
+    <gloss>an interval or chord that sounds stable</gloss>
+    <def>An interval or chord that sounds stable and needs no resolution. The consonant intervals are the perfect unison, fifth and octave and the major and minor thirds and sixths; the perfect fourth counts as consonant except above the lowest note.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[C4 E4]/h [C4 G4]/h [C4 A4]/h</staff>
+    </figure>
+    <see ref="dissonance"/>
+  </entry>
+
+  <entry id="dissonance" level="1">
+    <term>dissonance</term>
+    <gloss>an interval or chord that sounds tense</gloss>
+    <def>An interval or chord that sounds unstable or tense and traditionally resolves to a <term ref="consonance">consonance</term>. Seconds, sevenths and all augmented and diminished intervals are dissonant, and so is the perfect fourth above the lowest note.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[C4 D4]/h [C4 B4]/h [C4 F#4]/h</staff>
+    </figure>
+    <see ref="consonance"/>
+  </entry>
+
+  <entry id="step" level="1">
+    <term>step</term>
+    <gloss>melodic move to the next letter name</gloss>
+    <def>In a melody, a move from one note to a note with the next letter name, up or down: an interval of a second, either a <term ref="half-step">half step</term> or a <term ref="whole-step">whole step</term>. Melodies that move mostly by step are called conjunct.</def>
+    <figure play="melodic">
+      <staff clef="treble">E4 F4 G4 F4 E4 D4 C4</staff>
+    </figure>
+    <see ref="leap"/>
+  </entry>
+
+  <entry id="leap" level="1">
+    <term>leap</term>
+    <gloss>melodic move larger than a second</gloss>
+    <def>In a melody, a move larger than a second. Some books call a third a skip and keep the word leap for a fourth or larger. Melodies that move mostly by leap are called disjunct.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 G4 E4 C5</staff>
+    </figure>
+    <see ref="step"/>
+  </entry>
+</glossary>

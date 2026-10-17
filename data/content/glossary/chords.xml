@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+Glossary: triads, their inversions and the scale degrees they are built on.
+Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
+-->
+<glossary tags="harmony">
+  <!-- Chords and triads -->
+
+  <entry id="chord" level="1" tags="chords">
+    <term>chord</term>
+    <gloss>three or more notes sounded together</gloss>
+    <def>Three or more different notes sounded together. In common-practice music most chords are built from thirds stacked above a <term ref="root">root</term>, starting with the <term ref="triad">triad</term>.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[C4 E4 G4]/w</staff>
+    </figure>
+    <see ref="harmonic-interval"/>
+  </entry>
+
+  <entry id="triad" level="1" tags="chords">
+    <term>triad</term>
+    <gloss>three-note chord built of stacked thirds</gloss>
+    <def>A chord of three notes: a <term ref="root">root</term>, the <term ref="chord-third">third</term> above it and the <term ref="chord-fifth">fifth</term> above it. Stacked as closely as possible in <term ref="root-position">root position</term>, its notes lie on three neighboring lines or three neighboring spaces.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[C4 E4 G4]/h [D4 F4 A4]/h [G4 B4 D5]/h</staff>
+      <caption>Triads on lines and on spaces.</caption>
+    </figure>
+    <see ref="major-triad"/>
+    <see ref="minor-triad"/>
+  </entry>
+
+  <entry id="root" level="1" tags="chords">
+    <term>root</term>
+    <gloss>the note a chord is built on and named after</gloss>
+    <def>The note on which a chord is built by stacking thirds, and after which it is named: <note>C</note> is the root of a <note>C</note> major triad, whichever of its notes is lowest.</def>
+    <figure play="melodic">
+      <staff clef="treble">*C4 E4 G4</staff>
+    </figure>
+    <see ref="chord-third"/>
+    <see ref="chord-fifth"/>
+  </entry>
+
+  <entry id="chord-third" level="1" tags="chords">
+    <term>third (of a chord)</term>
+    <gloss>chord note a third above the root</gloss>
+    <def>The note of a chord a third above its <term ref="root">root</term>: <note>E</note> in a <note>C</note> major triad and <note>Eb</note> in a <note>C</note> minor triad. Whether this third is major or minor decides whether a triad sounds major or minor.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 *E4 G4</staff>
+    </figure>
+    <see ref="chord-fifth"/>
+  </entry>
+
+  <entry id="chord-fifth" level="1" tags="chords">
+    <term>fifth (of a chord)</term>
+    <gloss>chord note a fifth above the root</gloss>
+    <def>The note of a chord a fifth above its <term ref="root">root</term>: <note>G</note> in a <note>C</note> major triad. In major and minor triads it is a <term ref="perfect-fifth">perfect fifth</term>, in diminished triads a diminished fifth and in augmented triads an augmented fifth.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4 E4 *G4</staff>
+    </figure>
+    <see ref="chord-third"/>
+  </entry>
+
+  <entry id="root-position" level="1" tags="chords">
+    <term>root position</term>
+    <gloss>the root is the lowest note</gloss>
+    <def>A chord is in root position when its <term ref="root">root</term> is the lowest note, whatever the order of the notes above it.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[C4 E4 G4]/w</staff>
+    </figure>
+    <see ref="first-inversion"/>
+    <see ref="second-inversion"/>
+  </entry>
+
+  <entry id="first-inversion" level="1" tags="chords">
+    <term>first inversion</term>
+    <gloss>the third of the chord is the lowest note</gloss>
+    <def>A triad is in first inversion when its <term ref="chord-third">third</term> is the lowest note. In figured bass and Roman numeral analysis it is marked 6, from the sixth between the lowest note and the root.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[E4 G4 C5]/w</staff>
+    </figure>
+    <see ref="second-inversion"/>
+    <see ref="inversion"/>
+  </entry>
+
+  <entry id="second-inversion" level="1" tags="chords">
+    <term>second inversion</term>
+    <gloss>the fifth of the chord is the lowest note</gloss>
+    <def>A triad is in second inversion when its <term ref="chord-fifth">fifth</term> is the lowest note. It is marked 6/4, from the sixth and fourth above the lowest note.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[G4 C5 E5]/w</staff>
+    </figure>
+    <see ref="first-inversion"/>
+  </entry>
+
+  <entry id="major-triad" level="1" tags="chords">
+    <term>major triad</term>
+    <gloss>major third and perfect fifth above the root</gloss>
+    <def>A triad with a <term ref="major-third">major third</term> and a <term ref="perfect-fifth">perfect fifth</term> above its root, so a minor third lies on top of the major third: <note>C</note>–<note>E</note>–<note>G</note>.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[C4 E4 G4]/w</staff>
+    </figure>
+    <see ref="minor-triad"/>
+  </entry>
+
+  <entry id="minor-triad" level="1" tags="chords">
+    <term>minor triad</term>
+    <gloss>minor third and perfect fifth above the root</gloss>
+    <def>A triad with a <term ref="minor-third">minor third</term> and a <term ref="perfect-fifth">perfect fifth</term> above its root, so a major third lies on top of the minor third: <note>C</note>–<note>Eb</note>–<note>G</note> or <note>A</note>–<note>C</note>–<note>E</note>.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[C4 Eb4 G4]/w</staff>
+    </figure>
+    <see ref="major-triad"/>
+  </entry>
+
+  <entry id="diminished-triad" level="1" tags="chords">
+    <term>diminished triad</term>
+    <gloss>minor third and diminished fifth above the root</gloss>
+    <def>A triad of two stacked minor thirds, with a <term ref="minor-third">minor third</term> and a <term ref="diminished-fifth">diminished fifth</term> above its root: <note>C</note>–<note>Eb</note>–<note>Gb</note>, or <note>B</note>–<note>D</note>–<note>F</note>, the triad on the seventh degree of <note>C</note> major. Written with a small circle, as in vii°.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[C4 Eb4 Gb4]/w</staff>
+    </figure>
+    <see ref="augmented-triad"/>
+  </entry>
+
+  <entry id="augmented-triad" level="1" tags="chords">
+    <term>augmented triad</term>
+    <gloss>major third and augmented fifth above the root</gloss>
+    <def>A triad of two stacked major thirds, with a <term ref="major-third">major third</term> and an <term ref="augmented-interval">augmented</term> fifth above its root: <note>C</note>–<note>E</note>–<note>G#</note>. It is the triad on the third degree of the <term ref="harmonic-minor-scale">harmonic minor scale</term>, and is written with a plus sign, as in III+.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[C4 E4 G#4]/w</staff>
+    </figure>
+    <see ref="diminished-triad"/>
+  </entry>
+
+  <entry id="arpeggio" level="1" tags="chords">
+    <term>arpeggio</term>
+    <gloss>the notes of a chord played one after another</gloss>
+    <def>The notes of a chord played one after another instead of together, from the Italian word for playing the harp. Also called a broken chord.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">C4/e E4/e G4/e C5/e E5/e C5/e G4/e E4/e | C4/w |.</staff>
+    </figure>
+    <see ref="chord"/>
+  </entry>
+
+  <entry id="roman-numeral" level="1" tags="chords">
+    <term>Roman numeral</term>
+    <gloss>chord label: the scale degree of its root</gloss>
+    <def>A label that names a chord by the <term ref="scale-degree">scale degree</term> of its root: I for the triad on the <term ref="tonic">tonic</term>, V for the triad on the <term ref="dominant">dominant</term>. Upper case marks a major triad, lower case a minor triad, lower case with ° a diminished triad and upper case with + an augmented triad.</def>
+    <figure play="as-written">
+      <staff clef="treble">[C4 E4 G4]/q{I} [D4 F4 A4]/q{ii} [E4 G4 B4]/q{iii} [F4 A4 C5]/q{IV} [G4 B4 D5]/q{V} [A4 C5 E5]/q{vi} [B4 D5 F5]/q{vii°} [C5 E5 G5]/q{I}</staff>
+      <caption>The triads of <note>C</note> major.</caption>
+    </figure>
+  </entry>
+
+  <!-- Scale degrees -->
+
+  <entry id="scale-degree" level="1" tags="degrees">
+    <term>scale degree</term>
+    <gloss>a note's numbered place in the scale</gloss>
+    <def>The position of a note in a <term ref="scale">scale</term>, counted from the <term ref="tonic">tonic</term> as 1. Each degree has a number, often written with a caret above it, and a name such as <term ref="dominant">dominant</term>.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">C4{1} D4{2} E4{3} F4{4} G4{5} A4{6} B4{7} C5{1}</staff>
+    </figure>
+    <see ref="key"/>
+  </entry>
+
+  <entry id="tonic" level="1" tags="degrees">
+    <term>tonic</term>
+    <gloss>first degree: the home note of the key</gloss>
+    <def>The first <term ref="scale-degree">degree</term> of a scale, which names the key and where melodies and harmonies come to rest. The triad built on it, I or i, is the tonic triad.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">*C4{1} D4 E4 F4 G4 A4 B4 *C5{1}</staff>
+    </figure>
+    <see ref="dominant"/>
+  </entry>
+
+  <entry id="supertonic" level="1" tags="degrees">
+    <term>supertonic</term>
+    <gloss>second degree: a step above the tonic</gloss>
+    <def>The second <term ref="scale-degree">degree</term> of a scale, a step above the <term ref="tonic">tonic</term>.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">C4 *D4{2} E4 F4 G4 A4 B4 C5</staff>
+    </figure>
+  </entry>
+
+  <entry id="mediant" level="1" tags="degrees">
+    <term>mediant</term>
+    <gloss>third degree: midway from tonic to dominant</gloss>
+    <def>The third <term ref="scale-degree">degree</term> of a scale, midway between the <term ref="tonic">tonic</term> and the <term ref="dominant">dominant</term>. Whether it lies a major or a minor third above the tonic tells major from minor.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">C4 D4 *E4{3} F4 G4 A4 B4 C5</staff>
+    </figure>
+    <see ref="submediant"/>
+  </entry>
+
+  <entry id="subdominant" level="1" tags="degrees">
+    <term>subdominant</term>
+    <gloss>fourth degree: a fifth below the tonic</gloss>
+    <def>The fourth <term ref="scale-degree">degree</term> of a scale. Its name means the lower dominant: it lies a fifth below the <term ref="tonic">tonic</term>, as the <term ref="dominant">dominant</term> lies a fifth above.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">C4 D4 E4 *F4{4} G4 A4 B4 C5</staff>
+    </figure>
+    <see ref="dominant"/>
+  </entry>
+
+  <entry id="dominant" level="1" tags="degrees">
+    <term>dominant</term>
+    <gloss>fifth degree: a fifth above the tonic</gloss>
+    <def>The fifth <term ref="scale-degree">degree</term> of a scale, a <term ref="perfect-fifth">perfect fifth</term> above the <term ref="tonic">tonic</term>. After the tonic it is the most important degree: the dominant triad, V, leads strongly back to the tonic.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">C4 D4 E4 F4 *G4{5} A4 B4 C5</staff>
+    </figure>
+    <see ref="subdominant"/>
+  </entry>
+
+  <entry id="submediant" level="1" tags="degrees">
+    <term>submediant</term>
+    <gloss>sixth degree: a third below the tonic</gloss>
+    <def>The sixth <term ref="scale-degree">degree</term> of a scale. Its name means the lower mediant: it lies a third below the <term ref="tonic">tonic</term>, midway between the tonic and the <term ref="subdominant">subdominant</term> below it. In a major key it is the tonic of the <term ref="relative-key">relative</term> minor.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">C4 D4 E4 F4 G4 *A4{6} B4 C5</staff>
+    </figure>
+    <see ref="mediant"/>
+  </entry>
+
+  <entry id="leading-tone" level="1" tags="degrees">
+    <term>leading tone</term>
+    <gloss>seventh degree a half step below the tonic</gloss>
+    <def>The seventh <term ref="scale-degree">degree</term> when it lies a <term ref="half-step">half step</term> below the <term ref="tonic">tonic</term>, so that it leads up to it. In minor keys it is the raised seventh degree, as in the <term ref="harmonic-minor-scale">harmonic minor scale</term>. Called the leading note in British English.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">C4 D4 E4 F4 G4 A4 *B4{7} C5</staff>
+    </figure>
+    <see ref="subtonic"/>
+  </entry>
+
+  <entry id="subtonic" level="1" tags="degrees">
+    <term>subtonic</term>
+    <gloss>seventh degree a whole step below the tonic</gloss>
+    <def>The seventh <term ref="scale-degree">degree</term> when it lies a <term ref="whole-step">whole step</term> below the <term ref="tonic">tonic</term>, as in the <term ref="natural-minor-scale">natural minor scale</term>. Some books use the word for the seventh degree in general.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">A4 B4 C5 D5 E5 F5 *G5{7} A5</staff>
+      <caption>In <note>A</note> natural minor, <note>G</note> is the subtonic; raised to <note>G#</note> it becomes the leading tone.</caption>
+    </figure>
+    <see ref="leading-tone"/>
+  </entry>
+</glossary>
