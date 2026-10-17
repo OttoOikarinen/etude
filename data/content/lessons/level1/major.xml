@@ -10,16 +10,16 @@ SPDX-License-Identifier: CC-BY-SA-4.0
   <section>
     <title>The major scale pattern</title>
     <p>A <term ref="scale">scale</term> is a series of notes in order of <term ref="pitch">pitch</term>, from a starting note, the <term ref="tonic">tonic</term>, up to the tonic an <term ref="octave">octave</term> higher. In major and minor scales each letter is used once before the tonic returns.</p>
-    <p>The <term ref="major-scale">major scale</term> follows this pattern of <term ref="whole-step">whole steps</term> (W) and <term ref="half-step">half steps</term> (H):</p>
+    <p>The <term ref="major-scale">major scale</term> follows this pattern of <term ref="whole-step">whole steps</term> and <term ref="half-step">half steps</term>:</p>
     <callout kind="remember">
-      <p>W W H W W W H. The half steps lie between the third and fourth notes and between the seventh and eighth.</p>
+      <p>whole, whole, half, whole, whole, whole, half. The half steps lie between the third and fourth notes and between the seventh and eighth.</p>
     </callout>
     <p>Played on the white keys from <note>C</note> to <note>C</note>, the scale fits the pattern exactly, because the white-key half steps <note>E</note>–<note>F</note> and <note>B</note>–<note>C</note> fall in the right places.</p>
     <figure play="melodic" tempo="100">
       <staff clef="treble">C4{1} D4{2} *E4{3} *F4{4} G4{5} A4{6} *B4{7} *C5{8}</staff>
       <caption>The <note>C</note> major scale. The highlighted pairs are the half steps, 3–4 and 7–8.</caption>
     </figure>
-    <p>The scale falls into two equal halves of four notes, each with the pattern W W H, joined by a whole step in the middle.</p>
+    <p>The scale falls into two equal halves of four notes, each with the pattern whole, whole, half, joined by a whole step in the middle.</p>
   </section>
 
   <section>

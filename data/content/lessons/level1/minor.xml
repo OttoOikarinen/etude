@@ -9,9 +9,9 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>The natural minor scale</title>
-    <p>The <term ref="natural-minor-scale">natural minor scale</term> follows this pattern of <term ref="whole-step">whole steps</term> (W) and <term ref="half-step">half steps</term> (H):</p>
+    <p>The <term ref="natural-minor-scale">natural minor scale</term> follows this pattern of <term ref="whole-step">whole steps</term> and <term ref="half-step">half steps</term>:</p>
     <callout kind="remember">
-      <p>W H W W H W W. The half steps lie between the second and third notes and between the fifth and sixth.</p>
+      <p>whole, half, whole, whole, half, whole, whole. The half steps lie between the second and third notes and between the fifth and sixth.</p>
     </callout>
     <p>Played on the white <term ref="key">keys</term> from <note>A</note> to <note>A</note>, the scale fits the pattern without any <term ref="sharp">sharps</term> or <term ref="flat">flats</term>.</p>
     <figure play="melodic" tempo="100">
@@ -32,7 +32,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <option key="a"><note>F#</note></option>
       <option key="b" correct="true"><note>F</note></option>
       <option key="c"><note>E</note></option>
-      <explanation>The pattern starts W H: <note>D</note>–<note>E</note> is a whole step, then a half step up from <note>E</note> is <note>F</note>. <note>F#</note> is the third note of <note>D</note> major.</explanation>
+      <explanation>The pattern starts with a whole step and a half step: <note>D</note>–<note>E</note> is a whole step, then a half step up from <note>E</note> is <note>F</note>. <note>F#</note> is the third note of <note>D</note> major.</explanation>
     </check>
   </section>
 
