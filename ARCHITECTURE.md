@@ -89,6 +89,37 @@ Contract changes so far (all backwards-compatible):
 * W1 notation: `CurveItem` (ties) joins the display-list `Item` union,
   `GlyphItem.scale` lets a brace span a system, and `StaffSpec.voices`
   adds further voices to a staff (first voice stems up, the rest down).
+* W3 rhythm: `PlaybackSpec.duration` gives a playback a least length, so a
+  playback of metronome beats alone (the bars a learner taps in) keeps
+  counting beats and finishes after them; `TapAnswer.bars` and
+  `TapAnswer.click`; `etude.audio.latency.EventClock` maps GDK event stamps
+  to the monotonic clock. In the UI, `AppModel.play()` takes `on_beat` and
+  `on_finished` and returns the `PlaybackHandle` (old callers are
+  unaffected), `AnswerWidget.player` and `AnswerWidget.captures_space` let
+  the tap pad time a take and own the Space key.
+
+### Rhythm timing
+
+The tap pad (`etude.ui.widgets.tap_pad`) and the calibration page
+(`etude.ui.dialogs.calibration`) share one design:
+
+* A take is a `PlaybackSpec` with a count-in and `duration` bars of
+  metronome only. `etude.ui.timing.model_player()` plays it through the
+  model's audio, or with `TimerPlayback` (GLib timeouts, same beats) when
+  there is no sound, so the beat lights alone can pace the learner.
+* `PlaybackHandle.started_at` is beat 0 on `time.monotonic()`
+  (`CLOCK_MONOTONIC`, the clock of `GLib.get_monotonic_time()`). Taps are
+  put on that clock from the GDK event's own timestamp with `EventClock`,
+  so main-loop delays (redrawing beat lights) do not move them; events
+  without a stamp use their arrival time.
+* A tap's value is `(tap - started_at) * 1000 - audio-latency-ms`. The
+  calibration plays sixteen clicks after a count-in and stores the median
+  tap-minus-click offset (`estimate_offset`).
+* Rhythm tapping is graded with `grade_taps`: ±50 ms is on time and ±100 ms
+  a little early or late at 120 BPM and slower (narrower when faster);
+  `score` counts on-time taps fully and slightly-off taps half, missed
+  notes and extra taps count against it, and the answer passes at
+  `PARTIAL_CREDIT_PASS`.
 
 ### How a question flows
 

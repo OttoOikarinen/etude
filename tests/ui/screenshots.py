@@ -222,6 +222,12 @@ def shoot(out: Path, scheme: str, size: tuple[int, int], suffix: str) -> None:
         prefs = PreferencesDialog()
         prefs.present(window)
         render(window, out / f'1l-preferences-{name}.png')
+        page = prefs.open_calibration()
+        render(window, out / f'1n-calibration-{name}.png')
+        page.start()
+        page._on_beat(page._run, 2)
+        render(window, out / f'1n-calibration-running-{name}.png')
+        page.stop()
         prefs.force_close()
         from gi.repository import Gtk
 
@@ -233,6 +239,41 @@ def shoot(out: Path, scheme: str, size: tuple[int, int], suffix: str) -> None:
     window.destroy()
 
 
+def rhythm_shots(window, page, pattern) -> None:
+    """A take in progress (count-in, then the bar), and a sloppy take's timeline."""
+    pad = page.answer_widget
+    pad.start()
+    pad._on_beat(pad._take, -2)
+    render(window, Path(str(pattern).format('count-in')))
+    pad._on_beat(pad._take, 1)
+    pad.pad.flash()
+    render(window, Path(str(pattern).format('tapping')))
+    pad.cancel()
+    taps = [t + (60 if i % 3 == 1 else -15) for i, t in enumerate(page.question.expected)]
+    del taps[-1]
+    taps.append(taps[-1] + 180)
+    pad.submit(tuple(taps))
+    render(window, Path(str(pattern).format('wrong')))
+
+
+def entry_shots(window, page, pattern) -> None:
+    """A half-entered rhythm, then a wrong one."""
+    view = page.answer_widget
+    expected = list(page.question.expected)
+    for duration, is_rest in expected[: max(1, len(expected) // 2)]:
+        view.rest_button.set_active(is_rest)
+        view.add(duration)
+    render(window, Path(str(pattern).format('entering')))
+    while view.entries:
+        view.undo()
+    view.rest_button.set_active(False)
+    while not view.full:
+        fitting = [b.duration for b in view.buttons if view.can_add(b.duration)]
+        view.add(fitting[len(fitting) // 2])
+    view.activate_default()
+    render(window, Path(str(pattern).format('wrong')))
+
+
 def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
     """Real exercises from the registry against a throw-away database: the first
     question, a correct answer and (for choice answers) a wrong one, light and dark."""
@@ -241,7 +282,7 @@ def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
     from gi.repository import Adw
 
     from etude.audio.null import NullBackend
-    from etude.exercises.base import ChoiceAnswer
+    from etude.exercises.base import ChoiceAnswer, RhythmInputAnswer, TapAnswer
     from etude.services import Services
     from etude.ui.common import get_settings
     from etude.ui.model import LiveModel
@@ -309,6 +350,10 @@ def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
                     )
                     page.answer_widget.submit(wrong)
                     render(window, out / f'live-{exercise_id}-wrong-{scheme}.png')
+                elif isinstance(answer, TapAnswer):
+                    rhythm_shots(window, page, out / f'live-{exercise_id}-{{}}-{scheme}.png')
+                elif isinstance(answer, RhythmInputAnswer):
+                    entry_shots(window, page, out / f'live-{exercise_id}-{{}}-{scheme}.png')
             # Leave the last session unfinished: the Continue banner offers it.
             window.nav_view.pop_to_tag('main')
             sections(window, 'live-after', scheme)

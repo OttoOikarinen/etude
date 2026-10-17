@@ -24,6 +24,8 @@ from .base import AnswerWidget
 from .chips import ChipGroups
 from .choice_grid import ChoiceGrid
 from .piano import PianoAnswerView
+from .rhythm_input import RhythmInputView
+from .tap_pad import TapPadView
 
 
 class TextAnswerView(AnswerWidget):
@@ -96,7 +98,7 @@ def create_answer_widget(spec: AnswerSpec) -> AnswerWidget:
         case StaffInputAnswer():
             return PlaceholderAnswerView(_('Writing notes on the staff is coming later.'))
         case RhythmInputAnswer():
-            return PlaceholderAnswerView(_('Building rhythms is coming later.'))
+            return RhythmInputView(spec)
         case TapAnswer():
-            return PlaceholderAnswerView(_('Tapping rhythms is coming later.'))
+            return TapPadView(spec)
     raise TypeError(f'unsupported answer spec: {spec!r}')

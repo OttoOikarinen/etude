@@ -401,6 +401,72 @@ levelbar.goal-bar.goal-met block.filled {
 }
 
 .unit-tile.success {
+/* Rhythm: tap pad, beat lights, timeline and rhythm entry ------------------------- */
+
+.tap-status {
+  font-size: 1.15em;
+  font-weight: bold;
+}
+
+.beat-lights {
+  margin: 4px 0;
+}
+
+.beat-light {
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 999px;
+  font-weight: bold;
+  color: color-mix(in srgb, currentColor 55%, transparent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, currentColor 18%, transparent);
+  transition: background-color 60ms ease-out;
+}
+
+.beat-light.lit {
+  color: var(--accent-fg-color);
+  background-color: color-mix(in srgb, var(--accent-bg-color) 70%, transparent);
+  box-shadow: none;
+}
+
+.beat-light.downbeat.lit {
+  background-color: var(--accent-bg-color);
+}
+
+.beat-lights.count-in .beat-light.lit {
+  color: var(--window-fg-color);
+  background-color: color-mix(in srgb, currentColor 22%, transparent);
+}
+
+button.tap-pad {
+  min-height: 112px;
+  border-radius: 18px;
+  background-color: color-mix(in srgb, var(--accent-bg-color) 14%, transparent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent-bg-color) 45%, transparent);
+}
+
+button.tap-pad.tapped,
+button.tap-pad:active {
+  background-color: color-mix(in srgb, var(--accent-bg-color) 38%, transparent);
+}
+
+.compact button.tap-pad {
+  min-height: 96px;
+}
+
+.tap-result {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background-color: var(--card-bg-color);
+  box-shadow: 0 0 0 1px var(--border-color);
+}
+
+.tap-chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.9em;
+}
+
+.tap-chip.success {
   color: var(--success-color);
   background-color: color-mix(in srgb, var(--success-bg-color) 16%, transparent);
 }
@@ -541,4 +607,25 @@ levelbar.mastery-bar block.filled {
 .compact .unit-card button.pill {
   padding-left: 12px;
   padding-right: 12px;
+.tap-chip.warning {
+  color: var(--warning-color);
+  background-color: color-mix(in srgb, var(--warning-bg-color) 18%, transparent);
+}
+
+.tap-chip.error {
+  color: var(--error-color);
+  background-color: color-mix(in srgb, var(--error-bg-color) 14%, transparent);
+}
+
+.rhythm-entry {
+  padding: 12px 24px;
+}
+
+.duration-button {
+  padding: 6px 12px;
+  min-height: 40px;
+}
+
+.calibration-body {
+  margin: 24px 12px 36px 12px;
 }

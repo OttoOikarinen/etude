@@ -1,6 +1,7 @@
 install_data(
   [
     '__init__.py',
+    'calibration.py',
     'glossary_entry.py',
     'preferences.py',
     'session_summary.py',

@@ -32,6 +32,7 @@ from .services import Services
 from .ui.common import apply_note_naming, get_settings
 from .ui.dialogs.preferences import PreferencesDialog
 from .ui.model import LiveModel
+from .ui.timing import model_player
 from .window import EtudeWindow
 
 PROJECT_URL = 'https://github.com/OttoOikarinen/etude'
@@ -104,7 +105,8 @@ class EtudeApplication(Adw.Application):
 
     def on_preferences_action(self, *args):
         """Callback for the app.preferences action."""
-        PreferencesDialog().present(self.props.active_window)
+        player = model_player(self.model) if self.model is not None else None
+        PreferencesDialog(player=player).present(self.props.active_window)
 
     def create_action(self, name, callback, shortcuts=None):
         """Add an application action.

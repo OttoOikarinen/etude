@@ -14,11 +14,12 @@ from __future__ import annotations
 
 import random
 import xml.etree.ElementTree as ET
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field, replace
 from fractions import Fraction
 from gettext import gettext as _
 
+from ..audio.null import NullBackend, NullHandle
 from ..audio.spec import PlaybackSpec
 from ..content.loaders import parse_glossary, parse_lesson
 from ..content.model import GlossaryEntry, Lesson
@@ -39,11 +40,10 @@ from ..exercises.base import (
     Option,
     PianoAnswer,
     Question,
-    RhythmInputAnswer,
     StaffInputAnswer,
-    TapAnswer,
     TextAnswer,
 )
+from ..exercises.families import rhythm
 from ..learning.model import ItemId, SessionMode, SessionSummary
 from ..notation.spec import Bracket, Chord, Clef, Head, Ink, StaffSpec
 from .model import (
@@ -63,6 +63,8 @@ from .model import (
     exam_outcome,
     placement_outcome,
 )
+
+_RHYTHM = {d.id: d for d in rhythm.EXERCISES}
 
 # Home -------------------------------------------------------------------------
 
@@ -621,19 +623,16 @@ def preview_questions() -> dict[str, PreviewQuestion]:
         StaffInputAnswer(Clef.TREBLE, slots=1),
         (),
     )
-    rhythm_input = Question(
-        'rhythm-dictation',
-        ItemId('rhythm.dictation.1'),
-        _('Write the rhythm you hear'),
-        RhythmInputAnswer(Meter(4, 4), 1, ()),
-        (),
+    # The rhythm questions come from the real exercises, which also grade them.
+    rhythm_input = _RHYTHM['rhythm-dictation'].generate(
+        ItemId('rhythm.dictation.eighths'),
+        {**_RHYTHM['rhythm-dictation'].default_settings(), 'meters': ('4/4',)},
+        random.Random(2),
     )
-    tap = Question(
-        'rhythm-tap',
-        ItemId('rhythm.tap.1'),
-        _('Tap the rhythm'),
-        TapAnswer(Meter(4, 4), 80.0, 4),
-        (),
+    tap = _RHYTHM['rhythm-tap'].generate(
+        ItemId('rhythm.tap.eighths'),
+        {**_RHYTHM['rhythm-tap'].default_settings(), 'meters': ('4/4',), 'bars': 1},
+        random.Random(2),
     )
 
     eye = Modality.EYE
@@ -773,6 +772,8 @@ def answer_label(question: Question, value: object) -> str:
 def grade(item: PreviewQuestion, given: object) -> Feedback:
     """Stub grading by equality. W2: ``ExerciseDefinition.grade``."""
     question = item.question
+    if question.exercise_id in _RHYTHM:
+        return _RHYTHM[question.exercise_id].grade(question, given)
     expected = question.expected
     if isinstance(question.answer, PianoAnswer):
         correct = (given.name if isinstance(given, Pitch) else given) == expected
@@ -973,6 +974,7 @@ class PreviewModel:
     def __init__(self, *, caught_up: bool = False) -> None:
         self.played: list[PlaybackSpec] = []
         """Playbacks requested so far; nothing is heard."""
+        self.audio = NullBackend(available=True)
         self.started: list[tuple[SessionMode, str | None, tuple[ItemId, ...]]] = []
         self.caught_up = caught_up
         """Show the Today page's "All caught up" state and a brand-new learner's progress
@@ -1104,8 +1106,16 @@ class PreviewModel:
     def new_question(self) -> None:
         pass
 
-    def play(self, spec: PlaybackSpec) -> None:
+    def play(
+        self,
+        spec: PlaybackSpec,
+        *,
+        on_beat: Callable[[int], None] | None = None,
+        on_finished: Callable[[], None] | None = None,
+    ) -> NullHandle:
+        """Nothing is heard; tests drive beats and the end with ``self.audio.complete()``."""
         self.played.append(spec)
+        return self.audio.play(spec, on_beat=on_beat, on_finished=on_finished)
 
     def stop_audio(self) -> None:
         pass

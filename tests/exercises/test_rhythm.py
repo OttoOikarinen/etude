@@ -488,7 +488,7 @@ def test_note_value_figures_and_feedback() -> None:
     labels = [o.label for o in question.answer.options]
     assert labels == ['Whole rest', 'Half rest', 'Quarter rest', 'Eighth rest', 'Sixteenth rest']
     feedback = VALUES.grade(question, 'whole')
-    assert feedback.title == 'Not quite — the answer is Half rest'
+    assert feedback.title == 'Not quite — the answer is half rest'
     assert 'sits on top of a line' in feedback.detail
     assert VALUES.confusables('notevalue.rest.half') == ('notevalue.rest.whole',)
     dotted = VALUES.generate(

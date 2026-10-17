@@ -29,6 +29,7 @@ from ..common import (
     ui_resource,
 )
 from ..figure import create_figure_widget
+from ..timing import Player
 from ..widgets.base import AnswerWidget
 from ..widgets.ear_panel import EarPanel
 from ..widgets.feedback import FeedbackBanner
@@ -98,6 +99,8 @@ class ExercisePage(Adw.NavigationPage):
     feedback_banner: FeedbackBanner = Gtk.Template.Child()
     aux_box: Gtk.Box = Gtk.Template.Child()
     hint_button: Gtk.Button = Gtk.Template.Child()
+    skip_badge: Gtk.Label = Gtk.Template.Child()
+    skip_button: Gtk.Button = Gtk.Template.Child()
     sheet_bin: Adw.Bin = Gtk.Template.Child()
     stats_bar: Gtk.Box = Gtk.Template.Child()
     streak_icon: Gtk.Image = Gtk.Template.Child()
@@ -126,6 +129,8 @@ class ExercisePage(Adw.NavigationPage):
         self._figure_holder = self._new_figure_holder()
         self.audio_available = True
         """Without sound, ear questions show their written alternative."""
+        self.player: Player | None = None
+        """Plays with beat callbacks for answer widgets that need them (rhythm tapping)."""
         self._play_label = _('Play')
         self._stats: tuple[int, int, float | None, bool] = (0, 0, None, False)
         self.connect('notify::compact', lambda *_a: self._apply_compact())
@@ -190,6 +195,14 @@ class ExercisePage(Adw.NavigationPage):
         self.context_label.set_visible(bool(question.context) and not ear)
 
         self.answer_widget = create_answer_widget(question.answer)
+        self.answer_widget.player = self.player
+        # Space taps rhythms instead of skipping.
+        taps = self.answer_widget.captures_space
+        self.skip_badge.set_visible(not taps)
+        if taps:
+            self.skip_button.reset_property(Gtk.AccessibleProperty.KEY_SHORTCUTS)
+        else:
+            self.skip_button.update_property([Gtk.AccessibleProperty.KEY_SHORTCUTS], ['space'])
         self.answer_widget.connect('answered', self._on_answered)
         self.answer_widget.connect('sheet-requested', self._on_sheet_requested)
         self.answer_widget.set_compact(self.compact)
@@ -350,6 +363,8 @@ class ExercisePage(Adw.NavigationPage):
         if is_enter(keyval):
             return self.answer_widget is not None and self.answer_widget.activate_default()
         if keyval == Gdk.KEY_space:
+            if self.answer_widget is not None and self.answer_widget.captures_space:
+                return False  # the answer widget taps with Space (see TapKeys)
             self.emit('skip-requested')
             return True
         if keyval == Gdk.KEY_question:

@@ -850,6 +850,21 @@ def beat_matches(expected: Rhythm, given: Rhythm, meter: Meter, bars: int) -> li
     return matches
 
 
+def _held(rhythm: Rhythm, meter: Meter, beat: int) -> str:
+    """How a beat in which nothing starts sounds: a note or a rest carried over."""
+    start = meter.pulse * beat
+    position = Fraction(0)
+    for duration, is_rest in rhythm:
+        if position < start < position + duration.length:
+            return (
+                _('the rest before it, still silent')
+                if is_rest
+                else _('the note before it, held on')
+            )
+        position += duration.length
+    return _('nothing')
+
+
 def _beat_events(rhythm: Rhythm, meter: Meter, beat: int) -> Rhythm:
     """Events that start within felt beat ``beat`` (0-based)."""
     start, end = meter.pulse * beat, meter.pulse * (beat + 1)
@@ -1014,12 +1029,15 @@ class RhythmDictation(ExerciseDefinition):
         for beat in wrong[:3]:
             heard = _beat_events(expected, meter, beat)
             wrote = _beat_events(written, meter, beat)
-            held = _('the value before it, held on')
-            heard_text = ', '.join(duration_name(d, r) for d, r in heard) or held
+            heard_text = ', '.join(duration_name(d, r) for d, r in heard) or _held(
+                expected, meter, beat
+            )
             if rhythm_length(written) <= meter.pulse * beat:
                 wrote_text = _('nothing')
             else:
-                wrote_text = ', '.join(duration_name(d, r) for d, r in wrote) or held
+                wrote_text = ', '.join(duration_name(d, r) for d, r in wrote) or _held(
+                    written, meter, beat
+                )
             sentences.append(
                 # Translators: e.g. "Beat 3: you heard eighth note, eighth note; you wrote
                 # quarter note."
@@ -1233,6 +1251,12 @@ class NoteValues(ExerciseDefinition):
             playback=self._playback(duration, is_rest, pitch),
         )
 
+    def answer_label(self, question: Question, value: object) -> str:
+        kind, _key = self._parse(question.item_id)
+        if kind != 'beats' and str(value) in VALUE_KEYS:
+            return duration_name(VALUE_KEYS[str(value)], kind == 'rest')
+        return super().answer_label(question, value)
+
     def grade(self, question: Question, given: object) -> Feedback:
         kind, key = self._parse(question.item_id)
         label = self.answer_label(question, question.expected)
@@ -1413,6 +1437,11 @@ class MeterByEar(ExerciseDefinition):
             title = _('Not quite — the answer is {answer}').format(answer=label)
         playback = question.playback
         rhythm = rhythm_from_figure(question.written_alternative)
+        play_given = None
+        if playback is not None and rhythm and str(given) in METER_KINDS and not correct:
+            # The same rhythm with the strong beats of the meter the learner chose.
+            given_meter = METER_KINDS[str(given)]
+            play_given = self._playback(rhythm, given_meter, playback.tempo)
         return Feedback(
             correct=correct,
             title=title,
@@ -1420,6 +1449,7 @@ class MeterByEar(ExerciseDefinition):
             expected_label=label,
             figure=rhythm_figure(rhythm, meter) if rhythm else None,
             play_expected=playback,
+            play_given=play_given,
         )
 
     @staticmethod

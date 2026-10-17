@@ -141,6 +141,36 @@ def test_callbacks_run_in_order(backend: FluidSynthBackend) -> None:
     assert handle.finished
 
 
+def test_tap_phase_counts_and_clicks_through_its_duration(backend: FluidSynthBackend) -> None:
+    """The tap pad's playback: a count-in, then bars with only the metronome. Beat
+    callbacks come when their clicks sound, and the end comes after the bars."""
+    spec = PlaybackSpec((), tempo=120, count_in=4, click=True, meter=Meter(4, 4), duration=F(4))
+    render_seconds(backend, 0.1)
+    first_frame = backend.tick_to_frame(backend.tick)
+    beats: list[tuple[int, int]] = []
+    finished: list[int] = []
+    handle = backend.play(
+        spec,
+        on_beat=lambda n: beats.append((n, backend.tick)),
+        on_finished=lambda: finished.append(backend.tick),
+    )
+    signal = render_seconds(backend, 5.0)
+    assert [n for n, _tick in beats] == list(range(-4, 4))
+    for number, tick in beats:
+        assert abs(tick - (handle.origin_tick + spec.beats_to_ms(number))) <= 1
+    found = [first_frame + i for i in onsets(signal)]
+    expected = [
+        backend.tick_to_frame(handle.origin_tick) + spec.beats_to_ms(n) * RATE / 1000
+        for n in range(-4, 4)
+    ]
+    assert len(found) == len(expected), (found, expected)
+    errors_ms = [(f - e) * 1000 / RATE for f, e in zip(found, expected, strict=True)]
+    print('tap-phase click errors (ms):', ', '.join(f'{e:+.2f}' for e in errors_ms))
+    assert all(abs(e) <= TIMING_TOLERANCE_MS for e in errors_ms), errors_ms
+    assert finished
+    assert finished[0] - handle.origin_tick >= spec.beats_to_ms(4)
+
+
 def test_started_at_is_beat_zero(backend: FluidSynthBackend) -> None:
     spec = PlaybackSpec((PlaybackNote(60, F(0), F(1)),), tempo=120, count_in=4)
     before = time.monotonic()
