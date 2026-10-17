@@ -86,6 +86,12 @@ Contract changes so far (all backwards-compatible):
   (`PASS_FRACTION`, `balanced_sample`, `PlacementWalk`). `SessionRunner` gained
   an optional `title` and `drop_upcoming()`; `ExamRunner` and
   `PlacementRunner` in `exercises.path` subclass it.
+* W3 notation: `GlyphFigure(glyphs, description, staff=False, ink)` joins the
+  `Figure` union for symbols shown on their own (dynamics, hairpins,
+  articulations on a note); `smufl.CODEPOINTS` gained the dynamics,
+  articulation, fermata and precomposed-note glyphs it uses. `StaffView`
+  gained `display_point()`, `staff_position_at()` and `reserve_positions()`
+  for staff input.
 * W1 notation: `CurveItem` (ties) joins the display-list `Item` union,
   `GlyphItem.scale` lets a brace span a system, and `StaffSpec.voices`
   adds further voices to a staff (first voice stems up, the rest down).

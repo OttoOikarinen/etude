@@ -184,4 +184,25 @@ class SystemSpec:
     """Optional staff names shown at the left (``'S'``, ``'A'`` …)."""
 
 
-Figure = StaffSpec | SystemSpec
+@dataclass(frozen=True, slots=True)
+class GlyphFigure:
+    """Symbols shown on their own: dynamics, hairpins, articulations (design: Symbols).
+
+    ``glyphs`` are SMuFL glyph names drawn side by side on a common baseline
+    and centred in the figure. A glyph whose name ends in ``Above`` or
+    ``Below`` (``articStaccatoAbove``, ``fermataAbove``) is not placed beside
+    the glyph before it but centred above or below it, so a precomposed note
+    followed by an articulation reads as one marked note. With ``staff`` the
+    glyphs stand on the middle line of a five-line staff without a clef.
+
+    There is no automatic description: ``description`` is what screen readers
+    hear, and must not name the symbol when the question asks for it.
+    """
+
+    glyphs: tuple[str, ...]
+    description: str
+    staff: bool = False
+    ink: Ink = Ink.FOREGROUND
+
+
+Figure = StaffSpec | SystemSpec | GlyphFigure

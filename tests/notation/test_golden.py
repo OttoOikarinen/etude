@@ -35,6 +35,7 @@ from etude.notation.spec import (
     Clef,
     Event,
     Figure,
+    GlyphFigure,
     Head,
     Ink,
     Rest,
@@ -190,6 +191,18 @@ FIGURES: dict[str, tuple[Figure, float | None]] = {
                 ),
             ),
             labels=('S A', 'T B'),
+        ),
+        None,
+    ),
+    'glyphs-dynamics': (
+        GlyphFigure(('dynamicMF', 'dynamicCrescendoHairpin', 'dynamicFF'), 'Dynamics.'),
+        None,
+    ),
+    'glyphs-articulations': (
+        GlyphFigure(
+            ('noteQuarterDown', 'articStaccatoAbove', 'noteQuarterUp', 'fermataBelow'),
+            'Articulations.',
+            staff=True,
         ),
         None,
     ),

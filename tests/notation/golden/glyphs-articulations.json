@@ -1,0 +1,94 @@
+{
+ "type": "DisplayList",
+ "items": [
+  {
+   "type": "LineItem",
+   "x1": 0.5,
+   "y1": 3.0,
+   "x2": 7.096,
+   "y2": 3.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.5,
+   "y1": 4.0,
+   "x2": 7.096,
+   "y2": 4.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.5,
+   "y1": 5.0,
+   "x2": 7.096,
+   "y2": 5.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.5,
+   "y1": 6.0,
+   "x2": 7.096,
+   "y2": 6.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "LineItem",
+   "x1": 0.5,
+   "y1": 7.0,
+   "x2": 7.096,
+   "y2": 7.0,
+   "thickness": 0.13,
+   "ink": "foreground"
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteQuarterDown",
+   "x": 1.7,
+   "y": 5.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "articStaccatoAbove",
+   "x": 2.196,
+   "y": 3.836,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "noteQuarterUp",
+   "x": 4.028,
+   "y": 5.0,
+   "ink": "foreground",
+   "scale": 1.0
+  },
+  {
+   "type": "GlyphItem",
+   "glyph": "fermataBelow",
+   "x": 3.476,
+   "y": 7.6,
+   "ink": "foreground",
+   "scale": 1.0
+  }
+ ],
+ "width": 7.596,
+ "height": 10.0,
+ "staves": [
+  {
+   "type": "StaffGeometry",
+   "clef": "percussion",
+   "top": 3.0,
+   "lines": 5
+  }
+ ],
+ "hit_regions": [],
+ "event_x": []
+}

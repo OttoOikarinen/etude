@@ -60,6 +60,7 @@ from .spec import (
     Clef,
     Event,
     Figure,
+    GlyphFigure,
     Ink,
     Rest,
     StaffSpec,
@@ -128,6 +129,12 @@ TEXT_WIDTH = 0.6
 """Estimated advance of a UI-font character, in ems (used for collision checks only)."""
 TEXT_ASCENT = 0.75
 TEXT_DESCENT = 0.25
+GLYPH_GAP = 1.0
+"""Between the symbols of a :class:`~etude.notation.spec.GlyphFigure`."""
+ATTACH_GAP = 0.6
+"""Between a glyph and an articulation centred above or below it."""
+GLYPH_STAFF_PAD = 1.2
+"""Staff lines reach this far beyond the first and last symbol."""
 
 _SPACING = ((-6, 1.7), (-5, 1.9), (-4, 2.2), (-3, 2.8), (-2, 3.6), (-1, 5.0), (0, 6.6), (1, 8.4))
 """Natural space after a note as a function of log₂ of its length in whole notes,
@@ -321,6 +328,8 @@ def layout(figure: Figure, metrics: FontMetrics, *, width: float | None = None) 
     width; when ``None`` the natural width is used. The result is
     deterministic so it can be golden-tested.
     """
+    if isinstance(figure, GlyphFigure):
+        return _layout_glyphs(figure, metrics)
     if isinstance(figure, SystemSpec):
         staves = figure.staves
         system: SystemSpec | None = figure
@@ -338,6 +347,71 @@ def layout(figure: Figure, metrics: FontMetrics, *, width: float | None = None) 
     if span > engraver.span + 1e-9:
         display = _Engraver(metrics, staves, system).run(width, span)
     return display
+
+
+def _attached(name: str) -> int:
+    """``-1`` for a glyph drawn above the one before it, ``1`` below, ``0`` beside it."""
+    if name.endswith('Above'):
+        return -1
+    if name.endswith('Below'):
+        return 1
+    return 0
+
+
+def _layout_glyphs(figure: GlyphFigure, metrics: FontMetrics) -> DisplayList:
+    """Symbols side by side on one baseline (y = 0), articulations stacked on the glyph
+    before them, optionally on the middle line of a staff; then moved inside the margins."""
+    items: list[Item] = []
+    cursor = 0.0
+    # Extent of the current group (a glyph and what is attached to it): x0, x1, top, bottom.
+    group: list[float] | None = None
+    staff_top = -2.0  # the baseline is the middle line
+    for name in figure.glyphs:
+        info = metrics.glyph(name)
+        side = _attached(name)
+        if side and group is not None:
+            x = (group[0] + group[1]) / 2 - (info.bbox_sw[0] + info.bbox_ne[0]) / 2
+            if side < 0:
+                bottom = group[2] - ATTACH_GAP
+                if figure.staff and name.startswith('fermata'):
+                    bottom = min(bottom, staff_top - ATTACH_GAP)
+                y = bottom + info.bbox_sw[1]
+                group[2] = y - info.bbox_ne[1]
+            else:
+                top = group[3] + ATTACH_GAP
+                if figure.staff and name.startswith('fermata'):
+                    top = max(top, staff_top + 4 + ATTACH_GAP)
+                y = top + info.bbox_ne[1]
+                group[3] = y - info.bbox_sw[1]
+            items.append(GlyphItem(name, x, y, figure.ink))
+            continue
+        if group is not None:
+            cursor = group[1] + GLYPH_GAP
+        x = cursor - info.bbox_sw[0]
+        items.append(GlyphItem(name, x, 0.0, figure.ink))
+        group = [cursor, cursor + info.width, -info.bbox_ne[1], -info.bbox_sw[1]]
+    if not items:
+        return DisplayList(items=(), width=2 * MARGIN, height=2 * MARGIN, staves=())
+    box = _items_box(items, metrics)
+    staves: tuple[StaffGeometry, ...] = ()
+    if figure.staff:
+        thickness = metrics.engraving_default('staffLineThickness')
+        x0, x1 = box.x0 - GLYPH_STAFF_PAD, box.x1 + GLYPH_STAFF_PAD
+        lines = [
+            LineItem(x0, staff_top + n, x1, staff_top + n, thickness, figure.ink) for n in range(5)
+        ]
+        items = [*lines, *items]
+        box = box.union(_Box(x0, staff_top - MIN_ABOVE, x1, staff_top + 4 + MIN_BELOW))
+    dx, dy = MARGIN - box.x0, MARGIN - box.y0
+    shifted = tuple(_shift(item, dx, dy) for item in items)
+    if figure.staff:
+        staves = (StaffGeometry(Clef.PERCUSSION, staff_top + dy),)
+    return DisplayList(
+        items=shifted,
+        width=box.x1 - box.x0 + 2 * MARGIN,
+        height=box.y1 - box.y0 + 2 * MARGIN,
+        staves=staves,
+    )
 
 
 class _Engraver:

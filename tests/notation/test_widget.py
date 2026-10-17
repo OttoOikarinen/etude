@@ -103,3 +103,34 @@ def test_renderer_draws_every_item_kind() -> None:
         snapshot = gtk.Snapshot()
         renderer.draw(snapshot, display, 12.0, palette, focus=display.hit_regions[0])
         assert snapshot.to_node() is not None
+
+
+def test_staff_position_at_follows_the_drawn_staff() -> None:
+    _adw, _gdk, gtk = _gtk()
+    from etude.notation.widget import StaffView
+
+    view = StaffView(StaffSpec(events=(Chord((Head(Pitch.parse('E4')),)),)), staff_space=20.0)
+    view.reserve_positions(-7, 15)
+    window = gtk.Window(default_width=180, default_height=400)
+    window.set_child(view)
+    window.present()
+    context = gi.repository.GLib.MainContext.default()
+    for _ in range(100):
+        context.iteration(False)
+    display = view.display_list
+    assert display is not None
+    geometry = display.staves[0]
+    ox, oy = view._origin()
+    px = view.pixels_per_space
+    for position in (-7, -2, 0, 4, 8, 15):
+        y = oy + geometry.y_of(position) * px
+        assert view.staff_position_at(ox + 5 * px, y) == (0, position)
+    top_before = oy + geometry.top * px
+    view.figure = StaffSpec(events=(Chord((Head(Pitch.parse('C6')),)),))
+    ox, oy = view._origin()
+    display = view.display_list
+    assert display is not None
+    assert abs(oy + display.staves[0].top * view.pixels_per_space - top_before) < 1e-6, (
+        'reserved room keeps the staff in place'
+    )
+    window.destroy()

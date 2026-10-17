@@ -28,7 +28,19 @@ from fractions import Fraction
 from ..audio.spec import PlaybackNote, PlaybackSpec
 from ..core import Duration, NoteValue, Pitch
 from ..core.rhythm import Tuplet
-from ..notation.spec import Barline, BarStyle, Chord, Event, Figure, Head, Ink, Rest, StaffSpec
+from ..notation.spec import (
+    Barline,
+    BarStyle,
+    Chord,
+    Event,
+    Figure,
+    GlyphFigure,
+    Head,
+    Ink,
+    Rest,
+    StaffSpec,
+    SystemSpec,
+)
 
 _DURATIONS = {
     'w': NoteValue.WHOLE,
@@ -151,7 +163,10 @@ def figure_playback(
     staves of a system together), ``'melodic'`` (every pitch one after another,
     low to high within a chord) or ``'harmonic'`` (all pitches together).
     """
-    staves = figure.staves if not isinstance(figure, StaffSpec) else (figure,)
+    if isinstance(figure, GlyphFigure):
+        staves: tuple[StaffSpec, ...] = ()
+    else:
+        staves = figure.staves if isinstance(figure, SystemSpec) else (figure,)
     notes: list[PlaybackNote] = []
     if mode == 'harmonic':
         midis = sorted(
