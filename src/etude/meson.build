@@ -35,6 +35,7 @@ install_data(
 # tests/test_packaging.py fails if a .py file is not listed anywhere.
 foreach package : [
   'audio',
+  'checkers',
   'content',
   'core',
   'exercises',
