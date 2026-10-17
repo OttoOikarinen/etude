@@ -27,6 +27,7 @@ src/etude/exercises/families/chords.py
 src/etude/exercises/families/intervals.py
 src/etude/exercises/families/key_signatures.py
 src/etude/exercises/families/note_naming.py
+src/etude/exercises/families/rhythm.py
 src/etude/exercises/families/scale_degrees.py
 src/etude/exercises/path.py
 src/etude/exercises/runner.py
