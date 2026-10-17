@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+<lesson id="l1.major">
+  <title>Major Scales and Keys</title>
+  <summary>One pattern of whole and half steps builds every major scale, and the key signature collects its sharps or flats.</summary>
+
+  <section>
+    <title>The major scale pattern</title>
+    <p>A <term ref="scale">scale</term> is a series of notes in order of <term ref="pitch">pitch</term>, from a starting note, the <term ref="tonic">tonic</term>, up to the tonic an <term ref="octave">octave</term> higher. In major and minor scales each letter is used once before the tonic returns.</p>
+    <p>The <term ref="major-scale">major scale</term> follows this pattern of <term ref="whole-step">whole steps</term> and <term ref="half-step">half steps</term>:</p>
+    <callout kind="remember">
+      <p>whole, whole, half, whole, whole, whole, half. The half steps lie between the third and fourth notes and between the seventh and eighth.</p>
+    </callout>
+    <p>Played on the white keys from <note>C</note> to <note>C</note>, the scale fits the pattern exactly, because the white-key half steps <note>E</note>–<note>F</note> and <note>B</note>–<note>C</note> fall in the right places.</p>
+    <figure play="melodic" tempo="100">
+      <staff clef="treble">C4{1} D4{2} *E4{3} *F4{4} G4{5} A4{6} *B4{7} *C5{8}</staff>
+      <caption>The <note>C</note> major scale. The highlighted pairs are the half steps, 3–4 and 7–8.</caption>
+    </figure>
+    <p>The scale falls into two equal halves of four notes, each with the pattern whole, whole, half, joined by a whole step in the middle.</p>
+  </section>
+
+  <section>
+    <title>Building a major scale</title>
+    <p>A major scale can start on any note. Write the letters in order, then add <term ref="sharp">sharps</term> or <term ref="flat">flats</term> until the steps match the pattern.</p>
+    <worked>
+      <title>Build a major scale that needs sharps</title>
+      <step>
+        <p>Take <note>D</note> as the tonic and write the eight letters from <note>D</note> up to <note>D</note>.</p>
+        <figure>
+          <staff clef="treble">D4 E4 F4 G4 A4 B4 C5 D5</staff>
+        </figure>
+      </step>
+      <step>
+        <p>Check the steps from the bottom. <note>D</note>–<note>E</note> is a whole step, as required. <note>E</note>–<note>F</note> should be a whole step but is a half step, so raise <note>F</note> to <note>F#</note>. Now <note>F#</note>–<note>G</note> is the half step the pattern needs.</p>
+      </step>
+      <step>
+        <p><note>G</note>–<note>A</note> and <note>A</note>–<note>B</note> are whole steps. <note>B</note>–<note>C</note> should be a whole step, so raise <note>C</note> to <note>C#</note>; <note>C#</note>–<note>D</note> is then the final half step.</p>
+      </step>
+      <step>
+        <p>The <note>D</note> major scale is <note>D</note> <note>E</note> <note>F#</note> <note>G</note> <note>A</note> <note>B</note> <note>C#</note> <note>D</note>.</p>
+        <figure play="melodic" tempo="100">
+          <staff clef="treble">D4{1} E4{2} *F#4{3} G4{4} A4{5} B4{6} *C#5{7} D5{8}</staff>
+        </figure>
+      </step>
+    </worked>
+    <p>Some scales need flats instead. In <note>F</note> major, <note>A</note>–<note>B</note> would be a whole step where the pattern needs a half step, so <note>B</note> is lowered to <note>Bb</note>: <note>F</note> <note>G</note> <note>A</note> <note>Bb</note> <note>C</note> <note>D</note> <note>E</note> <note>F</note>.</p>
+    <figure play="melodic" tempo="100">
+      <staff clef="treble">F4 G4 A4 *Bb4 C5 D5 E5 F5</staff>
+      <caption>The <note>F</note> major scale has one flat.</caption>
+    </figure>
+    <p>A major scale uses either sharps or flats, never both.</p>
+    <check id="g-major-accidental">
+      <prompt>Which note needs an <term ref="accidental">accidental</term> in the <note>G</note> major scale?</prompt>
+      <option key="a" correct="true"><note>F#</note></option>
+      <option key="b"><note>C#</note></option>
+      <option key="c"><note>Bb</note></option>
+      <explanation>From <note>G</note>, the letters are <note>G</note> <note>A</note> <note>B</note> <note>C</note> <note>D</note> <note>E</note> <note>F</note> <note>G</note>. <note>E</note>–<note>F</note> must be a whole step and <note>F</note>–<note>G</note> a half step, so <note>F</note> becomes <note>F#</note>. <note>B</note>–<note>C</note> is already the half step needed between the third and fourth notes.</explanation>
+    </check>
+    <check id="e-flat-fourth">
+      <prompt>What is the fourth note of the <note>Eb</note> major scale?</prompt>
+      <option key="a"><note>A</note></option>
+      <option key="b" correct="true"><note>Ab</note></option>
+      <option key="c"><note>Bb</note></option>
+      <explanation><note>Eb</note>–<note>F</note> and <note>F</note>–<note>G</note> are whole steps; the third and fourth notes must be a half step apart, and <note>G</note>–<note>A</note> is a whole step, so the fourth note is <note>Ab</note>.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Key signatures</title>
+    <p>Music in a major <term ref="key">key</term> uses the notes of its major scale. Instead of writing the same sharps or flats again and again, they are collected in a <term ref="key-signature">key signature</term> at the start of every <term ref="staff">staff</term>, right after the <term ref="clef">clef</term>.</p>
+    <p>A sharp or flat in the key signature applies to every note with that letter, in every octave, until the key signature changes.</p>
+    <p>Sharps and flats always appear in the same order. A key with two sharps has the first two sharps of the order, a key with five flats the first five flats.</p>
+    <callout kind="remember">
+      <p><term ref="order-of-sharps">Order of sharps</term>: <note>F#</note> <note>C#</note> <note>G#</note> <note>D#</note> <note>A#</note> <note>E#</note> <note>B#</note>.</p>
+      <p><term ref="order-of-flats">Order of flats</term>, the same letters backwards: <note>Bb</note> <note>Eb</note> <note>Ab</note> <note>Db</note> <note>Gb</note> <note>Cb</note> <note>Fb</note>.</p>
+    </callout>
+    <figure>
+      <staff clef="treble" key="7"></staff>
+      <staff clef="bass" key="7"></staff>
+      <caption>All seven sharps in the treble and bass clefs.</caption>
+    </figure>
+    <figure>
+      <staff clef="treble" key="-7"></staff>
+      <staff clef="bass" key="-7"></staff>
+      <caption>All seven flats in the treble and bass clefs.</caption>
+    </figure>
+    <p>To name a major key from its signature:</p>
+    <list>
+      <li>Sharps: the last sharp is the seventh note of the scale. The tonic is a half step above it.</li>
+      <li>Flats: the second-to-last flat is the tonic. With a single flat, the key is <note>F</note> major.</li>
+      <li>No sharps or flats: <note>C</note> major.</li>
+    </list>
+    <worked>
+      <title>Name the major key with four sharps</title>
+      <step>
+        <p>Take the first four sharps of the order: <note>F#</note> <note>C#</note> <note>G#</note> <note>D#</note>.</p>
+      </step>
+      <step>
+        <p>The last one, <note>D#</note>, is the seventh note of the scale.</p>
+      </step>
+      <step>
+        <p>A half step above <note>D#</note>, on the next letter, is <note>E</note>. The key is <note>E</note> major.</p>
+        <figure play="melodic" tempo="100">
+          <staff clef="treble" key="4">E4 F#4 G#4 A4 B4 C#5 *D#5 *E5</staff>
+        </figure>
+      </step>
+    </worked>
+    <check id="three-flats">
+      <prompt>Which major key has this key signature?</prompt>
+      <figure>
+        <staff clef="treble" key="-3"></staff>
+        <description>A treble staff with a key signature of three flats.</description>
+      </figure>
+      <option key="a"><note>Ab</note> major</option>
+      <option key="b" correct="true"><note>Eb</note> major</option>
+      <option key="c"><note>Bb</note> major</option>
+      <explanation>The three flats are <note>Bb</note>, <note>Eb</note> and <note>Ab</note>. The second-to-last flat, <note>Eb</note>, names the key. The last flat, <note>Ab</note>, is the fourth note of the scale.</explanation>
+    </check>
+    <check id="two-sharps">
+      <prompt>Which major key has two sharps?</prompt>
+      <option key="a"><note>C#</note> major</option>
+      <option key="b"><note>G</note> major</option>
+      <option key="c" correct="true"><note>D</note> major</option>
+      <explanation>The two sharps are <note>F#</note> and <note>C#</note>. The last sharp, <note>C#</note>, is the seventh note, and a half step above it is <note>D</note>. <note>G</note> major has only <note>F#</note>.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>The circle of fifths</title>
+    <p>A fifth is the distance from one note to the fifth letter above it, counting both: from <note>C</note> up to <note>G</note> is a fifth. The intervals lesson explains it fully.</p>
+    <p>Start on <note>C</note> major and go up a fifth at a time: each new key has one more sharp. Go down a fifth at a time instead, and each new key has one more flat. Arranged in a circle like the hours of a clock, with <note>C</note> at the top, the keys form the <term ref="circle-of-fifths">circle of fifths</term>.</p>
+    <list>
+      <li>Sharp keys, going up in fifths: <note>G</note> (1), <note>D</note> (2), <note>A</note> (3), <note>E</note> (4), <note>B</note> (5), <note>F#</note> (6), <note>C#</note> (7).</li>
+      <li>Flat keys, going down in fifths: <note>F</note> (1), <note>Bb</note> (2), <note>Eb</note> (3), <note>Ab</note> (4), <note>Db</note> (5), <note>Gb</note> (6), <note>Cb</note> (7).</li>
+    </list>
+    <p>The new sharp in each sharp key is its seventh note, and the new flat in each flat key is its fourth note.</p>
+    <p>At the bottom of the circle the two sides overlap. Three pairs of keys sound the same but are written differently: <note>B</note> major (5 sharps) and <note>Cb</note> major (7 flats), <note>F#</note> major (6 sharps) and <note>Gb</note> major (6 flats), <note>C#</note> major (7 sharps) and <note>Db</note> major (5 flats). These are <term ref="enharmonic">enharmonic</term> keys. Counting <note>C</note>, there are fifteen major key signatures.</p>
+    <check id="a-major-sharps">
+      <prompt>How many sharps does <note>A</note> major have?</prompt>
+      <option key="a">Two</option>
+      <option key="b" correct="true">Three</option>
+      <option key="c">Four</option>
+      <explanation>Going up in fifths from <note>C</note>: <note>G</note> has one sharp, <note>D</note> two, <note>A</note> three: <note>F#</note>, <note>C#</note> and <note>G#</note>.</explanation>
+    </check>
+    <check id="six-flats">
+      <prompt>Which major key has six flats?</prompt>
+      <option key="a"><note>Db</note> major</option>
+      <option key="b" correct="true"><note>Gb</note> major</option>
+      <option key="c"><note>Cb</note> major</option>
+      <explanation>The six flats end with <note>Gb</note> and <note>Cb</note>; the second-to-last, <note>Gb</note>, is the tonic. <note>Db</note> major has five flats and <note>Cb</note> major seven.</explanation>
+    </check>
+  </section>
+</lesson>

@@ -23,12 +23,12 @@ Reference lesson: docs/CONTENT_AUTHORING.md explains every element used here.
   <section>
     <title>Clefs</title>
     <p>A <term ref="clef">clef</term> at the start of the staff fixes which note belongs to which line. The two most common clefs are the treble clef and the bass clef.</p>
-    <p>The <term ref="treble-clef">treble clef</term> is also called the G clef: its curl wraps around the second line, which is <note>G4</note>, the G above middle C.</p>
+    <p>The <term ref="treble-clef">treble clef</term> is also called the <note>G</note> clef: its curl wraps around the second line, which is <note>G4</note>, the <note>G</note> above middle C.</p>
     <figure play="as-written">
       <staff clef="treble">*G4/w</staff>
       <caption>The treble clef marks <note>G4</note> on the second line.</caption>
     </figure>
-    <p>The <term ref="bass-clef">bass clef</term> is the F clef: its two dots sit on either side of the fourth line, which is <note>F3</note>, the F below middle C.</p>
+    <p>The <term ref="bass-clef">bass clef</term> is the <note>F</note> clef: its two dots sit on either side of the fourth line, which is <note>F3</note>, the <note>F</note> below middle C.</p>
     <figure play="as-written">
       <staff clef="bass">*F3/w</staff>
       <caption>The bass clef marks <note>F3</note> on the fourth line.</caption>

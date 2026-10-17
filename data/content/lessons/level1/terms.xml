@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+<lesson id="l1.terms">
+  <title>Tempo, Dynamics and Articulation</title>
+  <summary>Italian words and a few signs tell how fast, how loud and how connected the music should be.</summary>
+
+  <section>
+    <title>Tempo</title>
+    <p><term ref="tempo">Tempo</term> is the speed of the beat. Composers usually give it with an Italian word at the start of the piece, sometimes with a <term ref="metronome-mark">metronome mark</term>: a <term ref="quarter-note">quarter note</term> = 120 means 120 quarter-note beats per minute.</p>
+    <p>The common tempo terms, roughly from slowest to fastest:</p>
+    <list>
+      <li><em>Grave</em>: very slow and solemn.</li>
+      <li><term ref="largo">Largo</term>: broad, very slow.</li>
+      <li><term ref="lento">Lento</term>: slow.</li>
+      <li><term ref="adagio">Adagio</term>: slow, at ease.</li>
+      <li><term ref="andante">Andante</term>: at a walking pace.</li>
+      <li><term ref="moderato">Moderato</term>: at a moderate speed.</li>
+      <li><term ref="allegretto">Allegretto</term>: moderately fast, a little slower than <term ref="allegro">allegro</term>.</li>
+      <li><em>Allegro</em>: fast and lively.</li>
+      <li><term ref="vivace">Vivace</term>: lively and fast.</li>
+      <li><term ref="presto">Presto</term>: very fast.</li>
+      <li><em>Prestissimo</em>: as fast as possible.</li>
+    </list>
+    <p>Sources do not agree on the order of the slow terms <em>largo</em>, <em>lento</em> and <em>adagio</em>, and the speeds changed between periods. The terms describe a character as much as a speed.</p>
+    <p>Other words change the tempo along the way:</p>
+    <list>
+      <li><term ref="ritardando">Ritardando</term> (rit.) or <term ref="rallentando">rallentando</term> (rall.): gradually slower.</li>
+      <li><term ref="accelerando">Accelerando</term> (accel.): gradually faster.</li>
+      <li><term ref="a-tempo">A tempo</term>: back to the previous tempo.</li>
+      <li><term ref="rubato">Rubato</term>: with flexible tempo, pushing ahead and holding back for expression.</li>
+    </list>
+    <check id="gradually-slower">
+      <prompt>Which term means gradually slower?</prompt>
+      <option key="a" correct="true"><em>Ritardando</em></option>
+      <option key="b"><em>Accelerando</em></option>
+      <option key="c"><em>A tempo</em></option>
+      <explanation><em>Ritardando</em> means gradually slower. <em>Accelerando</em> is the opposite, and <em>a tempo</em> returns to the earlier tempo after such a change.</explanation>
+    </check>
+    <check id="fastest-tempo">
+      <prompt>Which of these tempo terms is the fastest?</prompt>
+      <option key="a"><em>Allegro</em></option>
+      <option key="b" correct="true"><em>Presto</em></option>
+      <option key="c"><em>Allegretto</em></option>
+      <explanation><em>Presto</em> means very fast. <em>Allegro</em> is fast, and <em>allegretto</em> a little slower than allegro.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Dynamics</title>
+    <p><term ref="dynamics">Dynamics</term> are the loudness of the music. They are written as letters standing for Italian words, usually below the staff (above it in vocal music), from very soft to very loud:</p>
+    <list>
+      <li><em>pp</em>, <term ref="pianissimo">pianissimo</term>: very soft.</li>
+      <li><em>p</em>, <term ref="piano">piano</term>: soft.</li>
+      <li><em>mp</em>, <term ref="mezzo-piano">mezzo-piano</term>: moderately soft.</li>
+      <li><em>mf</em>, <term ref="mezzo-forte">mezzo-forte</term>: moderately loud.</li>
+      <li><em>f</em>, <term ref="forte">forte</term>: loud.</li>
+      <li><em>ff</em>, <term ref="fortissimo">fortissimo</term>: very loud.</li>
+    </list>
+    <p>Even softer and louder levels add more letters, such as <em>ppp</em> and <em>fff</em>. Dynamics are relative: <em>forte</em> on a flute is not as loud as <em>forte</em> on a trumpet.</p>
+    <p>Gradual changes are written as words or as hairpins. A <term ref="crescendo">crescendo</term> (cresc.), a hairpin opening to the right, means gradually louder; a <term ref="diminuendo">diminuendo</term> (dim.) or decrescendo, a hairpin closing to the right, means gradually softer.</p>
+    <p>Sudden changes have their own signs. <term ref="sforzando">Sforzando</term> (<em>sfz</em> or <em>sf</em>) is a sudden strong <term ref="accent">accent</term> on one note or chord; <em>fp</em> means loud and then immediately soft; <term ref="subito">subito</term> means suddenly, as in <em>subito piano</em>.</p>
+    <check id="softer-dynamic">
+      <prompt>Which dynamic is softer?</prompt>
+      <option key="a" correct="true"><em>mp</em></option>
+      <option key="b"><em>mf</em></option>
+      <option key="c">Both are equally loud</option>
+      <explanation><em>Mezzo</em> means moderately: <em>mezzo-piano</em> is moderately soft and <em>mezzo-forte</em> moderately loud, so <em>mp</em> is the softer of the two.</explanation>
+    </check>
+    <check id="opening-hairpin">
+      <prompt>A hairpin below the staff opens wider from left to right. What does it mean?</prompt>
+      <option key="a" correct="true">Gradually louder</option>
+      <option key="b">Gradually softer</option>
+      <option key="c">Gradually faster</option>
+      <explanation>A hairpin that opens to the right is a crescendo: the music grows louder as the lines spread apart. A hairpin that closes is a diminuendo. Hairpins never show tempo.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Articulation</title>
+    <p><term ref="articulation">Articulation</term> tells how notes begin, end and connect. Most articulations are signs placed above or below the notehead:</p>
+    <list>
+      <li><term ref="staccato">Staccato</term>, a dot: short and detached.</li>
+      <li>Staccatissimo, a small wedge: very short.</li>
+      <li><term ref="tenuto">Tenuto</term>, a short horizontal line: held for its full value, often with slight weight.</li>
+      <li>Accent, the sign &gt;: played with emphasis.</li>
+      <li><term ref="marcato">Marcato</term>, the sign ^: strongly accented.</li>
+      <li><term ref="fermata">Fermata</term>, an arc over a dot: a pause; the note or <term ref="rest">rest</term> is held longer than written, as long as the performer judges.</li>
+    </list>
+    <p><term ref="legato">Legato</term> means smoothly connected, with no gap between the notes. It is usually shown with a <term ref="slur">slur</term>, a curved line over or under notes of different pitches.</p>
+    <check id="staccato-dot">
+      <prompt>A dot is placed above a notehead. What does it mean?</prompt>
+      <option key="a" correct="true">Play the note short and detached</option>
+      <option key="b">Make the note half as long again</option>
+      <option key="c">Play the note with an accent</option>
+      <explanation>A dot above or below the notehead is a staccato. A dot <em>after</em> the notehead is a rhythmic dot, which makes the note half as long again.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Other common directions</title>
+    <p>A few small words combine with the terms above:</p>
+    <list>
+      <li><term ref="molto">Molto</term>: very, much. <term ref="poco">Poco</term>: a little. <term ref="poco-a-poco">Poco a poco</term>: little by little.</li>
+      <li><term ref="piu">Più</term>: more. <term ref="meno">Meno</term>: less. <term ref="sempre">Sempre</term>: always. <term ref="non-troppo">Non troppo</term>: not too much.</li>
+      <li><term ref="dolce">Dolce</term>: sweetly. <term ref="cantabile">Cantabile</term>: in a singing style. <term ref="espressivo">Espressivo</term> (espr.): expressively. <term ref="con-moto">Con moto</term>: with motion.</li>
+    </list>
+    <p>Some directions tell the player where to go next:</p>
+    <list>
+      <li><term ref="da-capo">Da capo</term> (D.C.): from the beginning.</li>
+      <li><term ref="dal-segno">Dal segno</term> (D.S.): from the sign, an S with a slash and two dots.</li>
+      <li><term ref="fine">Fine</term>: the end. <em>Da capo al fine</em> means: go back to the beginning and play up to <em>Fine</em>.</li>
+      <li><term ref="coda">Coda</term>: a closing section. The jump to it is marked with the coda sign, a circle crossed by two lines.</li>
+    </list>
+    <worked>
+      <title>Read a set of directions</title>
+      <step>
+        <p>A piece starts with <em>Allegro non troppo</em>: fast, but not too fast.</p>
+      </step>
+      <step>
+        <p>The first phrase is marked <em>p</em> and <em>dolce</em>: softly and sweetly.</p>
+      </step>
+      <step>
+        <p>Later comes <em>cresc. poco a poco</em>: grow louder little by little, until the next dynamic mark. A <em>rit.</em> near the end slows down gradually, and an <em>a tempo</em> afterwards returns to the opening speed.</p>
+      </step>
+    </worked>
+    <check id="poco-a-poco">
+      <prompt>What does <em>poco a poco cresc.</em> mean?</prompt>
+      <option key="a" correct="true">Gradually louder, little by little</option>
+      <option key="b">Suddenly a little louder</option>
+      <option key="c">Much louder at once</option>
+      <explanation><em>Poco a poco</em> means little by little, and <em>cresc.</em> gradually louder: the music should grow louder slowly over several notes or <term ref="bar">bars</term>.</explanation>
+    </check>
+    <check id="dc-al-fine">
+      <prompt>What does <em>D.C. al fine</em> tell the player to do?</prompt>
+      <option key="a">Go back to the sign and play to the end</option>
+      <option key="b" correct="true">Go back to the beginning and play up to <em>Fine</em></option>
+      <option key="c">Play the last section again more slowly</option>
+      <explanation><em>Da capo</em> means from the beginning, and <em>al fine</em> up to the word <em>Fine</em>, where the piece ends. Going back to the sign would be <em>dal segno</em>.</explanation>
+    </check>
+  </section>
+</lesson>
