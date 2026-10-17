@@ -1,5 +1,14 @@
 content_dir_files = [
+  'accidentals.xml',
+  'degrees.xml',
+  'intervals.xml',
+  'major.xml',
+  'meter.xml',
+  'minor.xml',
+  'rhythm.xml',
   'staff.xml',
+  'terms.xml',
+  'triads.xml',
 ]
 content_schema = 'lesson'
 content_relative_dir = 'lessons' / 'level1'

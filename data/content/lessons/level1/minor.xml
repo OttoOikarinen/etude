@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+<lesson id="l1.minor">
+  <title>Minor Scales and Keys</title>
+  <summary>The natural, harmonic and melodic minor scales, and how minor keys relate to major keys.</summary>
+
+  <section>
+    <title>The natural minor scale</title>
+    <p>The natural minor scale follows this pattern of whole steps (W) and half steps (H):</p>
+    <callout kind="remember">
+      <p>W H W W H W W. The half steps lie between the second and third notes and between the fifth and sixth.</p>
+    </callout>
+    <p>Played on the white keys from <note>A</note> to <note>A</note>, the scale fits the pattern without any sharps or flats.</p>
+    <figure play="melodic" tempo="100">
+      <staff clef="treble">A4{1} *B4{2} *C5{3} D5{4} *E5{5} *F5{6} G5{7} A5{8}</staff>
+      <caption>The <note>A</note> natural minor scale. The highlighted pairs are the half steps, 2–3 and 5–6.</caption>
+    </figure>
+    <p>Compared with the major scale on the same tonic, the natural minor scale has a lower third, sixth and seventh note, each by a half step. The lower third gives minor its characteristic darker colour.</p>
+    <figure play="melodic" tempo="100">
+      <staff clef="treble">C4 D4 E4 F4 G4 A4 B4 C5</staff>
+      <caption>The <note>C</note> major scale.</caption>
+    </figure>
+    <figure play="melodic" tempo="100">
+      <staff clef="treble">C4 D4 *Eb4 F4 G4 *Ab4 *Bb4 C5</staff>
+      <caption>The <note>C</note> natural minor scale: the third, sixth and seventh notes are a half step lower.</caption>
+    </figure>
+    <check id="minor-third-note">
+      <prompt>What is the third note of the <note>D</note> natural minor scale?</prompt>
+      <option key="a"><note>F#</note></option>
+      <option key="b" correct="true"><note>F</note></option>
+      <option key="c"><note>E</note></option>
+      <explanation>The pattern starts W H: <note>D</note>–<note>E</note> is a whole step, then a half step up from <note>E</note> is <note>F</note>. <note>F#</note> is the third note of <note>D</note> major.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Relative and parallel keys</title>
+    <p>Every minor key shares its key signature with a major key, its relative major. <note>A</note> minor and <note>C</note> major both have no sharps or flats; they use the same notes from different tonics.</p>
+    <p>The tonic of the relative minor is the sixth note of the major scale. Counted the other way, it lies three half steps below the major tonic, on the letter two below it: from <note>C</note> down to <note>A</note>.</p>
+    <p>Parallel keys share the same tonic instead: <note>C</note> major and <note>C</note> minor. The parallel minor has three more flats, or three fewer sharps, than the major key.</p>
+    <worked>
+      <title>Find the key signature of a minor key</title>
+      <step>
+        <p>Take <note>F</note> minor. Find its relative major: three half steps above the tonic, on the letter two above it. From <note>F</note>, the letter two above is <note>A</note>, and three half steps above <note>F</note> is <note>Ab</note>.</p>
+      </step>
+      <step>
+        <p><note>Ab</note> major has four flats: <note>Bb</note> <note>Eb</note> <note>Ab</note> <note>Db</note>.</p>
+      </step>
+      <step>
+        <p><note>F</note> minor has the same four flats. As a check, its parallel major, <note>F</note> major, has one flat; three more give four.</p>
+        <figure play="melodic" tempo="100">
+          <staff clef="treble" key="-4">F4 G4 Ab4 Bb4 C5 Db5 Eb5 F5</staff>
+        </figure>
+      </step>
+    </worked>
+    <list>
+      <li>Minor keys with sharps: <note>E</note> (1), <note>B</note> (2), <note>F#</note> (3), <note>C#</note> (4), <note>G#</note> (5), <note>D#</note> (6), <note>A#</note> (7).</li>
+      <li>Minor keys with flats: <note>D</note> (1), <note>G</note> (2), <note>C</note> (3), <note>F</note> (4), <note>Bb</note> (5), <note>Eb</note> (6), <note>Ab</note> (7).</li>
+    </list>
+    <check id="relative-of-d">
+      <prompt>What is the relative minor of <note>D</note> major?</prompt>
+      <option key="a"><note>D</note> minor</option>
+      <option key="b" correct="true"><note>B</note> minor</option>
+      <option key="c"><note>F#</note> minor</option>
+      <explanation>The relative minor starts on the sixth note of the major scale: <note>D</note> <note>E</note> <note>F#</note> <note>G</note> <note>A</note> <note>B</note>. <note>D</note> minor is the parallel minor, and <note>F#</note> lies a third above <note>D</note>, not below.</explanation>
+    </check>
+    <check id="parallel-of-e">
+      <prompt>What is the parallel minor of <note>E</note> major?</prompt>
+      <option key="a" correct="true"><note>E</note> minor</option>
+      <option key="b"><note>C#</note> minor</option>
+      <option key="c"><note>A</note> minor</option>
+      <explanation>Parallel keys share the tonic, so the parallel minor of <note>E</note> major is <note>E</note> minor. <note>C#</note> minor is the relative minor, which shares the key signature.</explanation>
+    </check>
+    <check id="two-sharps-minor">
+      <prompt>This key signature belongs to <note>D</note> major. Which minor key shares it?</prompt>
+      <figure>
+        <staff clef="treble" key="2"></staff>
+        <description>A treble staff with a key signature of two sharps.</description>
+      </figure>
+      <option key="a"><note>E</note> minor</option>
+      <option key="b" correct="true"><note>B</note> minor</option>
+      <option key="c"><note>F#</note> minor</option>
+      <explanation>The relative minor of <note>D</note> major is <note>B</note> minor, three half steps below <note>D</note>. <note>E</note> minor has one sharp and <note>F#</note> minor three.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>The harmonic minor scale</title>
+    <p>In major, the seventh note lies a half step below the tonic and pulls strongly up to it; it is called the leading tone. In natural minor the seventh note is a whole step below the tonic, and that pull is weak.</p>
+    <p>The harmonic minor scale raises the seventh note by a half step to make it a leading tone. The raised note is written as an accidental in the music; it never appears in the key signature. The name comes from the chords built on the scale, as the triads lesson shows.</p>
+    <figure play="melodic" tempo="100">
+      <staff clef="treble">A4 B4 C5 D5 E5 *F5 *G#5 A5</staff>
+      <caption>The <note>A</note> harmonic minor scale. Between the sixth and seventh notes, <note>F5</note> and <note>G#5</note>, lies a gap of three half steps.</caption>
+    </figure>
+    <p>The raised seventh leaves a gap of three half steps between the sixth and seventh notes, which gives the harmonic minor scale its distinctive sound.</p>
+    <worked>
+      <title>Write a harmonic minor scale</title>
+      <step>
+        <p>Take <note>C</note> minor and start from its natural minor scale. It has three flats, so the scale is <note>C</note> <note>D</note> <note>Eb</note> <note>F</note> <note>G</note> <note>Ab</note> <note>Bb</note> <note>C</note>.</p>
+      </step>
+      <step>
+        <p>Raise the seventh note by a half step: <note>Bb</note> becomes <note>B</note>. With the key signature of three flats, the raised note needs a natural sign.</p>
+        <figure play="melodic" tempo="100">
+          <staff clef="treble" key="-3">C4 D4 Eb4 F4 G4 Ab4 *B4 C5</staff>
+        </figure>
+      </step>
+    </worked>
+    <check id="d-harmonic">
+      <prompt>Which note is raised in the <note>D</note> harmonic minor scale?</prompt>
+      <option key="a"><note>Bb</note>, to <note>B</note></option>
+      <option key="b" correct="true"><note>C</note>, to <note>C#</note></option>
+      <option key="c"><note>F</note>, to <note>F#</note></option>
+      <explanation>Harmonic minor raises only the seventh note. In <note>D</note> minor that is <note>C</note>, which becomes the leading tone <note>C#</note>. Raising <note>F</note> would change the third and turn the scale into major.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>The melodic minor scale</title>
+    <p>In a melody the gap of three half steps in harmonic minor can sound awkward. The melodic minor scale smooths it out: going up, it raises both the sixth and the seventh notes. Going down, the leading tone does not need to rise to the tonic, so the scale returns to the natural minor form.</p>
+    <figure play="melodic" tempo="100">
+      <staff clef="treble">A4 B4 C5 D5 E5 *F#5 *G#5 A5 *G5 *F5 E5 D5 C5 B4 A4</staff>
+      <caption>The <note>A</note> melodic minor scale: <note>F#</note> and <note>G#</note> going up, <note>G</note> and <note>F</note> going down.</caption>
+    </figure>
+    <p>This is the traditional classical form. In jazz, melodic minor usually means the ascending form in both directions.</p>
+    <callout kind="tip">
+      <p>Composers mix the three forms freely, even within a single phrase. Think of them as a summary of how the sixth and seventh notes of a minor key behave, not as three different keys.</p>
+    </callout>
+    <check id="melodic-descending">
+      <prompt>Which sixth and seventh notes does <note>A</note> melodic minor use going down?</prompt>
+      <option key="a"><note>F#</note> and <note>G#</note></option>
+      <option key="b"><note>F</note> and <note>G#</note></option>
+      <option key="c" correct="true"><note>F</note> and <note>G</note></option>
+      <explanation>Going down, melodic minor uses the natural minor form, so the sixth and seventh notes are <note>F</note> and <note>G</note>. <note>F#</note> and <note>G#</note> belong to the ascending form, and <note>F</note> with <note>G#</note> is harmonic minor.</explanation>
+    </check>
+  </section>
+</lesson>

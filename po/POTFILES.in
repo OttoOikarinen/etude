@@ -8,7 +8,16 @@ data/content/glossary/performance.xml
 data/content/glossary/pitch.xml
 data/content/glossary/rhythm-meter.xml
 data/content/glossary/scales-keys.xml
+data/content/lessons/level1/accidentals.xml
+data/content/lessons/level1/degrees.xml
+data/content/lessons/level1/intervals.xml
+data/content/lessons/level1/major.xml
+data/content/lessons/level1/meter.xml
+data/content/lessons/level1/minor.xml
+data/content/lessons/level1/rhythm.xml
 data/content/lessons/level1/staff.xml
+data/content/lessons/level1/terms.xml
+data/content/lessons/level1/triads.xml
 data/fi.oikarinenotto.etude.desktop.in
 data/fi.oikarinenotto.etude.gschema.xml
 data/fi.oikarinenotto.etude.metainfo.xml.in

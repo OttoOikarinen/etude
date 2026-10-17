@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+<lesson id="l1.accidentals">
+  <title>Accidentals, Half Steps and Whole Steps</title>
+  <summary>Sharps, flats and naturals raise and lower notes by half steps, the smallest distance on the keyboard.</summary>
+
+  <section>
+    <title>Half steps and whole steps</title>
+    <p>On the piano keyboard, the white keys carry the seven note names. The black keys sit between them in groups of two and three. <note>C</note> is the white key just to the left of a group of two black keys.</p>
+    <p>The distance from one key to the very next key, white or black, is a half step, also called a semitone. Two half steps make a whole step, or whole tone.</p>
+    <p>Most neighbouring white keys have a black key between them, so they are a whole step apart. Two pairs have no black key between them: <note>E</note> and <note>F</note>, and <note>B</note> and <note>C</note>. These are half steps.</p>
+    <figure play="melodic" tempo="100">
+      <staff clef="treble">C4 D4 *E4 *F4 G4 A4 *B4 *C5</staff>
+      <caption>From <note>C4</note> to <note>C5</note> on the white keys. The highlighted pairs, <note>E4</note>–<note>F4</note> and <note>B4</note>–<note>C5</note>, are half steps; all other neighbours are whole steps.</caption>
+    </figure>
+    <check id="natural-half-step">
+      <prompt>Which pair of white keys is a half step apart?</prompt>
+      <option key="a"><note>C</note> and <note>D</note></option>
+      <option key="b" correct="true"><note>B</note> and <note>C</note></option>
+      <option key="c"><note>F</note> and <note>G</note></option>
+      <explanation>There is no black key between <note>B</note> and <note>C</note>, so they are a half step apart. <note>C</note>–<note>D</note> and <note>F</note>–<note>G</note> have a black key between them and are whole steps.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Sharps, flats and naturals</title>
+    <p>Accidentals change a note by half steps:</p>
+    <list>
+      <li>A sharp (♯) raises a note by a half step.</li>
+      <li>A flat (♭) lowers a note by a half step.</li>
+      <li>A natural (♮) cancels a sharp or flat and gives back the plain note.</li>
+    </list>
+    <p>On the staff the accidental is written <em>before</em> the note, on the same line or space. In words it comes after the letter: <note>F#</note>, <note>Bb</note>.</p>
+    <figure play="as-written" tempo="80">
+      <staff clef="treble" time="4/4">F4/q F#4/q G4/h | B4/q Bb4/q A4/h | C5/q C#5/q C5/h |.</staff>
+      <caption><note>F</note> raised to <note>F#</note>, <note>B</note> lowered to <note>Bb</note>, and <note>C#</note> cancelled by a natural.</caption>
+    </figure>
+    <p>Every black key has two names: the key between <note>C</note> and <note>D</note> is both <note>C#</note> and <note>Db</note>. White keys can have such names too. Because there is no black key between <note>E</note> and <note>F</note>, <note>E#</note> is the same key as <note>F</note> and <note>Fb</note> the same key as <note>E</note>; likewise <note>B#</note> is <note>C</note> and <note>Cb</note> is <note>B</note>.</p>
+    <p>Two rarer signs move a note by two half steps. A double sharp (𝄪) raises it by a whole step and a double flat (𝄫) lowers it by a whole step: <note>F##</note> sounds like <note>G</note>, and <note>Bbb</note> like <note>A</note>.</p>
+    <figure play="melodic" tempo="80">
+      <staff clef="treble">F##4 G4 Bbb4 A4</staff>
+      <caption><note>F##4</note> and <note>G4</note> sound the same, as do <note>Bbb4</note> and <note>A4</note>.</caption>
+    </figure>
+    <check id="same-as-f-sharp">
+      <prompt>Which note sounds the same as <note>F#</note>?</prompt>
+      <option key="a" correct="true"><note>Gb</note></option>
+      <option key="b"><note>E#</note></option>
+      <option key="c"><note>Fb</note></option>
+      <explanation><note>F#</note> is the black key between <note>F</note> and <note>G</note>, which is also <note>Gb</note>. <note>E#</note> is the same key as <note>F</note>, and <note>Fb</note> the same key as <note>E</note>.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Writing half and whole steps</title>
+    <p>A half step can be written in two ways. With two different letters, such as <note>E</note>–<note>F</note> or <note>C#</note>–<note>D</note>, it is a diatonic half step. With the same letter, such as <note>C</note>–<note>C#</note>, it is a chromatic half step.</p>
+    <p>A whole step is written with two neighbouring letters, adding an accidental where needed: <note>C</note>–<note>D</note>, <note>E</note>–<note>F#</note>, <note>Bb</note>–<note>C</note>.</p>
+    <figure play="melodic" tempo="90">
+      <staff clef="treble">E4/h F4/h | C5/h C#5/h || E4/h F#4/h | Bb4/h C5/h |.</staff>
+      <caption>A diatonic and a chromatic half step, then two whole steps.</caption>
+    </figure>
+    <worked>
+      <title>Find the note a whole step above a given note</title>
+      <step>
+        <p>Take <note>E</note>. A whole step uses the next letter, so the note a whole step above it will be some kind of <note>F</note>.</p>
+      </step>
+      <step>
+        <p><note>E</note>–<note>F</note> has no black key between the two notes, so it is only a half step. One half step is missing.</p>
+      </step>
+      <step>
+        <p>Raise <note>F</note> by a half step: the note a whole step above <note>E</note> is <note>F#</note>.</p>
+        <figure play="melodic" tempo="90">
+          <staff clef="treble">E4/h *F#4/h</staff>
+        </figure>
+      </step>
+    </worked>
+    <check id="whole-step-below-c">
+      <prompt>Which note is a whole step below <note>C</note>?</prompt>
+      <option key="a"><note>B</note></option>
+      <option key="b" correct="true"><note>Bb</note></option>
+      <option key="c"><note>A#</note></option>
+      <explanation>The letter below <note>C</note> is <note>B</note>, but <note>B</note>–<note>C</note> is only a half step, so <note>B</note> must be lowered to <note>Bb</note>. <note>A#</note> sounds the same but skips the letter <note>B</note>, so it is not written as a whole step.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Enharmonic notes</title>
+    <p>Notes that sound the same but are written differently, such as <note>C#</note> and <note>Db</note>, are enharmonic equivalents. Which name is right depends on the context: the key, the scale or the interval being written, as the next lessons show.</p>
+    <figure play="melodic" tempo="90">
+      <staff clef="treble">C#4/h Db4/h | G#4/h Ab4/h | B#4/h C5/h |.</staff>
+      <caption>Three enharmonic pairs: each pair is one key on the piano.</caption>
+    </figure>
+    <check id="enharmonic-b-sharp">
+      <prompt>Which note is enharmonic with <note>B#</note>?</prompt>
+      <option key="a"><note>B</note></option>
+      <option key="b" correct="true"><note>C</note></option>
+      <option key="c"><note>C#</note></option>
+      <explanation><note>B</note> and <note>C</note> are only a half step apart, so raising <note>B</note> by a half step reaches the key of <note>C</note>.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>How long an accidental lasts</title>
+    <p>An accidental applies to its note and to every later note on the same line or space until the end of the bar. The bar line cancels it. A tie carries it over the bar line, but only for the tied note.</p>
+    <p>Strictly, an accidental affects only its own octave: a note an octave higher or lower needs its own sign. Careful editors add a reminder, a courtesy accidental, wherever a reader might be unsure.</p>
+    <figure play="as-written" tempo="90">
+      <staff clef="treble" time="4/4">F#4/q G4/q F#4/q F4/q | E4/q F4/q G4/h |.</staff>
+      <caption>The second <note>F#4</note> needs no sign, because the sharp still applies; the natural on the fourth beat cancels it. After the bar line, <note>F4</note> needs no sign.</caption>
+    </figure>
+    <check id="accidental-in-bar">
+      <prompt>What is the third note of this bar?</prompt>
+      <figure>
+        <staff clef="treble" time="4/4">C#5/q D5/q C#5/q B4/q |</staff>
+        <description>One bar of quarter notes: a note with a sharp in the third space, a note on the fourth line, a note in the third space without an accidental, and a note on the middle line.</description>
+      </figure>
+      <option key="a"><note>C5</note></option>
+      <option key="b" correct="true"><note>C#5</note></option>
+      <option key="c"><note>D5</note></option>
+      <explanation>The sharp before the first note still applies to the third space for the rest of the bar, so the third note is <note>C#5</note>, not <note>C5</note>.</explanation>
+    </check>
+  </section>
+</lesson>

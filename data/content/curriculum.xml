@@ -22,19 +22,19 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
       <vocabulary tags="staff"/>
     </unit>
 
-    <unit id="l1.rhythm">
+    <unit id="l1.rhythm" lesson="l1.rhythm">
       <title>Note Values and Rests</title>
       <summary>Whole, half, quarter, eighth and sixteenth notes, dots and rests.</summary>
       <vocabulary tags="rhythm"/>
     </unit>
 
-    <unit id="l1.meter">
+    <unit id="l1.meter" lesson="l1.meter">
       <title>Beat and Time Signatures</title>
       <summary>Pulse, bars, simple and compound time.</summary>
       <vocabulary tags="meter"/>
     </unit>
 
-    <unit id="l1.accidentals">
+    <unit id="l1.accidentals" lesson="l1.accidentals">
       <title>Accidentals, Half Steps and Whole Steps</title>
       <summary>Sharps, flats and naturals on the staff and on the keyboard.</summary>
       <practice exercise="note-naming">
@@ -45,7 +45,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
       <vocabulary tags="accidentals"/>
     </unit>
 
-    <unit id="l1.major">
+    <unit id="l1.major" lesson="l1.major">
       <title>Major Scales and Keys</title>
       <summary>The major scale, key signatures and the circle of fifths.</summary>
       <practice exercise="keysig">
@@ -55,7 +55,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
       <vocabulary tags="scales keys"/>
     </unit>
 
-    <unit id="l1.minor">
+    <unit id="l1.minor" lesson="l1.minor">
       <title>Minor Scales and Keys</title>
       <summary>Natural, harmonic and melodic minor; relative and parallel keys.</summary>
       <practice exercise="keysig">
@@ -65,7 +65,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
       <vocabulary tags="minor"/>
     </unit>
 
-    <unit id="l1.intervals">
+    <unit id="l1.intervals" lesson="l1.intervals">
       <title>Intervals</title>
       <summary>Number and quality of intervals, on the staff and by ear.</summary>
       <practice exercise="interval-staff"/>
@@ -76,7 +76,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
       <vocabulary tags="intervals"/>
     </unit>
 
-    <unit id="l1.degrees">
+    <unit id="l1.degrees" lesson="l1.degrees">
       <title>Scale Degrees</title>
       <summary>The names and functions of the degrees of a key.</summary>
       <practice exercise="scale-degree">
@@ -85,7 +85,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
       <vocabulary tags="degrees"/>
     </unit>
 
-    <unit id="l1.triads">
+    <unit id="l1.triads" lesson="l1.triads">
       <title>Triads</title>
       <summary>Major, minor, diminished and augmented triads and their inversions.</summary>
       <practice exercise="chord-staff"/>
@@ -93,7 +93,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
       <vocabulary tags="chords"/>
     </unit>
 
-    <unit id="l1.terms">
+    <unit id="l1.terms" lesson="l1.terms">
       <title>Tempo, Dynamics and Articulation</title>
       <summary>The Italian terms and signs that tell how to perform music.</summary>
       <vocabulary tags="tempo dynamics articulation directions"/>

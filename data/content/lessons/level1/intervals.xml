@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+<lesson id="l1.intervals">
+  <title>Intervals</title>
+  <summary>An interval has a number, counted in letter names, and a quality, measured in half steps.</summary>
+
+  <section>
+    <title>Interval numbers</title>
+    <p>An interval is the distance between two notes. Played one after the other, the notes form a melodic interval; played together, a harmonic interval.</p>
+    <p>The number of an interval counts the letter names from the lower note to the upper note, counting both. From <note>C</note> up to <note>E</note> is a third: <note>C</note>, <note>D</note>, <note>E</note>. Two notes on the same line or space are a unison, and notes eight letters apart are an <term ref="octave">octave</term>.</p>
+    <figure play="melodic" tempo="110">
+      <staff clef="treble">[C4 D4]{2} [C4 E4]{3} [C4 F4]{4} [C4 G4]{5} [C4 A4]{6} [C4 B4]{7} [C4 C5]{8}</staff>
+      <caption>A second, third, fourth, fifth, sixth, seventh and octave above <note>C4</note>.</caption>
+    </figure>
+    <p>On the staff, odd-numbered intervals (thirds, fifths, sevenths) have both notes on lines or both in spaces. Even-numbered intervals (seconds, fourths, sixths, octaves) have one note on a line and the other in a space.</p>
+    <p>Accidentals do not change the number. <note>C</note>–<note>E</note>, <note>C</note>–<note>Eb</note> and <note>C#</note>–<note>E</note> are all thirds, because they span the same three letters.</p>
+    <check id="number-sixth">
+      <prompt>What is the number of this interval?</prompt>
+      <figure>
+        <staff clef="treble">[E4 C5]/w</staff>
+        <description>Two notes sounding together in the treble clef: the lower on the bottom line, the upper in the third space.</description>
+      </figure>
+      <option key="a">A fifth</option>
+      <option key="b" correct="true">A sixth</option>
+      <option key="c">A seventh</option>
+      <explanation>Count the letters from <note>E</note> to <note>C</note>, both included: <note>E</note>, <note>F</note>, <note>G</note>, <note>A</note>, <note>B</note>, <note>C</note>. That is six, a sixth.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Interval quality</title>
+    <p>Intervals with the same number can differ in size. <note>D</note>–<note>F#</note> and <note>D</note>–<note>F</note> are both thirds, but the first spans four half steps and the second only three. The quality tells them apart.</p>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">[D4 F#4]/h [D4 F4]/h</staff>
+      <caption>A major third, <note>D4</note>–<note>F#4</note>, and a minor third, <note>D4</note>–<note>F4</note>.</caption>
+    </figure>
+    <p>Unisons, fourths, fifths and octaves are called perfect. Seconds, thirds, sixths and sevenths are major or minor, the minor interval being a half step smaller.</p>
+    <list>
+      <li>Perfect unison: 0 half steps.</li>
+      <li>Minor second: 1; major second: 2.</li>
+      <li>Minor third: 3; major third: 4.</li>
+      <li>Perfect fourth: 5.</li>
+      <li>Perfect fifth: 7.</li>
+      <li>Minor sixth: 8; major sixth: 9.</li>
+      <li>Minor seventh: 10; major seventh: 11.</li>
+      <li>Perfect octave: 12.</li>
+    </list>
+    <p>Qualities are often abbreviated: P for perfect, M for major and m for minor, so a major third is M3 and a perfect fifth P5.</p>
+    <p>A quick way to find the quality uses the major scale. Above the tonic of a major scale, every note forms a major or a perfect interval: the second, third, sixth and seventh are major, the fourth, fifth and octave perfect.</p>
+    <worked>
+      <title>Find the number and quality of an interval</title>
+      <step>
+        <p>Take the interval from <note>E</note> up to <note>C</note>. Find the number: <note>E</note> <note>F</note> <note>G</note> <note>A</note> <note>B</note> <note>C</note> is six letters, so it is a sixth.</p>
+      </step>
+      <step>
+        <p>Compare with the major scale on the lower note. <note>E</note> major has <note>C#</note>, so <note>E</note>–<note>C#</note> is a major sixth.</p>
+        <figure play="as-written" tempo="72">
+          <staff clef="treble">[E4 C#5]/h</staff>
+        </figure>
+      </step>
+      <step>
+        <p><note>C</note> is a half step lower than <note>C#</note>, and a major interval made a half step smaller becomes minor. <note>E</note>–<note>C</note> is a minor sixth. Counting half steps confirms it: eight.</p>
+        <figure play="as-written" tempo="72">
+          <staff clef="treble">[E4 C5]/h</staff>
+        </figure>
+      </step>
+    </worked>
+    <p>If the lower note has an unfamiliar scale, cover its accidental first. <note>G#</note>–<note>E</note> is <note>G</note>–<note>E</note>, a major sixth, with the lower note raised; raising the lower note makes the interval a half step smaller, so <note>G#</note>–<note>E</note> is a minor sixth.</p>
+    <check id="d-to-f">
+      <prompt>What is the interval from <note>D</note> up to <note>F</note>?</prompt>
+      <option key="a" correct="true">A minor third</option>
+      <option key="b">A major third</option>
+      <option key="c">A perfect third</option>
+      <explanation><note>D</note> major has <note>F#</note>, so <note>D</note>–<note>F#</note> is a major third; <note>F</note> is a half step lower, which makes a minor third of three half steps. Thirds are never perfect.</explanation>
+    </check>
+    <check id="major-sixth-steps">
+      <prompt>How many half steps does a major sixth span?</prompt>
+      <option key="a">Eight</option>
+      <option key="b" correct="true">Nine</option>
+      <option key="c">Ten</option>
+      <explanation>A major sixth spans nine half steps, for example <note>C</note> up to <note>A</note>. Eight is the minor sixth and ten the minor seventh.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Augmented, diminished and the tritone</title>
+    <p>Two more qualities describe intervals that are larger or smaller still:</p>
+    <list>
+      <li>Augmented: a half step larger than major or perfect.</li>
+      <li>Diminished: a half step smaller than minor or perfect.</li>
+    </list>
+    <p>The letters, and so the number, stay the same; only the accidentals change. <note>C</note>–<note>G#</note> is an augmented fifth and <note>C</note>–<note>Gb</note> a diminished fifth.</p>
+    <worked>
+      <title>Recognise an augmented interval</title>
+      <step>
+        <p>Take the interval from <note>F</note> up to <note>B</note>. Its number: <note>F</note> <note>G</note> <note>A</note> <note>B</note> is four letters, a fourth.</p>
+      </step>
+      <step>
+        <p><note>F</note> major has <note>Bb</note>, so <note>F</note>–<note>Bb</note> is a perfect fourth.</p>
+      </step>
+      <step>
+        <p><note>B</note> is a half step higher than <note>Bb</note>, and a perfect interval made a half step larger becomes augmented. <note>F</note>–<note>B</note> is an augmented fourth, six half steps.</p>
+        <figure play="as-written" tempo="72">
+          <staff clef="treble">[F4 Bb4]/h *[F4 B4]/h</staff>
+        </figure>
+      </step>
+    </worked>
+    <p>An interval of six half steps, three whole steps, is called a tritone. It divides the octave exactly in half. Written as a fourth it is an augmented fourth; written as a fifth, a diminished fifth. Among the white keys, the only tritone is between <note>F</note> and <note>B</note>.</p>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">[F4 B4]/h [B4 F5]/h</staff>
+      <caption>The augmented fourth <note>F4</note>–<note>B4</note> and the diminished fifth <note>B4</note>–<note>F5</note>: both are tritones.</caption>
+    </figure>
+    <check id="b-to-f">
+      <prompt>Name this interval.</prompt>
+      <figure>
+        <staff clef="treble">[B4 F5]/w</staff>
+        <description>Two notes sounding together in the treble clef: the lower on the middle line, the upper on the top line.</description>
+      </figure>
+      <option key="a">A perfect fifth</option>
+      <option key="b" correct="true">A diminished fifth</option>
+      <option key="c">An augmented fourth</option>
+      <explanation><note>B</note> to <note>F</note> spans five letters, so it is a fifth. <note>B</note> major has <note>F#</note>, so <note>B</note>–<note>F#</note> would be perfect; <note>F</note> is a half step lower, which makes the fifth diminished. It sounds like an augmented fourth, but it is written as a fifth.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Inverting intervals</title>
+    <p>An interval is inverted by moving its lower note up an octave, or its upper note down an octave. <note>C</note>–<note>E</note> becomes <note>E</note>–<note>C</note>.</p>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">[C4 E4]/h{3} [E4 C5]/h{6}</staff>
+      <caption>The major third <note>C4</note>–<note>E4</note> inverts to the minor sixth <note>E4</note>–<note>C5</note>.</caption>
+    </figure>
+    <callout kind="remember">
+      <p>The numbers of an interval and its inversion add up to nine: a second inverts to a seventh, a third to a sixth, a fourth to a fifth.</p>
+      <p>Major and minor swap, augmented and diminished swap, and perfect stays perfect.</p>
+    </callout>
+    <p>The half steps of an interval and its inversion add up to twelve, which is a handy check: a major third has four, a minor sixth eight.</p>
+    <p>Inversion helps with large intervals. From <note>G</note> up to <note>F</note> is a seventh; its inversion, <note>F</note>–<note>G</note>, is a major second, so <note>G</note>–<note>F</note> is a minor seventh.</p>
+    <check id="invert-m7">
+      <prompt>What is the inversion of a minor seventh?</prompt>
+      <option key="a" correct="true">A major second</option>
+      <option key="b">A minor second</option>
+      <option key="c">A major seventh</option>
+      <explanation>Seven and two add up to nine, so a seventh inverts to a second, and minor becomes major. In half steps: ten plus two is twelve.</explanation>
+    </check>
+    <check id="invert-p4">
+      <prompt>What is the inversion of a perfect fourth?</prompt>
+      <option key="a">A diminished fifth</option>
+      <option key="b" correct="true">A perfect fifth</option>
+      <option key="c">A perfect fourth</option>
+      <explanation>Four and five add up to nine, and perfect intervals stay perfect: <note>C</note>–<note>F</note> inverts to <note>F</note>–<note>C</note>, a perfect fifth.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Compound intervals and listening</title>
+    <p>Intervals larger than an octave are compound intervals. A ninth is an octave plus a second, and a tenth an octave plus a third; subtract seven from the number to find the simple interval. The quality stays the same: <note>C4</note>–<note>E5</note> is a major tenth.</p>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">[C4 D5]/h{9} [C4 E5]/h{10}</staff>
+      <caption>A major ninth and a major tenth above <note>C4</note>.</caption>
+    </figure>
+    <p>Each interval has its own sound. Some listening hints:</p>
+    <list>
+      <li>Perfect unisons, fifths and octaves sound open and stable; they are the perfect consonances.</li>
+      <li>Thirds and sixths sound full and sweet; they are the imperfect consonances. Major thirds and sixths sound brighter than minor ones.</li>
+      <li>Seconds and sevenths clash and want to move on; they are dissonances. The minor second and the major seventh are the sharpest.</li>
+      <li>The tritone sounds restless and unresolved.</li>
+      <li>The perfect fourth is a special case. It sounds open, but in common-practice harmony it counts as a dissonance when its lower note is the lowest note sounding.</li>
+    </list>
+    <p>To find an interval by ear, sing the lower note and then up the scale, counting notes until you reach the upper one. With practice you will hear intervals as wholes.</p>
+    <check id="compound-ninth">
+      <prompt>What is the interval from <note>C4</note> up to <note>D5</note>?</prompt>
+      <option key="a">A major second</option>
+      <option key="b" correct="true">A major ninth</option>
+      <option key="c">A major tenth</option>
+      <explanation>From <note>C4</note> to <note>C5</note> is an octave, and one more letter gives a ninth: eight plus one. Calling it a second ignores the octave, and a tenth counts one letter too many.</explanation>
+    </check>
+  </section>
+</lesson>
