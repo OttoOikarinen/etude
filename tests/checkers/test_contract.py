@@ -26,3 +26,7 @@ def test_voices_on_a_grand_staff() -> None:
         Clef.TREBLE, voices=4, staves=(Clef.TREBLE, Clef.BASS), voice_staves=(0, 1, 1, 1)
     )
     assert custom.staff_of_voice(1) == 1
+
+
+def test_rhythm_template_defaults_to_stemless() -> None:
+    assert StaffInputAnswer(Clef.TREBLE).rhythm == ()

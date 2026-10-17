@@ -129,6 +129,10 @@ class StaffInputAnswer:
     given_voices: Mapping[int, tuple[Pitch, ...]] = field(default_factory=dict, hash=False)
     """Voices printed in advance (voice index → one pitch per slot), e.g. the bass of
     a figured-bass realisation; the learner writes the other voices."""
+    rhythm: tuple[Duration, ...] = ()
+    """Durations of the slots, for dictation: the learner writes pitches into a
+    given rhythm, and entered notes are drawn with these durations. Empty means
+    stemless notes. When set, ``slots`` equals its length."""
 
     def staff_of_voice(self, voice: int) -> int:
         if self.voice_staves:
