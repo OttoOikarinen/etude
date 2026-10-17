@@ -344,7 +344,10 @@ class Renderer:
             (region.height + 2 * pad) * px,
         )
         radius = Graphene.Size().init(0.4 * px, 0.4 * px)
-        rounded = Gsk.RoundedRect().init(rect, radius, radius, radius, radius)
+        # GskRoundedRect is a plain struct: chaining .init() on a temporary
+        # returns a pointer into freed memory, so keep the instance.
+        rounded = Gsk.RoundedRect()
+        rounded.init(rect, radius, radius, radius, radius)
         builder = Gsk.PathBuilder.new()
         builder.add_rounded_rect(rounded)
         stroke = Gsk.Stroke.new(max(2.0, 0.16 * px))

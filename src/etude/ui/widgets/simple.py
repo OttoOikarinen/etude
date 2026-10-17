@@ -25,8 +25,8 @@ from .chips import ChipGroups
 from .choice_grid import ChoiceGrid
 from .piano import PianoAnswerView
 from .rhythm_input import RhythmInputView
-from .tap_pad import TapPadView
 from .staff_input import StaffInputView
+from .tap_pad import TapPadView
 
 
 class TextAnswerView(AnswerWidget):

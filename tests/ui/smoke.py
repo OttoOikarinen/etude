@@ -1652,6 +1652,33 @@ def check_live_staff_input_sessions() -> None:
             _close_live(window, services)
 
 
+def check_staff_view_focus_ring() -> None:
+    """A focused, shrunk StaffView draws its focus ring around the note, not with
+    garbage bounds (GskRoundedRect must not be initialised on a temporary)."""
+    from gi.repository import Gtk
+
+    from etude.content.music_text import parse_events
+    from etude.notation.spec import StaffSpec
+    from etude.notation.widget import StaffView
+
+    figure = StaffSpec(events=parse_events('E4 F4 G4 A4 B4 C5 D5 E5 F5'))
+    view = StaffView(figure=figure, staff_space=16.0)
+    window = Gtk.Window(default_width=200, default_height=200)
+    window.set_child(view)
+    window.present()
+    pump()
+    view.grab_focus()
+    pump()
+    try:
+        assert view.has_focus()
+        snapshot = Gtk.Snapshot()
+        view.do_snapshot(snapshot)
+        bounds = snapshot.to_node().get_bounds()
+        assert bounds.get_width() <= view.get_width() + 8, bounds.get_width()
+    finally:
+        window.destroy()
+
+
 CHECKS: list[Callable[[], None]] = [
     check_style_css_parses,
     check_window_and_sections,
@@ -1668,6 +1695,7 @@ CHECKS: list[Callable[[], None]] = [
     check_live_session,
     check_live_exercises_fit_and_compare,
     check_reveal_details,
+    check_staff_view_focus_ring,
     check_staff_input_widget,
     check_live_staff_input_sessions,
     check_today_preview,

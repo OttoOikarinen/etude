@@ -133,15 +133,24 @@ def test_unit_items_skip_unknown_exercises_and_bad_settings() -> None:
 def test_the_real_curriculum_resolves() -> None:
     library = ContentLibrary.load(content_dir())
     path = LearningPath(library, default_registry(), Mastery(FakeCardStore(), FakeAttemptLog()))
-    staff = library.curriculum.unit('l1.staff')
-    items = path.unit_items(staff)
+
+    def exercise_items(unit_id: str) -> list[str]:
+        return [
+            i
+            for i in path.unit_items(library.curriculum.unit(unit_id))
+            if not i.startswith('vocab.')
+        ]
+
+    all_staff = path.unit_items(library.curriculum.unit('l1.staff'))
+    assert any(i.startswith('vocab.') for i in all_staff), 'unit vocabulary is included'
+    items = exercise_items('l1.staff')
     assert items
-    assert all(i.startswith('note.') for i in items)
+    assert all(i.startswith(('note.', 'place.')) for i in items)
     assert not any('#' in i or 'b' in i.split('.')[-1][1:] for i in items), 'no accidentals'
-    accidentals = path.unit_items(library.curriculum.unit('l1.accidentals'))
+    accidentals = exercise_items('l1.accidentals')
     assert set(items) < set(accidentals)
-    intervals = path.unit_items(library.curriculum.unit('l1.intervals'))
-    assert {i.split('.')[1] for i in intervals} == {'staff', 'ear'}
+    intervals = exercise_items('l1.intervals')
+    assert {i.split('.')[1] for i in intervals} == {'staff', 'ear', 'write'}
 
 
 class FakeVocabulary(KeySignatures):
