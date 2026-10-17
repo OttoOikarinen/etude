@@ -52,7 +52,7 @@ and navigation through a score).
     <term>andante</term>
     <foreign lang="it">andante</foreign>
     <gloss>at a walking pace</gloss>
-    <def>At a walking pace, from the Italian <em>andare</em>, to walk: a moderate, flowing tempo, slower than <term ref="moderato">moderato</term>. Andantino usually means a little faster than andante.</def>
+    <def>At a walking pace, from the Italian <em>andare</em>, to walk: a moderate, flowing tempo, slower than <term ref="moderato">moderato</term>. Andantino, <em>a little andante</em>, is today usually taken as a little faster than andante, but in the 18th century it could also mean a little slower.</def>
     <see ref="adagio"/>
     <see ref="moderato"/>
   </entry>
@@ -84,8 +84,8 @@ and navigation through a score).
   <entry id="vivace" level="1" tags="tempo">
     <term>vivace</term>
     <foreign lang="it">vivace</foreign>
-    <gloss>lively; faster than allegro</gloss>
-    <def>Lively and quick, usually faster than <term ref="allegro">allegro</term>.</def>
+    <gloss>lively and quick</gloss>
+    <def>Lively and quick. Today it usually means faster than <term ref="allegro">allegro</term>, but in Baroque music it often describes a lively character at a more moderate speed.</def>
     <see ref="presto"/>
   </entry>
 
@@ -310,7 +310,7 @@ and navigation through a score).
     <term>marcato</term>
     <foreign lang="it">marcato</foreign>
     <gloss>strongly accented, marked</gloss>
-    <def>Marked: played with a strong accent. Shown by the word or by a vertical wedge above the note, a stronger <term ref="accent">accent</term> than &gt;.</def>
+    <def>Marked: played with a strong accent. Shown by the word or by a sign shaped like ^ above the note, a stronger <term ref="accent">accent</term> than &gt;.</def>
     <see ref="accent"/>
   </entry>
 

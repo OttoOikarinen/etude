@@ -89,7 +89,7 @@ Glossary: rhythm, beat and meter. Format: docs/CONTENT_AUTHORING.md, schema: sch
   <entry id="common-time" level="1" tags="meter">
     <term>common time</term>
     <gloss>4/4 time, written as a C-shaped sign</gloss>
-    <def>Another name for 4/4 time, which can be written with a sign like a capital C instead of numbers. The sign comes from the broken circle of medieval notation, not from the word <em>common</em>.</def>
+    <def>Another name for 4/4 time, which can be written with a sign like a capital C instead of numbers. The sign is not a letter C for <em>common</em>: it comes from the half circle that marked duple time in medieval and Renaissance notation, where a full circle marked triple time.</def>
     <see ref="cut-time"/>
     <see ref="time-signature"/>
   </entry>

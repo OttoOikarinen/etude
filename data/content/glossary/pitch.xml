@@ -68,7 +68,7 @@ schema: schema/glossary.rng.
   <entry id="double-sharp" level="1" tags="accidentals">
     <term>double sharp</term>
     <gloss>raises a note by two half steps</gloss>
-    <def>The sign 𝄪, which raises a note by two half steps, a <term ref="whole-step">whole step</term>: <note>F##</note> sounds the same as <note>G</note>. It is needed when a note that already has a sharp in the key is raised again.</def>
+    <def>The sign 𝄪, which raises a note by two half steps, a <term ref="whole-step">whole step</term>: <note>F##</note> sounds the same as <note>G</note>. It is typically needed when a note that already has a sharp in the key is raised again.</def>
     <figure play="melodic">
       <staff clef="treble">F4/h F##4/h</staff>
     </figure>

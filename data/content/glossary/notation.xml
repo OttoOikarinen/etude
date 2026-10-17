@@ -24,8 +24,8 @@ Glossary: staff notation. Format: docs/CONTENT_AUTHORING.md, schema: schema/glos
 
   <entry id="treble-clef" level="1" tags="staff">
     <term>treble clef</term>
-    <gloss>G clef: the second line is G above middle C</gloss>
-    <def>The clef whose curl wraps around the second line, marking it as <note>G4</note>. It is used for higher instruments and voices and for the right hand of piano music.</def>
+    <gloss>clef for higher notes; its curl marks the second line</gloss>
+    <def>The clef whose curl wraps around the second line, marking it as <note>G4</note>, so it is also called the <note>G</note> clef. It is used for higher instruments and voices and for the right hand of piano music.</def>
     <figure>
       <staff clef="treble">G4/w</staff>
     </figure>
@@ -34,8 +34,8 @@ Glossary: staff notation. Format: docs/CONTENT_AUTHORING.md, schema: schema/glos
 
   <entry id="bass-clef" level="1" tags="staff">
     <term>bass clef</term>
-    <gloss>F clef: the fourth line is F below middle C</gloss>
-    <def>The clef whose two dots sit on either side of the fourth line, marking it as <note>F3</note>. It is used for lower instruments and voices and for the left hand of piano music.</def>
+    <gloss>clef for lower notes; its dots mark the fourth line</gloss>
+    <def>The clef whose two dots sit on either side of the fourth line, marking it as <note>F3</note>, so it is also called the <note>F</note> clef. It is used for lower instruments and voices and for the left hand of piano music.</def>
     <figure>
       <staff clef="bass">F3/w</staff>
     </figure>
@@ -65,7 +65,7 @@ Glossary: staff notation. Format: docs/CONTENT_AUTHORING.md, schema: schema/glos
 
   <entry id="middle-c" level="1" tags="staff">
     <term>middle C</term>
-    <gloss>C4, the C between the treble and bass staves</gloss>
+    <gloss>the note between the treble and bass staves</gloss>
     <def>The <note>C</note> near the middle of the piano keyboard, <note>C4</note> in <term ref="scientific-pitch-notation">scientific pitch notation</term>. It is written on the first ledger line below the treble staff or above the bass staff.</def>
     <figure play="as-written">
       <staff clef="treble">C4/w</staff>

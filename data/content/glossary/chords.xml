@@ -76,7 +76,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
   <entry id="first-inversion" level="1" tags="chords">
     <term>first inversion</term>
     <gloss>the third of the chord is the lowest note</gloss>
-    <def>A triad is in first inversion when its <term ref="chord-third">third</term> is the lowest note. In figured bass and Roman numeral analysis it is marked 6, from the sixth between the lowest note and the root.</def>
+    <def>A triad is in first inversion when its <term ref="chord-third">third</term> is the lowest note. In figured bass and Roman numeral analysis it is marked 6, short for 6/3, from the sixth between the lowest note and the root.</def>
     <figure play="harmonic">
       <staff clef="treble">[E4 G4 C5]/w</staff>
     </figure>

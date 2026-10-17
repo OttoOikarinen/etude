@@ -136,7 +136,7 @@ schema: schema/glossary.rng.
   <entry id="diatonic" level="1" tags="keys scales">
     <term>diatonic</term>
     <gloss>using only the notes of the key</gloss>
-    <def>Belonging to the key: using only the seven notes of its scale, without added accidentals. The opposite of <term ref="chromatic">chromatic</term>.</def>
+    <def>Belonging to the key: using only the seven notes of its scale, without added accidentals. In minor keys the raised sixth and seventh degrees of the <term ref="melodic-minor-scale">melodic minor scale</term> also count as diatonic. The opposite of <term ref="chromatic">chromatic</term>.</def>
     <see ref="key"/>
   </entry>
 </glossary>

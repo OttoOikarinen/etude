@@ -253,7 +253,7 @@ Glossary: intervals. Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.
   <entry id="consonance" level="1">
     <term>consonance</term>
     <gloss>an interval or chord that sounds stable</gloss>
-    <def>An interval or chord that sounds stable and needs no resolution. The consonant intervals are the perfect unison, fifth and octave and the major and minor thirds and sixths; the perfect fourth counts as consonant except above the lowest note.</def>
+    <def>An interval or chord that sounds stable and needs no resolution. The consonant intervals are the perfect unison, fifth and octave and the major and minor thirds and sixths; the perfect fourth is consonant between upper voices but dissonant when its lower note is the bass, the lowest sounding note.</def>
     <figure play="harmonic">
       <staff clef="treble">[C4 E4]/h [C4 G4]/h [C4 A4]/h</staff>
     </figure>
@@ -263,7 +263,7 @@ Glossary: intervals. Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.
   <entry id="dissonance" level="1">
     <term>dissonance</term>
     <gloss>an interval or chord that sounds tense</gloss>
-    <def>An interval or chord that sounds unstable or tense and traditionally resolves to a <term ref="consonance">consonance</term>. Seconds, sevenths and all augmented and diminished intervals are dissonant, and so is the perfect fourth above the lowest note.</def>
+    <def>An interval or chord that sounds unstable or tense and traditionally resolves to a <term ref="consonance">consonance</term>. Seconds, sevenths and all augmented and diminished intervals are dissonant, even those that sound the same as a consonance, and so is a perfect fourth whose lower note is the bass.</def>
     <figure play="harmonic">
       <staff clef="treble">[C4 D4]/h [C4 B4]/h [C4 F#4]/h</staff>
     </figure>
