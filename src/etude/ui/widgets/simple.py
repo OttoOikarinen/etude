@@ -26,6 +26,7 @@ from .choice_grid import ChoiceGrid
 from .piano import PianoAnswerView
 from .rhythm_input import RhythmInputView
 from .tap_pad import TapPadView
+from .staff_input import StaffInputView
 
 
 class TextAnswerView(AnswerWidget):
@@ -96,7 +97,7 @@ def create_answer_widget(spec: AnswerSpec) -> AnswerWidget:
         case TextAnswer():
             return TextAnswerView(spec)
         case StaffInputAnswer():
-            return PlaceholderAnswerView(_('Writing notes on the staff is coming later.'))
+            return StaffInputView(spec)
         case RhythmInputAnswer():
             return RhythmInputView(spec)
         case TapAnswer():

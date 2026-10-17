@@ -28,6 +28,7 @@ from etude.exercises.base import (
     MultiChoiceSetting,
     PianoAnswer,
     Question,
+    StaffInputAnswer,
     TextAnswer,
 )
 from etude.exercises.registry import default_registry
@@ -99,6 +100,13 @@ def check_expected(question: Question) -> None:
     elif isinstance(answer, TextAnswer):
         assert isinstance(question.expected, str)
         assert question.expected.strip()
+    elif isinstance(answer, StaffInputAnswer):
+        expected = question.expected
+        assert isinstance(expected, tuple), 'staff answers are tuples of chords'
+        assert all(isinstance(c, tuple) and c for c in expected)
+        assert all(isinstance(p, Pitch) for c in expected for p in c)
+        if answer.slots is not None:
+            assert len(expected) == answer.slots
 
 
 def wrong_answers(question: Question) -> list[object]:
@@ -107,6 +115,15 @@ def wrong_answers(question: Question) -> list[object]:
         return [o.key for o in answer.options if o.key != question.expected]
     if isinstance(answer, TextAnswer):
         return ['definitely not the answer']
+    if isinstance(answer, StaffInputAnswer):
+        assert isinstance(question.expected, tuple)
+        first = question.expected[0][0]
+        rest = question.expected[1:]
+        step = Pitch.from_diatonic(first.diatonic_index + 1, first.midi + 2)
+        wrong: list[object] = [((step,), *rest), (), 'not notes']
+        enharmonic = [p for p in first.enharmonics(max_alter=1) if p != first]
+        wrong += [((p,), *rest) for p in enharmonic]
+        return wrong
     return []
 
 

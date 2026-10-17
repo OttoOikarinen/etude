@@ -158,7 +158,7 @@ def _find_prompt(function: DegreeFunction) -> str:
     return prompts[function]
 
 
-def _explanation(key: Key, degree: int) -> str:
+def degree_explanation(key: Key, degree: int) -> str:
     """E.g. "In D major, A is the fifth degree: the dominant, a fifth above the tonic."."""
     function = key.degree_function(degree)
     templates = {
@@ -412,7 +412,7 @@ class ScaleDegrees(ExerciseDefinition):
         else:
             # Translators: e.g. "Not quite — the answer is 5, the dominant".
             title = _('Not quite — the answer is {answer}').format(answer=label)
-        sentences = [_explanation(key, degree)]
+        sentences = [degree_explanation(key, degree)]
         given_degree = int(str(given)) if str(given) in {str(n) for n in range(1, 8)} else None
         if not correct and given_degree is not None:
             note = pitch_name(key.degree(given_degree))

@@ -303,7 +303,7 @@ def check_text_and_placeholders() -> None:
     text.entry.emit('activate')
     assert given == ['crescendo']
     page.show_question(questions['construction'].question, number=1, total=5)
-    assert type(page.answer_widget).__name__ == 'PlaceholderAnswerView'
+    assert type(page.answer_widget).__name__ == 'StaffInputView'
     page.show_question(questions['rhythm-dictation'].question, number=1, total=5)
     assert type(page.answer_widget).__name__ == 'RhythmInputView'
     page.show_question(questions['rhythm-tap'].question, number=1, total=5)
@@ -1518,6 +1518,140 @@ def check_style_css_parses() -> None:
     assert not errors, errors
 
 
+def _click_position(widget, position: int, slot: int = 0) -> None:
+    """Click the staff input at a staff position, in widget pixels as GTK reports them."""
+    view = widget.view
+    display = view.display_list
+    geometry = display.staves[0]
+    ox, oy = view._origin()
+    px = view.pixels_per_space
+    events = widget.entry.slot_events()
+    x = ox + display.event_x[0][events[min(slot, len(events) - 1)]] * px
+    y = oy + geometry.y_of(position) * px
+    assert view.staff_position_at(x, y) == (0, position), (view.staff_position_at(x, y), position)
+    widget._on_motion(None, x, y)
+    assert widget.hover == position
+    widget._on_pressed(None, 1, x, y)
+
+
+def check_staff_input_widget() -> None:
+    """Clicks, hover and keys map to pitches at a wide and a phone width; Check submits;
+    the reveal marks the notes; the accessible value names the cursor note."""
+    from gi.repository import Gdk, Gtk
+
+    from etude.core import Pitch
+    from etude.exercises.base import StaffInputAnswer
+    from etude.notation.spec import Chord, Clef, Head, Ink, StaffSpec
+    from etude.ui.widgets.staff_input import StaffInputView
+
+    for width in (900, 360):
+        window = Gtk.Window(default_width=width, default_height=700)
+        given = StaffSpec(clef=Clef.BASS, events=(Chord((Head(Pitch.parse('G2')),)),))
+        widget = StaffInputView(StaffInputAnswer(Clef.BASS, slots=1, given=given))
+        window.set_child(widget)
+        window.present()
+        pump()
+        try:
+            assert widget.view.get_width() <= width
+            answers = []
+            widget.connect('answered', lambda _w, v, found=answers: found.append(v))
+            assert widget.entry.cursor == 0, 'the cursor starts on the given note'
+            assert not widget.check_button.get_sensitive()
+            assert not widget.activate_default()
+            for position in (8, -3, 11, 2):
+                _click_position(widget, position)
+                assert widget.entry.notes[0] == Clef.BASS.pitch_at(position)
+            assert widget.check_button.get_sensitive()
+            assert widget.handle_key(Gdk.KEY_Up, Gdk.ModifierType(0))
+            assert widget.entry.notes[0] == Pitch.parse('C3')
+            assert widget.handle_key(Gdk.KEY_e, Gdk.ModifierType(0))
+            assert widget.entry.notes[0] == Pitch.parse('E3')
+            assert widget.handle_key(Gdk.KEY_minus, Gdk.ModifierType(0))
+            assert widget.accidental_buttons[widget.entry.accidental].get_active()
+            assert widget.entry.notes[0] == Pitch.parse('Eb3')
+            assert widget.handle_key(Gdk.KEY_F, Gdk.ModifierType.SHIFT_MASK)
+            assert widget.entry.notes[0] == Pitch.parse('F#3')
+            assert widget.handle_key(Gdk.KEY_Up, Gdk.ModifierType.SHIFT_MASK)
+            assert widget.entry.notes[0] == Pitch.parse('F#4')
+            widget.accidental_buttons[widget.entry.accidental].set_active(False)
+            assert widget.entry.notes[0] == Pitch.parse('F4')
+            assert widget.handle_key(Gdk.KEY_BackSpace, Gdk.ModifierType(0))
+            assert widget.entry.value() is None
+            assert not widget.handle_key(Gdk.KEY_r, Gdk.ModifierType(0)), 'r is replay'
+            assert not widget.handle_key(Gdk.KEY_Left, Gdk.ModifierType(0)), 'one slot only'
+            _click_position(widget, 1)
+            assert widget.activate_default()
+            assert answers == [((Pitch.parse('A2'),),)]
+            widget.reveal(((Pitch.parse('B2'),),), answers[0], False)
+            inks = [h.ink for e in widget.view.figure.events for h in e.heads]
+            assert inks == [Ink.FOREGROUND, Ink.ERROR, Ink.SUCCESS], inks
+            assert not widget.check_button.get_sensitive()
+            assert not widget.handle_key(Gdk.KEY_Up, Gdk.ModifierType(0)), 'locked'
+        finally:
+            window.destroy()
+
+
+def _enter(page, pitch) -> None:
+    """Write ``pitch`` with the keyboard only, as a learner would."""
+    widget = page.answer_widget
+    clef = widget.entry.clef
+    assert press(page, pitch.letter.name.lower())
+    target = clef.staff_position(pitch)
+    while widget.entry.cursor < target:
+        assert press(page, 'Up')
+    while widget.entry.cursor > target:
+        assert press(page, 'Down')
+    if pitch.alter == 1:
+        assert press(page, 'plus')
+    elif pitch.alter == -1:
+        assert press(page, 'minus')
+    assert widget.entry.notes[0] == pitch, (widget.entry.notes, pitch)
+
+
+def check_live_staff_input_sessions() -> None:
+    """Real note-placement and interval-construction sessions answered with the staff
+    input: keys, clicks, Enter to check, a wrong answer marked and explained."""
+    import tempfile
+
+    from etude.core import Pitch
+    from etude.notation.spec import Ink
+    from etude.ui.widgets.staff_input import StaffInputView
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        window, services = _live_window(data_dir)
+        try:
+            for exercise_id in ('note-placement', 'interval-construction'):
+                page = window.start_exercise(exercise_id)
+                pump()
+                widget = page.answer_widget
+                assert isinstance(widget, StaffInputView), type(widget)
+                (expected,) = page.question.expected[0]
+                _enter(page, expected)
+                assert press(page, 'Return')
+                assert page.feedback is not None
+                assert page.feedback.correct, page.feedback.title
+                assert press(page, 'Return')
+                assert page.feedback is None
+                widget = page.answer_widget
+                (expected,) = page.question.expected[0]
+                position = widget.entry.clef.staff_position(expected)
+                wrong = position + 1
+                _click_position(widget, wrong)
+                assert press(page, 'Return')
+                assert page.feedback is not None
+                assert not page.feedback.correct
+                assert page.feedback_banner.has_css_class('feedback-error')
+                inks = [h.ink for e in widget.view.figure.events for h in e.heads]
+                assert inks[-2:] == [Ink.ERROR, Ink.SUCCESS], inks
+                assert page.feedback.detail
+                assert page.feedback.play_given is not None
+                assert isinstance(expected, Pitch)
+                assert press(page, 'Escape')
+                pump()
+        finally:
+            _close_live(window, services)
+
+
 CHECKS: list[Callable[[], None]] = [
     check_style_css_parses,
     check_window_and_sections,
@@ -1534,6 +1668,8 @@ CHECKS: list[Callable[[], None]] = [
     check_live_session,
     check_live_exercises_fit_and_compare,
     check_reveal_details,
+    check_staff_input_widget,
+    check_live_staff_input_sessions,
     check_today_preview,
     check_continue_banner_preview,
     check_progress_empty,

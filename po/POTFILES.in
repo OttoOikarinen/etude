@@ -24,11 +24,17 @@ data/fi.oikarinenotto.etude.metainfo.xml.in
 src/etude/core/naming.py
 src/etude/exercises/base.py
 src/etude/exercises/families/chords.py
+src/etude/exercises/families/degree_ear.py
+src/etude/exercises/families/interval_construction.py
 src/etude/exercises/families/intervals.py
 src/etude/exercises/families/key_signatures.py
 src/etude/exercises/families/note_naming.py
+src/etude/exercises/families/note_placement.py
 src/etude/exercises/families/rhythm.py
 src/etude/exercises/families/scale_degrees.py
+src/etude/exercises/families/scales.py
+src/etude/exercises/families/symbols.py
+src/etude/exercises/families/vocabulary.py
 src/etude/exercises/path.py
 src/etude/exercises/runner.py
 src/etude/main.py
@@ -71,6 +77,7 @@ src/etude/ui/widgets/feedback.ui
 src/etude/ui/widgets/piano.py
 src/etude/ui/widgets/rhythm_input.py
 src/etude/ui/widgets/simple.py
+src/etude/ui/widgets/staff_input.py
 src/etude/ui/widgets/tap_pad.py
 src/etude/window.py
 src/etude/window.ui

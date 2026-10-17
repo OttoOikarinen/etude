@@ -56,7 +56,7 @@ _CLEFS = {
 }
 # The line each clef marks: the G clef curls around G4, the F clef's dots
 # surround F3, and the C clef centres on middle C.
-_LANDMARKS = {
+LANDMARKS = {
     Clef.TREBLE: Pitch(Letter.G, 0, 4),
     Clef.BASS: Pitch(Letter.F, 0, 3),
     Clef.ALTO: Pitch(Letter.C, 0, 4),
@@ -65,7 +65,7 @@ _LANDMARKS = {
 _TOP_LINE = 8
 # Sharps and flats that land on a white key (E♯, B♯, C♭, F♭) are spelling
 # exercises, not reading ones: the piano answer could not tell them apart.
-_WHITE_KEY_ACCIDENTALS = frozenset(
+WHITE_KEY_ACCIDENTALS = frozenset(
     {
         PitchName(Letter.E, 1),
         PitchName(Letter.B, 1),
@@ -98,7 +98,7 @@ def parse_item(item: str) -> tuple[Clef, Pitch]:
     if (
         str(pitch) != parts[2]
         or abs(pitch.alter) > 1
-        or pitch.name in _WHITE_KEY_ACCIDENTALS
+        or pitch.name in WHITE_KEY_ACCIDENTALS
         or ledger_lines(position) > MAX_LEDGER_LINES
     ):
         raise ValueError(f'not a note-naming item: {item!r}')
@@ -112,9 +112,9 @@ def ledger_lines(position: int) -> int:
     return max(0, position - _TOP_LINE) // 2
 
 
-def _positions_in_order(clef: Clef, ledger: int) -> list[int]:
+def positions_in_order(clef: Clef, ledger: int) -> list[int]:
     """Staff positions of one clef in teaching order (see the module docstring)."""
-    landmark = clef.staff_position(_LANDMARKS[clef])
+    landmark = clef.staff_position(LANDMARKS[clef])
     staff = sorted(range(-1, _TOP_LINE + 2), key=lambda p: (abs(p - landmark), p < landmark))
     for count in range(1, ledger + 1):
         # The ledger line itself before the space beyond it, below before above
@@ -139,7 +139,7 @@ def keyboard_range(pitch: Pitch) -> tuple[Pitch, Pitch]:
     return low, Pitch(Letter.C, 0, low.octave + 2)
 
 
-def _interleave(columns: Sequence[Sequence[ItemId]]) -> list[ItemId]:
+def interleave(columns: Sequence[Sequence[ItemId]]) -> list[ItemId]:
     longest = max((len(c) for c in columns), default=0)
     return [c[i] for i in range(longest) for c in columns if i < len(c)]
 
@@ -201,7 +201,7 @@ def _clef_label(clef: Clef) -> str:
     return names[clef]
 
 
-def _mnemonic(clef: Clef, lines: bool) -> str:
+def staff_mnemonic(clef: Clef, lines: bool) -> str:
     """The note names of the lines or spaces of a staff, as in design 1c's hint."""
     start = 0 if lines else 1
     notes = _names([clef.pitch_at(p) for p in range(start, _TOP_LINE + 1, 2)])
@@ -222,7 +222,7 @@ def _mnemonic(clef: Clef, lines: bool) -> str:
     return templates[clef].format(notes=notes)
 
 
-def _where(clef: Clef, pitch: Pitch) -> str:
+def where_on_staff(clef: Clef, pitch: Pitch) -> str:
     """Where the note sits, e.g. "F4 is in the first space of the treble staff."."""
     position = clef.staff_position(pitch)
     note, staff = full_name(pitch), _staff_name(clef)
@@ -281,7 +281,7 @@ def _where(clef: Clef, pitch: Pitch) -> str:
     return templates[count].format(note=note, staff=staff)
 
 
-def _counting(clef: Clef, pitch: Pitch) -> str:
+def counting_from_staff(clef: Clef, pitch: Pitch) -> str:
     """A worked count from the nearest outer line, for notes outside the staff."""
     position = clef.staff_position(pitch)
     if position < 0:
@@ -295,9 +295,9 @@ def _counting(clef: Clef, pitch: Pitch) -> str:
     return _('Counting up from the top line: {notes}.').format(notes=_names(steps, octave=True))
 
 
-def _landmark(clef: Clef, natural: Pitch) -> str:
+def landmark_sentence(clef: Clef, natural: Pitch) -> str:
     """The clef's own line, or middle C, named as a reference point."""
-    if natural != _LANDMARKS[clef]:
+    if natural != LANDMARKS[clef]:
         if natural == _MIDDLE_C:
             return _('{note} is middle C.').format(note=full_name(natural))
         return ''
@@ -309,6 +309,20 @@ def _landmark(clef: Clef, natural: Pitch) -> str:
             note=note
         )
     return _('The C clef centres on this line: it marks middle C, {note}.').format(note=note)
+
+
+def reading_hint(clef: Clef, pitch: Pitch) -> str:
+    """Where to start reading: the staff's lines or spaces, or counting from its edge."""
+    position = clef.staff_position(pitch)
+    if 0 <= position <= _TOP_LINE:
+        return staff_mnemonic(clef, lines=position % 2 == 0)
+    if position < 0:
+        return _(
+            'Below the staff, lines and spaces keep alternating down from the bottom line, {note}.'
+        ).format(note=full_name(clef.pitch_at(0)))
+    return _(
+        'Above the staff, lines and spaces keep alternating up from the top line, {note}.'
+    ).format(note=full_name(clef.pitch_at(_TOP_LINE)))
 
 
 # The exercise ------------------------------------------------------------------
@@ -400,9 +414,9 @@ class NoteNaming(ExerciseDefinition):
         ledger = _ledger(settings)
         clefs = _clefs(settings)
         staff_count = _TOP_LINE + 3
-        naturals = {c: [c.pitch_at(p) for p in _positions_in_order(c, ledger)] for c in clefs}
-        order = _interleave([[item_id(c, p) for p in naturals[c][:staff_count]] for c in clefs])
-        order += _interleave([[item_id(c, p) for p in naturals[c][staff_count:]] for c in clefs])
+        naturals = {c: [c.pitch_at(p) for p in positions_in_order(c, ledger)] for c in clefs}
+        order = interleave([[item_id(c, p) for p in naturals[c][:staff_count]] for c in clefs])
+        order += interleave([[item_id(c, p) for p in naturals[c][staff_count:]] for c in clefs])
         if _with_accidentals(settings):
             altered = [
                 [
@@ -410,11 +424,11 @@ class NoteNaming(ExerciseDefinition):
                     for natural in naturals[c]
                     for alter in (1, -1)
                     if (p := Pitch(natural.letter, alter, natural.octave)).name
-                    not in _WHITE_KEY_ACCIDENTALS
+                    not in WHITE_KEY_ACCIDENTALS
                 ]
                 for c in clefs
             ]
-            order += _interleave(altered)
+            order += interleave(altered)
         return order
 
     def generate(
@@ -443,7 +457,7 @@ class NoteNaming(ExerciseDefinition):
             figure=StaffSpec(
                 clef=clef, events=(Chord((Head(pitch),)),), description=descriptions[clef]
             ),
-            hint=self._hint(clef, pitch),
+            hint=reading_hint(clef, pitch),
         )
 
     def grade(self, question: Question, given: object) -> Feedback:
@@ -500,29 +514,15 @@ class NoteNaming(ExerciseDefinition):
     # Explanations
 
     @staticmethod
-    def _hint(clef: Clef, pitch: Pitch) -> str:
-        position = clef.staff_position(pitch)
-        if 0 <= position <= _TOP_LINE:
-            return _mnemonic(clef, lines=position % 2 == 0)
-        if position < 0:
-            return _(
-                'Below the staff, lines and spaces keep alternating down from the bottom line, '
-                '{note}.'
-            ).format(note=full_name(clef.pitch_at(0)))
-        return _(
-            'Above the staff, lines and spaces keep alternating up from the top line, {note}.'
-        ).format(note=full_name(clef.pitch_at(_TOP_LINE)))
-
-    @staticmethod
     def _explanation(clef: Clef, pitch: Pitch, given: object, correct: bool) -> str:
         natural = Pitch(pitch.letter, 0, pitch.octave)
-        sentences = [_where(clef, natural)]
+        sentences = [where_on_staff(clef, natural)]
         position = clef.staff_position(pitch)
         if 0 <= position <= _TOP_LINE:
-            sentences.append(_mnemonic(clef, lines=position % 2 == 0))
+            sentences.append(staff_mnemonic(clef, lines=position % 2 == 0))
         else:
-            sentences.append(_counting(clef, natural))
-        landmark = _landmark(clef, natural)
+            sentences.append(counting_from_staff(clef, natural))
+        landmark = landmark_sentence(clef, natural)
         if landmark:
             sentences.append(landmark)
         if pitch.alter > 0:

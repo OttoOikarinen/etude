@@ -78,6 +78,7 @@ files = [
     "src/etude/content",
     "src/etude/paths.py",
     "src/etude/services.py",
+    "src/etude/ui/widgets/staff_entry.py",
 ]
 exclude = ['src/etude/notation/widget\.py$']
 
@@ -143,5 +144,6 @@ source_modules = [
     "etude.content",
     "etude.paths",
     "etude.services",
+    "etude.ui.widgets.staff_entry",
 ]
 forbidden_modules = ["gi"]

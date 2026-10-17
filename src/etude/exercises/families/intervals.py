@@ -80,7 +80,7 @@ d4) and augmented sixth chords (A6, d3)."""
 _TRITONE_SPELLINGS = ('A4', 'd5')
 
 # Pairs that learners confuse, by ear or by spelling.
-_CONFUSABLE: dict[str, tuple[str, ...]] = {
+CONFUSABLE: dict[str, tuple[str, ...]] = {
     'm2': ('M2',),
     'M2': ('m2', 'm3'),
     'm3': ('M3', 'M2'),
@@ -125,7 +125,7 @@ _CLEFS = {
 }
 # Staff positions used for notes (0 = bottom line, 8 = top line): one ledger
 # line for simple intervals, two for compound ones.
-_SIMPLE_RANGE = (-2, 10)
+SIMPLE_RANGE = (-2, 10)
 _COMPOUND_RANGE = (-4, 12)
 _STAFF_TOP = 8
 
@@ -184,7 +184,7 @@ def interval_phrase(key: str) -> str:
     return _name(Interval.parse(key))
 
 
-def _takes_an(key: str) -> bool:
+def takes_an(key: str) -> bool:
     """English needs "an" before "augmented"; other interval names take "a"."""
     return key.startswith('A')
 
@@ -220,25 +220,23 @@ _NUMBER_WORDS: tuple[Callable[[], str], ...] = (
 )
 
 
-def _number_word(count: int) -> str:
+def number_word(count: int) -> str:
     """The word for ``count``, e.g. "nine"; digits beyond twenty-four."""
     return _NUMBER_WORDS[count]() if 0 <= count < len(_NUMBER_WORDS) else str(count)
 
 
-def _letters(count: int) -> str:
+def letter_count(count: int) -> str:
     # Translators: part of "G4 to E5 spans six letter names and nine semitones."
     # {count} is a number word.
     return ngettext('{count} letter name', '{count} letter names', count).format(
-        count=_number_word(count)
+        count=number_word(count)
     )
 
 
-def _semitones(count: int) -> str:
+def semitone_count(count: int) -> str:
     # Translators: part of "G4 to E5 spans six letter names and nine semitones."
     # {count} is a number word.
-    return ngettext('{count} semitone', '{count} semitones', count).format(
-        count=_number_word(count)
-    )
+    return ngettext('{count} semitone', '{count} semitones', count).format(count=number_word(count))
 
 
 def note_label(pitch: Pitch) -> str:
@@ -357,7 +355,7 @@ def choose_options(
     keys.sort(key=order)
     if len(keys) > MAX_OPTIONS:
         # The window always holds the answer and its closest confusable partner.
-        partner = next((k for k in _CONFUSABLE.get(expected, ()) if k in keys), expected)
+        partner = next((k for k in CONFUSABLE.get(expected, ()) if k in keys), expected)
         required = (keys.index(expected), keys.index(partner))
         low = max(0, max(required) - MAX_OPTIONS + 1)
         high = min(min(required), len(keys) - MAX_OPTIONS)
@@ -488,7 +486,7 @@ class _IntervalExercise(ExerciseDefinition):
         if correct:
             # Translators: e.g. "Correct — major sixth".
             title = _('Correct — {interval}').format(interval=phrase)
-        elif _takes_an(expected):
+        elif takes_an(expected):
             # Translators: e.g. "Not quite — the answer is an augmented fourth". This form is
             # used where English needs "an"; translate it like the "a" form if your language
             # makes no such distinction.
@@ -528,14 +526,14 @@ class _IntervalExercise(ExerciseDefinition):
         """Items that learners confuse with ``item_id`` (same direction and form),
         for placing them next to each other in a session (interleaving)."""
         stem, key = item_id.rsplit('.', 1)
-        return [ItemId(f'{stem}.{partner}') for partner in _CONFUSABLE.get(key, ())]
+        return [ItemId(f'{stem}.{partner}') for partner in CONFUSABLE.get(key, ())]
 
     # Explanations
 
     def _explanation(self, notes: Notes, expected: str, given: str | None) -> str:
         written = notes.interval
-        letters = _letters(written.number)
-        size = _semitones(written.semitones)
+        letters = letter_count(written.number)
+        size = semitone_count(written.semitones)
         low, high = note_label(notes.low), note_label(notes.high)
         if notes.descending:
             # Translators: e.g. "E5 down to G4 spans six letter names and nine semitones."
@@ -575,8 +573,8 @@ class _IntervalExercise(ExerciseDefinition):
             and Interval.parse(expected).number != Interval.parse(given).number
         )
         if by_letters:
-            count = _letters(Interval.parse(given).number)
-            if _takes_an(given):
+            count = letter_count(Interval.parse(given).number)
+            if takes_an(given):
                 # Translators: e.g. "An augmented fifth spans five letter names." Used where
                 # English needs "an".
                 template = _('An {interval} spans {count}.')
@@ -584,8 +582,8 @@ class _IntervalExercise(ExerciseDefinition):
                 # Translators: e.g. "A perfect fifth spans five letter names."
                 template = _('A {interval} spans {count}.')
         else:
-            count = _semitones(semitones(given))
-            if _takes_an(given):
+            count = semitone_count(semitones(given))
+            if takes_an(given):
                 # Translators: e.g. "An augmented fourth spans six semitones." Used where
                 # English needs "an".
                 template = _('An {interval} has {count}.')
@@ -636,7 +634,7 @@ def place_interval(
     E♯, B♯, F♭ and C♭ are not used as the lower note unless double accidentals
     are allowed. Intervals that cannot be written without accidentals (an
     augmented second) get single ones."""
-    bottom, top = _COMPOUND_RANGE if interval.is_compound else _SIMPLE_RANGE
+    bottom, top = _COMPOUND_RANGE if interval.is_compound else SIMPLE_RANGE
     span = interval.number - 1
     candidates: list[tuple[Pitch, Pitch]] = []
     weights: list[int] = []
