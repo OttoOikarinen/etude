@@ -7,6 +7,7 @@ install_data(
     'figure.py',
     'model.py',
     'preview.py',
+    'timing.py',
   ],
   install_dir: moduledir / 'ui',
 )

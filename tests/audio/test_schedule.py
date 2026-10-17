@@ -106,6 +106,22 @@ def test_count_in_only_finishes_after_the_last_click() -> None:
     assert schedule.end_ms == 0.0
 
 
+def test_duration_keeps_counting_beats_after_the_notes() -> None:
+    """A tap phase: a count-in, then two bars of beats with nothing written in them."""
+    spec = PlaybackSpec((), tempo=60, count_in=2, meter=Meter(2, 4), duration=F(4))
+    schedule = build_schedule(spec, release_ms=100)
+    assert [e.beat for e in kinds(schedule, EventKind.BEAT)] == [-2, -1, 0, 1, 2, 3]
+    assert schedule.end_ms == 4100
+    # Without the click only the count-in sounds.
+    assert len(kinds(schedule, EventKind.NOTE_ON)) == 2
+
+
+def test_duration_shorter_than_the_notes_changes_nothing() -> None:
+    note = PlaybackNote(60, F(0), F(2))
+    assert PlaybackSpec((note,), duration=F(1)).length == 2
+    assert PlaybackSpec((note,), duration=F(3)).length == 3
+
+
 def test_to_ticks_rounds_each_event() -> None:
     assert to_ticks(0, 500) == 500
     assert to_ticks(-1000, 1500) == 500

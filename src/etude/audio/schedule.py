@@ -77,6 +77,8 @@ def build_schedule(
 
     Count-in beats always click; beats from 0 on click only when
     ``spec.click`` is set. Every beat gets a ``BEAT`` event for ``on_beat``.
+    ``FINISHED`` follows the last note-off or the end of ``spec.length``,
+    whichever is later, by ``release_ms``.
     """
     events: list[ScheduledEvent] = []
     for note in spec.notes:
@@ -97,7 +99,8 @@ def build_schedule(
         (e.time_ms for e in events if e.kind is EventKind.NOTE_OFF),
         default=0.0,
     )
-    events.append(ScheduledEvent(max(last_off, 0.0) + release_ms, EventKind.FINISHED))
+    end = max(last_off, spec.beats_to_ms(spec.length), 0.0)
+    events.append(ScheduledEvent(end + release_ms, EventKind.FINISHED))
     events.sort()
     return Schedule(tuple(events))
 

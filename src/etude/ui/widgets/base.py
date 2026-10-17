@@ -13,7 +13,12 @@ that accelerators work wherever the focus is, and calls
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from gi.repository import Gdk, GObject, Gtk
+
+if TYPE_CHECKING:
+    from ..timing import Player
 
 
 class AnswerWidget(Gtk.Box):
@@ -23,6 +28,8 @@ class AnswerWidget(Gtk.Box):
         # Asks the page to open its bottom sheet with get_sheet() (design 3b).
         'sheet-requested': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
+    captures_space = False
+    """Space belongs to this widget (tapping a rhythm), not to the page's Skip."""
 
     def __init__(self, **kwargs: object) -> None:
         kwargs.setdefault('orientation', Gtk.Orientation.VERTICAL)
@@ -32,6 +39,8 @@ class AnswerWidget(Gtk.Box):
         self.locked = False
         """True once answered: further input is ignored until the next question."""
         self.compact = False
+        self.player: Player | None = None
+        """Plays with beat callbacks (set by the page; rhythm tapping needs it)."""
 
     def submit(self, value: object) -> None:
         if self.locked:

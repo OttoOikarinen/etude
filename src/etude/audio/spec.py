@@ -67,17 +67,25 @@ class PlaybackSpec:
     (dotted quarters in 6/8, 2+2+3 eighths in 7/8), ``count_in`` counts those
     pulses and the first beat of each bar is accented. Without one, every
     quarter note is a beat."""
+    duration: Fraction | None = None
+    """Least length in beats. A playback of metronome beats alone (the bars in
+    which a learner taps a rhythm, a rest held for its value) lasts this long:
+    its beats are counted and ``on_finished`` comes after it."""
 
     def __post_init__(self) -> None:
         if self.tempo <= 0:
             raise ValueError(f'tempo must be positive, not {self.tempo}')
         if self.count_in < 0:
             raise ValueError('count-in cannot be negative')
+        if self.duration is not None and self.duration < 0:
+            raise ValueError('duration cannot be negative')
 
     @property
     def length(self) -> Fraction:
-        """Total length in beats, excluding the count-in."""
-        return max((n.start + n.length for n in self.notes), default=Fraction(0))
+        """Total length in beats, excluding the count-in: the end of the last note,
+        or ``duration`` when that is longer."""
+        end = max((n.start + n.length for n in self.notes), default=Fraction(0))
+        return max(end, self.duration) if self.duration is not None else end
 
     def beats_to_ms(self, beats: Fraction | float) -> float:
         return float(beats) * 60_000.0 / self.tempo

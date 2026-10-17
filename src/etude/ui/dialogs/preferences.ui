@@ -93,6 +93,38 @@
             </child>
           </object>
         </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Rhythm</property>
+            <child>
+              <object class="AdwActionRow" id="tap_timing_row">
+                <property name="title" translatable="yes">Calibrate tap timing</property>
+                <property name="activatable">true</property>
+                <signal name="activated" handler="_on_calibrate_activated"/>
+                <child type="suffix">
+                  <object class="GtkButton" id="reset_latency_button">
+                    <property name="icon-name">edit-undo-symbolic</property>
+                    <property name="valign">center</property>
+                    <property name="tooltip-text" translatable="yes">Reset tap timing</property>
+                    <signal name="clicked" handler="_on_reset_latency_clicked"/>
+                    <style>
+                      <class name="flat"/>
+                    </style>
+                    <accessibility>
+                      <property name="label" translatable="yes">Reset tap timing</property>
+                    </accessibility>
+                  </object>
+                </child>
+                <child type="suffix">
+                  <object class="GtkImage">
+                    <property name="icon-name">go-next-symbolic</property>
+                    <property name="accessible-role">presentation</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
     <child>

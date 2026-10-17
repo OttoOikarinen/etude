@@ -28,6 +28,7 @@ from .dialogs.session_summary import (
 )
 from .model import AppModel, SessionSource
 from .pages.exercise import ExercisePage
+from .timing import model_player
 
 log = logging.getLogger(__name__)
 
@@ -52,6 +53,7 @@ class ExerciseController:
         self.summary: SessionSummary | None = None
         self._hinted = False
         page.audio_available = model.audio_available
+        page.player = model_player(model)
         page.connect('answered', self._on_answered)
         page.connect('next-requested', lambda _p: self.next())
         page.connect('skip-requested', lambda _p: self._on_skip())

@@ -302,9 +302,12 @@ def check_text_and_placeholders() -> None:
     text.entry.set_text('crescendo')
     text.entry.emit('activate')
     assert given == ['crescendo']
-    for key in ('construction', 'rhythm-dictation', 'rhythm-tap'):
-        page.show_question(questions[key].question, number=1, total=5)
-        assert type(page.answer_widget).__name__ == 'PlaceholderAnswerView'
+    page.show_question(questions['construction'].question, number=1, total=5)
+    assert type(page.answer_widget).__name__ == 'PlaceholderAnswerView'
+    page.show_question(questions['rhythm-dictation'].question, number=1, total=5)
+    assert type(page.answer_widget).__name__ == 'RhythmInputView'
+    page.show_question(questions['rhythm-tap'].question, number=1, total=5)
+    assert type(page.answer_widget).__name__ == 'TapPadView'
 
 
 def check_progress() -> None:
@@ -1268,6 +1271,239 @@ def check_path_pages_fit_narrow() -> None:
             _close_live(window, services)
 
 
+def _gvariant(value):
+    from gi.repository import GLib
+
+    if isinstance(value, tuple):
+        return GLib.Variant('as', list(value))
+    if isinstance(value, bool):
+        return GLib.Variant('b', value)
+    if isinstance(value, int):
+        return GLib.Variant('i', value)
+    return GLib.Variant('s', str(value))
+
+
+def _live_rhythm_window(data_dir: str, exercise_id: str, settings: dict):
+    """A live window whose audio is a NullBackend that claims to be available, so the
+    test drives beats and the end of playbacks with ``complete()``."""
+    from gi.repository import GLib
+
+    from etude.audio.null import NullBackend
+    from etude.services import Services
+    from etude.ui.common import get_settings
+    from etude.ui.model import LiveModel
+
+    services = Services.open(Path(data_dir))
+    backend = NullBackend(available=True)
+    services._audio = backend
+    stored = {key: _gvariant(value) for key, value in settings.items()}
+    get_settings().set_value('exercise-settings', GLib.Variant('a{sa{sv}}', {exercise_id: stored}))
+    window = new_window(LiveModel(services, get_settings()))
+    return window, services, backend
+
+
+def check_tap_pad_flow() -> None:
+    """Start with Enter, count in, tap on Space and the pad, see the graded timeline."""
+    import tempfile
+
+    from etude.ui.common import get_settings
+    from etude.ui.widgets.tap_pad import TapPadView
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        window, services, backend = _live_rhythm_window(
+            data_dir, 'rhythm-tap', {'meters': ('4/4',), 'bars': 1, 'click': True}
+        )
+        get_settings().set_int('audio-latency-ms', 30)
+        try:
+            page = window.start_exercise('rhythm-tap')
+            assert page is not None
+            pad = page.answer_widget
+            assert isinstance(pad, TapPadView)
+            # Space does not skip a tap question: it is left to the tap pad.
+            assert not press(page, 'space')
+            assert page.feedback is None
+            assert press(page, 'Return')  # Start
+            assert pad.state == 'count-in'
+            handle = backend.current
+            assert handle is not None
+            spec = handle.spec
+            assert spec.count_in == 4
+            assert spec.click
+            assert spec.length == 4
+            assert not spec.notes
+            # Beat 0 sounds at t = 100 s; taps arrive 30 ms late (the calibrated delay).
+            handle.started_at = 100.0
+            expected = page.question.expected
+            pad.tap(100.0 - 2.0)  # along with the count-in: ignored
+            for index, onset in enumerate(expected):
+                at = 100.0 + (onset + 30) / 1000
+                if index == 0:
+                    pad.keys.press(at)
+                else:
+                    pad.tap(at)
+            assert len(pad.taps) == len(expected)
+            assert all(abs(t - o) < 1e-6 for t, o in zip(pad.taps, expected, strict=True))
+            # R must not replay the example during a take.
+            assert press(page, 'r')
+            backend.complete()  # beats, then the end of the take
+            pump()
+            assert page.feedback is not None
+            assert page.feedback.correct, page.feedback.title
+            assert page.feedback.title == 'Correct — every note on time'
+            view = pad.result_view
+            assert view is not None
+            count = len(expected)
+            assert view.summary.get_label().startswith(f'{count} of {count} on time')
+            assert not pad.pad.get_visible()
+            # Next question: a sloppy take, with the first note missed.
+            assert press(page, 'Return')
+            pad = page.answer_widget
+            pad.start()
+            backend.current.started_at = 50.0
+            onsets = list(page.question.expected)
+            for onset in onsets[1:]:
+                pad.tap(50.0 + (onset + 30 + 70) / 1000)
+            backend.complete()
+            pump()
+            feedback = page.feedback
+            assert feedback is not None
+            assert not feedback.correct
+            assert 'No tap near note 1' in feedback.detail
+            chips = [c.get_child() for c in _children(pad.result_view.chips)]
+            assert any(c.has_css_class('error') for c in chips)
+            assert any(c.has_css_class('warning') for c in chips)
+            # A take without taps is not submitted.
+            assert press(page, 'Return')
+            pad = page.answer_widget
+            pad.start()
+            backend.complete()
+            pump()
+            assert page.feedback is None
+            assert 'No taps' in pad.status.get_label()
+            # Without sound the visual metronome counts by itself.
+            pad.player = None
+            pad.start()
+            assert type(pad.handle).__name__ == 'TimerPlayback'
+            pad.cancel()
+            assert pad.state == 'idle'
+        finally:
+            get_settings().reset('audio-latency-ms')
+            get_settings().reset('exercise-settings')
+            _close_live(window, services)
+
+
+def check_rhythm_input_keyboard() -> None:
+    """Enter a dictated rhythm with digits, 0 for rests, Backspace and Enter."""
+    import tempfile
+
+    from etude.core import Duration, NoteValue
+    from etude.ui.common import get_settings
+    from etude.ui.widgets.rhythm_input import RhythmInputView
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        window, services, backend = _live_rhythm_window(
+            data_dir, 'rhythm-dictation', {'meters': ('2/4',), 'bars': 1}
+        )
+        try:
+            page = window.start_exercise('rhythm-dictation')
+            assert page is not None
+            pump()
+            assert backend.played, 'the question plays by itself'
+            view = page.answer_widget
+            assert isinstance(view, RhythmInputView)
+            accel = {d: str(i + 1) for i, d in enumerate(view.spec.palette)}
+            half = Duration(NoteValue.HALF)
+            quarter = Duration(NoteValue.QUARTER)
+            assert not view.check_button.get_sensitive()
+            assert not press(page, 'Return')  # nothing to check yet
+            assert press(page, accel[quarter])
+            assert view.rhythm == ((quarter, False),)
+            assert view.status.get_label() == 'Bar 1 of 1 · 1 beat left'
+            # The bar-fill guard: a half note no longer fits.
+            button = next(b for b in view.buttons if b.duration == half)
+            assert not button.get_sensitive()
+            assert press(page, accel[half])
+            assert view.rhythm == ((quarter, False),)
+            assert press(page, '0')  # rests
+            assert view.rest_mode
+            assert press(page, accel[quarter])
+            assert view.rhythm == ((quarter, False), (quarter, True))
+            assert view.full
+            assert view.check_button.get_sensitive()
+            figure = view.staff.get_property('figure')
+            assert [type(e).__name__ for e in figure.events] == ['Chord', 'Rest', 'Barline']
+            # Enter the expected rhythm instead.
+            while view.entries:
+                assert press(page, 'BackSpace')
+            for duration, is_rest in page.question.expected:
+                if is_rest != view.rest_mode:
+                    assert press(page, '0')
+                assert press(page, accel[duration])
+            assert press(page, 'Return')
+            assert page.feedback is not None
+            assert page.feedback.correct, page.feedback.title
+            assert page.feedback.title == 'Correct — every beat right'
+            assert 'beats right' in view.status.get_label()
+        finally:
+            get_settings().reset('exercise-settings')
+            _close_live(window, services)
+
+
+def check_calibration() -> None:
+    """Calibrate tap timing in the preferences, save, reset."""
+    from etude.audio.null import NullBackend
+    from etude.ui.common import get_settings
+    from etude.ui.dialogs.preferences import PreferencesDialog
+
+    backend = NullBackend(available=True)
+    window = new_window()
+    try:
+        prefs = PreferencesDialog(player=backend.play)
+        prefs.present(window)
+        pump()
+        assert prefs.tap_timing_row.get_subtitle() == 'Not calibrated'
+        assert not prefs.reset_latency_button.get_sensitive()
+        prefs.tap_timing_row.emit('activated')
+        page = prefs.calibration
+        assert page is not None
+        pump()
+        page.start_button.emit('clicked')
+        handle = backend.current
+        assert handle is not None
+        assert handle.spec.count_in == 4
+        handle.started_at = 10.0
+        for index, click in enumerate(page.clicks_ms):
+            at = 10.0 + (click + 42 + (index % 3 - 1) * 4) / 1000
+            if index % 2:
+                page.keys.press(at)
+            else:
+                page.tap(at)
+        backend.complete()
+        pump()
+        assert page.estimate is not None
+        assert round(page.estimate.offset_ms) == 42
+        assert 'after the clicks' in page.result.get_label()
+        assert page.save_button.get_sensitive()
+        page.save_button.emit('clicked')
+        assert get_settings().get_int('audio-latency-ms') == 42
+        assert prefs.tap_timing_row.get_subtitle() == 'Taps corrected by 42 ms'
+        # Too few taps: no result.
+        page.start()
+        backend.current.started_at = 0.0
+        page.tap(0.5)
+        backend.complete()
+        pump()
+        assert page.estimate is None
+        assert 'Not enough taps' in page.status.get_label()
+        assert prefs.reset_latency_button.get_sensitive()
+        prefs.reset_latency_button.emit('clicked')
+        assert get_settings().get_int('audio-latency-ms') == 0
+        prefs.force_close()
+    finally:
+        get_settings().reset('audio-latency-ms')
+        window.destroy()
+
+
 CHECKS: list[Callable[[], None]] = [
     check_window_and_sections,
     check_keysig_correct_then_next,
@@ -1296,6 +1532,9 @@ CHECKS: list[Callable[[], None]] = [
     check_live_path_unit_practice,
     check_live_placement_and_exam,
     check_path_pages_fit_narrow,
+    check_tap_pad_flow,
+    check_rhythm_input_keyboard,
+    check_calibration,
 ]
 
 

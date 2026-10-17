@@ -14,6 +14,10 @@ habit of tapping early or late. :func:`estimate_offset` measures it so
 that later taps can be compensated with ``offset_ms``.
 
 *Grading* matches a learner's taps to the expected onsets of a rhythm.
+
+:class:`EventClock` puts input events on that clock: windowing systems
+stamp events in milliseconds on a clock of their own, which is more exact
+than the time the event reaches the application's main loop.
 """
 
 from __future__ import annotations
@@ -38,6 +42,9 @@ MAD_SCALE = 1.4826
 OUTLIER_SIGMAS = 3.0
 MIN_OUTLIER_MS = 20.0
 """Never reject taps closer than this to the median."""
+
+RESYNC_MS = 1000.0
+"""An event clock that seems to have jumped by more than this is synchronised anew."""
 
 GOOD_MS = 50.0
 OK_MS = 100.0
@@ -279,3 +286,41 @@ def grade_taps(
             matches.append(TapMatch(onset, None, TapGrade.MISSED))
     extra = tuple(t for j, t in enumerate(taps) if j not in used_taps)
     return TapResult(tuple(matches), extra, good, ok)
+
+
+class EventClock:
+    """Maps input event timestamps to the monotonic clock of ``started_at``.
+
+    GDK stamps every input event with the time the windowing system saw it
+    (``Gdk.Event.get_time()``: milliseconds on an unspecified clock, which
+    wraps around after 49 days). Under Wayland this is usually the kernel's
+    input timestamp, so it does not include the time the event waited for
+    the application's main loop, for example while a frame was drawn. Its
+    epoch is unknown, though.
+
+    Every event is also seen *arriving* on the monotonic clock. Arrival
+    minus stamp is the clock difference plus a delivery delay that is never
+    negative, so the smallest difference seen estimates the clock difference
+    (plus the shortest delivery delay, a constant that latency calibration
+    absorbs). Mapping a stamp with it removes the main loop's jitter from
+    the tap time. When a stamp is missing (0, as in synthesized events) or
+    the clocks seem to have jumped by more than :data:`RESYNC_MS`, the
+    arrival time is used and the estimate starts over.
+    """
+
+    def __init__(self) -> None:
+        self._offset_ms: float | None = None
+
+    def reset(self) -> None:
+        self._offset_ms = None
+
+    def to_monotonic(self, event_ms: int, arrival: float) -> float:
+        """The monotonic time (seconds) of an event stamped ``event_ms`` that
+        arrived at ``arrival`` (seconds, e.g. ``time.monotonic()``)."""
+        if event_ms <= 0:
+            return arrival
+        sample = arrival * 1000.0 - event_ms
+        offset = self._offset_ms
+        if offset is None or sample < offset or sample - offset > RESYNC_MS:
+            self._offset_ms = offset = sample
+        return (event_ms + offset) / 1000.0

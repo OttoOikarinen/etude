@@ -24,6 +24,7 @@ from typing import ClassVar, Protocol
 
 from gi.repository import Gio
 
+from ..audio.backend import PlaybackHandle
 from ..audio.spec import Instrument, PlaybackSpec
 from ..content.library import ContentLibrary, default_library
 from ..content.model import GlossaryEntry, Lesson, Unit
@@ -411,7 +412,17 @@ class AppModel(Protocol):
     @property
     def audio_available(self) -> bool: ...
     def new_question(self) -> None: ...
-    def play(self, spec: PlaybackSpec) -> None: ...
+    def play(
+        self,
+        spec: PlaybackSpec,
+        *,
+        on_beat: Callable[[int], None] | None = None,
+        on_finished: Callable[[], None] | None = None,
+    ) -> PlaybackHandle | None:
+        """Play ``spec``. The callbacks may come from the audio thread (see
+        :mod:`etude.audio.backend`); the handle's ``started_at`` times beat 0.
+        ``None`` when nothing can be timed."""
+
     def stop_audio(self) -> None: ...
 
 
@@ -895,8 +906,16 @@ class LiveModel:
         except KeyError:
             return spec
 
-    def play(self, spec: PlaybackSpec) -> None:
-        self.services.audio.play(self.instrument_for(spec))
+    def play(
+        self,
+        spec: PlaybackSpec,
+        *,
+        on_beat: Callable[[int], None] | None = None,
+        on_finished: Callable[[], None] | None = None,
+    ) -> PlaybackHandle:
+        return self.services.audio.play(
+            self.instrument_for(spec), on_beat=on_beat, on_finished=on_finished
+        )
 
     def stop_audio(self) -> None:
         self.services.audio.stop()

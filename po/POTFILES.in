@@ -27,6 +27,7 @@ src/etude/exercises/families/chords.py
 src/etude/exercises/families/intervals.py
 src/etude/exercises/families/key_signatures.py
 src/etude/exercises/families/note_naming.py
+src/etude/exercises/families/rhythm.py
 src/etude/exercises/families/scale_degrees.py
 src/etude/exercises/path.py
 src/etude/exercises/runner.py
@@ -36,6 +37,7 @@ src/etude/shortcuts-dialog.ui
 src/etude/ui/common.py
 src/etude/ui/content.py
 src/etude/ui/controller.py
+src/etude/ui/dialogs/calibration.py
 src/etude/ui/dialogs/preferences.ui
 src/etude/ui/dialogs/session_summary.py
 src/etude/ui/figure.py
@@ -67,6 +69,8 @@ src/etude/ui/widgets/ear_panel.py
 src/etude/ui/widgets/feedback.py
 src/etude/ui/widgets/feedback.ui
 src/etude/ui/widgets/piano.py
+src/etude/ui/widgets/rhythm_input.py
 src/etude/ui/widgets/simple.py
+src/etude/ui/widgets/tap_pad.py
 src/etude/window.py
 src/etude/window.ui

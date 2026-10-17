@@ -151,7 +151,7 @@
                                           <object class="GtkBox">
                                             <property name="spacing">8</property>
                                             <child>
-                                              <object class="GtkLabel">
+                                              <object class="GtkLabel" id="skip_badge">
                                                 <property name="label" translatable="yes" comments="The Space key">Space</property>
                                                 <property name="accessible-role">presentation</property>
                                                 <property name="valign">center</property>

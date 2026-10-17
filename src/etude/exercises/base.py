@@ -135,7 +135,13 @@ class TapAnswer:
 
     meter: Meter
     tempo: float
+    """Quarter notes per minute, as in :attr:`PlaybackSpec.tempo`."""
     count_in: int
+    """Metronome beats (felt pulses of ``meter``) before beat 0."""
+    bars: int = 1
+    """Bars the learner taps in; the take ends after them."""
+    click: bool = True
+    """Keep the metronome sounding while the learner taps (it is always shown)."""
 
 
 @dataclass(frozen=True, slots=True)

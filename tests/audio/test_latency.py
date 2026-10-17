@@ -8,6 +8,7 @@ from hypothesis import given
 from hypothesis import strategies as st
 
 from etude.audio.latency import (
+    EventClock,
     LatencyEstimate,
     NotEnoughTapsError,
     TapGrade,
@@ -179,3 +180,34 @@ def test_inconsistent_taps_are_rejected_as_outliers() -> None:
 
 def test_single_tap_when_allowed() -> None:
     assert estimate_offset(CLICKS, [512.0], min_taps=1) == LatencyEstimate(12.0, 0.0, 1, 0)
+
+
+def test_event_clock_without_stamp_uses_the_arrival_time() -> None:
+    clock = EventClock()
+    assert clock.to_monotonic(0, 12.5) == 12.5
+
+
+def test_event_clock_removes_delivery_jitter() -> None:
+    # The event clock runs 1000 s behind the monotonic clock; events arrive
+    # 2-15 ms after they were stamped.
+    clock = EventClock()
+    delays = [0.015, 0.002, 0.009, 0.004, 0.012]
+    stamps = [1_000 + 250 * i for i in range(len(delays))]
+    mapped = [
+        clock.to_monotonic(s, (s + 1_000_000) / 1000 + d)
+        for s, d in zip(stamps, delays, strict=True)
+    ]
+    assert mapped[0] == pytest.approx((stamps[0] + 1_000_000) / 1000 + 0.015)
+    # From the second event on, the shortest delay seen so far (2 ms) is the offset.
+    for stamp, time in zip(stamps[1:], mapped[1:], strict=True):
+        assert time == pytest.approx((stamp + 1_000_000) / 1000 + 0.002)
+
+
+def test_event_clock_resynchronises_after_a_jump() -> None:
+    clock = EventClock()
+    clock.to_monotonic(5_000, 10.0)
+    # The 32-bit millisecond stamp wrapped around: arrival minus stamp jumps up.
+    assert clock.to_monotonic(20, 10.5) == pytest.approx(10.5)
+    assert clock.to_monotonic(270, 10.76) == pytest.approx(10.75)
+    clock.reset()
+    assert clock.to_monotonic(100, 3.0) == pytest.approx(3.0)
