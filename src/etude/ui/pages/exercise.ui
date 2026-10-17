@@ -33,9 +33,18 @@
             </child>
             <child type="end">
               <object class="GtkToggleButton" id="show_staff_button">
-                <property name="label" translatable="yes">Show Staff</property>
                 <property name="visible">false</property>
+                <property name="tooltip-text" translatable="yes">Show Staff</property>
                 <signal name="toggled" handler="_on_show_staff_toggled"/>
+                <child>
+                  <object class="AdwButtonContent" id="show_staff_content">
+                    <property name="icon-name">view-reveal-symbolic</property>
+                    <property name="label" translatable="yes">Show Staff</property>
+                  </object>
+                </child>
+                <accessibility>
+                  <property name="label" translatable="yes">Show Staff</property>
+                </accessibility>
               </object>
             </child>
             <child type="end">

@@ -84,6 +84,7 @@ class ExercisePage(Adw.NavigationPage):
     close_button: Gtk.Button = Gtk.Template.Child()
     pause_button: Gtk.ToggleButton = Gtk.Template.Child()
     show_staff_button: Gtk.ToggleButton = Gtk.Template.Child()
+    show_staff_content: Adw.ButtonContent = Gtk.Template.Child()
     play_button: Gtk.Button = Gtk.Template.Child()
     play_content: Adw.ButtonContent = Gtk.Template.Child()
     bottom_sheet: Adw.BottomSheet = Gtk.Template.Child()
@@ -272,6 +273,8 @@ class ExercisePage(Adw.NavigationPage):
         self._update_subtitle()
         self.feedback_banner.set_compact(self.compact)
         self.play_content.set_label('' if self.compact else self._play_label)
+        # Header buttons become icons in the narrow layout so the title keeps its room.
+        self.show_staff_content.set_label('' if self.compact else _('Show Staff'))
         self._render_stats()
         if self.answer_widget is not None:
             self.answer_widget.set_compact(self.compact)
