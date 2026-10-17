@@ -10,16 +10,7 @@
     <property name="child">
       <object class="AdwToolbarView">
         <child type="top">
-          <object class="AdwHeaderBar">
-            <child type="end">
-              <object class="GtkButton" id="practise_button">
-                <property name="label" translatable="yes">_Practise Vocabulary</property>
-                <property name="use-underline">true</property>
-                <property name="visible">false</property>
-                <signal name="clicked" handler="_on_practise_clicked"/>
-              </object>
-            </child>
-          </object>
+          <object class="AdwHeaderBar"/>
         </child>
         <property name="content">
           <object class="GtkScrolledWindow">
@@ -36,12 +27,30 @@
                       <class name="glossary-body"/>
                     </style>
                     <child>
-                      <object class="GtkSearchEntry" id="search_entry">
-                        <property name="placeholder-text" translatable="yes">Search terms and meanings</property>
-                        <signal name="search-changed" handler="_on_search_changed"/>
-                        <accessibility>
-                          <property name="label" translatable="yes">Search the glossary</property>
-                        </accessibility>
+                      <object class="GtkBox" id="top_box">
+                        <property name="spacing">12</property>
+                        <child>
+                          <object class="GtkSearchEntry" id="search_entry">
+                            <property name="hexpand">true</property>
+                            <property name="valign">center</property>
+                            <property name="placeholder-text" translatable="yes">Search terms and meanings</property>
+                            <signal name="search-changed" handler="_on_search_changed"/>
+                            <accessibility>
+                              <property name="label" translatable="yes">Search the glossary</property>
+                            </accessibility>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="practise_button">
+                            <property name="label" translatable="yes">_Practise Vocabulary</property>
+                            <property name="use-underline">true</property>
+                            <property name="visible">false</property>
+                            <signal name="clicked" handler="_on_practise_clicked"/>
+                            <style>
+                              <class name="pill"/>
+                            </style>
+                          </object>
+                        </child>
                       </object>
                     </child>
                     <child>

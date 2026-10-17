@@ -66,8 +66,11 @@ side.
 Moving on only after a unit is mastered, with corrective practice for
 those who have not yet mastered it, produces large gains (Bloom, 1984).
 
-*In Etude:* units unlock when their items reach an accuracy and FSRS
-stability threshold, and each level ends with a level exam.
+*In Etude:* units unlock when 80 % of their items reach an accuracy and
+FSRS stability threshold, and each level ends with a level exam that is
+passed with 80 % correct answers (mastery criteria are commonly set at
+80–90 %). Locks are advice: lessons are always readable, and a locked unit
+can be practised after a confirmation (autonomy, see below).
 
 ### Dual coding and multimedia
 
@@ -101,7 +104,9 @@ Attempting questions before instruction improves later learning, even
 when the attempts fail (Richland, Kornell & Kao, 2009).
 
 *In Etude:* the placement test seeds the scheduler so experienced learners
-skip what they know, and lessons may open with a question.
+skip what they know: it asks five questions about what each unit adds,
+places the learner out of every unit answered at 80 % or better, and stops
+at the first unit that is not. Lessons may open with a question.
 
 ### Motivation without manipulation
 

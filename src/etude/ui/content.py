@@ -403,9 +403,7 @@ def entry_detail(
     """Everything about one glossary entry; "See also" and links call ``on_term``."""
     box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
     box.add_css_class('glossary-entry')
-    title = heading(entry.headword, 'title-1', level=1)
-    title.set_selectable(True)
-    box.append(title)
+    box.append(heading(entry.headword, 'title-1', level=1))
     facts = []
     if entry.foreign and entry.foreign_language:
         facts.append(language_name(entry.foreign_language))

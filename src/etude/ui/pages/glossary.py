@@ -48,6 +48,7 @@ class GlossaryPage(Adw.NavigationPage):
         'practise-requested': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
+    top_box: Gtk.Box = Gtk.Template.Child()
     practise_button: Gtk.Button = Gtk.Template.Child()
     search_entry: Gtk.SearchEntry = Gtk.Template.Child()
     results_stack: Gtk.Stack = Gtk.Template.Child()
@@ -68,6 +69,9 @@ class GlossaryPage(Adw.NavigationPage):
             self.add_css_class('compact')
         else:
             self.remove_css_class('compact')
+        self.top_box.set_orientation(
+            Gtk.Orientation.VERTICAL if self.compact else Gtk.Orientation.HORIZONTAL
+        )
 
     def set_data(self, data: GlossaryData) -> None:
         self.data = data
