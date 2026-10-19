@@ -101,3 +101,24 @@ def test_playback_errors() -> None:
         figure_playback(StaffSpec(events=parse_events('r/q')))
     with pytest.raises(MusicTextError):
         figure_playback(StaffSpec(events=parse_events('C4')), 'backwards')
+
+
+def test_tied_notes_sustain_instead_of_sounding_again() -> None:
+    figure = StaffSpec(events=parse_events('C4/h~ | C4/q E4/q~ E4/e r/e E4/q'))
+    spec = figure_playback(figure)
+    assert [(n.midi, n.start, n.length) for n in spec.notes] == [
+        (60, Fraction(0), Fraction(3)),
+        (64, Fraction(3), Fraction(3, 2)),
+        (64, Fraction(5), Fraction(1)),
+    ]
+    melodic = figure_playback(figure, 'melodic')
+    assert [n.midi for n in melodic.notes] == [60, 64, 64]
+
+
+def test_a_tied_chord_holds_only_the_common_pitches() -> None:
+    spec = figure_playback(StaffSpec(events=parse_events('[C4 G4]/q~ [C4 A4]/q')))
+    assert sorted((n.midi, n.start, n.length) for n in spec.notes) == [
+        (60, Fraction(0), Fraction(2)),
+        (67, Fraction(0), Fraction(1)),
+        (69, Fraction(1), Fraction(1)),
+    ]

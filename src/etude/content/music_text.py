@@ -22,7 +22,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Iterator
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from fractions import Fraction
 
 from ..audio.spec import PlaybackNote, PlaybackSpec
@@ -136,18 +136,24 @@ class _Timed:
     midis: tuple[int, ...]
     beats: Fraction
     rest: bool
+    # Pitches continuing a tie from the previous chord: they sustain, not re-sound.
+    held: frozenset[int] = frozenset()
 
 
 def _timeline(events: tuple[Event, ...]) -> list[_Timed]:
     timed: list[_Timed] = []
+    tied: frozenset[int] = frozenset()
     for event in events:
         if isinstance(event, Barline):
             continue
         if isinstance(event, Rest):
             timed.append(_Timed((), event.duration.quarter_length, True))
+            tied = frozenset()
             continue
         beats = event.duration.quarter_length if event.duration is not None else Fraction(1)
-        timed.append(_Timed(tuple(h.pitch.midi for h in event.heads), beats, False))
+        midis = tuple(h.pitch.midi for h in event.heads)
+        timed.append(_Timed(midis, beats, False, tied & frozenset(midis)))
+        tied = frozenset(midis) if event.tie_to_next else frozenset()
     return timed
 
 
@@ -183,14 +189,21 @@ def figure_playback(
         start = Fraction(0)
         for staff in staves:
             for item in _timeline(staff.events):
-                for midi in sorted(item.midis):
+                for midi in sorted(m for m in item.midis if m not in item.held):
                     notes.append(PlaybackNote(midi, start, Fraction(1)))
                     start += 1
     elif mode == 'as-written':
         for staff in staves:
             start = Fraction(0)
+            sounding: dict[int, int] = {}  # midi -> index in notes, for ties
             for item in _timeline(staff.events):
-                notes.extend(PlaybackNote(m, start, item.beats) for m in item.midis)
+                for midi in item.midis:
+                    if midi in item.held:
+                        note = notes[sounding[midi]]
+                        notes[sounding[midi]] = replace(note, length=note.length + item.beats)
+                    else:
+                        sounding[midi] = len(notes)
+                        notes.append(PlaybackNote(midi, start, item.beats))
                 start += item.beats
     else:
         raise MusicTextError(f'unknown playback mode {mode!r}')
