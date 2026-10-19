@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+Glossary, level 2: modes, transposition and transposing instruments.
+Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
+-->
+<glossary>
+  <!-- Modes -->
+
+  <entry id="mode" level="2" tags="modes">
+    <term>mode</term>
+    <gloss>scale type set by its step pattern and home note</gloss>
+    <def>A type of <term ref="scale">scale</term> defined by its pattern of whole and half steps and the note it treats as home. The seven diatonic modes each use the pattern of the major scale starting from a different degree: on the white keys of the piano, <term ref="ionian">Ionian</term> runs from <note>C</note> to <note>C</note>, <term ref="dorian">Dorian</term> from <note>D</note> to <note>D</note>, and so on up to <term ref="locrian">Locrian</term> from <note>B</note>. Major and minor are themselves modes.</def>
+    <see ref="church-modes"/>
+    <see ref="characteristic-note"/>
+  </entry>
+
+  <entry id="church-modes" level="2" tags="modes">
+    <term>church modes</term>
+    <gloss>the modes of medieval and Renaissance chant and polyphony</gloss>
+    <def>The modes of medieval and Renaissance music: originally eight, the Dorian, Phrygian, Lydian and Mixolydian modes, each in an authentic form and a plagal (hypo-) form whose range lies a fourth lower. In 1547 Heinrich Glarean added the Aeolian and Ionian modes, making twelve; the Locrian mode remained theoretical. Also called ecclesiastical modes.</def>
+    <see ref="final"/>
+    <see ref="mode"/>
+  </entry>
+
+  <entry id="final" level="2" tags="modes">
+    <term>final</term>
+    <gloss>home note of a mode, where melodies end</gloss>
+    <def>The note on which a melody in a <term ref="mode">mode</term> normally ends, its equivalent of a <term ref="tonic">tonic</term>: <note>D</note> for the Dorian mode, <note>E</note> for Phrygian, <note>F</note> for Lydian and <note>G</note> for Mixolydian. From the Latin <em>finalis</em>.</def>
+    <see ref="church-modes"/>
+  </entry>
+
+  <entry id="characteristic-note" level="2" tags="modes">
+    <term>characteristic note</term>
+    <gloss>the note that sets a mode apart from major or minor</gloss>
+    <def>The note that distinguishes a <term ref="mode">mode</term> from the major or natural minor scale on the same tonic: the raised sixth of <term ref="dorian">Dorian</term>, the lowered second of <term ref="phrygian">Phrygian</term>, the raised fourth of <term ref="lydian">Lydian</term>, the lowered seventh of <term ref="mixolydian">Mixolydian</term> and the lowered fifth of <term ref="locrian">Locrian</term>. Also called the characteristic tone or color note.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">C4 D4 E4 *F#4{4} G4 A4 B4 C5</staff>
+      <caption><note>C</note> Lydian: a <note>C</note> major scale with a raised fourth degree.</caption>
+    </figure>
+  </entry>
+
+  <entry id="ionian" level="2" tags="modes">
+    <term>Ionian mode</term>
+    <gloss>mode with the same steps as the major scale</gloss>
+    <def>The <term ref="mode">mode</term> with the pattern of the <term ref="major-scale">major scale</term>: whole, whole, half, whole, whole, whole, half. On the white keys it runs from <note>C</note> to <note>C</note>.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">C4 D4 E4 F4 G4 A4 B4 C5</staff>
+    </figure>
+    <see ref="lydian"/>
+    <see ref="mixolydian"/>
+  </entry>
+
+  <entry id="dorian" level="2" tags="modes">
+    <term>Dorian mode</term>
+    <gloss>minor with a raised sixth</gloss>
+    <def>The <term ref="mode">mode</term> with the pattern whole, half, whole, whole, whole, half, whole: a <term ref="natural-minor-scale">natural minor scale</term> with a raised sixth degree. On the white keys it runs from <note>D</note> to <note>D</note>. It is common in folk music and jazz.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">D4 E4 F4 G4 A4 *B4{6} C5 D5</staff>
+      <caption><note>D</note> Dorian: <note>D</note> natural minor with <note>B</note> instead of <note>Bb</note>.</caption>
+    </figure>
+    <see ref="aeolian"/>
+  </entry>
+
+  <entry id="phrygian" level="2" tags="modes">
+    <term>Phrygian mode</term>
+    <gloss>minor with a lowered second</gloss>
+    <def>The <term ref="mode">mode</term> with the pattern half, whole, whole, whole, half, whole, whole: a <term ref="natural-minor-scale">natural minor scale</term> with a lowered second degree, a half step above the tonic. On the white keys it runs from <note>E</note> to <note>E</note>.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">E4 *F4{2} G4 A4 B4 C5 D5 E5</staff>
+      <caption><note>E</note> Phrygian: <note>E</note> natural minor with <note>F</note> instead of <note>F#</note>.</caption>
+    </figure>
+    <see ref="phrygian-half-cadence"/>
+  </entry>
+
+  <entry id="lydian" level="2" tags="modes">
+    <term>Lydian mode</term>
+    <gloss>major with a raised fourth</gloss>
+    <def>The <term ref="mode">mode</term> with the pattern whole, whole, whole, half, whole, whole, half: a <term ref="major-scale">major scale</term> with a raised fourth degree, a <term ref="tritone">tritone</term> above the tonic. On the white keys it runs from <note>F</note> to <note>F</note>.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">F4 G4 A4 *B4{4} C5 D5 E5 F5</staff>
+      <caption><note>F</note> Lydian: <note>F</note> major with <note>B</note> instead of <note>Bb</note>.</caption>
+    </figure>
+    <see ref="mixolydian"/>
+  </entry>
+
+  <entry id="mixolydian" level="2" tags="modes">
+    <term>Mixolydian mode</term>
+    <gloss>major with a lowered seventh</gloss>
+    <def>The <term ref="mode">mode</term> with the pattern whole, whole, half, whole, whole, half, whole: a <term ref="major-scale">major scale</term> with a lowered seventh degree, a <term ref="subtonic">subtonic</term> instead of a leading tone. On the white keys it runs from <note>G</note> to <note>G</note>. It is common in folk and rock music.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">G4 A4 B4 C5 D5 E5 *F5{7} G5</staff>
+      <caption><note>G</note> Mixolydian: <note>G</note> major with <note>F</note> instead of <note>F#</note>.</caption>
+    </figure>
+    <see ref="lydian"/>
+  </entry>
+
+  <entry id="aeolian" level="2" tags="modes">
+    <term>Aeolian mode</term>
+    <gloss>mode with the same steps as natural minor</gloss>
+    <def>The <term ref="mode">mode</term> with the pattern of the <term ref="natural-minor-scale">natural minor scale</term>: whole, half, whole, whole, half, whole, whole. On the white keys it runs from <note>A</note> to <note>A</note>. Its lowered sixth degree sets it apart from the <term ref="dorian">Dorian</term> mode.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">A4 B4 C5 D5 E5 *F5{6} G5 A5</staff>
+    </figure>
+    <see ref="dorian"/>
+  </entry>
+
+  <entry id="locrian" level="2" tags="modes">
+    <term>Locrian mode</term>
+    <gloss>mode with a lowered second and fifth</gloss>
+    <def>The <term ref="mode">mode</term> with the pattern half, whole, whole, half, whole, whole, whole: a natural minor scale with lowered second and fifth degrees. On the white keys it runs from <note>B</note> to <note>B</note>. Its tonic triad is diminished, so it was hardly used before the twentieth century.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">B4 *C5{2} D5 E5 *F5{5} G5 A5 B5</staff>
+    </figure>
+    <see ref="phrygian"/>
+  </entry>
+
+  <!-- Transposition -->
+
+  <entry id="transposition" level="2" tags="transposition">
+    <term>transposition</term>
+    <gloss>moving music to another pitch level</gloss>
+    <def>Rewriting or performing music at a different pitch, moving every note by the same interval, so that the intervals between the notes stay the same. Transposing to a new key also changes the key signature. Music for <term ref="transposing-instrument">transposing instruments</term> is written transposed.</def>
+    <figure>
+      <staff clef="treble" time="3/4">C4/q E4/q G4/q | F4/q E4/q D4/q | C4/h. |.</staff>
+      <staff clef="treble" key="2" time="3/4">D4/q F#4/q A4/q | G4/q F#4/q E4/q | D4/h. |.</staff>
+      <caption>A melody in <note>C</note> major transposed up a major second to <note>D</note> major.</caption>
+    </figure>
+    <see ref="concert-pitch"/>
+  </entry>
+
+  <entry id="transposing-instrument" level="2" tags="transposition">
+    <term>transposing instrument</term>
+    <gloss>instrument that sounds at a different pitch than written</gloss>
+    <def>An instrument whose music is written at a different pitch from the one it sounds, so that players can use the same fingerings on instruments of different sizes. The key in its name is the note that sounds when it plays a written <note>C</note>: a written <note>C</note> on the <term ref="clarinet-in-b-flat">clarinet in B♭</term> sounds <note>Bb</note>.</def>
+    <see ref="written-pitch"/>
+    <see ref="concert-pitch"/>
+  </entry>
+
+  <entry id="concert-pitch" level="2" tags="transposition">
+    <term>concert pitch</term>
+    <gloss>the pitch that actually sounds</gloss>
+    <def>The pitch that is actually heard, as opposed to the <term ref="written-pitch">written pitch</term> of a <term ref="transposing-instrument">transposing instrument</term>; the piano, violin and flute play at concert pitch. The term also names the standard tuning, today usually <note>A4</note> at 440 vibrations per second.</def>
+    <see ref="written-pitch"/>
+  </entry>
+
+  <entry id="written-pitch" level="2" tags="transposition">
+    <term>written pitch</term>
+    <gloss>the note as it appears in the player's part</gloss>
+    <def>The note as notated in a player's part. For a <term ref="transposing-instrument">transposing instrument</term> it differs from the <term ref="concert-pitch">concert pitch</term> by the instrument's interval of transposition; for other instruments the two are the same.</def>
+    <see ref="concert-pitch"/>
+  </entry>
+
+  <entry id="transposed-score" level="2" tags="transposition">
+    <term>transposed score</term>
+    <gloss>score showing each part as its player reads it</gloss>
+    <def>A score in which the parts of <term ref="transposing-instrument">transposing instruments</term> are written as their players read them, at <term ref="written-pitch">written pitch</term>. Most orchestral scores are transposed.</def>
+    <see ref="concert-score"/>
+  </entry>
+
+  <entry id="concert-score" level="2" tags="transposition">
+    <term>concert score</term>
+    <gloss>score with every part at sounding pitch</gloss>
+    <def>A score in which every part is written at <term ref="concert-pitch">concert pitch</term>, so that the conductor or analyst reads the sounding notes directly; instruments that sound an octave away may keep their usual octave. Also called a score in C.</def>
+    <see ref="transposed-score"/>
+  </entry>
+
+  <entry id="clarinet-in-b-flat" level="2" tags="transposition">
+    <term>clarinet in B♭</term>
+    <gloss>woodwind sounding a major second lower</gloss>
+    <def>The most common clarinet, which sounds a <term ref="major-second">major second</term> lower than written: a written <note>D5</note> sounds <note>C5</note>. Its parts are written a major second higher than concert pitch, with two more sharps or two fewer flats in the key signature.</def>
+    <figure>
+      <staff clef="treble" key="2">D5 E5 F#5 G5 A5</staff>
+      <staff clef="treble">C5 D5 E5 F5 G5</staff>
+      <caption>Written notes (upper staff) and the sounding notes (lower staff).</caption>
+    </figure>
+    <see ref="clarinet-in-a"/>
+    <see ref="trumpet-in-b-flat"/>
+  </entry>
+
+  <entry id="clarinet-in-a" level="2" tags="transposition">
+    <term>clarinet in A</term>
+    <gloss>woodwind sounding a minor third lower</gloss>
+    <def>A clarinet a half step lower than the <term ref="clarinet-in-b-flat">clarinet in B♭</term>, which sounds a <term ref="minor-third">minor third</term> lower than written: a written <note>C5</note> sounds <note>A4</note>. Its key signature has three more flats or three fewer sharps than concert pitch, which suits sharp keys.</def>
+    <figure>
+      <staff clef="treble" key="-3">Eb5 F5 G5 Ab5 Bb5</staff>
+      <staff clef="treble">C5 D5 E5 F5 G5</staff>
+      <caption>Written notes (upper staff) and the sounding notes (lower staff).</caption>
+    </figure>
+    <see ref="clarinet-in-b-flat"/>
+  </entry>
+
+  <entry id="trumpet-in-b-flat" level="2" tags="transposition">
+    <term>trumpet in B♭</term>
+    <gloss>brass sounding a major second lower</gloss>
+    <def>The most common trumpet, which like the <term ref="clarinet-in-b-flat">clarinet in B♭</term> sounds a <term ref="major-second">major second</term> lower than written: a written <note>E5</note> sounds <note>D5</note>. Orchestral players also use trumpets in <note>C</note>, which do not transpose.</def>
+    <figure>
+      <staff clef="treble" key="2">A4 B4 C#5 D5 E5</staff>
+      <staff clef="treble">G4 A4 B4 C5 D5</staff>
+      <caption>Written notes (upper staff) and the sounding notes (lower staff).</caption>
+    </figure>
+    <see ref="horn-in-f"/>
+  </entry>
+
+  <entry id="horn-in-f" level="2" tags="transposition">
+    <term>horn in F</term>
+    <gloss>brass sounding a perfect fifth lower</gloss>
+    <def>The French horn, which sounds a <term ref="perfect-fifth">perfect fifth</term> lower than written: a written <note>C5</note> sounds <note>F4</note>. Modern parts have one more sharp or one fewer flat than concert pitch; older horn parts are written without a key signature. Simply called the horn by players.</def>
+    <figure>
+      <staff clef="treble" key="1">G4 A4 B4 C5 D5</staff>
+      <staff clef="treble">C4 D4 E4 F4 G4</staff>
+      <caption>Written notes (upper staff) and the sounding notes (lower staff).</caption>
+    </figure>
+    <see ref="english-horn"/>
+  </entry>
+
+  <entry id="english-horn" level="2" tags="transposition">
+    <term>English horn</term>
+    <gloss>double reed sounding a perfect fifth lower</gloss>
+    <def>A larger, lower oboe in <note>F</note>, which sounds a <term ref="perfect-fifth">perfect fifth</term> lower than written, like the <term ref="horn-in-f">horn in F</term>. Despite its name it is neither English nor a horn. Called the cor anglais in British English.</def>
+    <figure>
+      <staff clef="treble" key="1">D5 E5 F#5 G5 A5</staff>
+      <staff clef="treble">G4 A4 B4 C5 D5</staff>
+      <caption>Written notes (upper staff) and the sounding notes (lower staff).</caption>
+    </figure>
+    <see ref="horn-in-f"/>
+  </entry>
+
+  <entry id="alto-saxophone" level="2" tags="transposition">
+    <term>alto saxophone</term>
+    <gloss>saxophone sounding a major sixth lower</gloss>
+    <def>The saxophone in <note>Eb</note>, which sounds a <term ref="major-sixth">major sixth</term> lower than written: a written <note>C5</note> sounds <note>Eb4</note>. Its parts have three more sharps or three fewer flats than concert pitch.</def>
+    <figure>
+      <staff clef="treble" key="3">A4 B4 C#5 D5 E5</staff>
+      <staff clef="treble">C4 D4 E4 F4 G4</staff>
+      <caption>Written notes (upper staff) and the sounding notes (lower staff).</caption>
+    </figure>
+    <see ref="tenor-saxophone"/>
+  </entry>
+
+  <entry id="tenor-saxophone" level="2" tags="transposition">
+    <term>tenor saxophone</term>
+    <gloss>saxophone sounding a major ninth lower</gloss>
+    <def>The saxophone in <note>Bb</note>, which sounds a major ninth, an octave and a <term ref="major-second">major second</term>, lower than written: a written <note>D5</note> sounds <note>C4</note>. Its parts have two more sharps or two fewer flats than concert pitch.</def>
+    <figure>
+      <staff clef="treble" key="2">D5 E5 F#5 G5 A5</staff>
+      <staff clef="treble">C4 D4 E4 F4 G4</staff>
+      <caption>Written notes (upper staff) and the sounding notes (lower staff).</caption>
+    </figure>
+    <see ref="alto-saxophone"/>
+  </entry>
+
+  <entry id="piccolo" level="2" tags="transposition">
+    <term>piccolo</term>
+    <foreign lang="it">ottavino</foreign>
+    <gloss>small flute sounding an octave higher</gloss>
+    <def>A small flute that sounds an <term ref="octave">octave</term> higher than written, which keeps its very high notes from needing many ledger lines. The usual English name comes from the Italian <em>flauto piccolo</em>, little flute.</def>
+    <figure>
+      <staff clef="treble">C5 D5 E5 F5 G5</staff>
+      <staff clef="treble">C6 D6 E6 F6 G6</staff>
+      <caption>Written notes (upper staff) and the sounding notes (lower staff).</caption>
+    </figure>
+    <see ref="double-bass"/>
+  </entry>
+
+  <entry id="double-bass" level="2" tags="transposition">
+    <term>double bass</term>
+    <gloss>bowed string sounding an octave lower</gloss>
+    <def>The largest and lowest instrument of the violin family's section in the orchestra, which sounds an <term ref="octave">octave</term> lower than written in the bass clef, so that its low notes need fewer ledger lines. Also called the contrabass, string bass or simply bass.</def>
+    <figure>
+      <staff clef="bass">C3 D3 E3 F3 G3</staff>
+      <staff clef="bass">C2 D2 E2 F2 G2</staff>
+      <caption>Written notes (upper staff) and the sounding notes (lower staff).</caption>
+    </figure>
+    <see ref="guitar"/>
+  </entry>
+
+  <entry id="guitar" level="2" tags="transposition">
+    <term>guitar</term>
+    <gloss>plucked string sounding an octave lower</gloss>
+    <def>The six-string guitar, whose music is written in the treble clef an <term ref="octave">octave</term> higher than it sounds; the clef often has a small 8 below it to show this. Its open strings sound <note>E2</note>, <note>A2</note>, <note>D3</note>, <note>G3</note>, <note>B3</note> and <note>E4</note>.</def>
+    <figure>
+      <staff clef="treble_8vb">E3 A3 D4 G4 B4 E5</staff>
+      <caption>The open strings, written in the octave treble clef; they sound an octave lower than the unmarked treble clef would show.</caption>
+    </figure>
+    <see ref="double-bass"/>
+  </entry>
+</glossary>

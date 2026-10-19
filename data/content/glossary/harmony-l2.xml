@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+Glossary, level 2: seventh chords, harmonic function, cadences and figured bass.
+Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
+-->
+<glossary tags="harmony">
+  <!-- Seventh chords -->
+
+  <entry id="seventh-chord" level="2" tags="sevenths">
+    <term>seventh chord</term>
+    <gloss>triad with a seventh above the root</gloss>
+    <def>A four-note chord: a <term ref="triad">triad</term> with another third stacked on top, so that its notes span a seventh from the <term ref="root">root</term>. The five common types are named by their triad and seventh: <term ref="major-seventh-chord">major seventh</term>, <term ref="dominant-seventh-chord">major-minor (dominant) seventh</term>, <term ref="minor-seventh-chord">minor seventh</term>, <term ref="half-diminished-seventh-chord">half-diminished seventh</term> and <term ref="diminished-seventh-chord">diminished seventh</term>.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[G4 B4 D5 F5]/w</staff>
+    </figure>
+    <see ref="chordal-seventh"/>
+    <see ref="inversion-figures"/>
+  </entry>
+
+  <entry id="major-seventh-chord" level="2" tags="sevenths">
+    <term>major seventh chord</term>
+    <gloss>major triad plus a major seventh</gloss>
+    <def>A <term ref="seventh-chord">seventh chord</term> made of a <term ref="major-triad">major triad</term> and a <term ref="major-seventh">major seventh</term> above the root: <note>C</note>–<note>E</note>–<note>G</note>–<note>B</note>. In a major key it is built on the first and fourth degrees (IM7 and IVM7). Also called a major-major seventh chord; jazz writes it Cmaj7 or CΔ7.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[C4 E4 G4 B4]/h{IM7} [F4 A4 C5 E5]/h{IVM7}</staff>
+      <caption>The major seventh chords of <note>C</note> major.</caption>
+    </figure>
+    <see ref="dominant-seventh-chord"/>
+  </entry>
+
+  <entry id="dominant-seventh-chord" level="2" tags="sevenths">
+    <term>dominant seventh chord</term>
+    <gloss>major triad plus a minor seventh</gloss>
+    <def>A <term ref="seventh-chord">seventh chord</term> made of a <term ref="major-triad">major triad</term> and a <term ref="minor-seventh">minor seventh</term> above the root, the quality of the chord on the <term ref="dominant">dominant</term>, V7: <note>G</note>–<note>B</note>–<note>D</note>–<note>F</note> in <note>C</note> major and minor. By quality it is a major-minor seventh chord. Its <term ref="tritone">tritone</term> between the <term ref="leading-tone">leading tone</term> and the seventh pulls strongly to the tonic.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[G4 B4 D5 F5]/w{V7}</staff>
+    </figure>
+    <see ref="chordal-seventh"/>
+    <see ref="tendency-tone"/>
+  </entry>
+
+  <entry id="minor-seventh-chord" level="2" tags="sevenths">
+    <term>minor seventh chord</term>
+    <gloss>minor triad plus a minor seventh</gloss>
+    <def>A <term ref="seventh-chord">seventh chord</term> made of a <term ref="minor-triad">minor triad</term> and a <term ref="minor-seventh">minor seventh</term> above the root: <note>D</note>–<note>F</note>–<note>A</note>–<note>C</note>. In a major key it is built on the second, third and sixth degrees (ii7, iii7, vi7). Also called a minor-minor seventh chord.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[D4 F4 A4 C5]/h{ii7} [A4 C5 E5 G5]/h{vi7}</staff>
+    </figure>
+    <see ref="half-diminished-seventh-chord"/>
+  </entry>
+
+  <entry id="half-diminished-seventh-chord" level="2" tags="sevenths">
+    <term>half-diminished seventh chord</term>
+    <gloss>diminished triad plus a minor seventh</gloss>
+    <def>A <term ref="seventh-chord">seventh chord</term> made of a <term ref="diminished-triad">diminished triad</term> and a <term ref="minor-seventh">minor seventh</term> above the root, written with a slashed circle, ø7: <note>B</note>–<note>D</note>–<note>F</note>–<note>A</note>, viiø7 in <note>C</note> major, or <note>D</note>–<note>F</note>–<note>Ab</note>–<note>C</note>, iiø7 in <note>C</note> minor. Jazz calls it a minor seventh flat five, m7♭5.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[B4 D5 F5 A5]/h{viiø7} [D4 F4 Ab4 C5]/h{iiø7}</staff>
+      <caption>viiø7 in <note>C</note> major and iiø7 in <note>C</note> minor.</caption>
+    </figure>
+    <see ref="diminished-seventh-chord"/>
+  </entry>
+
+  <entry id="diminished-seventh-chord" level="2" tags="sevenths">
+    <term>diminished seventh chord</term>
+    <gloss>diminished triad plus a diminished seventh</gloss>
+    <def>A <term ref="seventh-chord">seventh chord</term> made of a <term ref="diminished-triad">diminished triad</term> and a <term ref="diminished-interval">diminished seventh</term> above the root, so it is three stacked minor thirds: <note>G#</note>–<note>B</note>–<note>D</note>–<note>F</note>, vii°7 in <note>A</note> minor. Also called the fully diminished seventh chord. Its four notes divide the octave into equal parts, so each inversion sounds the same as another diminished seventh chord in root position.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[G#4 B4 D5 F5]/w{vii°7}</staff>
+      <caption>vii°7 in <note>A</note> minor, built on the raised seventh degree.</caption>
+    </figure>
+    <see ref="half-diminished-seventh-chord"/>
+    <see ref="leading-tone-seventh-chord"/>
+  </entry>
+
+  <entry id="leading-tone-seventh-chord" level="2" tags="sevenths">
+    <term>leading-tone seventh chord</term>
+    <gloss>seventh chord on the seventh degree</gloss>
+    <def>The <term ref="seventh-chord">seventh chord</term> built on the <term ref="leading-tone">leading tone</term>: half-diminished in major (viiø7) and fully diminished in minor (vii°7), where it uses the raised seventh degree. It has <term ref="dominant-function">dominant function</term> and resolves to the tonic triad. Called the leading-note seventh in British English.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[B4 D5 F5 A5]{viiø7} [C5 E5 G5]{I} || [G#4 B4 D5 F5]{vii°7} [A4 C5 E5]{i}</staff>
+      <caption>viiø7 to I in <note>C</note> major, then vii°7 to i in <note>A</note> minor.</caption>
+    </figure>
+    <see ref="diminished-seventh-chord"/>
+  </entry>
+
+  <entry id="supertonic-seventh-chord" level="2" tags="sevenths">
+    <term>supertonic seventh chord</term>
+    <gloss>seventh chord on the second degree</gloss>
+    <def>The <term ref="seventh-chord">seventh chord</term> built on the <term ref="supertonic">supertonic</term>: a minor seventh chord in major (ii7) and a half-diminished seventh chord in minor (iiø7). It is the most common <term ref="predominant">predominant</term> seventh chord, often in first inversion (ii6/5) before V.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[D4 F4 A4 C5]/h{ii7} [D4 F4 Ab4 C5]/h{iiø7}</staff>
+      <caption>ii7 in <note>C</note> major and iiø7 in <note>C</note> minor.</caption>
+    </figure>
+    <see ref="minor-seventh-chord"/>
+  </entry>
+
+  <entry id="chordal-seventh" level="2" tags="sevenths">
+    <term>seventh (of a chord)</term>
+    <gloss>chord note a seventh above the root</gloss>
+    <def>The note of a <term ref="seventh-chord">seventh chord</term> a seventh above its <term ref="root">root</term>: <note>F</note> in <note>G</note>–<note>B</note>–<note>D</note>–<note>F</note>. It is a <term ref="dissonance">dissonance</term> and normally <term ref="resolution">resolves</term> down by step; in strict style it is also prepared, held over as a common tone from the chord before.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">*[B4 F5] [C5 E5]</staff>
+      <staff clef="bass">[G3 D4]{V7} [C3 C4]{I}</staff>
+      <caption>The seventh, <note>F</note>, falls to <note>E</note> while the leading tone rises to <note>C</note>.</caption>
+    </figure>
+    <see ref="tendency-tone"/>
+  </entry>
+
+  <entry id="inversion-figures" level="2" tags="sevenths figured-bass">
+    <term>inversion figures</term>
+    <gloss>numbers that show which chord note is in the bass</gloss>
+    <def>The figures from <term ref="figured-bass">figured bass</term> that Roman numeral analysis uses to show a chord's position. Triads: none (5/3) in <term ref="root-position">root position</term>, 6 in first inversion and 6/4 in second inversion. Seventh chords: 7 in root position, <term ref="six-five">6/5</term>, <term ref="four-three">4/3</term> and <term ref="four-two">4/2</term> in first, second and third inversion.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[G4 B4 D5 F5]/q{7} [B4 D5 F5 G5]/q{6/5} [D4 F4 G4 B4]/q{4/3} [F4 G4 B4 D5]/q{4/2}</staff>
+      <caption>The dominant seventh of <note>C</note> major in root position and its three inversions.</caption>
+    </figure>
+    <see ref="third-inversion"/>
+  </entry>
+
+  <entry id="six-five" level="2" tags="sevenths">
+    <term>six-five chord</term>
+    <gloss>figure for a first-inversion seventh chord</gloss>
+    <def>A <term ref="seventh-chord">seventh chord</term> in first inversion, with its <term ref="chord-third">third</term> in the bass, named after the sixth and fifth above the bass that mark it, 6/5: V6/5 in <note>C</note> major has <note>B</note> in the bass.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[G4 D5 F5] [G4 C5 E5]</staff>
+      <staff clef="bass">B2{V6/5} C3{I}</staff>
+    </figure>
+    <see ref="inversion-figures"/>
+  </entry>
+
+  <entry id="four-three" level="2" tags="sevenths">
+    <term>four-three chord</term>
+    <gloss>figure for a second-inversion seventh chord</gloss>
+    <def>A <term ref="seventh-chord">seventh chord</term> in second inversion, with its <term ref="chord-fifth">fifth</term> in the bass, named after the fourth and third above the bass that mark it, 4/3 (in full 6/4/3): V4/3 in <note>C</note> major has <note>D</note> in the bass.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[G4 B4 F5] [G4 C5 E5]</staff>
+      <staff clef="bass">D3{V4/3} C3{I}</staff>
+    </figure>
+    <see ref="inversion-figures"/>
+  </entry>
+
+  <entry id="four-two" level="2" tags="sevenths">
+    <term>four-two chord</term>
+    <gloss>figure for a third-inversion seventh chord</gloss>
+    <def>A <term ref="seventh-chord">seventh chord</term> in <term ref="third-inversion">third inversion</term>, with its seventh in the bass, named after the fourth and second above the bass that mark it, 4/2 (in full 6/4/2; sometimes just 2). Because the seventh falls by step, V4/2 normally resolves to I6.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[G4 B4 D5] [G4 C5 E5]</staff>
+      <staff clef="bass">F3{V4/2} E3{I6}</staff>
+    </figure>
+    <see ref="inversion-figures"/>
+  </entry>
+
+  <entry id="third-inversion" level="2" tags="sevenths">
+    <term>third inversion</term>
+    <gloss>seventh chord with its seventh in the bass</gloss>
+    <def>A <term ref="seventh-chord">seventh chord</term> is in third inversion when its <term ref="chordal-seventh">seventh</term> is the lowest note. Only seventh chords and larger chords have a third inversion; it is marked <term ref="four-two">4/2</term>.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[F4 G4 B4 D5]/w</staff>
+      <caption><note>G</note>–<note>B</note>–<note>D</note>–<note>F</note> with <note>F</note> in the bass.</caption>
+    </figure>
+    <see ref="second-inversion"/>
+  </entry>
+
+  <entry id="incomplete-chord" level="2" tags="sevenths voice-leading">
+    <term>incomplete chord</term>
+    <gloss>chord with one of its notes left out</gloss>
+    <def>A chord with one of its notes missing. In four-part writing the fifth is the note normally left out, and another note, usually the root, is doubled: an incomplete V7 has two roots, a third and a seventh. The third and the seventh are not omitted, since they give the chord its quality.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[G4 B4 F5 G5]/w{V7}</staff>
+      <caption>V7 in <note>C</note> major without its fifth, <note>D</note>.</caption>
+    </figure>
+    <see ref="doubling"/>
+  </entry>
+
+  <!-- Harmonic function -->
+
+  <entry id="harmonic-function" level="2" tags="function">
+    <term>harmonic function</term>
+    <gloss>a chord's role: tonic, predominant or dominant</gloss>
+    <def>The role a chord plays in a key, which groups chords into three families: <term ref="tonic-function">tonic</term> (stability), <term ref="predominant">predominant</term> (moving away) and <term ref="dominant-function">dominant</term> (tension that leads back to the tonic). The typical phrase moves tonic – predominant – dominant – tonic. Some theorists, following Riemann, call the predominant the subdominant function.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[E4 G4 C5] [F4 A4 D5] [F4 B4 D5] [E4 C5 E5]</staff>
+      <staff clef="bass">C3{I} F3{ii6} G3{V7} C3{I}</staff>
+      <caption>Tonic, predominant, dominant and tonic again.</caption>
+    </figure>
+    <see ref="progression"/>
+  </entry>
+
+  <entry id="tonic-function" level="2" tags="function">
+    <term>tonic function</term>
+    <gloss>stability and arrival: I and its substitutes</gloss>
+    <def>The <term ref="harmonic-function">function</term> of rest and arrival, held by the tonic triad, I or i. The vi chord, and in some analyses iii, can stand in for the tonic because they share two of its notes, as in the <term ref="deceptive-cadence">deceptive cadence</term>.</def>
+    <see ref="tonic"/>
+  </entry>
+
+  <entry id="predominant" level="2" tags="function">
+    <term>predominant</term>
+    <gloss>chords that lead to the dominant: ii and IV</gloss>
+    <def>The <term ref="harmonic-function">function</term> of chords that lead to the dominant, mainly ii and IV (ii° and iv in minor), with or without sevenths, in root position or first inversion. They usually contain the fourth scale degree. Also spelled pre-dominant; also called subdominant function.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[A4 C5] [G4 B4] || [A4 D5] [G4 B4]</staff>
+      <staff clef="bass">[F3 F4]{IV} [G3 D4]{V} || [F3 F4]{ii6} [G3 D4]{V}</staff>
+      <caption>IV and ii6 leading to V in <note>C</note> major.</caption>
+    </figure>
+    <see ref="supertonic-seventh-chord"/>
+  </entry>
+
+  <entry id="dominant-function" level="2" tags="function">
+    <term>dominant function</term>
+    <gloss>tension that leads to the tonic: V and vii°</gloss>
+    <def>The <term ref="harmonic-function">function</term> of chords that pull back to the tonic: V, V7 and the <term ref="leading-tone-seventh-chord">leading-tone</term> chords vii° and vii°7 (viiø7 in major). All contain the <term ref="leading-tone">leading tone</term>, which needs the raised seventh degree in minor.</def>
+    <see ref="dominant-seventh-chord"/>
+  </entry>
+
+  <entry id="primary-triads" level="2" tags="function">
+    <term>primary triads</term>
+    <gloss>I, IV and V</gloss>
+    <def>The triads on the tonic, subdominant and dominant: I, IV and V (in minor i, iv and V). Between them they contain every note of the scale and represent the three <term ref="harmonic-function">functions</term>, so they can harmonize most simple melodies.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[C4 E4 G4]/h{I} [F4 A4 C5]/h{IV} [G4 B4 D5]/h{V}</staff>
+    </figure>
+    <see ref="secondary-triads"/>
+  </entry>
+
+  <entry id="secondary-triads" level="2" tags="function">
+    <term>secondary triads</term>
+    <gloss>ii, iii, vi and vii°</gloss>
+    <def>The diatonic triads other than the <term ref="primary-triads">primary triads</term>: ii, iii, vi and vii° in major. Each shares two notes with a primary triad and can often take its place. Not to be confused with secondary dominants, which are chromatic chords.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[D4 F4 A4]/q{ii} [E4 G4 B4]/q{iii} [A4 C5 E5]/q{vi} [B4 D5 F5]/q{vii°}</staff>
+    </figure>
+    <see ref="primary-triads"/>
+  </entry>
+
+  <entry id="progression" level="2" tags="function">
+    <term>progression</term>
+    <gloss>a series of chords moving with direction</gloss>
+    <def>A series of chords heard as moving towards a goal, usually following the normal order of functions: tonic, <term ref="predominant">predominant</term>, <term ref="dominant-function">dominant</term>, tonic. More generally, any succession of chords.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[G4 C5] [A4 C5] [G4 B4] [G4 C5]</staff>
+      <staff clef="bass">[C3 E4]{I} [F3 F4]{IV} [G3 D4]{V} [C3 E4]{I}</staff>
+    </figure>
+    <see ref="retrogression"/>
+    <see ref="circle-progression"/>
+  </entry>
+
+  <entry id="retrogression" level="2" tags="function">
+    <term>retrogression</term>
+    <gloss>chords moving against the usual order</gloss>
+    <def>A chord succession that reverses the usual order of functions, such as V–IV or V–ii, dominant to predominant. Retrogressions are less common than <term ref="progression">progressions</term> but not wrong, especially inside a phrase.</def>
+    <see ref="progression"/>
+  </entry>
+
+  <entry id="circle-progression" level="2" tags="function">
+    <term>circle progression</term>
+    <gloss>chord roots falling by fifths</gloss>
+    <def>A <term ref="progression">progression</term> whose roots fall by fifths (or rise by fourths), as on the <term ref="circle-of-fifths">circle of fifths</term>: vi–ii–V–I. Falling fifths are usually considered the strongest root movement in tonal music.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[E4 A4 C5] [F4 A4 D5] [F4 B4 D5] [E4 C5 E5]</staff>
+      <staff clef="bass">A2{vi} D3{ii} G2{V7} C3{I}</staff>
+    </figure>
+    <see ref="root-movement"/>
+  </entry>
+
+  <entry id="root-movement" level="2" tags="function">
+    <term>root movement</term>
+    <gloss>the interval between successive chord roots</gloss>
+    <def>The interval from the root of one chord to the root of the next, whatever the chords' inversions. Roots falling by fifth, falling by third and rising by step make the most common progressions; roots falling by step or rising by third are less common.</def>
+    <see ref="circle-progression"/>
+  </entry>
+
+  <entry id="harmonic-rhythm" level="2" tags="function rhythm2">
+    <term>harmonic rhythm</term>
+    <gloss>how often the chords change</gloss>
+    <def>The rhythm of the chord changes, as distinct from the rhythm of the melody. Harmonic rhythm often speeds up towards a <term ref="cadence">cadence</term>, and chord changes usually fall on strong beats.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">E5/q D5/q C5/q E5/q | F5/q A5/q G5/q F5/q | E5/q D5/q C5/h |.</staff>
+      <staff clef="bass" time="4/4">[C3 G3]/w{I} | [F3 C4]/h{IV} [G3 D4]/h{V7} | [C3 G3]/w{I} |.</staff>
+      <caption>The melody moves in quarter notes; the harmony changes once in the first and last bars and twice in the second.</caption>
+    </figure>
+  </entry>
+
+  <!-- Cadences -->
+
+  <entry id="cadence" level="2" tags="cadences form">
+    <term>cadence</term>
+    <gloss>harmonic and melodic close of a phrase</gloss>
+    <def>A point of arrival that ends a <term ref="phrase">phrase</term>, made by a typical chord pattern and melody. Cadences ending on the tonic (<term ref="authentic-cadence">authentic</term>, <term ref="plagal-cadence">plagal</term>) sound closed; those ending on the dominant (<term ref="half-cadence">half cadence</term>) or replacing the expected tonic (<term ref="deceptive-cadence">deceptive</term>) sound open.</def>
+    <see ref="perfect-authentic-cadence"/>
+  </entry>
+
+  <entry id="authentic-cadence" level="2" tags="cadences">
+    <term>authentic cadence</term>
+    <gloss>dominant to tonic at a phrase end</gloss>
+    <def>A <term ref="cadence">cadence</term> from the dominant, V or V7, to the tonic, I or i: the strongest close in tonal music. It is either <term ref="perfect-authentic-cadence">perfect</term> or <term ref="imperfect-authentic-cadence">imperfect</term>. British books call V–I a perfect cadence whatever the voicing.</def>
+    <see ref="half-cadence"/>
+  </entry>
+
+  <entry id="perfect-authentic-cadence" level="2" tags="cadences">
+    <term>perfect authentic cadence</term>
+    <gloss>V–I in root position, tonic in the top voice</gloss>
+    <def>An <term ref="authentic-cadence">authentic cadence</term> with both chords in <term ref="root-position">root position</term> and the tonic in the highest voice on the final chord: the most conclusive cadence. Abbreviated PAC.</def>
+    <abbr>PAC</abbr>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[G4 B4] [G4 C5]</staff>
+      <staff clef="bass">[G2 D4]{V} [C3 E4]{I}</staff>
+      <caption>The leading tone rises to the tonic in the soprano while the bass falls from the dominant to the tonic.</caption>
+    </figure>
+    <see ref="imperfect-authentic-cadence"/>
+  </entry>
+
+  <entry id="imperfect-authentic-cadence" level="2" tags="cadences">
+    <term>imperfect authentic cadence</term>
+    <gloss>V–I ending with the third or fifth on top</gloss>
+    <def>An <term ref="authentic-cadence">authentic cadence</term> weaker than a <term ref="perfect-authentic-cadence">perfect</term> one. Most textbooks mean root-position V–I with the third or fifth of the tonic in the highest voice; some, such as Kostka and Payne, also count cadences with an inverted chord or with vii° in place of V. Abbreviated IAC. Not the British imperfect cadence, which is a <term ref="half-cadence">half cadence</term>.</def>
+    <abbr>IAC</abbr>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[G4 D5] [G4 E5]</staff>
+      <staff clef="bass">[G2 B3]{V} [C3 C4]{I}</staff>
+      <caption>The soprano ends on the third of the tonic triad.</caption>
+    </figure>
+    <see ref="perfect-authentic-cadence"/>
+  </entry>
+
+  <entry id="half-cadence" level="2" tags="cadences">
+    <term>half cadence</term>
+    <gloss>phrase ending on V</gloss>
+    <def>A <term ref="cadence">cadence</term> that ends on the dominant triad, V, usually in root position, approached from any chord, most often I, ii or IV. It sounds open, like a question. Called an imperfect cadence in British English. Abbreviated HC.</def>
+    <abbr>HC</abbr>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[F4 A4] [D4 G4]</staff>
+      <staff clef="bass">[F3 C4]{IV} [G3 B3]{V}</staff>
+    </figure>
+    <see ref="phrygian-half-cadence"/>
+  </entry>
+
+  <entry id="plagal-cadence" level="2" tags="cadences">
+    <term>plagal cadence</term>
+    <gloss>IV to I: the Amen cadence</gloss>
+    <def>The progression IV–I (iv–i in minor), familiar as the Amen at the end of hymns. Many theorists, Caplin among them, regard it as a confirmation that follows an <term ref="authentic-cadence">authentic cadence</term> rather than as a phrase-ending cadence of its own.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[F4 C5] [E4 C5]</staff>
+      <staff clef="bass">[F2 A3]{IV} [C3 G3]{I}</staff>
+    </figure>
+    <see ref="authentic-cadence"/>
+  </entry>
+
+  <entry id="deceptive-cadence" level="2" tags="cadences">
+    <term>deceptive cadence</term>
+    <gloss>V moving to vi instead of I</gloss>
+    <def>A <term ref="cadence">cadence</term> in which V moves to a chord other than the expected tonic, usually vi (VI in minor). The leading tone still rises to the tonic, which is then doubled as the third of vi. Called an interrupted cadence in British English.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[G4 B4] [E4 C5]</staff>
+      <staff clef="bass">[G3 D4]{V} [A3 C4]{vi}</staff>
+    </figure>
+    <see ref="authentic-cadence"/>
+  </entry>
+
+  <entry id="phrygian-half-cadence" level="2" tags="cadences">
+    <term>Phrygian half cadence</term>
+    <gloss>iv6 to V in minor</gloss>
+    <def>A <term ref="half-cadence">half cadence</term> in minor from iv6 to V, in which the bass falls a half step from the sixth to the fifth degree while an upper voice rises a whole step to the octave. The falling half step recalls the close of the <term ref="phrygian">Phrygian mode</term>.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[A4 D5] [G#4 E5]</staff>
+      <staff clef="bass">[F3 D4]{iv6} [E3 B3]{V}</staff>
+      <caption>In <note>A</note> minor: the bass falls from <note>F</note> to <note>E</note> as the soprano rises from <note>D</note> to <note>E</note>.</caption>
+    </figure>
+    <see ref="half-cadence"/>
+  </entry>
+
+  <entry id="cadential-six-four" level="2" tags="cadences">
+    <term>cadential six-four</term>
+    <gloss>6/4 over the dominant bass, resolving to V</gloss>
+    <def>A <term ref="second-inversion">second-inversion</term> tonic triad on a strong beat over the dominant in the bass, whose sixth and fourth fall by step to the fifth and third of V. Because it decorates V, books label it differently: I6/4–V, V6/4–5/3 or Cad6/4.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[G4 C5] [G4 B4] [G4 C5]</staff>
+      <staff clef="bass">[G3 E4]{I6/4} [G3 D4]{V} [C3 E4]{I}</staff>
+    </figure>
+    <see ref="passing-six-four"/>
+  </entry>
+
+  <entry id="picardy-third" level="2" tags="cadences">
+    <term>Picardy third</term>
+    <foreign lang="fr">tierce de Picardie</foreign>
+    <gloss>major tonic triad ending a minor-key piece</gloss>
+    <def>A major tonic triad at the end of a piece or section in a minor key, made by raising the third of the tonic: a minor-key piece in <note>A</note> ends on <note>A</note>–<note>C#</note>–<note>E</note>. Common in music of the Renaissance and Baroque.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[G#4 B4] [A4 C#5]</staff>
+      <staff clef="bass">[E3 E4]{V} [A2 E4]{I}</staff>
+    </figure>
+  </entry>
+
+  <!-- Figured bass -->
+
+  <entry id="figured-bass" level="2" tags="figured-bass">
+    <term>figured bass</term>
+    <gloss>bass line with figures for the harmony</gloss>
+    <def>A bass line with numbers, the <term ref="figures">figures</term>, that show the intervals to be played above each bass note, from which a keyboard or lute player improvises the harmony. It was the standard accompaniment of the Baroque era (about 1600–1750) and is still used to teach harmony.</def>
+    <figure play="as-written">
+      <staff clef="bass" time="4/4">C3/q F3/q{6} G3/q{7} C3/q |.</staff>
+    </figure>
+    <see ref="realization"/>
+    <see ref="basso-continuo"/>
+  </entry>
+
+  <entry id="figures" level="2" tags="figured-bass">
+    <term>figures</term>
+    <gloss>numbers for the intervals above a bass note</gloss>
+    <def>The numbers and accidentals of a <term ref="figured-bass">figured bass</term>, written under or over the bass notes. Each number is an interval above the bass, reckoned in the key signature and without octaves; a bass note without figures means a root-position triad (5/3), and the figures are often abbreviated, as 6 for 6/3.</def>
+    <see ref="inversion-figures"/>
+    <see ref="figured-accidental"/>
+  </entry>
+
+  <entry id="figured-accidental" level="2" tags="figured-bass">
+    <term>accidental in figured bass</term>
+    <gloss>sharp, flat or natural that alters a figured interval</gloss>
+    <def>A sharp, flat or natural in a <term ref="figured-bass">figured bass</term>. Next to a number it alters that interval above the bass; standing alone it alters the third. A slash through a number, as in a crossed 6, means the interval is raised.</def>
+    <figure play="as-written">
+      <staff clef="bass" time="4/4">A2/q E3/q{♯} A2/h |.</staff>
+      <caption>In <note>A</note> minor, the sharp under <note>E</note> asks for the third above it raised to <note>G#</note>.</caption>
+    </figure>
+    <see ref="figures"/>
+  </entry>
+
+  <entry id="realization" level="2" tags="figured-bass">
+    <term>realization</term>
+    <gloss>chords played or written out from a figured bass</gloss>
+    <def>The chords and voices that a performer improvises, or a student writes out, above a <term ref="figured-bass">figured bass</term>. A good realization follows the rules of <term ref="voice-leading">voice leading</term>. Spelled realisation in British English.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">[E4 G4 C5]/q [F4 A4 D5]/q [F4 B4 D5]/q [E4 C5 E5]/q |.</staff>
+      <staff clef="bass" time="4/4">C3/q F3/q{6} G3/q{7} C3/q |.</staff>
+    </figure>
+  </entry>
+
+  <entry id="basso-continuo" level="2" tags="figured-bass">
+    <term>basso continuo</term>
+    <foreign lang="it">basso continuo</foreign>
+    <gloss>Baroque bass part and the players who perform it</gloss>
+    <def>The accompanying part of Baroque music, notated as a <term ref="figured-bass">figured bass</term> and played by a bass instrument such as a cello, viola da gamba or bassoon together with a chord instrument such as a harpsichord, organ or lute that fills in the harmony. Often shortened to continuo.</def>
+    <see ref="thoroughbass"/>
+  </entry>
+
+  <entry id="thoroughbass" level="2" tags="figured-bass">
+    <term>thoroughbass</term>
+    <gloss>the art of playing from a figured bass</gloss>
+    <def>An English name for the <term ref="basso-continuo">basso continuo</term>, a bass that runs through the whole piece (<em>thorough</em> is an old form of <em>through</em>). Like the German <em>Generalbass</em>, it also names the practice and teaching of playing harmony from a <term ref="figured-bass">figured bass</term>.</def>
+    <see ref="realization"/>
+  </entry>
+</glossary>
