@@ -53,7 +53,7 @@ schema: schema/glossary.rng.
 
   <entry id="fixed-do" level="2" tags="dictation">
     <term>fixed do</term>
-    <gloss>do is always the note C</gloss>
+    <gloss>do always names the same note, whatever the key</gloss>
     <def>A <term ref="solfege">solfège</term> system in which do is always <note>C</note>, re always <note>D</note> and so on, whatever the key and accidental, so the syllables are note names. It is the usual system in countries where the syllables are the note names, such as France, Italy and Spain.</def>
     <see ref="movable-do"/>
   </entry>

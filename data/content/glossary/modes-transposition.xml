@@ -163,7 +163,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
   <entry id="concert-score" level="2" tags="transposition">
     <term>concert score</term>
     <gloss>score with every part at sounding pitch</gloss>
-    <def>A score in which every part is written at <term ref="concert-pitch">concert pitch</term>, so that the conductor or analyst reads the sounding notes directly; instruments that sound an octave away may keep their usual octave. Also called a score in C.</def>
+    <def>A score in which every part is written at <term ref="concert-pitch">concert pitch</term>, so that the conductor or analyst reads the sounding notes directly; instruments that sound an octave away may keep their usual octave. Also called a score in <note>C</note>.</def>
     <see ref="transposed-score"/>
   </entry>
 

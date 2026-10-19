@@ -159,8 +159,8 @@ sentences. Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
     <gloss>two phrases: a question and its answer</gloss>
     <def>Two <term ref="phrase">phrases</term> heard as a pair, an <term ref="antecedent">antecedent</term> ending with a weaker cadence and a <term ref="consequent">consequent</term> ending with a stronger one, typically a half cadence answered by a perfect authentic cadence.</def>
     <figure play="as-written" tempo="120">
-      <staff clef="treble" time="4/4">E4/q E4/q F4/q G4/q | G4/q F4/q E4/q D4/q | C4/q C4/q D4/q E4/q | E4/q. D4/e D4/h || E4/q E4/q F4/q G4/q | G4/q F4/q E4/q D4/q | C4/q C4/q D4/q E4/q | D4/q. C4/e C4/h |.</staff>
-      <caption>The <em>Ode to Joy</em> from Beethoven's Ninth Symphony: the first phrase stops on the second degree over a half cadence, the second closes on the tonic.</caption>
+      <staff clef="treble" time="4/4">C4/q C4/q D4/q E4/q | E4/q. D4/e D4/h || C4/q C4/q D4/q E4/q | D4/q. C4/e C4/h |.</staff>
+      <caption>The ends of the two phrases of the <em>Ode to Joy</em> from Beethoven's Ninth Symphony: the first stops on the second degree over a half cadence, the second closes on the tonic.</caption>
     </figure>
     <see ref="parallel-period"/>
     <see ref="sentence"/>
@@ -205,10 +205,6 @@ sentences. Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
     <term>sentence</term>
     <gloss>idea, its repetition, then continuation to a cadence</gloss>
     <def>A theme type, usually eight bars, made of a <term ref="presentation">presentation</term>, a two-bar <term ref="basic-idea">basic idea</term> and its repetition, followed by a <term ref="continuation">continuation</term> that breaks the idea into smaller pieces and drives to a <term ref="cadence">cadence</term>. The term comes from Schoenberg and was developed by Caplin.</def>
-    <figure play="as-written" tempo="112">
-      <staff clef="treble" time="4/4">E5/q G5/q C6/h | B5/q A5/q G5/h | D5/q F5/q B5/h | A5/q G5/q F5/h || E5/q F5/q G5/h | F5/q G5/q A5/h | G5/q E5/q D5/q B4/q | C5/w |.</staff>
-      <caption>A basic idea and its repetition a step lower (bars 1–4), then a continuation in one-bar pieces leading to the cadence.</caption>
-    </figure>
     <see ref="period"/>
   </entry>
 

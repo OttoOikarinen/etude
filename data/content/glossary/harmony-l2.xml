@@ -114,7 +114,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
     <gloss>numbers that show which chord note is in the bass</gloss>
     <def>The figures from <term ref="figured-bass">figured bass</term> that Roman numeral analysis uses to show a chord's position. Triads: none (5/3) in <term ref="root-position">root position</term>, 6 in first inversion and 6/4 in second inversion. Seventh chords: 7 in root position, <term ref="six-five">6/5</term>, <term ref="four-three">4/3</term> and <term ref="four-two">4/2</term> in first, second and third inversion.</def>
     <figure play="harmonic">
-      <staff clef="treble">[G4 B4 D5 F5]/q{7} [B4 D5 F5 G5]/q{6/5} [D4 F4 G4 B4]/q{4/3} [F4 G4 B4 D5]/q{4/2}</staff>
+      <staff clef="treble">[G4 B4 D5 F5]{7} [B4 D5 F5 G5]{6/5} [D4 F4 G4 B4]{4/3} [F4 G4 B4 D5]{4/2}</staff>
       <caption>The dominant seventh of <note>C</note> major in root position and its three inversions.</caption>
     </figure>
     <see ref="third-inversion"/>
