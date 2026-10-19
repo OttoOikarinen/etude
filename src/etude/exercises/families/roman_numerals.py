@@ -148,13 +148,14 @@ def _fit_close(chord: Chord, rng: random.Random) -> tuple[Clef, tuple[Pitch, ...
         for octave in range(1, 6):
             pitches = chord.pitches(octave)
             positions = [clef.staff_position(p) for p in pitches]
-            if _STAFF_LOW <= min(positions) and max(positions) <= _STAFF_HIGH:
+            if min(positions) >= _STAFF_LOW and max(positions) <= _STAFF_HIGH:
                 options.append((clef, pitches))
     return rng.choice(options)
 
 
 def _inversion_sentence(chord: Chord, label: str) -> str:
     bass = pitch_name(chord.bass)
+    sentences: tuple[str, ...]
     if chord.quality.size == 4:
         sentences = (
             # Translators: {bass} is a note name, {numeral} a Roman numeral such as "V7".
@@ -363,9 +364,7 @@ class RomanNumerals(ExerciseDefinition):
 
         # Items outside the current settings (an older review) keep their own options.
         sevenths = _sevenths(settings) != 'none' or seventh
-        numerals = tuple(
-            Option(str(d), _numeral(mode, d, False).symbol, str(d)) for d in _DEGREES
-        )
+        numerals = tuple(Option(str(d), _numeral(mode, d, False).symbol, str(d)) for d in _DEGREES)
         figure_keys = (*TRIAD_FIGURES, *(SEVENTH_FIGURES if sevenths else ()))
         accels = '890qwty'
         figure_options = tuple(
@@ -469,9 +468,10 @@ class RomanNumerals(ExerciseDefinition):
         sentences = [
             # Translators: e.g. "In D major, A–C♯–E–G (A dominant seventh) is built on scale
             # degree 5 (Dominant): V7." {chord} is a chord name such as "A dominant seventh".
-            _('In {key}, {notes} ({chord}) is built on scale degree {degree} ({function}): '
-              '{numeral}.')
-            .format(
+            _(
+                'In {key}, {notes} ({chord}) is built on scale degree {degree} ({function}): '
+                '{numeral}.'
+            ).format(
                 key=key_name(key),
                 notes=_notes(chord),
                 chord=chord_name(chord),
@@ -503,9 +503,10 @@ class RomanNumerals(ExerciseDefinition):
                     note=pitch_name(key.leading_tone)
                 )
             )
-        if str(given.get('numeral', '')) == expected['numeral'] and str(
-            given.get('figures', '')
-        ) != expected['figures']:
+        if (
+            str(given.get('numeral', '')) == expected['numeral']
+            and str(given.get('figures', '')) != expected['figures']
+        ):
             sentences.append(
                 _('Figures count intervals above the bass, not the root: find the bass first.')
             )

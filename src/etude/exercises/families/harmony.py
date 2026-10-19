@@ -36,8 +36,8 @@ from ...core import Chord, ChordQuality, Duration, KeySignature, Pitch, PitchNam
 from ...core.roman import RomanNumeral
 from ...core.scale import Key, Mode
 from ...learning.model import ItemId
-from ...notation.spec import Chord as StaffChord
 from ...notation.spec import Barline, BarStyle, Clef, Event, Head, StaffSpec, SystemSpec
+from ...notation.spec import Chord as StaffChord
 from ..base import ExerciseDefinition
 
 Voicing = tuple[Pitch, Pitch, Pitch, Pitch]
@@ -157,7 +157,7 @@ def _voicings(
     else:
         penalties = dict(doublings(chord, key))
         penalties.update(extra)
-        tone_sets.extend((others + (names[i],), p) for i, p in sorted(penalties.items()))
+        tone_sets.extend(((*others, names[i]), p) for i, p in sorted(penalties.items()))
         if chord.inversion == 0 and chord.quality is not ChordQuality.DIMINISHED:
             # Incomplete triad: tripled root and the third, no fifth.
             tone_sets.append(((names[0], names[0], names[1]), 7.0))
@@ -332,10 +332,7 @@ def voice_progression(
                 continue
             assert step is not None
             best = min(
-                (
-                    (cost + _motion(path[-1], voicing, step), path)
-                    for cost, path in beam
-                ),
+                ((cost + _motion(path[-1], voicing, step), path) for cost, path in beam),
                 key=lambda x: x[0],
             )
             scored.append((best[0] + penalty + noise, [*best[1], voicing]))
@@ -378,6 +375,7 @@ def satb_figure(
     chorale; without, each staff shows one stemless two-note chord per slot.
     ``labels`` go under the bass staff (Roman numerals in feedback).
     """
+
     def label(i: int) -> str | None:
         return labels[i] if i < len(labels) else None
 
@@ -445,7 +443,7 @@ def progression_playback(
     voices: Sequence[Voicing], lengths: Sequence[Fraction] = (), tempo: float = 76.0
 ) -> PlaybackSpec:
     """Block chords one after another (``lengths`` in beats, default one beat each)."""
-    notes = []
+    notes: list[PlaybackNote] = []
     start = Fraction(0)
     for i, voicing in enumerate(voices):
         length = lengths[i] if i < len(lengths) else Fraction(1)

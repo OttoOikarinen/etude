@@ -384,9 +384,7 @@ class FiguredBassExercise(ExerciseDefinition):
             parts = [_('Minor keys')]
         else:
             parts = [_('Major and minor keys')]
-        parts.append(
-            _('triads and sevenths') if settings.get('sevenths', True) else _('triads')
-        )
+        parts.append(_('triads and sevenths') if settings.get('sevenths', True) else _('triads'))
         if settings.get('accidentals', True) or settings.get('mixture', False):
             parts.append(_('accidentals'))
         limit = limit_setting(settings)
@@ -640,8 +638,9 @@ class FiguredBassExercise(ExerciseDefinition):
             sentences = [
                 # Translators: e.g. "Under D, the figures 6/5 mean a sixth, a fifth and a third
                 # above the bass: B♮, A♭ and F."
-                _('Under {bass}, the figures {figures} mean {intervals} above the bass: '
-                  '{notes}.').format(
+                _(
+                    'Under {bass}, the figures {figures} mean {intervals} above the bass: {notes}.'
+                ).format(
                     bass=bass_name,
                     figures=figures.inline(slashed),
                     intervals=_intervals_phrase(numbers),
@@ -709,9 +708,7 @@ class FiguredBassExercise(ExerciseDefinition):
             key_signature=figure.key_signature,
             events=(StaffChord(tuple(Head(p, ink=Ink.ACCENT) for p in upper)),),
         )
-        bass = StaffSpec(
-            clef=figure.clef, key_signature=figure.key_signature, events=figure.events
-        )
+        bass = StaffSpec(clef=figure.clef, key_signature=figure.key_signature, events=figure.events)
         return SystemSpec(staves=(treble, bass))
 
 
