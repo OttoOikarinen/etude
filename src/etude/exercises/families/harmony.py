@@ -197,25 +197,6 @@ def best_voicing(chord: Chord, key: Key, rng: random.Random) -> Voicing:
     return rng.choice([v for v, p in options if p == least])
 
 
-def _bass_line(chords: Sequence[Chord], rng: random.Random) -> list[Pitch]:
-    """Bass pitches that move as little as possible, starting in a random register."""
-    paths: list[tuple[float, list[Pitch]]] = [
-        (rng.random() * 3, [p]) for p in _in_range(chords[0].bass, *_RANGES.bass)
-    ]
-    for chord in chords[1:]:
-        options = _in_range(chord.bass, *_RANGES.bass)
-        nxt = []
-        for p in options:
-            cost, path = min(
-                ((c + abs(p.midi - pth[-1].midi) * (1 if abs(p.midi - pth[-1].midi) <= 7 else 3),
-                  pth) for c, pth in paths),
-                key=lambda x: x[0],
-            )
-            nxt.append((cost, [*path, p]))
-        paths = nxt
-    return min(paths, key=lambda x: x[0])[1]
-
-
 def _augmented_motion(a: Pitch, b: Pitch) -> bool:
     steps = abs(b.diatonic_index - a.diatonic_index)
     semis = abs(b.midi - a.midi)
@@ -223,60 +204,90 @@ def _augmented_motion(a: Pitch, b: Pitch) -> bool:
     return semis > base
 
 
+@dataclass(frozen=True, slots=True)
+class _Step:
+    """What the tendency-tone rules need to know about two adjacent chords."""
+
+    leading: PitchName | None
+    """The leading tone when it must resolve (dominant to a chord containing the tonic)."""
+    tonic: PitchName
+    seventh: PitchName | None
+    """The chordal seventh of the first chord, which must fall by step."""
+
+
+@cache
+def _step(prev_chord: Chord, next_chord: Chord, key: Key) -> _Step:
+    leading = key.leading_tone
+    names = prev_chord.names()
+    dominant = prev_chord.root in (key.degree(5), leading) and leading in names
+    resolves = dominant and key.tonic in next_chord.names()
+    seventh = names[3] if prev_chord.quality.size == 4 else None
+    return _Step(leading if resolves else None, key.tonic, seventh)
+
+
 def motion_cost(
     prev: Voicing, nxt: Voicing, prev_chord: Chord, next_chord: Chord, key: Key
 ) -> float:
     """How far ``prev`` → ``nxt`` is from good four-part voice leading (0 is ideal)."""
+    return _motion(prev, nxt, _step(prev_chord, next_chord, key))
+
+
+def _motion(prev: Voicing, nxt: Voicing, step: _Step) -> float:
+    pm = [p.midi for p in prev]
+    nm = [p.midi for p in nxt]
     cost = 0.0
     for voice in range(3):
-        a, b = prev[voice], nxt[voice]
-        leap = abs(b.midi - a.midi)
+        leap = abs(nm[voice] - pm[voice])
         cost += leap
         if leap > 12:
             cost += 1000
-        elif voice == 0 and leap > 5:
-            cost += 15 * (leap - 5)
-        elif voice > 0 and leap > 5:
-            cost += 20 * (leap - 5)
-        if a != b and _augmented_motion(a, b):
+        elif leap > 5:
+            cost += (15 if voice == 0 else 20) * (leap - 5)
+        if leap and _augmented_motion(prev[voice], nxt[voice]):
             cost += 1000
-    if abs(nxt[3].midi - prev[3].midi) > 12:
+        elif not leap and prev[voice] != nxt[voice]:
+            cost += 300  # an enharmonic change in one voice
+    bass_leap = abs(nm[3] - pm[3])
+    cost += 0.5 * bass_leap
+    if bass_leap > 12:
         cost += 1000
+    elif bass_leap > 7:
+        cost += 3 * (bass_leap - 7)
     # Parallel and contrary fifths and octaves.
     for i in range(4):
+        if pm[i] == nm[i]:
+            continue
         for j in range(i + 1, 4):
-            if prev[i] == nxt[i] or prev[j] == nxt[j]:
+            if pm[j] == nm[j]:
                 continue
-            before = (prev[i].midi - prev[j].midi) % 12
-            after = (nxt[i].midi - nxt[j].midi) % 12
-            if before == after and before in (0, 7):
+            before = (pm[i] - pm[j]) % 12
+            if before in (0, 7) and before == (nm[i] - nm[j]) % 12:
                 cost += 1000
     # Direct fifths and octaves in the outer voices with a soprano leap.
-    s_move = nxt[0].midi - prev[0].midi
-    b_move = nxt[3].midi - prev[3].midi
-    if s_move * b_move > 0 and abs(s_move) > 2 and (nxt[0].midi - nxt[3].midi) % 12 in (0, 7):
+    s_move = nm[0] - pm[0]
+    b_move = nm[3] - pm[3]
+    if s_move * b_move > 0 and abs(s_move) > 2 and (nm[0] - nm[3]) % 12 in (0, 7):
         cost += 200
     # Overlap.
     for upper in range(3):
         lower = upper + 1
-        if nxt[lower].midi > prev[upper].midi or nxt[upper].midi < prev[lower].midi:
+        if nm[lower] > pm[upper] or nm[upper] < pm[lower]:
             cost += 100
     # Tendency tones.
-    leading = key.leading_tone
-    dominant = prev_chord.root in (key.degree(5), leading) and leading in prev_chord.names()
-    if dominant and key.tonic in next_chord.names():
+    if step.leading is not None:
         for voice in range(3):
-            if prev[voice].name == leading and nxt[voice].name != key.tonic:
+            if prev[voice].name != step.leading:
+                continue
+            if nxt[voice].name != step.tonic:
                 cost += 500 if voice == 0 else 25
-            elif prev[voice].name == leading and nxt[voice].midi != prev[voice].midi + 1:
+            elif nm[voice] != pm[voice] + 1:
                 cost += 500
-    if prev_chord.quality.size == 4:
-        seventh = prev_chord.names()[3]
+    if step.seventh is not None:
         for voice in range(4):
-            if prev[voice].name != seventh:
+            if prev[voice].name != step.seventh:
                 continue
             steps = prev[voice].diatonic_index - nxt[voice].diatonic_index
-            if not (steps == 1 and 1 <= prev[voice].midi - nxt[voice].midi <= 2):
+            if not (steps == 1 and 1 <= pm[voice] - nm[voice] <= 2):
                 cost += 500
     return cost
 
@@ -301,26 +312,28 @@ def voice_progression(
     """
     soprano = soprano or {}
     extra_doublings = extra_doublings or {}
-    basses = _bass_line(chords, rng)
+    target = 62 + rng.random() * 12  # a soprano register for this progression
     beam: list[tuple[float, list[Voicing]]] = [(0.0, [])]
-    for index, (chord, low) in enumerate(zip(chords, basses, strict=True)):
-        options = voicings(chord, key, bass=low, extra_doublings=extra_doublings.get(index))
+    for index, chord in enumerate(chords):
+        options = voicings(chord, key, extra_doublings=extra_doublings.get(index))
         allowed = soprano.get(index)
         if allowed is not None:
             options = [o for o in options if o[0][0].name in allowed]
         if not options:
             raise ValueError(f'no voicing of {chord} with soprano {allowed}')
         scored: list[tuple[float, list[Voicing]]] = []
+        step = _step(chords[index - 1], chord, key) if index else None
         for voicing, penalty in options:
             noise = rng.random() * 2.0
             if index == 0:
                 # Start in a comfortable, varied register: soprano near the middle of its range.
-                centre = abs(voicing[0].midi - 69) * 0.3
+                centre = abs(voicing[0].midi - target) * 0.5
                 scored.append((penalty + noise + centre, [voicing]))
                 continue
+            assert step is not None
             best = min(
                 (
-                    (cost + motion_cost(path[-1], voicing, chords[index - 1], chord, key), path)
+                    (cost + _motion(path[-1], voicing, step), path)
                     for cost, path in beam
                 ),
                 key=lambda x: x[0],
@@ -442,13 +455,28 @@ def progression_playback(
 
 
 def chord_of(pitches: Sequence[Pitch], quality: ChordQuality | None = None) -> Chord:
-    """The tertian chord spelled by ``pitches`` (lowest pitch = bass)."""
+    """The tertian chord spelled by ``pitches`` (lowest pitch = bass).
+
+    A chord without its fifth (an incomplete V7 or a final tonic with a tripled
+    root, both in root position) is read as the complete chord on its bass.
+    """
     found = [c for c in Chord.identify(pitches) if c.quality.is_tertian]
     if quality is not None:
         found = [c for c in found if c.quality is quality] or found
-    if not found:
-        raise ValueError(f'no tertian chord in {pitches}')
-    return found[0]
+    if found:
+        return found[0]
+    names = {p.name for p in pitches}
+    bass = min(pitches).name
+    for candidate in ChordQuality:
+        if not candidate.is_tertian or (quality is not None and candidate is not quality):
+            continue
+        try:
+            tones = Chord(bass, candidate).names()
+        except ValueError:
+            continue
+        if names <= set(tones) and set(tones) - names == {tones[2]}:
+            return Chord(bass, candidate)
+    raise ValueError(f'no tertian chord in {pitches}')
 
 
 def mode_of(item: ItemId) -> Mode:
