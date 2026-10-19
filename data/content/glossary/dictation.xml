@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+Glossary, level 2: dictation, sight-singing and solfège. Format: docs/CONTENT_AUTHORING.md,
+schema: schema/glossary.rng.
+-->
+<glossary tags="ear">
+  <entry id="melodic-dictation" level="2" tags="dictation">
+    <term>melodic dictation</term>
+    <gloss>writing down a melody you hear</gloss>
+    <def>Writing down a melody from hearing it, with its pitches and rhythm. A common method is to memorize the melody, find its <term ref="tonic">tonic</term> and meter, then write the rhythm and the <term ref="scale-degree-numbers">scale degrees</term>.</def>
+    <see ref="harmonic-dictation"/>
+    <see ref="rhythmic-dictation"/>
+  </entry>
+
+  <entry id="rhythmic-dictation" level="2" tags="dictation">
+    <term>rhythmic dictation</term>
+    <gloss>writing down a rhythm you hear</gloss>
+    <def>Writing down the rhythm of a passage from hearing it, in a given meter. Feeling the <term ref="beat">beat</term> and counting its <term ref="beat-division">divisions</term> helps to place each note.</def>
+    <see ref="melodic-dictation"/>
+  </entry>
+
+  <entry id="harmonic-dictation" level="2" tags="dictation">
+    <term>harmonic dictation</term>
+    <gloss>writing down a chord progression you hear</gloss>
+    <def>Writing down a chord <term ref="progression">progression</term> from hearing it, usually the bass line, the soprano and the Roman numerals. Hearing the bass line as scale degrees is the usual first step, since it narrows down the possible chords.</def>
+    <see ref="melodic-dictation"/>
+  </entry>
+
+  <entry id="sight-singing" level="2" tags="dictation">
+    <term>sight-singing</term>
+    <gloss>singing music from notation at first sight</gloss>
+    <def>Singing a melody from notation without having heard it first, usually with <term ref="solfege">solfège</term> syllables or <term ref="scale-degree-numbers">scale-degree numbers</term>. It trains the same link between notation and sound that <term ref="melodic-dictation">dictation</term> trains in the other direction.</def>
+    <see ref="solfege"/>
+  </entry>
+
+  <entry id="solfege" level="2" tags="dictation">
+    <term>solfège</term>
+    <foreign lang="fr">solfège</foreign>
+    <gloss>singing with the syllables do, re, mi</gloss>
+    <def>Singing with the syllables do, re, mi, fa, sol, la, ti for the degrees of the scale (te in British tonic sol-fa, si in many other countries), and the ear-training and reading lessons built on them. Also called solfeggio, or sol-fa in British English. The syllables name the scale degrees in <term ref="movable-do">movable do</term> and the note names in <term ref="fixed-do">fixed do</term>.</def>
+    <see ref="scale-degree-numbers"/>
+  </entry>
+
+  <entry id="movable-do" level="2" tags="dictation">
+    <term>movable do</term>
+    <gloss>do is the tonic of whatever key</gloss>
+    <def>A <term ref="solfege">solfège</term> system in which do is the <term ref="tonic">tonic</term> of the current key, so each syllable stands for a <term ref="scale-degree">scale degree</term>: in <note>G</note> major, do is <note>G</note> and ti is <note>F#</note>. It is widely used in English-speaking countries and in the Kodály method; Curwen's tonic sol-fa is a form of it.</def>
+    <see ref="fixed-do"/>
+  </entry>
+
+  <entry id="fixed-do" level="2" tags="dictation">
+    <term>fixed do</term>
+    <gloss>do is always the note C</gloss>
+    <def>A <term ref="solfege">solfège</term> system in which do is always <note>C</note>, re always <note>D</note> and so on, whatever the key and accidental, so the syllables are note names. It is the usual system in countries where the syllables are the note names, such as France, Italy and Spain.</def>
+    <see ref="movable-do"/>
+  </entry>
+
+  <entry id="do-based-minor" level="2" tags="dictation">
+    <term>do-based minor</term>
+    <gloss>minor tonic sung as do, with me, le, te</gloss>
+    <def>A <term ref="movable-do">movable-do</term> practice in which the tonic of a minor key is do, as in major, and the lowered third, sixth and seventh degrees are sung me, le and te. It keeps one syllable per scale degree in both modes.</def>
+    <see ref="la-based-minor"/>
+  </entry>
+
+  <entry id="la-based-minor" level="2" tags="dictation">
+    <term>la-based minor</term>
+    <gloss>minor tonic sung as la, as in the relative major</gloss>
+    <def>A <term ref="movable-do">movable-do</term> practice in which the tonic of a minor key is la, the syllable it has in the <term ref="relative-key">relative</term> major; the raised seventh degree becomes si and the raised sixth fi. It is used in the Kodály method.</def>
+    <see ref="do-based-minor"/>
+  </entry>
+
+  <entry id="scale-degree-numbers" level="2" tags="dictation">
+    <term>scale-degree numbers</term>
+    <gloss>degrees sung or written as 1 to 7</gloss>
+    <def>Numbers from 1 to 7 for the <term ref="scale-degree">scale degrees</term>, counted from the tonic and written with a caret above them in analysis. Sung instead of solfège syllables, they work like <term ref="movable-do">movable do</term> and fit any language.</def>
+    <figure play="melodic" tempo="120">
+      <staff clef="treble">G4{5} E4{3} F4{4} D4{2} B3{7} C4{1}</staff>
+    </figure>
+    <see ref="solfege"/>
+  </entry>
+</glossary>

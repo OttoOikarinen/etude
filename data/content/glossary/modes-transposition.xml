@@ -254,9 +254,8 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
 
   <entry id="piccolo" level="2" tags="transposition">
     <term>piccolo</term>
-    <foreign lang="it">ottavino</foreign>
     <gloss>small flute sounding an octave higher</gloss>
-    <def>A small flute that sounds an <term ref="octave">octave</term> higher than written, which keeps its very high notes from needing many ledger lines. The usual English name comes from the Italian <em>flauto piccolo</em>, little flute.</def>
+    <def>A small flute that sounds an <term ref="octave">octave</term> higher than written, which keeps its very high notes from needing many ledger lines. Its name is short for the Italian <em>flauto piccolo</em>, little flute; Italian scores call it <em>ottavino</em>.</def>
     <figure>
       <staff clef="treble">C5 D5 E5 F5 G5</staff>
       <staff clef="treble">C6 D6 E6 F6 G6</staff>
@@ -268,7 +267,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
   <entry id="double-bass" level="2" tags="transposition">
     <term>double bass</term>
     <gloss>bowed string sounding an octave lower</gloss>
-    <def>The largest and lowest instrument of the violin family's section in the orchestra, which sounds an <term ref="octave">octave</term> lower than written in the bass clef, so that its low notes need fewer ledger lines. Also called the contrabass, string bass or simply bass.</def>
+    <def>The largest and lowest bowed string instrument of the orchestra, which sounds an <term ref="octave">octave</term> lower than written in the bass clef, so that its low notes need fewer ledger lines. Also called the contrabass, string bass or simply bass.</def>
     <figure>
       <staff clef="bass">C3 D3 E3 F3 G3</staff>
       <staff clef="bass">C2 D2 E2 F2 G2</staff>
@@ -282,8 +281,8 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
     <gloss>plucked string sounding an octave lower</gloss>
     <def>The six-string guitar, whose music is written in the treble clef an <term ref="octave">octave</term> higher than it sounds; the clef often has a small 8 below it to show this. Its open strings sound <note>E2</note>, <note>A2</note>, <note>D3</note>, <note>G3</note>, <note>B3</note> and <note>E4</note>.</def>
     <figure>
-      <staff clef="treble_8vb">E3 A3 D4 G4 B4 E5</staff>
-      <caption>The open strings, written in the octave treble clef; they sound an octave lower than the unmarked treble clef would show.</caption>
+      <staff clef="treble_8vb">E2 A2 D3 G3 B3 E4</staff>
+      <caption>The open strings in the treble clef with a small 8 below it.</caption>
     </figure>
     <see ref="double-bass"/>
   </entry>

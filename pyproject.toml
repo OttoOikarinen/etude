@@ -112,6 +112,8 @@ exclude_also = [
 
 [tool.codespell]
 skip = "*.po,*.svg,./LICENSES,./COPYING,./data/fonts,./.venv,./_build"
+# Solfège syllable (do-based minor: me, le, te).
+ignore-words-list = "te"
 
 [tool.importlinter]
 root_package = "etude"
