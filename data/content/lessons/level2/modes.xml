@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+<lesson id="l2.modes">
+  <title>Church Modes</title>
+  <summary>Seven scales use the notes of the white keys from different starting points; each has its own colour.</summary>
+
+  <section>
+    <title>Seven modes on the white keys</title>
+    <p>Play a <term ref="scale">scale</term> on the white keys of the piano, starting from each of the seven notes in turn. Each starting note gives a different order of <term ref="whole-step">whole steps</term> and <term ref="half-step">half steps</term>, and so a different mode:</p>
+    <list>
+      <li>Ionian, from <note>C</note>: the same as the <term ref="major-scale">major scale</term>.</li>
+      <li>Dorian, from <note>D</note>.</li>
+      <li>Phrygian, from <note>E</note>.</li>
+      <li>Lydian, from <note>F</note>.</li>
+      <li>Mixolydian, from <note>G</note>.</li>
+      <li>Aeolian, from <note>A</note>: the same as the <term ref="natural-minor-scale">natural minor scale</term>.</li>
+      <li>Locrian, from <note>B</note>.</li>
+    </list>
+    <figure play="melodic" tempo="100">
+      <staff clef="treble">D4 E4 F4 G4 A4 B4 C5 D5</staff>
+      <caption>The Dorian mode on <note>D</note>: white keys from <note>D</note> to <note>D</note>.</caption>
+    </figure>
+    <p>Dorian, Phrygian, Lydian and Mixolydian are the modes of medieval and Renaissance church music. The Swiss theorist Heinrich Glarean added Ionian and Aeolian in 1547. Locrian, with its unstable diminished tonic triad, was a theoretical possibility and is rarely used. Today the modes are heard in folk music, jazz, film music and much music of the twentieth century.</p>
+    <check id="mode-from-g">
+      <prompt>Which mode do the white keys form from <note>G</note> to <note>G</note>?</prompt>
+      <option key="a">Lydian</option>
+      <option key="b" correct="true">Mixolydian</option>
+      <option key="c">Dorian</option>
+      <explanation>From <note>C</note>, the white-key modes are Ionian, Dorian, Phrygian, Lydian, Mixolydian, Aeolian and Locrian. <note>G</note> is the fifth note, so it gives Mixolydian. Lydian starts on <note>F</note> and Dorian on <note>D</note>.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Comparing modes with major and minor</title>
+    <p>Each mode differs from major or natural minor on the same <term ref="tonic">tonic</term> by one or two notes. These characteristic notes give the mode its colour:</p>
+    <list>
+      <li>Lydian: major with a raised fourth degree.</li>
+      <li>Mixolydian: major with a lowered seventh degree.</li>
+      <li>Dorian: natural minor with a raised sixth degree.</li>
+      <li>Phrygian: natural minor with a lowered second degree.</li>
+      <li>Locrian: natural minor with a lowered second and fifth degree.</li>
+    </list>
+    <figure play="melodic" tempo="110">
+      <staff clef="treble">C4 D4 E4 *F#4 G4 A4 B4 C5 || C4 D4 E4 F4 G4 A4 *Bb4 C5 ||</staff>
+      <caption><note>C</note> Lydian with its raised fourth, <note>F#</note>, then <note>C</note> Mixolydian with its lowered seventh, <note>Bb</note>.</caption>
+    </figure>
+    <figure play="melodic" tempo="110">
+      <staff clef="treble">C4 D4 Eb4 F4 G4 *A4 Bb4 C5 || C4 *Db4 Eb4 F4 G4 Ab4 Bb4 C5 ||</staff>
+      <caption><note>C</note> Dorian with its raised sixth, <note>A</note>, then <note>C</note> Phrygian with its lowered second, <note>Db</note>.</caption>
+    </figure>
+    <figure play="melodic" tempo="110">
+      <staff clef="treble">C4 *Db4 Eb4 F4 *Gb4 Ab4 Bb4 C5 ||</staff>
+      <caption><note>C</note> Locrian: the lowered second, <note>Db</note>, and the lowered fifth, <note>Gb</note>, which makes the tonic triad diminished.</caption>
+    </figure>
+    <p>Ordered from brightest to darkest, the modes are Lydian, Ionian, Mixolydian, Dorian, Aeolian, Phrygian and Locrian. Each mode in this order lowers one more degree of the one before: the fourth, then the seventh, the third, the sixth, the second and finally the fifth.</p>
+    <check id="raised-sixth">
+      <prompt>Which mode is natural minor with a raised sixth degree?</prompt>
+      <option key="a" correct="true">Dorian</option>
+      <option key="b">Phrygian</option>
+      <option key="c">Mixolydian</option>
+      <explanation>On <note>D</note>, natural minor has <note>Bb</note> and Dorian has <note>B</note>: the white keys from <note>D</note>. Phrygian lowers the second degree instead, and Mixolydian is a major mode.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Finding the notes of a mode</title>
+    <p>Every mode uses the notes of some major scale, starting from a different degree: Dorian from the second degree, Phrygian from the third, Lydian from the fourth, Mixolydian from the fifth, Aeolian from the sixth and Locrian from the seventh. This gives a quick way to find its notes and its key signature.</p>
+    <worked>
+      <title>Find the notes of a Mixolydian mode</title>
+      <step>
+        <p>Mixolydian starts on the fifth degree of a major scale. Which major key has <note>A</note> as its fifth degree? Count a fifth down from <note>A</note>: <note>D</note>.</p>
+      </step>
+      <step>
+        <p><note>D</note> major has two sharps, <note>F#</note> and <note>C#</note>, so <note>A</note> Mixolydian has them too: <note>A</note> <note>B</note> <note>C#</note> <note>D</note> <note>E</note> <note>F#</note> <note>G</note> <note>A</note>.</p>
+      </step>
+      <step>
+        <p>Check with the characteristic note. <note>A</note> major has <note>G#</note>; Mixolydian lowers the seventh degree to <note>G</note>. The two methods agree.</p>
+        <figure play="melodic" tempo="100">
+          <staff clef="treble" key="2">A4 B4 C#5 D5 E5 F#5 *G5 A5</staff>
+        </figure>
+      </step>
+    </worked>
+    <p>Music in a mode is written in two ways. Some editions use the key signature of the related major scale, as above; others use the signature of the major or minor key on the same tonic and add accidentals for the characteristic notes.</p>
+    <check id="d-mixolydian-signature">
+      <prompt>How many sharps does <note>D</note> Mixolydian have?</prompt>
+      <option key="a" correct="true">One</option>
+      <option key="b">Two</option>
+      <option key="c">Three</option>
+      <explanation><note>D</note> is the fifth degree of <note>G</note> major, which has one sharp, <note>F#</note>. Compared with <note>D</note> major, Mixolydian lowers <note>C#</note> to <note>C</note>, leaving one sharp.</explanation>
+    </check>
+    <check id="b-phrygian-parent">
+      <prompt><note>B</note> Phrygian uses the notes of which major scale?</prompt>
+      <option key="a"><note>D</note> major</option>
+      <option key="b" correct="true"><note>G</note> major</option>
+      <option key="c"><note>E</note> major</option>
+      <explanation>Phrygian starts on the third degree of a major scale. <note>B</note> is the third degree of <note>G</note> major, so <note>B</note> Phrygian has one sharp: <note>B</note> <note>C</note> <note>D</note> <note>E</note> <note>F#</note> <note>G</note> <note>A</note> <note>B</note>.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Hearing modes</title>
+    <p>To recognise a mode by ear, first decide whether its third is major or minor, then listen for the characteristic note:</p>
+    <list>
+      <li>Lydian: a major mode with a <term ref="tritone">tritone</term> above the tonic; it sounds bright and floating.</li>
+      <li>Mixolydian: a major mode without a <term ref="leading-tone">leading tone</term>. The seventh degree lies a whole step below the tonic, and the triad on the fifth degree is minor.</li>
+      <li>Dorian: a minor mode whose bright major sixth softens its darkness.</li>
+      <li>Phrygian: a minor mode with a half step from the tonic up to the second degree; it sounds dark and severe.</li>
+      <li>Locrian: its diminished tonic triad never sounds at rest.</li>
+    </list>
+    <check id="half-step-above-tonic">
+      <prompt>Which of these modes has a half step between its first and second degrees?</prompt>
+      <option key="a">Dorian</option>
+      <option key="b" correct="true">Phrygian</option>
+      <option key="c">Lydian</option>
+      <explanation>Phrygian, the white keys from <note>E</note>, begins <note>E</note>–<note>F</note>: a half step. Dorian and Lydian begin with a whole step. Locrian, not among the options, also begins with a half step.</explanation>
+    </check>
+    <check id="which-mode-figure">
+      <prompt>Which mode is this scale?</prompt>
+      <figure play="melodic" tempo="100">
+        <staff clef="treble">G4 A4 B4 C5 D5 E5 *F5 G5</staff>
+        <description>A scale of eight notes rising by step from the second line of the treble staff, without key signature or accidentals. The seventh note is highlighted.</description>
+      </figure>
+      <option key="a">Lydian</option>
+      <option key="b">Ionian</option>
+      <option key="c" correct="true">Mixolydian</option>
+      <explanation>The scale has a major third, <note>G</note>–<note>B</note>, so it is a major mode. Its seventh degree, <note>F</note>, lies a whole step below the tonic: <note>G</note> major would have <note>F#</note>. A major scale with a lowered seventh is Mixolydian.</explanation>
+    </check>
+  </section>
+</lesson>

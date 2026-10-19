@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+<lesson id="l2.rhythm">
+  <title>Syncopation, Triplets and Compound Meters</title>
+  <summary>Rhythms that stress the weak parts of the beat, divide it into three, or regroup the beats of a bar.</summary>
+
+  <section>
+    <title>Syncopation</title>
+    <p><term ref="syncopation">Syncopation</term> places an accent where the <term ref="meter">meter</term> does not expect one: on a weak beat, or on the weak part of a beat. A syncopated note usually starts off the beat and lasts through the next beat, so that the beat itself passes without a new note.</p>
+    <figure play="as-written" tempo="84">
+      <staff clef="treble" time="4/4">C5/e *D5/q E5/e F5/q G5/q | E5/e *F5/q D5/e E5/h |.</staff>
+      <caption>The highlighted quarter notes start halfway through the first beat and last through the second beat.</caption>
+    </figure>
+    <p>Syncopation is written in several ways: with a longer note that starts off the beat, as above; with a <term ref="tie">tie</term> from a weak part of a beat over a strong one; or with a rest on the strong beat, so that the next note sounds off the beat.</p>
+    <figure>
+      <staff clef="treble" time="4/4">C5/q D5/e E5/e~ E5/e D5/e C5/q | r/e G4/e r/e G4/e C5/h |.</staff>
+      <caption>A tie carries <note>E5</note> over the middle of the bar; in the second bar, rests fall on the beats and the notes between them.</caption>
+    </figure>
+    <p>In 4/4 a note that starts off the beat should not hide the middle of the bar, the start of beat 3: such a note is written as two tied notes, so that the reader sees where the third beat falls.</p>
+    <check id="syncopated-note">
+      <prompt>In 2/4, which rhythm is syncopated?</prompt>
+      <option key="a">Quarter, quarter</option>
+      <option key="b" correct="true">Eighth, quarter, eighth</option>
+      <option key="c">Two eighths, quarter</option>
+      <explanation>In eighth, quarter, eighth the quarter note starts on the second half of the first beat and lasts through the start of the second beat, so the second beat brings no new note. The other two rhythms start a note on every beat.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Triplets</title>
+    <p>A triplet divides a note value into three equal parts instead of two. Three triplet <term ref="eighth-note">eighth notes</term> fill the time of two ordinary eighth notes, one <term ref="quarter-note">quarter note</term>. Triplets are marked with a 3 above or below the group, often with a bracket.</p>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble" time="2/4">C5/e D5/e E5/e3 F5/e3 G5/e3 | A5/q3 G5/q3 F5/q3 | E5/h |.</staff>
+      <caption>Two eighth notes, then an eighth-note triplet, each group filling one beat. In the second bar, a quarter-note triplet fills two beats.</caption>
+    </figure>
+    <p>Triplets exist at every level: three quarter-note triplets last as long as a <term ref="half-note">half note</term>, and three sixteenth-note triplets as long as an eighth note. Other tuplets work in the same way: five notes in the time of four, six in the time of four, or two in the time of three.</p>
+    <check id="triplets-in-quarter">
+      <prompt>How many eighth-note triplets fill one quarter note?</prompt>
+      <option key="a">Two</option>
+      <option key="b" correct="true">Three</option>
+      <option key="c">Four</option>
+      <explanation>A triplet puts three notes in the time of two. Two ordinary eighth notes fill a quarter note, so three triplet eighth notes do as well.</explanation>
+    </check>
+    <check id="quarter-triplet">
+      <prompt>Three quarter-note triplets last as long as which note value?</prompt>
+      <option key="a">A quarter note</option>
+      <option key="b">A dotted quarter note</option>
+      <option key="c" correct="true">A half note</option>
+      <explanation>Three quarter-note triplets take the time of two ordinary quarter notes, which is one half note.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Compound meters in depth</title>
+    <p>In <term ref="compound-meter">compound meters</term> the beat is a dotted note that divides into three: in 6/8, 9/8 and 12/8 a dotted quarter note divides into three eighth notes and six sixteenth notes. The same pattern works with other note values: 6/4 has two dotted-half-note beats, and 6/16 two dotted-eighth-note beats.</p>
+    <p>Some patterns are typical of compound time: a quarter note and an eighth note, long and short, in one beat; and the lilting dotted eighth, sixteenth and eighth note of the siciliano.</p>
+    <figure play="as-written" tempo="108">
+      <staff clef="treble" time="6/8">C5/q D5/e E5/q. | F5/e. G5/s F5/e E5/q. | D5/e E5/e D5/e C5/q D5/e | C5/q. r/q. |.</staff>
+      <caption>Patterns in 6/8: quarter and eighth, the siciliano rhythm, and three eighth notes in one beat.</caption>
+    </figure>
+    <p>An eighth-note triplet in 2/4 sounds the same as three eighth notes in 6/8: both divide the beat into three. The difference is in the writing. Composers use a compound meter when the beat divides into three most of the time, and triplets in a simple meter when the division into three is the exception.</p>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble" time="2/4">C5/e3 D5/e3 E5/e3 F5/e3 G5/e3 A5/e3 | G5/h |.</staff>
+      <caption>Triplets in 2/4.</caption>
+    </figure>
+    <figure play="as-written" tempo="108">
+      <staff clef="treble" time="6/8">C5/e D5/e E5/e F5/e G5/e A5/e | G5/h. |.</staff>
+      <caption>The same rhythm in 6/8, where the division into three needs no triplet sign.</caption>
+    </figure>
+    <p>The opposite also happens: a duplet, marked with a 2, divides a compound beat into two equal parts.</p>
+    <figure play="as-written" tempo="108">
+      <staff clef="treble" time="6/8">C5/e D5/e E5/e F5/e2 G5/e2 | A5/q. G5/q. |.</staff>
+      <caption>In the first bar, the second beat is divided into two by a duplet.</caption>
+    </figure>
+    <check id="six-eight-beat">
+      <prompt>Which group fills exactly one beat in 6/8?</prompt>
+      <option key="a" correct="true">A quarter note and an eighth note</option>
+      <option key="b">Two quarter notes</option>
+      <option key="c">Two eighth notes</option>
+      <explanation>The beat of 6/8 is a dotted quarter note, three eighth notes long. A quarter note and an eighth note make three eighths; two quarter notes make four, and two eighth notes only two.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Dotted rhythms</title>
+    <p>A dotted eighth note and a sixteenth note divide a quarter-note beat unevenly, three parts to one. Played crisply, this dotted rhythm gives music a sharp, energetic character. With a double dot, the first note becomes longer still and the short note shorter: a double-dotted quarter note and a sixteenth note fill two beats, seven parts to one.</p>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble" time="4/4">C5/e. D5/s E5/e. F5/s G5/q. A5/e | G5/q.. F5/s E5/h |.</staff>
+      <caption>Dotted eighth notes with sixteenth notes, a dotted quarter note with an eighth note, and a double-dotted quarter note with a sixteenth note.</caption>
+    </figure>
+    <p>Do not confuse the dotted rhythm with a triplet of a quarter note and an eighth note. In the dotted rhythm the short note lasts a quarter of the beat; in the triplet it lasts a third of the beat, and the rhythm sounds rounder.</p>
+    <check id="dotted-eighth">
+      <prompt>How many sixteenth notes last as long as a dotted eighth note?</prompt>
+      <option key="a">Two</option>
+      <option key="b" correct="true">Three</option>
+      <option key="c">Four</option>
+      <explanation>An eighth note lasts two sixteenth notes, and the dot adds half of that, one more sixteenth note: three in all. With the sixteenth note that usually follows, the pair fills a quarter-note beat.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Hemiola</title>
+    <p>A hemiola regroups the beats of two bars in triple meter: two bars of three beats are heard as three groups of two. It is common at cadences in Baroque and Classical music, where it broadens the rhythm just before the end of a phrase.</p>
+    <figure>
+      <staff clef="treble" time="3/4">E5/q D5/q C5/q | D5/h E5/q~ | E5/q F5/h | E5/h. |.</staff>
+      <caption>In the second and third bars, three half notes span two bars of 3/4. The tie carries the middle half note over the barline.</caption>
+    </figure>
+    <check id="hemiola-grouping">
+      <prompt>In a hemiola in 3/4, how are the six beats of two bars grouped?</prompt>
+      <option key="a">Two groups of three</option>
+      <option key="b" correct="true">Three groups of two</option>
+      <option key="c">Six single beats</option>
+      <explanation>Normally two bars of 3/4 are two groups of three beats. A hemiola regroups the same six beats as three groups of two, often as three half notes.</explanation>
+    </check>
+  </section>
+</lesson>

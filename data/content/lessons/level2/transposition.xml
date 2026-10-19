@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+<lesson id="l2.transposition">
+  <title>Transposition</title>
+  <summary>Transposing moves every note by the same interval; transposing instruments read music written higher or lower than it sounds.</summary>
+
+  <section>
+    <title>Transposing by an interval</title>
+    <p>To transpose music is to move every note up or down by the same <term ref="interval">interval</term>. The melody, its rhythm and its intervals stay the same; only the pitch level, and usually the <term ref="key">key</term>, change. Singers transpose songs to suit their range, and players transpose parts for instruments that read in another key.</p>
+    <p>Each note must move by exactly the same interval, with the right number and the right quality. Up a major second, <note>C</note> becomes <note>D</note> and <note>E</note> becomes <note>F#</note>. Spelling a note <term ref="enharmonic">enharmonically</term>, as <note>Gb</note> instead of <note>F#</note>, would change the letter distance and so the interval.</p>
+    <worked>
+      <title>Transpose a melody up a major second</title>
+      <step>
+        <p>This melody is in <note>F</note> major. Its fourth note, <note>B</note>, is raised by a <term ref="natural">natural</term> sign: it lies an augmented fourth above the tonic.</p>
+        <figure play="as-written" tempo="96">
+          <staff clef="treble" key="-1" time="4/4">F4/q A4/q G4/q B4/q | C5/h A4/h |.</staff>
+        </figure>
+      </step>
+      <step>
+        <p>Transpose the key first. A major second above <note>F</note> is <note>G</note>, so the new key is <note>G</note> major, with one sharp.</p>
+      </step>
+      <step>
+        <p>Move every note up one letter, a major second: <note>F</note> to <note>G</note>, <note>A</note> to <note>B</note>, <note>G</note> to <note>A</note>, <note>C</note> to <note>D</note>. The raised <note>B</note> becomes a raised <note>C</note>: <note>C#</note>, again an augmented fourth above the tonic.</p>
+        <figure play="as-written" tempo="96">
+          <staff clef="treble" key="1" time="4/4">G4/q B4/q A4/q *C#5/q | D5/h B4/h |.</staff>
+        </figure>
+      </step>
+    </worked>
+    <p>An accidental in the original does not always become the same accidental in the transposition. What stays the same is its effect: a note raised in the old key is raised in the new key, whether by a sharp, a natural or a double sharp.</p>
+    <check id="e-up-m3">
+      <prompt>What is <note>E4</note> transposed up a minor third?</prompt>
+      <option key="a" correct="true"><note>G4</note></option>
+      <option key="b"><note>G#4</note></option>
+      <option key="c"><note>F##4</note></option>
+      <explanation>A third spans three letters: <note>E</note>, <note>F</note>, <note>G</note>. <note>E</note>–<note>G</note> is three half steps, a minor third. <note>G#4</note> is a major third above, and <note>F##4</note> sounds like <note>G4</note> but is written as a second.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Transposing instruments</title>
+    <p>Some instruments sound at a different pitch from the written note. The note in the part is the written pitch, which the player reads and fingers; the note that actually sounds is the sounding pitch, or concert pitch.</p>
+    <p>Such an instrument is named after the note that sounds when it plays a written <note>C</note>. A clarinet in <note>Bb</note> playing a written <note>C5</note> sounds <note>Bb4</note>, a major second lower. To write for it, transpose the concert pitch up a major second.</p>
+    <list>
+      <li>Clarinet in <note>Bb</note>, trumpet in <note>Bb</note>, soprano saxophone: sound a major second lower than written.</li>
+      <li>Clarinet in <note>A</note>: sounds a minor third lower.</li>
+      <li>Horn in <note>F</note>, English horn: sound a perfect fifth lower.</li>
+      <li>Alto saxophone, in <note>Eb</note>: sounds a major sixth lower.</li>
+      <li>Tenor saxophone and bass clarinet, in <note>Bb</note>: sound a major ninth lower.</li>
+      <li>Piccolo: sounds an <term ref="octave">octave</term> higher. Guitar and double bass: sound an octave lower.</li>
+    </list>
+    <p>The key signature moves with the notes. Each sharp added or flat removed counts as one step towards the sharp side. Parts for instruments in <note>Bb</note> are two steps sharper than concert pitch: concert <note>C</note> major becomes <note>D</note> major, and concert <note>F</note> major, with one flat, becomes <note>G</note> major, with one sharp. Parts for instruments in <note>F</note> are one step sharper, and parts for instruments in <note>Eb</note> three steps. Horn parts in older music are often written without a key signature, with accidentals instead.</p>
+    <p>Many modern scores are printed in C, at concert pitch, so that the conductor reads every part as it sounds; the players' parts are still transposed.</p>
+    <check id="trumpet-d5">
+      <prompt>A trumpet in <note>Bb</note> plays a written <note>D5</note>. Which note sounds?</prompt>
+      <option key="a" correct="true"><note>C5</note></option>
+      <option key="b"><note>E5</note></option>
+      <option key="c"><note>Bb4</note></option>
+      <explanation>A <note>Bb</note> instrument sounds a major second lower than written. A major second below <note>D5</note> is <note>C5</note>. <note>Bb4</note> is what sounds for a written <note>C5</note>.</explanation>
+    </check>
+    <check id="horn-c5">
+      <prompt>A horn in <note>F</note> plays a written <note>C5</note>. Which note sounds?</prompt>
+      <option key="a"><note>C5</note></option>
+      <option key="b" correct="true"><note>F4</note></option>
+      <option key="c"><note>G5</note></option>
+      <explanation>The horn in <note>F</note> sounds a perfect fifth lower than written: a written <note>C</note> sounds <note>F</note>, as its name says. A fifth below <note>C5</note> is <note>F4</note>.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Writing a part for clarinet</title>
+    <worked>
+      <title>Transpose a concert-pitch melody for clarinet in B flat</title>
+      <step>
+        <p>Start from the melody at concert pitch, in <note>Eb</note> major with three flats.</p>
+        <figure play="as-written" tempo="96">
+          <staff clef="treble" key="-3" time="4/4">Eb4/q G4/q Bb4/q G4/q | Ab4/q F4/q Eb4/h |.</staff>
+        </figure>
+      </step>
+      <step>
+        <p>The clarinet sounds a major second lower than written, so its part must be written a major second higher than the sound.</p>
+      </step>
+      <step>
+        <p>Transpose the key: a major second above <note>Eb</note> is <note>F</note>. <note>F</note> major has one flat: two flats fewer than concert pitch, as for every instrument in <note>Bb</note>.</p>
+      </step>
+      <step>
+        <p>Move each note up a major second: <note>Eb</note> to <note>F</note>, <note>G</note> to <note>A</note>, <note>Bb</note> to <note>C</note>, <note>Ab</note> to <note>Bb</note> and <note>F</note> to <note>G</note>. Played on the clarinet, this part sounds exactly like the concert-pitch melody.</p>
+        <figure>
+          <staff clef="treble" key="-1" time="4/4">F4/q A4/q C5/q A4/q | Bb4/q G4/q F4/h |.</staff>
+          <caption>The clarinet part, at written pitch.</caption>
+        </figure>
+      </step>
+    </worked>
+    <check id="alto-sax-key">
+      <prompt>A piece is in <note>Bb</note> major at concert pitch. In which key is the alto saxophone part written?</prompt>
+      <option key="a"><note>C</note> major</option>
+      <option key="b"><note>Db</note> major</option>
+      <option key="c" correct="true"><note>G</note> major</option>
+      <explanation>The alto saxophone sounds a major sixth lower than written, so its part is written a major sixth higher. A major sixth above <note>Bb</note> is <note>G</note>: <note>G</note> major, with one sharp instead of two flats: three steps sharper, as for every instrument in <note>Eb</note>. <note>C</note> major is the key for an instrument in <note>Bb</note>.</explanation>
+    </check>
+    <check id="a-clarinet">
+      <prompt>A clarinet in <note>A</note> plays a written <note>C5</note>. Which note sounds?</prompt>
+      <option key="a" correct="true"><note>A4</note></option>
+      <option key="b"><note>Bb4</note></option>
+      <option key="c"><note>E5</note></option>
+      <explanation>The clarinet in <note>A</note> sounds a minor third lower than written, so a written <note>C5</note> sounds <note>A4</note>, the note in its name.</explanation>
+    </check>
+  </section>
+</lesson>

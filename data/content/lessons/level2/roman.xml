@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+<lesson id="l2.roman">
+  <title>Roman Numerals and Harmonic Function</title>
+  <summary>Roman numerals name each chord by its place in the key; tonic, predominant and dominant describe what the chord does.</summary>
+
+  <section>
+    <title>Roman numeral analysis</title>
+    <p>A <term ref="roman-numeral">Roman numeral</term> names a chord by the <term ref="scale-degree">scale degree</term> of its <term ref="root">root</term>. Its symbols add the rest of what you need to know:</p>
+    <list>
+      <li>Upper case for major triads (V), lower case for minor triads (ii).</li>
+      <li>A small circle for diminished (vii°), a plus sign for augmented (III+), and ø7 or °7 for half-diminished and diminished seventh chords.</li>
+      <li>Figures for the position: I6 and I6/4 for inverted triads, V7, V6/5, V4/3 and V4/2 for a seventh chord and its inversions.</li>
+    </list>
+    <p>The key comes first, followed by a colon: <note>D</note>: I. Many textbooks write major keys with an upper-case letter and minor keys with a lower-case letter. Some textbooks write every numeral in upper case and leave the quality to the key; this course uses the case to show the quality.</p>
+    <worked>
+      <title>Label a chord with a Roman numeral</title>
+      <step>
+        <p>Take this chord in <note>D</note> major. Read its notes from the bass up: <note>E3</note>, <note>G3</note>, <note>C#4</note> and <note>A4</note>.</p>
+        <figure play="harmonic">
+          <staff clef="treble" key="2">[C#4 A4]/w</staff>
+          <staff clef="bass" key="2">[E3 G3]/w</staff>
+        </figure>
+      </step>
+      <step>
+        <p>Stack the notes in thirds: <note>A</note>–<note>C#</note>–<note>E</note>–<note>G</note>. The root is <note>A</note>, the fifth degree of <note>D</note> major, and the chord is a dominant seventh chord: V7.</p>
+      </step>
+      <step>
+        <p>Find the position. The bass, <note>E</note>, is the fifth of the chord, so the chord is in second inversion. The full label is V4/3.</p>
+      </step>
+    </worked>
+    <check id="f-major-first-inversion">
+      <prompt>In <note>F</note> major, a chord has the notes <note>A</note>, <note>C</note> and <note>F</note>, with <note>A</note> in the bass. What is its Roman numeral?</prompt>
+      <option key="a" correct="true">I6</option>
+      <option key="b">iii</option>
+      <option key="c">vi6</option>
+      <explanation>The notes stack as <note>F</note>–<note>A</note>–<note>C</note>, the tonic triad of <note>F</note> major. The bass <note>A</note> is its third, so the triad is in first inversion: I6. The notes do not form iii, <note>A</note>–<note>C</note>–<note>E</note>.</explanation>
+    </check>
+    <check id="e-minor-v7">
+      <prompt>In <note>E</note> minor, which Roman numeral names the chord <note>B</note>–<note>D#</note>–<note>F#</note>–<note>A</note> in root position?</prompt>
+      <option key="a">v7</option>
+      <option key="b" correct="true">V7</option>
+      <option key="c">VII7</option>
+      <explanation><note>B</note> is the fifth degree of <note>E</note> minor. With the leading tone <note>D#</note> the triad is major and the seventh <note>B</note>–<note>A</note> minor, so the chord is the dominant seventh V7. With <note>D</note> instead of <note>D#</note> it would be the minor v7.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Three functions</title>
+    <p>Chords in a key do one of three jobs, called their harmonic function:</p>
+    <list>
+      <li>Tonic function: stability and rest. The <term ref="tonic">tonic</term> triad, I, is the home of the key; vi can stand in for it.</li>
+      <li>Predominant function: movement away from the tonic, towards the dominant. IV and ii are the main predominant chords; both contain the <term ref="subdominant">subdominant</term>, degree 4.</li>
+      <li>Dominant function: tension that asks for the tonic. V and vii° contain the <term ref="leading-tone">leading tone</term>, which pulls up to the tonic.</li>
+    </list>
+    <p>The basic order of functions in a phrase is tonic, predominant, dominant, tonic. The predominant can be left out, but a dominant that leads back to the tonic is what makes the key clear.</p>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">[G4 C5]/h [A4 C5]/h [G4 B4]/h [G4 C5]/h |.</staff>
+      <staff clef="bass">[C3 E4]/h{I} [F3 F4]/h{IV} [G3 D4]/h{V} [C3 E4]/h{I} |.</staff>
+      <caption>Tonic, predominant, dominant, tonic in <note>C</note> major.</caption>
+    </figure>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">[G4 E5]/h [F4 D5]/h [F4 D5]/h [E4 C5]/h |.</staff>
+      <staff clef="bass">[C3 C4]/h{I} [F3 A3]/h{ii6} [G3 B3]/h{V7} [C3 C4]/h{I} |.</staff>
+      <caption>The same functions with ii6 as the predominant and V7 as the dominant.</caption>
+    </figure>
+    <p>The names vary: European textbooks following Hugo Riemann speak of tonic, subdominant and dominant functions, written T, S and D. Predominant, the common North American term, means the same as the subdominant function.</p>
+    <p>vii° and vii°7 share the leading tone and degree 4 with V7, so they act as dominants. iii is the weakest chord of the key; it most often moves to vi or IV.</p>
+    <check id="ii6-function">
+      <prompt>Which function does ii6 normally have?</prompt>
+      <option key="a">Tonic</option>
+      <option key="b" correct="true">Predominant</option>
+      <option key="c">Dominant</option>
+      <explanation>ii6 contains degree 4 in the bass and usually leads to V: it is a predominant chord, like IV. Tonic chords are I and vi; dominant chords are V and vii°.</explanation>
+    </check>
+    <check id="vii-as-dominant">
+      <prompt>Why can vii°6 take the place of V?</prompt>
+      <option key="a" correct="true">It contains the leading tone, which pulls up to the tonic</option>
+      <option key="b">It contains the tonic, like I</option>
+      <option key="c">It contains the subdominant, like IV</option>
+      <explanation>vii° shares two notes with V, degrees 7 and 2, including the leading tone. Together with degree 4 it forms the notes of V7 without the root, so it leads to I in the same way.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>How chords follow each other</title>
+    <p>In common-practice music some chord successions are far more frequent than others. The strongest root movement is down a fifth (or up a fourth): V to I, ii to V, vi to ii. Chains of falling fifths lead from the tonic's most distant neighbours back to the tonic:</p>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">[G4 E5]/h [A4 E5]/h [A4 F5]/h [B4 G5]/h [C5 G5]/h |.</staff>
+      <staff clef="bass">[C3 C4]/h{I} [A2 C4]/h{vi} [D3 D4]/h{ii} [G2 D4]/h{V} [C3 E4]/h{I} |.</staff>
+      <caption>In <note>C</note> major, the roots <note>A</note>, <note>D</note>, <note>G</note> and <note>C</note> fall by fifths to the tonic.</caption>
+    </figure>
+    <p>A summary of the usual successions in major, following Kostka and Payne:</p>
+    <list>
+      <li>I can move to any chord.</li>
+      <li>iii moves to vi (or IV).</li>
+      <li>vi moves to ii or IV.</li>
+      <li>ii and IV move to V or vii°; IV can also return to I.</li>
+      <li>V and vii° move to I; V can also move to vi.</li>
+    </list>
+    <p>Successions against this order, such as V to IV, are called retrogressions. They occur, but much less often. Minor keys follow the same pattern with their own chord qualities: i, ii°, III, iv, V, VI and vii°.</p>
+    <check id="after-ii">
+      <prompt>In a major key, which chord most often follows ii?</prompt>
+      <option key="a">I</option>
+      <option key="b" correct="true">V</option>
+      <option key="c">vi</option>
+      <explanation>ii is a predominant chord: it leads to the dominant, and its root falls a fifth to the root of V. ii to vi or ii to I goes against the usual order.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Analysing a progression</title>
+    <worked>
+      <title>Analyse a four-part progression</title>
+      <step>
+        <p>Find the key. The key signature has two sharps, and the progression begins and ends with <note>D</note>–<note>F#</note>–<note>A</note>, so the key is <note>D</note> major, not <note>B</note> minor.</p>
+        <figure play="as-written" tempo="72">
+          <staff clef="treble" key="2">[F#4 A4]/h [F#4 B4]/h [E4 B4]/h [E4 C#5]/h [D4 D5]/h |.</staff>
+          <staff clef="bass" key="2">[D3 D4]/h [B2 D4]/h [G2 G3]/h [A2 G3]/h [D3 F#3]/h |.</staff>
+        </figure>
+      </step>
+      <step>
+        <p>Take each chord in turn, collect its notes and stack them in thirds. The second chord, <note>B</note>–<note>D</note>–<note>F#</note>, is a minor triad on degree 6 with the root in the bass: vi.</p>
+      </step>
+      <step>
+        <p>The third chord has the notes <note>G</note>, <note>E</note> and <note>B</note>: in thirds, <note>E</note>–<note>G</note>–<note>B</note>, a minor triad on degree 2. The bass <note>G</note> is its third, so the chord is ii6.</p>
+      </step>
+      <step>
+        <p>The fourth chord, <note>A</note>–<note>C#</note>–<note>E</note>–<note>G</note>, is the dominant seventh chord on degree 5 with the root in the bass: V7. The last chord is I again.</p>
+      </step>
+      <step>
+        <p>Add the functions: I (tonic), vi (tonic, leading on), ii6 (predominant), V7 (dominant), I (tonic).</p>
+        <figure play="as-written" tempo="72">
+          <staff clef="treble" key="2">[F#4 A4]/h [F#4 B4]/h [E4 B4]/h [E4 C#5]/h [D4 D5]/h |.</staff>
+          <staff clef="bass" key="2">[D3 D4]/h{I} [B2 D4]/h{vi} [G2 G3]/h{ii6} [A2 G3]/h{V7} [D3 F#3]/h{I} |.</staff>
+        </figure>
+      </step>
+    </worked>
+    <check id="highlighted-chord">
+      <prompt>This progression is in <note>G</note> major. What is the Roman numeral of the highlighted chord?</prompt>
+      <figure play="as-written" tempo="72">
+        <staff clef="treble" key="1">[D4 G4]/h *[E4 G4]/h [D4 F#4]/h [D4 G4]/h |.</staff>
+        <staff clef="bass" key="1">[G2 B3]/h *[C3 C4]/h [D3 A3]/h [G2 B3]/h |.</staff>
+        <description>A grand staff with a key signature of one sharp and four four-part chords. The second chord is highlighted: its bass is in the second space of the bass staff.</description>
+      </figure>
+      <option key="a">ii</option>
+      <option key="b" correct="true">IV</option>
+      <option key="c">vi6</option>
+      <explanation>The highlighted chord has the notes <note>C</note>, <note>C</note>, <note>E</note> and <note>G</note>: the triad <note>C</note>–<note>E</note>–<note>G</note>, built on degree 4 of <note>G</note> major, with the root in the bass. It is IV, a predominant chord between I and V.</explanation>
+    </check>
+  </section>
+</lesson>
