@@ -292,7 +292,7 @@ class CadencesStaff(ExerciseDefinition):
             keys = _('Minor keys')
         else:
             keys = _('Major and minor keys')
-        count = len(self._pool(settings))
+        count = len(_types(settings))
         cadences = ngettext('{n} cadence', '{n} cadences', count).format(n=count)
         # Translators: separator between the parts of an exercise subtitle.
         return _(' · ').join((keys, cadences))

@@ -36,7 +36,7 @@ from ...core import Chord, ChordQuality, Duration, KeySignature, Pitch, PitchNam
 from ...core.roman import RomanNumeral
 from ...core.scale import Key, Mode
 from ...learning.model import ItemId
-from ...notation.spec import Barline, BarStyle, Clef, Event, Head, StaffSpec, SystemSpec
+from ...notation.spec import Barline, BarStyle, Clef, Event, Head, Ink, StaffSpec, SystemSpec
 from ...notation.spec import Chord as StaffChord
 from ..base import ExerciseDefinition
 
@@ -368,6 +368,7 @@ def satb_figure(
     labels: Sequence[str | None] = (),
     description: str | None = None,
     final_bar: bool = False,
+    label_ink: Ink = Ink.FOREGROUND,
 ) -> SystemSpec:
     """Soprano and alto on the treble staff, tenor and bass on the bass staff.
 
@@ -410,7 +411,7 @@ def satb_figure(
             clef=Clef.BASS,
             key_signature=satb.signature,
             events=tuple(
-                StaffChord((Head(v[3]), Head(v[2])), label=label(i))
+                StaffChord((Head(v[3]), Head(v[2])), label=label(i), ink=label_ink)
                 for i, v in enumerate(satb.voices)
             ),
         )

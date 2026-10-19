@@ -158,8 +158,8 @@ def _inversion_sentence(chord: Chord, label: str) -> str:
     sentences: tuple[str, ...]
     if chord.quality.size == 4:
         sentences = (
-            # Translators: {bass} is a note name, {numeral} a Roman numeral such as "V7".
-            _('The root, {bass}, is in the bass: {numeral}.'),
+            # Translators: {bass} is a note name.
+            _('The root, {bass}, is in the bass: root position.'),
             # Translators: e.g. "The third, C♯, is in the bass, so the figures are 6/5: V6/5."
             _('The third, {bass}, is in the bass, so the figures are 6/5: {numeral}.'),
             _('The fifth, {bass}, is in the bass, so the figures are 4/3: {numeral}.'),
@@ -167,8 +167,8 @@ def _inversion_sentence(chord: Chord, label: str) -> str:
         )
     else:
         sentences = (
-            # Translators: a root-position triad has no figures; {numeral} is e.g. "IV".
-            _('The root, {bass}, is in the bass: root position, {numeral}.'),
+            # Translators: a root-position triad has no figures; {bass} is a note name.
+            _('The root, {bass}, is in the bass: root position, so there are no figures.'),
             # Translators: e.g. "The third, F♯, is in the bass, so the figure is 6: I6."
             _('The third, {bass}, is in the bass, so the figure is 6: {numeral}.'),
             _('The fifth, {bass}, is in the bass, so the figures are 6/4: {numeral}.'),
@@ -531,7 +531,9 @@ class RomanNumerals(ExerciseDefinition):
         if isinstance(figure, SystemSpec):
             voices = satb_voices(figure)
             signature = figure.staves[0].key_signature
-            return satb_figure(Satb(tuple(voices), signature), labels=(label,))
+            return satb_figure(
+                Satb(tuple(voices), signature), labels=(label,), label_ink=Ink.ACCENT
+            )
         return figure
 
 
