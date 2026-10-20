@@ -77,6 +77,8 @@ Contract changes so far (all backwards-compatible):
   `rule_mark()` and `rule_reason()`. New module `etude.checkers.realize` is
   the only four-part voicer: `realize(numerals or chords, key, rng, bass=,
   soprano=)` returns correct SATB voicings or raises `RealisationError`.
+* W4 exercises: `Question.details`, exercise-private facts needed again when
+  grading (the keys of a transposition); not shown to the learner.
 * W4 notation: lines of a `Chord.label` separated by `'\n'` are stacked
   downwards (figured-bass figures); the layout emits one `TextItem` per line.
 * W3 content: `etude.content` moved below `etude.exercises` in the layers;

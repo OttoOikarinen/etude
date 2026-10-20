@@ -484,21 +484,26 @@ class FiguredBassExercise(ExerciseDefinition):
 
         sevenths = bool(settings.get('sevenths', True)) or _is_seventh(segment)
         quality_keys = (*_TRIAD_KEYS, *(_SEVENTH_KEYS if sevenths else ()))
-        accels = '1234567890'
+        # Number keys for the qualities (at most eight); the inversions have none, as
+        # accelerators stop at 9. The root's letter keys name the note.
         qualities = tuple(
-            Option(q, _quality_label(q), accels[i]) for i, q in enumerate(quality_keys)
+            Option(q, _quality_label(q), str(i + 1)) for i, q in enumerate(quality_keys)
         )
         inversion_count = 4 if sevenths else 3
-        spare = 'qwtyuiop'
         inversions = tuple(
-            Option(INVERSIONS[i], _inversion_chip(i), spare[i]) for i in range(inversion_count)
+            Option(INVERSIONS[i], _inversion_chip(i)) for i in range(inversion_count)
         )
         groups = (
             ChipGroup(
                 'root',
                 _('Root'),
                 tuple(
-                    Option(letter.name, pitch_name(PitchName(letter)), letter.name.lower())
+                    Option(
+                        letter.name,
+                        pitch_name(PitchName(letter)),
+                        letter.name.lower(),
+                        fixed_accel=True,
+                    )
                     for letter in Letter
                 ),
                 accidentals=True,

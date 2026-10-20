@@ -6,10 +6,12 @@ from collections.abc import Mapping
 
 import pytest
 
+from etude.checkers.voice_leading import Context, check, errors
 from etude.core import Chord, ChordQuality, PitchName
 from etude.core.roman import RomanNumeral
 from etude.core.scale import Key, Mode
 from etude.exercises.base import ChipsAnswer, Question
+from etude.exercises.families.harmony import satb_voices
 from etude.exercises.families.roman_numerals import (
     RomanNumerals,
     chord_in_figure,
@@ -208,3 +210,17 @@ def test_item_labels_and_settings_text() -> None:
     assert RN.item_label(ItemId('roman.major.V7.65')) == 'V6/5 in major'
     assert RN.item_label(ItemId('roman.minor.viio.53')) == 'vii° in minor'
     assert RN.describe_settings(DEFAULTS) == 'Major keys · triads and V7 · up to 4 accidentals'
+
+
+def test_four_part_chords_pass_the_voice_leading_checker() -> None:
+    settings = {**EVERYTHING, 'voicing': 'satb'}
+    for item in RN.items(settings):
+        for seed in range(2):
+            question = RN.generate(item, settings, random.Random(seed))
+            figure = question.figure
+            assert isinstance(figure, SystemSpec)
+            voices = satb_voices(figure)
+            chord = chord_in_figure(figure)
+            assert {p.name for p in voices[0]} == set(chord.names()), 'every chord tone'
+            found = errors(check(voices, Context(key_of(question), (chord,))))
+            assert not found, (item, seed, [v.rule for v in found])

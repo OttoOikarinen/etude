@@ -6,7 +6,7 @@ import random
 
 import pytest
 
-from etude.checkers.voice_leading import Ranges
+from etude.checkers.voice_leading import Context, Ranges, check, errors
 from etude.core import Chord
 from etude.core.roman import RomanNumeral
 from etude.core.scale import Key, Mode
@@ -162,7 +162,7 @@ def test_four_part_writing(kind: str) -> None:
                     low, high = RANGES.of(voice)
                     assert low.midi <= pitch.midi <= high.midi
                 s, a, t, b = voicing
-                assert s.midi > a.midi > t.midi > b.midi
+                assert s.midi >= a.midi >= t.midi >= b.midi  # unisons, but no crossing
                 assert s.midi - a.midi <= 12
                 assert a.midi - t.midi <= 12
             for before, after in itertools.pairwise(voices):
@@ -242,3 +242,18 @@ def test_items_settings_and_labels() -> None:
     assert CAD.describe_settings(DEFAULTS) == 'Major and minor keys · 5 cadences'
     assert 'cadence.staff.major.iac' in CAD.confusables(ItemId('cadence.staff.major.pac'))
     assert CAD.confusables(ItemId('cadence.staff.minor.half')) == ['cadence.staff.minor.phrygian']
+
+
+@pytest.mark.parametrize('kind', TYPES)
+def test_every_phrase_passes_the_voice_leading_checker(kind: str) -> None:
+    """No checker errors in any generated phrase: all types, both modes, keys up to 7♯/7♭."""
+    modes = (Mode.MINOR,) if kind == 'phrygian' else tuple(Mode)
+    keys: set[Key] = set()
+    for mode in modes:
+        for seed in range(20):
+            question = CAD.generate(item_id(mode, kind), ALL, random.Random(seed))
+            key, voices, chords, _ = analysis(question)
+            keys.add(key)
+            found = errors(check(voices, Context(key, chords)))
+            assert not found, (question.item_id, seed, [v.rule for v in found])
+    assert len(keys) >= 10, 'the sample covers many keys'

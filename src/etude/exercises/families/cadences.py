@@ -25,7 +25,9 @@ Definitions follow Kostka & Payne, *Tonal Harmony* (ch. 8):
 * **Deceptive (DC)**: V(7)–vi (V–VI in minor), the bass rising a step where
   the ear expects the tonic.
 
-The four-part writing follows the conventions in :mod:`.harmony`.
+Phrases are voiced by :func:`etude.checkers.realize.realize`, so every one
+passes the voice-leading checker; a Phrygian cadence is kept only when its bass
+falls by the half step.
 """
 
 from __future__ import annotations
@@ -37,9 +39,11 @@ from fractions import Fraction
 from functools import cache
 from gettext import gettext as _
 from gettext import ngettext, pgettext
+from itertools import product
 from typing import cast
 
 from ...audio.spec import PlaybackSpec
+from ...checkers.realize import RealisationError, Voicing, realize
 from ...core import Chord, Duration, NoteValue, PitchName
 from ...core.naming import key_name, pitch_name
 from ...core.roman import RomanNumeral
@@ -61,7 +65,6 @@ from ..base import (
 )
 from .harmony import (
     MAX_ACCIDENTALS,
-    Voicing,
     chord_of,
     key_from_signature,
     keys_within,
@@ -72,7 +75,6 @@ from .harmony import (
     satb_durations,
     satb_figure,
     satb_voices,
-    voice_progression,
 )
 
 TYPES = ('pac', 'iac', 'half', 'plagal', 'deceptive', 'phrygian')
@@ -338,18 +340,8 @@ class CadencesStaff(ExerciseDefinition):
         self, item_id: ItemId, settings: Mapping[str, object], rng: random.Random
     ) -> Question:
         mode, kind = parse_item(item_id)
-        key = rng.choice(keys_within(limit_setting(settings), (mode,)))
-        plan = _plan(kind, mode, bool(settings.get('inverted-iac', True)), rng)
-        chords = [RomanNumeral.parse(n).realize(key) for n in plan.numerals]
-        count = len(chords)
-        soprano = {
-            count + index: tuple(key.scale.degree(d) for d in degrees)
-            for index, degrees in plan.soprano_degrees.items()
-        }
-        extra = {}
-        if kind == 'deceptive':
-            extra[count - 1] = {1: 0.0}  # double the third of vi after V
-        voices = voice_progression(chords, key, rng, soprano=soprano, extra_doublings=extra)
+        key, voices = self._phrase(kind, mode, settings, rng)
+        count = len(voices)
         durations = (*([_QUARTER] * (count - 1)), _HALF)
         figure = satb_figure(voices, key.signature, durations=durations, final_bar=True)
 
@@ -375,6 +367,40 @@ class CadencesStaff(ExerciseDefinition):
                 'soprano of the final chord.'
             ),
         )
+
+    @staticmethod
+    def _phrase(
+        kind: str, mode: Mode, settings: Mapping[str, object], rng: random.Random
+    ) -> tuple[Key, tuple[Voicing, ...]]:
+        """A key and a correct four-part phrase ending with the cadence.
+
+        :func:`~etude.checkers.realize.realize` voices it; a soprano that may be one of
+        several degrees (3 or 5 over an IAC's tonic) is tried in random order, and a
+        phrase that cannot be voiced (rare) is replaced by another one, as is a Phrygian
+        cadence whose bass does not fall by the half step that defines it.
+        """
+        keys = keys_within(limit_setting(settings), (mode,))
+        inverted = bool(settings.get('inverted-iac', True))
+        for _attempt in range(40):
+            key = rng.choice(keys)
+            plan = _plan(kind, mode, inverted, rng)
+            count = len(plan.numerals)
+            choices = {
+                count + index: rng.sample(degrees, len(degrees))
+                for index, degrees in plan.soprano_degrees.items()
+            }
+            for combination in product(*choices.values()):
+                tops: list[PitchName | None] = [None] * count
+                for index, degree in zip(choices, combination, strict=True):
+                    tops[index] = key.scale.degree(degree)
+                try:
+                    voices = realize(plan.numerals, key, rng, soprano=tops)
+                except RealisationError:
+                    continue
+                if kind == 'phrygian' and voices[-2][3].midi - voices[-1][3].midi != 1:
+                    continue  # the cadence's bass must fall the half step, not leap
+                return key, voices
+        raise AssertionError(f'no {kind} cadence could be voiced')  # pragma: no cover
 
     @staticmethod
     def _playback(voices: Sequence[Voicing]) -> PlaybackSpec:

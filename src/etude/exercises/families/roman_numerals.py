@@ -33,6 +33,7 @@ from gettext import gettext as _
 from gettext import ngettext, pgettext
 from typing import cast
 
+from ...checkers.realize import RealisationError, Voicing, realize
 from ...core import Chord, ChordQuality, KeySignature, Pitch
 from ...core.naming import chord_name, degree_name, key_name, pitch_name
 from ...core.roman import RomanNumeral
@@ -58,7 +59,6 @@ from .harmony import (
     MAX_ACCIDENTALS,
     SEVENTH_FIGURES,
     TRIAD_FIGURES,
-    best_voicing,
     chord_of,
     figure_text,
     key_from_signature,
@@ -350,7 +350,7 @@ class RomanNumerals(ExerciseDefinition):
             voicing = rng.choice(('close', 'satb'))
         figure: Figure
         if voicing == 'satb':
-            voices = best_voicing(chord, key, rng)
+            voices = self._complete_voicing(chord, key, rng)
             figure = satb_figure((voices,), key.signature)
             pitches: Sequence[Pitch] = sorted(voices)
         else:
@@ -363,12 +363,16 @@ class RomanNumerals(ExerciseDefinition):
 
         # Items outside the current settings (an older review) keep their own options.
         sevenths = _sevenths(settings) != 'none' or seventh
-        numerals = tuple(Option(str(d), _numeral(mode, d, False).symbol, str(d)) for d in _DEGREES)
+        # The number keys 1–7 name the scale degree, wherever the shuffled chip is; the
+        # figures have no accelerators, since they stop at 9.
+        numerals = tuple(
+            Option(str(d), _numeral(mode, d, False).symbol, str(d), fixed_accel=True)
+            for d in _DEGREES
+        )
         figure_keys = (*TRIAD_FIGURES, *(SEVENTH_FIGURES if sevenths else ()))
-        accels = '890qwty'
         figure_options = tuple(
-            Option(f, figure_text(f) or pgettext('roman figures', 'None (5/3)'), accels[i])
-            for i, f in enumerate(figure_keys)
+            Option(f, figure_text(f) or pgettext('roman figures', 'None (5/3)'))
+            for f in figure_keys
         )
         figures = SEVENTH_FIGURES if seventh else TRIAD_FIGURES
         return Question(
@@ -391,6 +395,26 @@ class RomanNumerals(ExerciseDefinition):
                 'which chord tone is in the bass.'
             ),
         )
+
+    @staticmethod
+    def _complete_voicing(chord: Chord, key: Key, rng: random.Random) -> Voicing:
+        """A correct four-part voicing with every chord tone: without its fifth a
+        half-diminished seventh would read as a minor seventh.
+
+        :func:`realize` prefers a root-position seventh chord without its fifth, so a
+        missing tone is asked for in the soprano.
+        """
+        voicing = realize([chord], key, rng)[0]
+        missing = sorted(set(chord.names()) - {p.name for p in voicing}, key=str)
+        rng.shuffle(missing)
+        for name in missing:
+            try:
+                candidate = realize([chord], key, rng, soprano=[name])[0]
+            except RealisationError:
+                continue
+            if {p.name for p in candidate} == set(chord.names()):
+                return candidate
+        return voicing
 
     @staticmethod
     def _spellable(key: Key, degree: int, seventh: bool) -> bool:

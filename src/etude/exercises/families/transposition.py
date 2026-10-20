@@ -37,7 +37,7 @@ from gettext import ngettext, pgettext
 from typing import cast
 
 from ...audio.spec import PlaybackSpec
-from ...core import Interval, KeySignature, Pitch, PitchName
+from ...core import Interval, Pitch, PitchName
 from ...core.naming import key_name, pitch_name
 from ...core.scale import Key, Mode
 from ...learning.model import ItemId
@@ -422,6 +422,7 @@ class Transposition(ExerciseDefinition):
             playback=PlaybackSpec.melodic(sounding, note_length=Fraction(1), tempo=100.0),
             context=self._context(item, setup),
             hint=self._hint(item),
+            details={'source-key': str(setup.source_key), 'target-key': str(setup.target_key)},
         )
 
     def _setup(self, item: _Item, settings: Mapping[str, object], rng: random.Random) -> _Setup:
@@ -590,7 +591,7 @@ class Transposition(ExerciseDefinition):
         interval = _with_article(key)
         first, target = original[0], expected[0]
         example = _('{note} becomes {target}').format(note=_note(first), target=_note(target))
-        source_key, target_key = self._key_names(item, question)
+        source_key, target_key = self._key_names(question)
         if item.instrument is not None:
             name = instrument_name(item.instrument)
             if item.target == 'concert':
@@ -644,27 +645,13 @@ class Transposition(ExerciseDefinition):
         )
         return text.format(interval=interval, spans=spans, example=example)
 
-    def _key_names(self, item: _Item, question: Question) -> tuple[str, str]:
-        """Names of the source and target keys of a question with key signatures.
-
-        The mode is not in the item, so it is recovered from the question's context,
-        which was written from the keys of the right mode.
-        """
-        figure = question.figure
-        answer = question.answer
-        source_signature = figure.key_signature if isinstance(figure, StaffSpec) else None
-        target_signature = answer.key_signature if isinstance(answer, StaffInputAnswer) else None
-        if source_signature is None or target_signature is None:
+    @staticmethod
+    def _key_names(question: Question) -> tuple[str, str]:
+        """Names of the source and target keys, stored with the question."""
+        keys = [question.details.get(k) for k in ('source-key', 'target-key')]
+        if keys[0] is None or keys[1] is None:
             return '', ''
-        keys = [
-            (_key_for(source_signature, mode), _key_for(target_signature, mode))
-            for mode in (Mode.MAJOR, Mode.MINOR)
-        ]
-        for source, target in keys:
-            setup = _Setup((), (), source, target, Clef.TREBLE, Clef.TREBLE)
-            if self._context(item, setup) == question.context:
-                return key_name(source), key_name(target)
-        return key_name(keys[0][0]), key_name(keys[0][1])
+        return key_name(Key.parse(keys[0])), key_name(Key.parse(keys[1]))
 
     @staticmethod
     def _mistakes(written: Sequence[Pitch], expected: Sequence[Pitch]) -> list[str]:
@@ -699,12 +686,6 @@ class Transposition(ExerciseDefinition):
 
     def serialize(self, value: object) -> str:
         return staff_value_text(value)
-
-
-def _key_for(signature: KeySignature | None, mode: Mode) -> Key:
-    signature = signature or KeySignature(0)
-    tonic = signature.major_tonic if mode is Mode.MAJOR else signature.minor_tonic
-    return Key(tonic, mode)
 
 
 def _note(pitch: Pitch) -> str:
