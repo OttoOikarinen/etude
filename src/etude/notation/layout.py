@@ -103,6 +103,8 @@ LABEL_CLEARANCE = 0.6
 """Smallest space between the staff's lowest mark and the labels below."""
 LABEL_MIN_BASELINE = 3.4
 """Smallest distance from the bottom line to the label baseline."""
+LABEL_LINE_SPACING = 1.0
+"""Distance between the baselines of stacked label lines, in label sizes."""
 BRACKET_GAP = 0.6
 BRACKET_HOOK = 0.5
 BRACKET_PAD = 0.55
@@ -1469,17 +1471,19 @@ class _Engraver:
             index = geom.track.base + geom.index
             highlighted = chord.ink is not Ink.FOREGROUND
             ink = chord.ink if highlighted else Ink.DIM
-            out.items.append(
-                TextItem(
-                    chord.label,
-                    out.event_x[index],
-                    baseline,
-                    LABEL_SIZE,
-                    Align.CENTER,
-                    highlighted,
-                    ink,
+            # Lines of a label are stacked downwards (figured-bass figures).
+            for line_index, line in enumerate(chord.label.split('\n')):
+                out.items.append(
+                    TextItem(
+                        line,
+                        out.event_x[index],
+                        baseline + line_index * LABEL_SIZE * LABEL_LINE_SPACING,
+                        LABEL_SIZE,
+                        Align.CENTER,
+                        highlighted,
+                        ink,
+                    )
                 )
-            )
 
     # -- stacking and assembly --
 

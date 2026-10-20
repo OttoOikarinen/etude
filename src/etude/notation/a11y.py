@@ -274,7 +274,7 @@ def _describe_staff(staff: StaffSpec, name_pitch: PitchNamer) -> str:
             sentences.append(
                 _('Lower voice: {events}').format(events=_describe_events(voice, name_pitch))
             )
-    labels = [e.label for e in staff.events if isinstance(e, Chord) and e.label]
+    labels = [e.label.replace('\n', ' ') for e in staff.events if isinstance(e, Chord) and e.label]
     if labels:
         sentences.append(_('Labels: {labels}.').format(labels=', '.join(labels)))
     sentences.extend(_marked(staff, name_pitch))

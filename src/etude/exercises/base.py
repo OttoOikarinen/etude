@@ -220,6 +220,9 @@ class Question:
     """Offer the ear panel's Melodic/Harmonic toggle. Intervals can be heard
     either way; a chord question's playback style is part of the question."""
     hint: str | None = None
+    details: Mapping[str, str] = field(default_factory=dict, hash=False)
+    """Facts the exercise needs again when grading that the figure does not show,
+    e.g. ``{'source-key': 'G major'}`` for a transposition. Never shown to the learner."""
 
 
 @dataclass(frozen=True, slots=True)

@@ -110,7 +110,8 @@ class Chord:
     heads: tuple[Head, ...]
     duration: Duration | None = None
     label: str | None = None
-    """Text centred below the staff, e.g. a scale degree or Roman numeral."""
+    """Text centred below the staff, e.g. a scale degree or Roman numeral. Lines
+    separated by ``'\\n'`` are stacked downwards, as figured-bass figures are."""
     ink: Ink = Ink.FOREGROUND
     """Colour of the stem, flag and label."""
     tie_to_next: bool = False
