@@ -1681,6 +1681,28 @@ def check_staff_view_focus_ring() -> None:
         window.destroy()
 
 
+def check_long_figure_scrolls_in_its_card() -> None:
+    """A figure too long for 400 px even at its smallest scale scrolls sideways in
+    its card instead of widening the page (four bars of 12/8 in eighths)."""
+    from gi.repository import Gtk
+
+    from etude.content.music_text import parse_events
+    from etude.notation.spec import StaffSpec
+    from etude.ui.figure import WideFigure, create_figure_widget
+
+    bar = ' '.join(['C5/e'] * 12)
+    figure = StaffSpec(events=parse_events(' | '.join([bar] * 4)))
+    view = create_figure_widget(figure)
+    assert view.measure(Gtk.Orientation.HORIZONTAL, -1)[0] > 400
+    wide = WideFigure(view)
+    minimum, natural = wide.measure(Gtk.Orientation.HORIZONTAL, -1)[:2]
+    assert minimum <= 400 < natural, (minimum, natural)
+    # Not clipped: as tall as the staff at the width it is given.
+    smallest = view.measure(Gtk.Orientation.HORIZONTAL, -1)[0]
+    height = view.measure(Gtk.Orientation.VERTICAL, smallest)[0]
+    assert wide.measure(Gtk.Orientation.VERTICAL, 320)[0] == height > 0
+
+
 CHECKS: list[Callable[[], None]] = [
     check_style_css_parses,
     check_window_and_sections,
@@ -1698,6 +1720,7 @@ CHECKS: list[Callable[[], None]] = [
     check_live_exercises_fit_and_compare,
     check_reveal_details,
     check_staff_view_focus_ring,
+    check_long_figure_scrolls_in_its_card,
     check_staff_input_widget,
     check_live_staff_input_sessions,
     check_today_preview,

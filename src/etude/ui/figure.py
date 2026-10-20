@@ -45,3 +45,46 @@ def create_figure_widget(figure: Figure | None) -> Gtk.Widget:
     view.set_pitch_namer(pitch_label)
     view.set_visible(figure is not None)
     return view
+
+
+class WideFigure(Gtk.Widget):
+    """A figure in a sideways scroller, for figures too long to fit even at their
+    smallest scale: the figure then scrolls inside its card instead of widening
+    the page.
+
+    A plain :class:`Gtk.ScrolledWindow` measures its child's height without a
+    width, which gives a staff its smallest-scale height and clips it; this
+    asks the staff for its height at the width it will get.
+    """
+
+    __gtype_name__ = 'EtudeWideFigure'
+
+    def __init__(self, view: Gtk.Widget) -> None:
+        super().__init__()
+        self.view = view
+        self._scroller = Gtk.ScrolledWindow(
+            hscrollbar_policy=Gtk.PolicyType.AUTOMATIC,
+            vscrollbar_policy=Gtk.PolicyType.NEVER,
+            propagate_natural_width=True,
+        )
+        self._scroller.set_child(view)
+        self._scroller.set_parent(self)
+
+    def do_dispose(self) -> None:
+        self._scroller.unparent()
+
+    def do_get_request_mode(self) -> Gtk.SizeRequestMode:
+        return Gtk.SizeRequestMode.HEIGHT_FOR_WIDTH
+
+    def do_measure(self, orientation: Gtk.Orientation, for_size: int) -> tuple[int, int, int, int]:
+        if orientation == Gtk.Orientation.HORIZONTAL:
+            minimum, natural = self._scroller.measure(orientation, -1)[:2]
+            return minimum, natural, -1, -1
+        smallest, widest = self.view.measure(Gtk.Orientation.HORIZONTAL, -1)[:2]
+        # The view is never narrower than its minimum: below that it scrolls.
+        width = widest if for_size < 0 else max(for_size, smallest)
+        minimum, natural = self.view.measure(orientation, width)[:2]
+        return minimum, natural, -1, -1
+
+    def do_size_allocate(self, width: int, height: int, baseline: int) -> None:
+        self._scroller.allocate(width, height, baseline, None)
