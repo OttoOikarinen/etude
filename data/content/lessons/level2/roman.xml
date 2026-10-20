@@ -12,8 +12,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <p>A <term ref="roman-numeral">Roman numeral</term> names a chord by the <term ref="scale-degree">scale degree</term> of its <term ref="root">root</term>. Its symbols add the rest of what you need to know:</p>
     <list>
       <li>Upper case for major triads (V), lower case for minor triads (ii).</li>
-      <li>A small circle for diminished (vii°), a plus sign for augmented (III+), and ø7 or °7 for half-diminished and diminished seventh chords.</li>
-      <li>Figures for the position: I6 and I6/4 for inverted triads, V7, V6/5, V4/3 and V4/2 for a seventh chord and its inversions.</li>
+      <li>A small circle for diminished (vii°), a plus sign for augmented (III+), and ø7 or °7 for <term ref="half-diminished-seventh-chord">half-diminished</term> and <term ref="diminished-seventh-chord">diminished seventh chords</term>.</li>
+      <li><term ref="inversion-figures">Figures</term> for the position: I6 and I6/4 for inverted triads, V7, V6/5, V4/3 and V4/2 for a <term ref="seventh-chord">seventh chord</term> and its inversions.</li>
     </list>
     <p>The key comes first, followed by a colon: <note>D</note>: I. Many textbooks write major keys with an upper-case letter and minor keys with a lower-case letter. Some textbooks write every numeral in upper case and leave the quality to the key; this course uses the case to show the quality.</p>
     <worked>
@@ -26,7 +26,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
         </figure>
       </step>
       <step>
-        <p>Stack the notes in thirds: <note>A</note>–<note>C#</note>–<note>E</note>–<note>G</note>. The root is <note>A</note>, the fifth degree of <note>D</note> major, and the chord is a dominant seventh chord: V7.</p>
+        <p>Stack the notes in thirds: <note>A</note>–<note>C#</note>–<note>E</note>–<note>G</note>. The root is <note>A</note>, the fifth degree of <note>D</note> major, and the chord is a <term ref="dominant-seventh-chord">dominant seventh chord</term>: V7.</p>
       </step>
       <step>
         <p>Find the position. The bass, <note>E</note>, is the fifth of the chord, so the chord is in second inversion. The full label is V4/3.</p>
@@ -50,13 +50,13 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Three functions</title>
-    <p>Chords in a key do one of three jobs, called their harmonic function:</p>
+    <p>Chords in a key do one of three jobs, called their <term ref="harmonic-function">harmonic function</term>:</p>
     <list>
-      <li>Tonic function: stability and rest. The <term ref="tonic">tonic</term> triad, I, is the home of the key; vi can stand in for it.</li>
-      <li>Predominant function: movement away from the tonic, towards the dominant. IV and ii are the main predominant chords; both contain the <term ref="subdominant">subdominant</term>, degree 4.</li>
-      <li>Dominant function: tension that asks for the tonic. V and vii° contain the <term ref="leading-tone">leading tone</term>, which pulls up to the tonic.</li>
+      <li><term ref="tonic-function">Tonic function</term>: stability and rest. The <term ref="tonic">tonic</term> triad, I, is the home of the key; vi can stand in for it.</li>
+      <li><term ref="predominant">Predominant function</term>: movement away from the tonic, towards the dominant. IV and ii are the main predominant chords; both contain the <term ref="subdominant">subdominant</term>, degree 4.</li>
+      <li><term ref="dominant-function">Dominant function</term>: tension that asks for the tonic. V and vii° contain the <term ref="leading-tone">leading tone</term>, which pulls up to the tonic.</li>
     </list>
-    <p>The basic order of functions in a phrase is tonic, predominant, dominant, tonic. The predominant can be left out, but a dominant that leads back to the tonic is what makes the key clear.</p>
+    <p>The basic order of functions in a <term ref="phrase">phrase</term> is tonic, predominant, dominant, tonic. The predominant can be left out, but a dominant that leads back to the tonic is what makes the key clear.</p>
     <figure play="as-written" tempo="72">
       <staff clef="treble">[G4 C5]/h [A4 C5]/h [G4 B4]/h [G4 C5]/h |.</staff>
       <staff clef="bass">[C3 E4]/h{I} [F3 F4]/h{IV} [G3 D4]/h{V} [C3 E4]/h{I} |.</staff>
@@ -67,8 +67,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <staff clef="bass">[C3 C4]/h{I} [F3 A3]/h{ii6} [G3 B3]/h{V7} [C3 C4]/h{I} |.</staff>
       <caption>The same functions with ii6 as the predominant and V7 as the dominant.</caption>
     </figure>
-    <p>The names vary: European textbooks following Hugo Riemann speak of tonic, subdominant and dominant functions, written T, S and D. Predominant, the common North American term, means the same as the subdominant function.</p>
-    <p>vii° and vii°7 share the leading tone and degree 4 with V7, so they act as dominants. iii is the weakest chord of the key; it most often moves to vi or IV.</p>
+    <p>The names vary: European textbooks following Hugo Riemann speak of tonic, subdominant and dominant functions, written T, S and D. Predominant, the common North American term, corresponds to the subdominant function.</p>
+    <p>vii° and the <term ref="leading-tone-seventh-chord">leading-tone seventh chords</term> share the leading tone and degree 4 with V7, so they act as dominants. iii is the weakest chord of the key; it most often moves to vi or IV.</p>
     <check id="ii6-function">
       <prompt>Which function does ii6 normally have?</prompt>
       <option key="a">Tonic</option>
@@ -81,13 +81,13 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <option key="a" correct="true">It contains the leading tone, which pulls up to the tonic</option>
       <option key="b">It contains the tonic, like I</option>
       <option key="c">It contains the subdominant, like IV</option>
-      <explanation>vii° shares two notes with V, degrees 7 and 2, including the leading tone. Together with degree 4 it forms the notes of V7 without the root, so it leads to I in the same way.</explanation>
+      <explanation>vii° shares two notes with V, degrees 7 and 2, including the leading tone. Its third note, degree 4, is the seventh of V7, so vii° has the notes of V7 without the root and leads to I in the same way.</explanation>
     </check>
   </section>
 
   <section>
     <title>How chords follow each other</title>
-    <p>In common-practice music some chord successions are far more frequent than others. The strongest root movement is down a fifth (or up a fourth): V to I, ii to V, vi to ii. Chains of falling fifths lead from the tonic's most distant neighbours back to the tonic:</p>
+    <p>In common-practice music some chord successions are far more frequent than others. The strongest <term ref="root-movement">root movement</term> is down a fifth (or up a fourth): V to I, ii to V, vi to ii. Chains of falling fifths, <term ref="circle-progression">circle progressions</term>, lead from the tonic's most distant neighbours back to the tonic:</p>
     <figure play="as-written" tempo="72">
       <staff clef="treble">[G4 E5]/h [A4 E5]/h [A4 F5]/h [B4 G5]/h [C5 G5]/h |.</staff>
       <staff clef="bass">[C3 C4]/h{I} [A2 C4]/h{vi} [D3 D4]/h{ii} [G2 D4]/h{V} [C3 E4]/h{I} |.</staff>
@@ -98,10 +98,11 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <li>I can move to any chord.</li>
       <li>iii moves to vi (or IV).</li>
       <li>vi moves to ii or IV.</li>
-      <li>ii and IV move to V or vii°; IV can also return to I.</li>
+      <li>IV moves to V, vii° or ii, or returns to I.</li>
+      <li>ii moves to V or vii°.</li>
       <li>V and vii° move to I; V can also move to vi.</li>
     </list>
-    <p>Successions against this order, such as V to IV, are called retrogressions. They occur, but much less often. Minor keys follow the same pattern with their own chord qualities: i, ii°, III, iv, V, VI and vii°.</p>
+    <p>Successions in this order are called <term ref="progression">progressions</term>. Successions against it, such as V to IV, are called <term ref="retrogression">retrogressions</term>. They occur, but much less often. Minor keys follow the same pattern with their own chord qualities: i, ii°, III, iv, V, VI and vii°.</p>
     <check id="after-ii">
       <prompt>In a major key, which chord most often follows ii?</prompt>
       <option key="a">I</option>

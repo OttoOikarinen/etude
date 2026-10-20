@@ -9,24 +9,24 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Four voices</title>
-    <p>Harmony is traditionally taught in four parts, named after the voices of a choir: soprano, alto, tenor and bass. Each voice is a melody of its own, and each stays in a comfortable range. The ranges used here follow Kostka and Payne:</p>
+    <p>Harmony is traditionally taught in four parts, named after the voices of a choir: soprano, alto, tenor and bass, or <term ref="satb">SATB</term> for short. Each voice is a melody of its own, and each stays in a comfortable <term ref="voice-range">range</term>. Textbooks differ by a step or so at the edges; this course uses these ranges:</p>
     <list>
-      <li>Soprano: <note>C4</note> to <note>G5</note>.</li>
-      <li>Alto: <note>G3</note> to <note>C5</note>.</li>
-      <li>Tenor: <note>C3</note> to <note>G4</note>.</li>
-      <li>Bass: <note>E2</note> to <note>C4</note>.</li>
+      <li><term ref="soprano">Soprano</term>: <note>C4</note> to <note>G5</note>.</li>
+      <li><term ref="alto">Alto</term>: <note>G3</note> to <note>C5</note>.</li>
+      <li><term ref="tenor">Tenor</term>: <note>C3</note> to <note>G4</note>.</li>
+      <li><term ref="bass-voice">Bass</term>: <note>E2</note> to <note>C4</note>.</li>
     </list>
     <p>Four-part music is written on the <term ref="grand-staff">grand staff</term>: soprano and alto on the treble staff, tenor and bass on the bass staff. Usually each voice has its own stem direction, up for soprano and tenor, down for alto and bass; the examples in these lessons show the two voices of each staff as one chord.</p>
     <p>Three rules keep the voices apart:</p>
     <list>
-      <li>Spacing: no more than an <term ref="octave">octave</term> between soprano and alto, or between alto and tenor. Tenor and bass may be further apart.</li>
-      <li>No crossing: a lower voice never sounds above a higher one, for example the alto above the soprano.</li>
-      <li>No overlap: a voice does not move past the note that a neighbouring voice has just sung.</li>
+      <li><term ref="spacing">Spacing</term>: no more than an <term ref="octave">octave</term> between soprano and alto, or between alto and tenor. Tenor and bass may be further apart.</li>
+      <li>No <term ref="voice-crossing">crossing</term>: a lower voice never sounds above a higher one, for example the alto above the soprano.</li>
+      <li>No <term ref="voice-overlap">overlap</term>: a voice does not move past the note that a neighbouring voice has just sung.</li>
     </list>
     <figure play="as-written" tempo="60">
       <staff clef="treble">[G4 C5]/h [G4 E5]/h *[C4 E5]/h ||</staff>
       <staff clef="bass">[C3 E4]/h [C3 C4]/h [C3 G3]/h ||</staff>
-      <caption>A <note>C</note> major triad in close position, with soprano and tenor less than an octave apart, then in open position. In the third chord the soprano and alto are more than an octave apart: a spacing error.</caption>
+      <caption>A <note>C</note> major triad in <term ref="close-position">close position</term>, with soprano and tenor less than an octave apart, then in <term ref="open-position">open position</term>. In the third chord the soprano and alto are more than an octave apart: a spacing error.</caption>
     </figure>
     <check id="spacing-rule">
       <prompt>Between which voices may the distance be more than an octave?</prompt>
@@ -39,15 +39,15 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Doubling</title>
-    <p>A triad has three notes and four-part writing four voices, so one note is doubled, sung by two voices. The usual choices:</p>
+    <p>A triad has three notes and four-part writing four voices, so one note is <term ref="doubling">doubled</term>, sung by two voices. The usual choices:</p>
     <list>
       <li>Root-position triads: double the <term ref="root">root</term>. The <term ref="chord-fifth">fifth</term> may be left out, with the root tripled; the <term ref="chord-third">third</term> is never left out.</li>
-      <li>First-inversion triads: any note may be doubled that gives good voice leading, except the leading tone.</li>
+      <li>First-inversion triads: any note may be doubled that gives good voice leading, except the leading tone or another tendency tone.</li>
       <li>Second-inversion triads: double the bass, the fifth of the chord.</li>
       <li>Diminished triads, such as vii°6 and ii°6: double the third, which is usually the bass.</li>
     </list>
     <callout kind="warning">
-      <p>Never double a tendency tone: the <term ref="leading-tone">leading tone</term> or the seventh of a chord. Both have to resolve in one direction, and two voices resolving the same way would move in parallel octaves.</p>
+      <p>Never double a <term ref="tendency-tone">tendency tone</term>: the <term ref="leading-tone">leading tone</term> or the <term ref="chordal-seventh">seventh of a chord</term>. Both have to resolve in one direction, and two voices resolving the same way would move in parallel octaves.</p>
     </callout>
     <check id="no-double-b">
       <prompt>In <note>C</note> major, which note of the V chord <note>G</note>–<note>B</note>–<note>D</note> must not be doubled?</prompt>
@@ -60,18 +60,18 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Motion between voices</title>
-    <p>Any two voices move in one of four ways:</p>
+    <p><term ref="voice-leading">Voice leading</term> is the way the voices move from one chord to the next. Any two voices move in one of four ways:</p>
     <list>
-      <li>Parallel motion: both move in the same direction and keep the same interval number between them, for example a third.</li>
-      <li>Similar motion: both move in the same direction, but the interval between them changes.</li>
-      <li>Contrary motion: they move in opposite directions.</li>
-      <li>Oblique motion: one voice stays on its note while the other moves.</li>
+      <li><term ref="parallel-motion">Parallel motion</term>: both move in the same direction and keep the same interval number between them, for example a third.</li>
+      <li><term ref="similar-motion">Similar motion</term>: both move in the same direction, but the interval between them changes.</li>
+      <li><term ref="contrary-motion">Contrary motion</term>: they move in opposite directions.</li>
+      <li><term ref="oblique-motion">Oblique motion</term>: one voice stays on its note while the other moves.</li>
     </list>
     <figure play="as-written" tempo="72">
       <staff clef="treble">[C4 E4]/h [D4 F4]/h || [C4 E4]/h [D4 A4]/h || [D4 G4]/h [C4 A4]/h || [E4 G4]/h [E4 A4]/h ||</staff>
       <caption>Parallel thirds, similar motion from a third to a fifth, contrary motion from a fourth to a sixth, and oblique motion with the lower voice holding <note>E4</note>.</caption>
     </figure>
-    <p>Contrary and oblique motion keep the voices most independent. Good four-part writing mixes all four kinds, with plenty of contrary motion between the bass and the soprano.</p>
+    <p>Contrary and oblique motion keep the voices most independent. Good four-part writing mixes all four kinds, with plenty of contrary motion between the <term ref="outer-voices">outer voices</term>, the bass and the soprano.</p>
     <check id="contrary-motion">
       <prompt>The soprano rises a step while the bass falls a fifth. What kind of motion is this?</prompt>
       <option key="a">Similar</option>
@@ -83,17 +83,17 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Parallel fifths and octaves</title>
-    <p>Two voices that move from a <term ref="perfect-fifth">perfect fifth</term> to another perfect fifth, or from an octave or unison to another, make parallel fifths or parallel octaves. They are avoided in common-practice part writing, because the two voices blend so well that they stop sounding independent. Compound intervals count too: a twelfth moving to a twelfth is a parallel fifth.</p>
+    <p>Two voices that move from a <term ref="perfect-fifth">perfect fifth</term> to another perfect fifth, or from an octave or unison to another, make <term ref="parallel-fifths">parallel fifths</term> or <term ref="parallel-octaves">parallel octaves</term>. They are avoided in common-practice part writing, because the two voices blend so well that they stop sounding independent. Compound intervals count too: a twelfth moving to a twelfth is a parallel fifth.</p>
     <figure play="as-written" tempo="66">
       <staff clef="treble">[A4 C5]/h *[B4 D5]/h || [A4 C5]/h [G4 B4]/h ||</staff>
       <staff clef="bass">[F3 F4]/h{IV} *[G3 G4]/h{V} || [F3 F4]/h{IV} [G3 D4]/h{V} ||</staff>
-      <caption>IV–V in <note>C</note> major. When every voice rises, the tenor and bass move in parallel octaves and the soprano and tenor in parallel fifths. Moving the upper voices down, against the bass, avoids both.</caption>
+      <caption>IV–V in <note>C</note> major. When every voice rises, the tenor and bass move in parallel octaves, and the soprano moves in parallel fifths with both of them. Moving the upper voices down, against the bass, avoids both.</caption>
     </figure>
     <p>Three related cases:</p>
     <list>
       <li>Contrary fifths and octaves, a perfect fifth or octave followed by another in contrary motion, are also avoided in four-part writing.</li>
-      <li>A perfect fifth followed by a diminished fifth is acceptable. A diminished fifth followed by a perfect fifth is acceptable too, as long as the bass is not one of the two voices.</li>
-      <li>Direct fifths and octaves, also called hidden fifths and octaves, arise when the soprano and bass reach a perfect fifth or octave in similar motion. They are avoided when the soprano leaps; with a step in the soprano they are acceptable.</li>
+      <li><term ref="unequal-fifths">Unequal fifths</term>: a perfect fifth followed by a diminished fifth is acceptable. A diminished fifth followed by a perfect fifth is avoided when one of the two voices is the bass, because the diminished fifth should resolve inward to a third; Kostka and Payne allow it between upper voices, while stricter textbooks avoid it everywhere.</li>
+      <li><term ref="direct-fifths">Direct fifths</term> and <term ref="direct-octaves">octaves</term>, also called hidden fifths and octaves, arise when the soprano and bass reach a perfect fifth or octave in similar motion. They are avoided when the soprano leaps; with a step in the soprano they are acceptable.</li>
     </list>
     <check id="parallel-figure">
       <prompt>Which two voices move in parallel fifths here?</prompt>
@@ -113,10 +113,10 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <title>Resolving tendency tones</title>
     <p>Two notes have a strong pull that four-part writing respects:</p>
     <list>
-      <li>The leading tone rises to the tonic, especially in the soprano or the bass. In an inner voice in V–I it may instead fall a third to degree 5, so that the tonic chord is complete.</li>
-      <li>The seventh of a chord resolves down by step: in V7–I, degree 4 falls to degree 3.</li>
+      <li>The leading tone rises to the tonic, especially in the soprano or the bass. In an <term ref="inner-voices">inner voice</term> in V–I it may instead fall a third to degree 5, so that the tonic chord is complete: a <term ref="frustrated-leading-tone">frustrated leading tone</term>.</li>
+      <li>The seventh of a chord <term ref="resolution">resolves</term> down by step: in V7–I, degree 4 falls to degree 3.</li>
     </list>
-    <p>When both tendencies resolve, V7 and I cannot both be complete. Either a complete V7 resolves to an incomplete I, with a tripled root and no fifth, or an incomplete V7, with a doubled root and no fifth, resolves to a complete I.</p>
+    <p>When both tendencies resolve, V7 and I cannot both be complete. Either a complete V7 resolves to an <term ref="incomplete-chord">incomplete</term> I, with a tripled root and no fifth, or an incomplete V7, with a doubled root and no fifth, resolves to a complete I.</p>
     <figure play="as-written" tempo="60">
       <staff clef="treble">[D4 B4]/h [C4 C5]/h || [F4 B4]/h [E4 C5]/h ||</staff>
       <staff clef="bass">[G2 F3]/h{V7} [C3 E3]/h{I} || [G2 G3]/h{V7} [C3 G3]/h{I} ||</staff>
@@ -146,7 +146,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
         <p>Fill in the first chord: the root is doubled by bass and soprano, so alto and tenor take the fifth and the third, <note>D4</note> and <note>B3</note>.</p>
       </step>
       <step>
-        <p>Move to IV. Keep the common tone <note>G</note> in the soprano, and move the other voices to the nearest notes of <note>C</note>–<note>E</note>–<note>G</note>: the alto from <note>D4</note> up to <note>E4</note>, the tenor from <note>B3</note> up to <note>C4</note>.</p>
+        <p>Move to IV. Keep the <term ref="common-tone">common tone</term> <note>G</note> in the soprano, and move the other voices to the nearest notes of <note>C</note>–<note>E</note>–<note>G</note>: the alto from <note>D4</note> up to <note>E4</note>, the tenor from <note>B3</note> up to <note>C4</note>.</p>
       </step>
       <step>
         <p>IV and V share no notes, and the bass rises a step. Move the upper voices down, against the bass, to the nearest notes of V: the alto to <note>D4</note>, the tenor to <note>A3</note>. The soprano has the leading tone, <note>F#4</note>; check that it is not doubled.</p>

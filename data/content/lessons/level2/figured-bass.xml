@@ -9,7 +9,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Figures over a bass</title>
-    <p>In the Baroque era, from about 1600 to 1750, keyboard and lute players often read from a figured bass, also called thoroughbass: a bass line with numbers, the figures, written with it. The figures show which intervals to play above each bass note. The player, part of the basso continuo, makes up the upper voices on the spot; writing them out is called realising the figured bass.</p>
+    <p>In the Baroque era, from about 1600 to 1750, keyboard and lute players often read from a <term ref="figured-bass">figured bass</term>, also called <term ref="thoroughbass">thoroughbass</term>: a bass line with numbers, the <term ref="figures">figures</term>, written with it. The figures show which intervals to play above each bass note. The player, part of the <term ref="basso-continuo">basso continuo</term>, makes up the upper voices on the spot; writing them out is called <term ref="realization">realising</term> the figured bass.</p>
     <p>The figures count intervals upward from the bass, using the notes of the key unless an accidental says otherwise. They do not say in which octave or order the upper notes lie, and compound intervals are counted as simple ones: a tenth above the bass is shown as 3.</p>
     <figure play="as-written" tempo="66">
       <staff clef="treble">[G4 C5]/h [G4 D5]/h [G4 C5]/h |.</staff>
@@ -35,7 +35,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <li>7: 7/5/3, a seventh chord in root position.</li>
       <li>6/5: 6/5/3, a seventh chord in first inversion.</li>
       <li>4/3: 6/4/3, a seventh chord in second inversion.</li>
-      <li>4/2, or simply 2: 6/4/2, a seventh chord in third inversion.</li>
+      <li>4/2, or simply 2: 6/4/2, a seventh chord in <term ref="third-inversion">third inversion</term>.</li>
     </list>
     <p>In print the numbers of a figure are stacked with the largest on top; this course writes them with a slash.</p>
     <figure play="as-written" tempo="60">
@@ -60,7 +60,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Accidentals in figures</title>
-    <p>Accidentals in a figure change a note above the bass:</p>
+    <p><term ref="figured-accidental">Accidentals in a figure</term> change a note above the bass:</p>
     <list>
       <li>An accidental standing alone applies to the third above the bass. In minor keys a sharp or natural alone often raises the third of V to the <term ref="leading-tone">leading tone</term>.</li>
       <li>An accidental next to a number applies to that interval: ♯6 raises the sixth above the bass, ♭7 lowers the seventh.</li>
@@ -91,13 +91,13 @@ SPDX-License-Identifier: CC-BY-SA-4.0
         <p>Name the notes above each bass note. Above <note>A</note>, no figure means a third and a fifth: <note>C</note> and <note>E</note>. Above <note>D</note>, 6 means a third and a sixth: <note>F</note> and <note>B</note>. Above <note>E</note>, the sharp raises the third: <note>G#</note> and <note>B</note>.</p>
       </step>
       <step>
-        <p>Name the chords: i, ii°6, V and i. ii°6 is a predominant chord, and V contains the leading tone, which must rise to the tonic.</p>
+        <p>Name the chords: i, ii°6, V and i. ii°6 is a <term ref="predominant">predominant</term> chord, and V contains the leading tone, which must rise to the tonic.</p>
       </step>
       <step>
-        <p>Choose the doublings. In the root-position chords, double the root. In ii°6, double the bass, the third of the chord, not the root <note>B</note>.</p>
+        <p>Choose the <term ref="doubling">doublings</term>. In the root-position chords, double the root. In ii°6, double the bass, the third of the chord, not the root <note>B</note>.</p>
       </step>
       <step>
-        <p>Write the upper voices, moving each as little as possible: the soprano <note>A4</note>, <note>B4</note>, <note>G#4</note>, <note>A4</note>; the alto <note>E4</note>, <note>F4</note>, <note>E4</note>, <note>E4</note>; the tenor <note>C4</note>, <note>D4</note>, <note>B3</note>, <note>C4</note>. Check the result: the leading tone <note>G#4</note> rises to <note>A4</note>, and no two voices move in parallel fifths or octaves.</p>
+        <p>Write the upper voices, moving each as little as possible: the soprano <note>A4</note>, <note>B4</note>, <note>G#4</note>, <note>A4</note>; the alto <note>E4</note>, <note>F4</note>, <note>E4</note>, <note>E4</note>; the tenor <note>C4</note>, <note>D4</note>, <note>B3</note>, <note>C4</note>. Check the result: the leading tone <note>G#4</note> rises to <note>A4</note>, and no two voices move in <term ref="parallel-fifths">parallel fifths</term> or <term ref="parallel-octaves">octaves</term>.</p>
         <figure play="as-written" tempo="66">
           <staff clef="treble">[E4 A4]/h [F4 B4]/h [E4 G#4]/h [E4 A4]/h |.</staff>
           <staff clef="bass">[A3 C4]/h [D3 D4]/h{6} [E3 B3]/h{♯} [A2 C4]/h |.</staff>
@@ -115,13 +115,13 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Figures that move</title>
-    <p>Figures written one after another under a single bass note show the upper voices moving while the bass stays. The cadential six-four is figured this way: 6/4 followed by 5/3 under the dominant, showing the sixth falling to the fifth and the fourth to the third.</p>
+    <p>Figures written one after another under a single bass note show the upper voices moving while the bass stays. The <term ref="cadential-six-four">cadential six-four</term> is figured this way: 6/4 followed by 5/3 under the dominant, showing the sixth falling to the fifth and the fourth to the third.</p>
     <figure play="as-written" tempo="66">
       <staff clef="treble">[F4 D5]/h [E4 C5]/h [D4 B4]/h [E4 C5]/h |.</staff>
-      <staff clef="bass">[F3 A3]/h{6} [G2 G3]/h{6/4} [G2 G3]/h{5/3} [C3 G3]/h |.</staff>
+      <staff clef="bass">[F2 A3]/h{6} [G2 G3]/h{6/4} [G2 G3]/h{5/3} [C3 G3]/h |.</staff>
       <caption>In <note>C</note> major: 6/4 and 5/3 over the bass <note>G</note>. The upper voices move from <note>C</note> and <note>E</note> to <note>B</note> and <note>D</note>.</caption>
     </figure>
-    <p>Moving figures also show nonchord tones such as suspensions, which the nonchord tones lesson explains: 4 followed by 3 under one bass note means a fourth above the bass that resolves down to a third.</p>
+    <p>Moving figures also show <term ref="nonchord-tone">nonchord tones</term> such as <term ref="suspension">suspensions</term>, which the nonchord tones lesson explains: 4 followed by 3 under one bass note means a fourth above the bass that resolves down to a third.</p>
     <check id="moving-figures">
       <prompt>Under one bass note stand the figures 6/4 and then 5/3. What happens?</prompt>
       <option key="a">The bass moves up a step</option>

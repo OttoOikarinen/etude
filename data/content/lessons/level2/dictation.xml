@@ -9,7 +9,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Listening with a plan</title>
-    <p>In dictation you hear a melody or a chord progression a few times and write it down. Trying to catch every note at once rarely works; a plan does:</p>
+    <p>In <term ref="melodic-dictation">melodic</term> and <term ref="harmonic-dictation">harmonic dictation</term> you hear a melody or a chord <term ref="progression">progression</term> a few times and write it down. Trying to catch every note at once rarely works; a plan does:</p>
     <list ordered="true">
       <li>Before the music starts, fix the <term ref="tonic">tonic</term> and the <term ref="meter">meter</term>: sing the tonic, and count the beats when the tempo is given.</li>
       <li>On the first hearing, write nothing. Listen to the whole, and try to remember it: its shape, its length, where it rests.</li>
@@ -41,7 +41,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
         </figure>
       </step>
       <step>
-        <p>Find the scale degrees, starting from the landmarks. The last note is the tonic, 1, and the steps before it fall 4, 3, 2. The first bar climbs the tonic triad, 1, 3, 5; the second bar reaches 6 and falls back to 5.</p>
+        <p>Find the <term ref="scale-degree-numbers">scale-degree numbers</term>, starting from the landmarks. The last note is the tonic, 1, and the steps before it fall 4, 3, 2. The first bar climbs the tonic triad, 1, 3, 5; the second bar reaches 6 and falls back to 5.</p>
       </step>
       <step>
         <p>Translate the degrees into notes in <note>D</note> major and check by singing: <note>D4</note>, <note>F#4</note>, <note>A4</note>, <note>B4</note>, <note>A4</note>, <note>G4</note>, <note>F#4</note>, <note>E4</note>, <note>D4</note>.</p>
@@ -70,11 +70,11 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <li>2: ii, vii°6 or V4/3.</li>
       <li>3: I6.</li>
       <li>4: IV, ii6 or V4/2.</li>
-      <li>5: V, V7, or the cadential six-four.</li>
+      <li>5: V, V7, or the <term ref="cadential-six-four">cadential six-four</term>.</li>
       <li>6: vi or IV6.</li>
       <li>7: V6 or V6/5.</li>
     </list>
-    <p>Then listen for what tells the possibilities apart: the quality of the chord, the soprano, and the function. A chord after the tonic that leads to V is a predominant, IV or ii; the sound of a seventh points to V7 or one of its inversions.</p>
+    <p>Then listen for what tells the possibilities apart: the quality of the chord, the soprano, and the function. A chord after the tonic that leads to V is a <term ref="predominant">predominant</term>, IV or ii; the sound of a seventh points to V7 or one of its inversions.</p>
     <figure play="as-written" tempo="66">
       <staff clef="treble">[G4 C5]/h [G4 D5]/h [G4 E5]/h [F4 D5]/h [F4 D5]/h [E4 C5]/h |.</staff>
       <staff clef="bass">[C3 E4]/h{I} [B2 D4]/h{V6} [C3 C4]/h{I} [F3 A3]/h{ii6} [G3 B3]/h{V7} [C3 C4]/h{I} |.</staff>
@@ -98,8 +98,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Practising</title>
-    <p>Dictation improves with short, regular practice more than with long sessions. Sing scale degrees aloud, with numbers or with solfège syllables. With movable do, do is always the tonic; in minor some teachers use la as the tonic and others keep do, and both systems work if you use one consistently.</p>
-    <p>Practise the parts separately as well: rhythm dictation for rhythm, and listening to the bass line alone for harmony. Etude's dictation exercises let you hear the music again, so use the replays deliberately: each time, listen for one thing.</p>
+    <p>Dictation improves with short, regular practice more than with long sessions. Sing scale degrees aloud, with numbers or with <term ref="solfege">solfège</term> syllables. With <term ref="movable-do">movable do</term>, do is the tonic of a major key. In minor some teachers use la as the tonic, <term ref="la-based-minor">la-based minor</term>, and others keep do, <term ref="do-based-minor">do-based minor</term>; both systems work if you use one consistently. In <term ref="fixed-do">fixed do</term>, used in many countries where the syllables are the note names, do is always <note>C</note>, so the syllables do not show the scale degrees.</p>
+    <p>Practise the parts separately as well: <term ref="rhythmic-dictation">rhythmic dictation</term> for rhythm, and listening to the bass line alone for harmony. Etude's dictation exercises let you hear the music again, so use the replays deliberately: each time, listen for one thing.</p>
     <check id="memory-first">
       <prompt>Why is it useful to sing a melody back in your head before writing it?</prompt>
       <option key="a" correct="true">What you can remember and sing, you can then work out at your own pace</option>

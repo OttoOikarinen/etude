@@ -9,7 +9,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Transposing by an interval</title>
-    <p>To transpose music is to move every note up or down by the same <term ref="interval">interval</term>. The melody, its rhythm and its intervals stay the same; only the pitch level, and usually the <term ref="key">key</term>, change. Singers transpose songs to suit their range, and players transpose parts for instruments that read in another key.</p>
+    <p>To <term ref="transposition">transpose</term> music is to move every note up or down by the same <term ref="interval">interval</term>. The melody, its rhythm and its intervals stay the same; only the pitch level, and usually the <term ref="key">key</term>, change. Singers transpose songs to suit their range, and players transpose parts for instruments that read in another key.</p>
     <p>Each note must move by exactly the same interval, with the right number and the right quality. Up a major second, <note>C</note> becomes <note>D</note> and <note>E</note> becomes <note>F#</note>. Spelling a note <term ref="enharmonic">enharmonically</term>, as <note>Gb</note> instead of <note>F#</note>, would change the letter distance and so the interval.</p>
     <worked>
       <title>Transpose a melody up a major second</title>
@@ -41,18 +41,18 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Transposing instruments</title>
-    <p>Some instruments sound at a different pitch from the written note. The note in the part is the written pitch, which the player reads and fingers; the note that actually sounds is the sounding pitch, or concert pitch.</p>
+    <p>Some instruments, the <term ref="transposing-instrument">transposing instruments</term>, sound at a different pitch from the written note. The note in the part is the <term ref="written-pitch">written pitch</term>, which the player reads and fingers; the note that actually sounds is the sounding pitch, or <term ref="concert-pitch">concert pitch</term>.</p>
     <p>Such an instrument is named after the note that sounds when it plays a written <note>C</note>. A clarinet in <note>Bb</note> playing a written <note>C5</note> sounds <note>Bb4</note>, a major second lower. To write for it, transpose the concert pitch up a major second.</p>
     <list>
-      <li>Clarinet in <note>Bb</note>, trumpet in <note>Bb</note>, soprano saxophone: sound a major second lower than written.</li>
-      <li>Clarinet in <note>A</note>: sounds a minor third lower.</li>
-      <li>Horn in <note>F</note>, English horn: sound a perfect fifth lower.</li>
-      <li>Alto saxophone, in <note>Eb</note>: sounds a major sixth lower.</li>
-      <li>Tenor saxophone and bass clarinet, in <note>Bb</note>: sound a major ninth lower.</li>
-      <li>Piccolo: sounds an <term ref="octave">octave</term> higher. Guitar and double bass: sound an octave lower.</li>
+      <li><term ref="clarinet-in-b-flat">Clarinet</term> in <note>Bb</note>, <term ref="trumpet-in-b-flat">trumpet</term> in <note>Bb</note>, soprano saxophone: sound a major second lower than written.</li>
+      <li><term ref="clarinet-in-a">Clarinet</term> in <note>A</note>: sounds a minor third lower.</li>
+      <li><term ref="horn-in-f">Horn</term> in <note>F</note>, <term ref="english-horn">English horn</term>: sound a perfect fifth lower.</li>
+      <li><term ref="alto-saxophone">Alto saxophone</term>, in <note>Eb</note>: sounds a major sixth lower.</li>
+      <li><term ref="tenor-saxophone">Tenor saxophone</term>, in <note>Bb</note>: sounds a major ninth lower, an octave and a major second. The bass clarinet in <note>Bb</note> also sounds a major ninth lower when its part is written in the treble clef, as is usual today; parts written in the bass clef sound a major second lower.</li>
+      <li><term ref="piccolo">Piccolo</term>: sounds an <term ref="octave">octave</term> higher. <term ref="guitar">Guitar</term> and <term ref="double-bass">double bass</term>: sound an octave lower.</li>
     </list>
     <p>The key signature moves with the notes. Each sharp added or flat removed counts as one step towards the sharp side. Parts for instruments in <note>Bb</note> are two steps sharper than concert pitch: concert <note>C</note> major becomes <note>D</note> major, and concert <note>F</note> major, with one flat, becomes <note>G</note> major, with one sharp. Parts for instruments in <note>F</note> are one step sharper, and parts for instruments in <note>Eb</note> three steps. Horn parts in older music are often written without a key signature, with accidentals instead.</p>
-    <p>Many modern scores are printed in C, at concert pitch, so that the conductor reads every part as it sounds; the players' parts are still transposed.</p>
+    <p>Most orchestral scores are <term ref="transposed-score">transposed scores</term>, with every part as its player reads it. Many modern scores, however, are printed in C, at concert pitch, so that the conductor reads every part as it sounds: a <term ref="concert-score">concert score</term>. The players' parts are still transposed.</p>
     <check id="trumpet-d5">
       <prompt>A trumpet in <note>Bb</note> plays a written <note>D5</note>. Which note sounds?</prompt>
       <option key="a" correct="true"><note>C5</note></option>

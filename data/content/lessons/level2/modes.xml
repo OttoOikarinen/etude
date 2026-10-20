@@ -9,21 +9,21 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Seven modes on the white keys</title>
-    <p>Play a <term ref="scale">scale</term> on the white keys of the piano, starting from each of the seven notes in turn. Each starting note gives a different order of <term ref="whole-step">whole steps</term> and <term ref="half-step">half steps</term>, and so a different mode:</p>
+    <p>Play a <term ref="scale">scale</term> on the white keys of the piano, starting from each of the seven notes in turn. Each starting note gives a different order of <term ref="whole-step">whole steps</term> and <term ref="half-step">half steps</term>, and so a different <term ref="mode">mode</term>:</p>
     <list>
-      <li>Ionian, from <note>C</note>: the same as the <term ref="major-scale">major scale</term>.</li>
-      <li>Dorian, from <note>D</note>.</li>
-      <li>Phrygian, from <note>E</note>.</li>
-      <li>Lydian, from <note>F</note>.</li>
-      <li>Mixolydian, from <note>G</note>.</li>
-      <li>Aeolian, from <note>A</note>: the same as the <term ref="natural-minor-scale">natural minor scale</term>.</li>
-      <li>Locrian, from <note>B</note>.</li>
+      <li><term ref="ionian">Ionian</term>, from <note>C</note>: the same as the <term ref="major-scale">major scale</term>.</li>
+      <li><term ref="dorian">Dorian</term>, from <note>D</note>.</li>
+      <li><term ref="phrygian">Phrygian</term>, from <note>E</note>.</li>
+      <li><term ref="lydian">Lydian</term>, from <note>F</note>.</li>
+      <li><term ref="mixolydian">Mixolydian</term>, from <note>G</note>.</li>
+      <li><term ref="aeolian">Aeolian</term>, from <note>A</note>: the same as the <term ref="natural-minor-scale">natural minor scale</term>.</li>
+      <li><term ref="locrian">Locrian</term>, from <note>B</note>.</li>
     </list>
     <figure play="melodic" tempo="100">
       <staff clef="treble">D4 E4 F4 G4 A4 B4 C5 D5</staff>
       <caption>The Dorian mode on <note>D</note>: white keys from <note>D</note> to <note>D</note>.</caption>
     </figure>
-    <p>Dorian, Phrygian, Lydian and Mixolydian are the modes of medieval and Renaissance church music. The Swiss theorist Heinrich Glarean added Ionian and Aeolian in 1547. Locrian, with its unstable diminished tonic triad, was a theoretical possibility and is rarely used. Today the modes are heard in folk music, jazz, film music and much music of the twentieth century.</p>
+    <p>Dorian, Phrygian, Lydian and Mixolydian are the <term ref="church-modes">church modes</term> of medieval and Renaissance music, each with its <term ref="final">final</term> on <note>D</note>, <note>E</note>, <note>F</note> or <note>G</note>. In 1547 the Swiss theorist Heinrich Glarean added Ionian and Aeolian. Locrian, whose fifth above the final is diminished, remained a theoretical possibility and is still rarely used. Today the modes are heard in folk music, jazz, film music and much music of the twentieth century.</p>
     <check id="mode-from-g">
       <prompt>Which mode do the white keys form from <note>G</note> to <note>G</note>?</prompt>
       <option key="a">Lydian</option>
@@ -35,7 +35,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Comparing modes with major and minor</title>
-    <p>Each mode differs from major or natural minor on the same <term ref="tonic">tonic</term> by one or two notes. These characteristic notes give the mode its colour:</p>
+    <p>Apart from Ionian and Aeolian, each mode differs from major or natural minor on the same <term ref="tonic">tonic</term> by one or two notes. These <term ref="characteristic-note">characteristic notes</term> give the mode its colour:</p>
     <list>
       <li>Lydian: major with a raised fourth degree.</li>
       <li>Mixolydian: major with a lowered seventh degree.</li>

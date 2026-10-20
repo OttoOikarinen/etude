@@ -9,7 +9,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Adding a seventh</title>
-    <p>A seventh chord is a <term ref="triad">triad</term> with one more third stacked on top. Its four notes are the <term ref="root">root</term>, the <term ref="chord-third">third</term>, the <term ref="chord-fifth">fifth</term> and the seventh, which lies a seventh above the root.</p>
+    <p>A <term ref="seventh-chord">seventh chord</term> is a <term ref="triad">triad</term> with one more third stacked on top. Its four notes are the <term ref="root">root</term>, the <term ref="chord-third">third</term>, the <term ref="chord-fifth">fifth</term> and the <term ref="chordal-seventh">seventh</term>, which lies a seventh above the root.</p>
     <figure play="as-written" tempo="60">
       <staff clef="treble">[G4 B4 D5]/h [G4 B4 D5 F5]/h</staff>
       <caption>The triad <note>G</note>–<note>B</note>–<note>D</note>, then the seventh chord <note>G</note>–<note>B</note>–<note>D</note>–<note>F</note>. The added <note>F</note> is the seventh.</caption>
@@ -28,11 +28,11 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <title>Five qualities</title>
     <p>A seventh chord is named after two things: the quality of its triad and the quality of the seventh between root and seventh. Five combinations are common in tonal music:</p>
     <list>
-      <li>Major seventh chord: a major triad and a <term ref="major-seventh">major seventh</term>, as in <note>C</note>–<note>E</note>–<note>G</note>–<note>B</note>. Symbol M7, or maj7 in jazz and popular music.</li>
-      <li>Dominant seventh chord: a major triad and a <term ref="minor-seventh">minor seventh</term>, as in <note>C</note>–<note>E</note>–<note>G</note>–<note>Bb</note>. Symbol 7.</li>
-      <li>Minor seventh chord: a minor triad and a minor seventh, as in <note>C</note>–<note>Eb</note>–<note>G</note>–<note>Bb</note>. Symbol m7, or 7 after a lower-case Roman numeral.</li>
-      <li>Half-diminished seventh chord: a diminished triad and a minor seventh, as in <note>C</note>–<note>Eb</note>–<note>Gb</note>–<note>Bb</note>. Symbol ø7.</li>
-      <li>Diminished seventh chord, also called fully diminished: a diminished triad and a diminished seventh, as in <note>C</note>–<note>Eb</note>–<note>Gb</note>–<note>Bbb</note>. Symbol °7.</li>
+      <li><term ref="major-seventh-chord">Major seventh chord</term>: a major triad and a <term ref="major-seventh">major seventh</term>, as in <note>C</note>–<note>E</note>–<note>G</note>–<note>B</note>. Symbol M7, or maj7 in jazz and popular music.</li>
+      <li><term ref="dominant-seventh-chord">Dominant seventh chord</term>: a major triad and a <term ref="minor-seventh">minor seventh</term>, as in <note>C</note>–<note>E</note>–<note>G</note>–<note>Bb</note>. Symbol 7.</li>
+      <li><term ref="minor-seventh-chord">Minor seventh chord</term>: a minor triad and a minor seventh, as in <note>C</note>–<note>Eb</note>–<note>G</note>–<note>Bb</note>. Symbol m7, or 7 after a lower-case Roman numeral.</li>
+      <li><term ref="half-diminished-seventh-chord">Half-diminished seventh chord</term>: a diminished triad and a minor seventh, as in <note>C</note>–<note>Eb</note>–<note>Gb</note>–<note>Bb</note>. Symbol ø7.</li>
+      <li><term ref="diminished-seventh-chord">Diminished seventh chord</term>, also called fully diminished: a diminished triad and a diminished seventh, as in <note>C</note>–<note>Eb</note>–<note>Gb</note>–<note>Bbb</note>. Symbol °7.</li>
     </list>
     <figure play="as-written" tempo="56">
       <staff clef="treble">[C4 E4 G4 B4]/h | [C4 E4 G4 Bb4]/h | [C4 Eb4 Gb4 Bb4]/h | [C4 Eb4 Gb4 Bb4]/h | [C4 Eb4 Gb4 Bbb4]/h |</staff>
@@ -95,8 +95,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <staff clef="bass">[A2 C3 E3 G3]/h{i7} | [B2 D3 F3 A3]/h{iiø7} | [C3 E3 G3 B3]/h{IIIM7} | [D3 F3 A3 C4]/h{iv7} | [E3 G#3 B3 D4]/h{V7} | [F3 A3 C4 E4]/h{VIM7} | [G#3 B3 D4 F4]/h{vii°7} |</staff>
       <caption>The usual seventh chords of <note>A</note> minor. V7 and vii°7 contain the leading tone <note>G#</note>.</caption>
     </figure>
-    <p>The dominant seventh chord is the same in major and minor: <note>E</note>–<note>G#</note>–<note>B</note>–<note>D</note> is V7 in both <note>A</note> major and <note>A</note> minor. The chord on the leading tone differs. In major it is half-diminished, viiø7; in minor it is fully diminished, vii°7. Both are called leading-tone seventh chords, so the symbol matters. Composers also borrow the fully diminished vii°7 from minor in major keys, by lowering the sixth degree.</p>
-    <p>The most common seventh chords by far are V7, then ii7 (iiø7 in minor) and the leading-tone seventh chords. The others occur mostly in sequences.</p>
+    <p>The dominant seventh chord is the same in major and minor: <note>E</note>–<note>G#</note>–<note>B</note>–<note>D</note> is V7 in both <note>A</note> major and <note>A</note> minor. The chord on the leading tone differs. In major it is half-diminished, viiø7; in minor it is fully diminished, vii°7. Both are called <term ref="leading-tone-seventh-chord">leading-tone seventh chords</term>, so the symbol matters. Composers also borrow the fully diminished vii°7 from minor in major keys, by lowering the sixth degree.</p>
+    <p>The most common seventh chords by far are V7, then the <term ref="supertonic-seventh-chord">supertonic seventh chord</term> ii7 (iiø7 in minor) and the leading-tone seventh chords. The others occur mostly in sequences.</p>
     <check id="minor-vii7">
       <prompt>In <note>A</note> minor, what is the quality of the seventh chord on the leading tone <note>G#</note>?</prompt>
       <option key="a">Half-diminished</option>
@@ -117,12 +117,12 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <title>Inversions and figures</title>
     <p>With four chord members, a seventh chord has four positions. As with triads, only the bass decides the position:</p>
     <list>
-      <li>Root position: the root in the bass. Figures 7, short for 7/5/3.</li>
-      <li><term ref="first-inversion">First inversion</term>: the third in the bass. Figures 6/5, short for 6/5/3.</li>
-      <li><term ref="second-inversion">Second inversion</term>: the fifth in the bass. Figures 4/3, short for 6/4/3.</li>
-      <li>Third inversion: the seventh in the bass. Figures 4/2, short for 6/4/2, or simply 2.</li>
+      <li><term ref="root-position">Root position</term>: the root in the bass. Figures 7, short for 7/5/3.</li>
+      <li><term ref="first-inversion">First inversion</term>: the third in the bass. Figures <term ref="six-five">6/5</term>, short for 6/5/3.</li>
+      <li><term ref="second-inversion">Second inversion</term>: the fifth in the bass. Figures <term ref="four-three">4/3</term>, short for 6/4/3.</li>
+      <li><term ref="third-inversion">Third inversion</term>: the seventh in the bass. Figures <term ref="four-two">4/2</term>, short for 6/4/2, or simply 2.</li>
     </list>
-    <p>The figures name the intervals above the bass, as in figured bass, and are written after the Roman numeral: V6/5, V4/3. In print the two numbers are stacked one above the other; this course writes them with a slash.</p>
+    <p>These <term ref="inversion-figures">inversion figures</term> name the intervals above the bass, as in <term ref="figured-bass">figured bass</term>, and are written after the Roman numeral: V6/5, V4/3. In print the two numbers are stacked one above the other; this course writes them with a slash.</p>
     <figure play="as-written" tempo="60">
       <staff clef="treble">[G4 B4 D5 F5]/h{V7} | [B4 D5 F5 G5]/h{V6/5} | [D4 F4 G4 B4]/h{V4/3} | [F4 G4 B4 D5]/h{V4/2} |</staff>
       <caption>V7 of <note>C</note> major in root position and in its three inversions. The bass is <note>G</note>, <note>B</note>, <note>D</note> and <note>F</note> in turn.</caption>
@@ -171,11 +171,11 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <li>Major seventh: bright but soft, with the sharp clash of the major seventh, a half step below the octave of the root.</li>
       <li>Minor seventh: mellow and gentle; the least tense of the five.</li>
       <li>Half-diminished seventh: dark and somewhat tense, but less so than the fully diminished chord.</li>
-      <li>Diminished seventh: very tense and unstable. It is built entirely of minor thirds and contains two <term ref="tritone">tritones</term>, so it divides the octave into four equal parts.</li>
+      <li>Diminished seventh: very tense and unstable. It is built entirely of minor thirds, which divide the octave into four equal parts, and it contains two <term ref="tritone">tritones</term>.</li>
     </list>
     <p>Because the diminished seventh chord is symmetrical, its inversions sound like root-position diminished seventh chords on other notes. Only the spelling, or the context, shows which note is the root.</p>
     <callout kind="remember">
-      <p>The seventh of a chord is a dissonance. In common-practice harmony it usually resolves down by step, as the four-part writing lesson shows.</p>
+      <p>The seventh of a chord is a dissonance. In common-practice harmony it usually <term ref="resolution">resolves</term> down by step, as the four-part writing lesson shows.</p>
     </callout>
     <check id="all-minor-thirds">
       <prompt>Which seventh chord consists entirely of minor thirds?</prompt>

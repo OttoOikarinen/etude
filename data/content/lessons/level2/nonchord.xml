@@ -9,7 +9,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Chord tones and nonchord tones</title>
-    <p>Melodies do not use only the notes of the chord that sounds with them. A nonchord tone, also called a non-harmonic tone or embellishing tone, is a note that does not belong to the current chord. It usually forms a <term ref="dissonance">dissonance</term> with the chord and moves on to a chord tone.</p>
+    <p>Melodies do not use only the notes of the chord that sounds with them. A <term ref="nonchord-tone">nonchord tone</term>, also called a non-harmonic tone or embellishing tone, is a note that does not belong to the current chord. It usually forms a <term ref="dissonance">dissonance</term> with the chord and moves on to a chord tone.</p>
     <p>Nonchord tones are named by three things:</p>
     <list>
       <li>How they are approached and left: by <term ref="step">step</term>, by <term ref="leap">leap</term>, or by staying on the same note.</li>
@@ -27,13 +27,13 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Passing and neighbour tones</title>
-    <p>A passing tone fills the gap between two chord tones a third apart: it is approached by step and left by step in the same direction. A neighbour tone decorates a single chord tone: it steps away, up or down, and steps back. Both are usually unaccented.</p>
+    <p>A <term ref="passing-tone">passing tone</term> fills the gap between two chord tones a third apart: it is approached by step and left by step in the same direction. A <term ref="neighbor-tone">neighbour tone</term> decorates a single chord tone: it steps away, up or down, and steps back. Both are usually unaccented.</p>
     <figure play="as-written" tempo="80">
       <staff clef="treble" time="4/4">C5/q *D5/q E5/q *F5/q | E5/w |.</staff>
       <staff clef="bass" time="4/4">[C3 G3]/w | [C3 G3]/w |.</staff>
       <caption>Over a <note>C</note> major chord: <note>D5</note> is a passing tone between <note>C5</note> and <note>E5</note>, and <note>F5</note> an upper neighbour tone that returns to <note>E5</note>.</caption>
     </figure>
-    <p>Passing tones can also fall on the beat, as accented passing tones, and two passing tones in a row can fill the gap of a fourth.</p>
+    <p>Passing tones can also fall on the beat, as <term ref="accented-passing-tone">accented passing tones</term>, and two passing tones in a row can fill the gap of a fourth.</p>
     <check id="passing-figure">
       <prompt>What kind of nonchord tone is the highlighted note?</prompt>
       <figure play="as-written" tempo="80">
@@ -50,18 +50,18 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Suspensions</title>
-    <p>A suspension holds a note over from one chord into the next, where it no longer fits, and then resolves it down by step. It has three parts:</p>
+    <p>A <term ref="suspension">suspension</term> holds a note over from one chord into the next, where it no longer fits, and then resolves it down by step. It has three parts:</p>
     <list ordered="true">
-      <li>The preparation: the note is a chord tone of the first chord.</li>
+      <li>The <term ref="preparation">preparation</term>: the note is a chord tone of the first chord.</li>
       <li>The suspension: the same note, held or repeated, on a strong beat of the next chord, where it is a dissonance.</li>
-      <li>The resolution: the note falls a step to a chord tone.</li>
+      <li>The <term ref="resolution">resolution</term>: the note falls a step to a chord tone.</li>
     </list>
     <figure play="as-written" tempo="66">
-      <staff clef="treble" time="4/4">E5/q C5/h B4/q | C5/w |.</staff>
-      <staff clef="bass" time="4/4">[C3 G3]/h [G2 D3]/h | [C3 G3]/w |.</staff>
-      <caption>A 4–3 suspension in <note>C</note> major. <note>C5</note> is prepared over I, held into V on the third beat, where it is a fourth above the bass <note>G</note>, and resolves down to <note>B4</note>, the third.</caption>
+      <staff clef="treble" time="4/4">E5/h C5/h~ | C5/h B4/h | C5/w |.</staff>
+      <staff clef="bass" time="4/4">[C3 G3]/w | [G2 D3]/w | [C3 G3]/w |.</staff>
+      <caption>A 4–3 suspension in <note>C</note> major. <note>C5</note> is prepared over I, tied over the barline into V, where it is a fourth above the bass <note>G</note> on the downbeat, and resolves down to <note>B4</note>, the third.</caption>
     </figure>
-    <p>Suspensions are named by the intervals above the bass at the suspension and the resolution: 4–3, 7–6 and 9–8 in an upper voice, and 2–3 when the bass itself is suspended. A suspension that resolves upward is called a retardation. While a suspension sounds, its note of resolution should not sound in another voice, except for the bass in a 9–8 suspension.</p>
+    <p>Suspensions are named by the intervals above the bass at the suspension and the resolution: <term ref="four-three-suspension">4–3</term>, <term ref="seven-six-suspension">7–6</term> and <term ref="nine-eight-suspension">9–8</term> in an upper voice, and <term ref="two-three-suspension">2–3</term> when the bass itself is suspended. A suspension that resolves upward is called a <term ref="retardation">retardation</term>. While a suspension sounds, its note of resolution should not sound in another voice, except for the bass in a 9–8 suspension.</p>
     <check id="suspension-resolution">
       <prompt>How does a suspension normally resolve?</prompt>
       <option key="a" correct="true">Down by step</option>
@@ -82,9 +82,9 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <title>Appoggiaturas, escape tones and anticipations</title>
     <p>Three more nonchord tones combine a step and a leap, or arrive early:</p>
     <list>
-      <li>Appoggiatura: approached by leap and resolved by step, usually in the opposite direction. It is typically accented and expressive.</li>
-      <li>Escape tone: approached by step and left by leap in the opposite direction. It is unaccented.</li>
-      <li>Anticipation: a note of the next chord sounded early, before the chord arrives. It usually stays on the same note when the chord changes, and is common at cadences.</li>
+      <li><term ref="appoggiatura">Appoggiatura</term>: approached by leap and resolved by step, usually in the opposite direction. It is typically accented and expressive. This is the definition of Kostka and Payne; other books, following eighteenth-century usage, call any accented, unprepared dissonance that resolves by step an appoggiatura, however it is approached.</li>
+      <li><term ref="escape-tone">Escape tone</term>: approached by step and left by leap in the opposite direction. It is unaccented.</li>
+      <li><term ref="anticipation">Anticipation</term>: a note of the next chord sounded early, before the chord arrives. It usually stays on the same note when the chord changes, and is common at cadences.</li>
     </list>
     <figure play="as-written" tempo="72">
       <staff clef="treble" time="4/4">D5/q | *F5/h E5/h |.</staff>
@@ -107,7 +107,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Pedal point</title>
-    <p>A pedal point is a note held, usually in the bass, while the harmonies above it change, including chords that do not contain it. Tonic and dominant pedals are the most common: a tonic pedal often closes a piece, and a dominant pedal builds tension before the return of the tonic. A pedal in an upper voice is called an inverted pedal.</p>
+    <p>A <term ref="pedal-point">pedal point</term> is a note held, usually in the bass, while the harmonies above it change, including chords that do not contain it. Tonic and dominant pedals are the most common: a tonic pedal often closes a piece, and a dominant pedal builds tension before the return of the tonic. A pedal in an upper voice is called an inverted pedal.</p>
     <figure play="as-written" tempo="72">
       <staff clef="treble" time="4/4">[E4 G4 C5]/q [F4 A4 C5]/q [F4 G4 B4]/q [E4 G4 C5]/q |.</staff>
       <staff clef="bass" time="4/4">C3/w |.</staff>
