@@ -532,7 +532,12 @@ class ChordsStaff(ExerciseDefinition):
                 'root',
                 _('Root'),
                 tuple(
-                    Option(letter.name, pitch_name(PitchName(letter)), letter.name.lower())
+                    Option(
+                        letter.name,
+                        pitch_name(PitchName(letter)),
+                        letter.name.lower(),
+                        fixed_accel=True,
+                    )
                     for letter in Letter
                 ),
                 accidentals=True,

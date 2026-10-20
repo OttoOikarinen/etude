@@ -340,7 +340,7 @@ class ScaleDegrees(ExerciseDefinition):
         ]
         note = _shift([note], rng.choice(candidates))[0]
         options = tuple(
-            Option(str(n), str(n), str(n), degree_short_name(key.degree_function(n)))
+            Option(str(n), str(n), str(n), degree_short_name(key.degree_function(n)), True)
             for n in range(1, 8)
         )
         tonic = _scale_up_to(key, 1, note)[0]
@@ -377,7 +377,12 @@ class ScaleDegrees(ExerciseDefinition):
         # Options follow the staff from left to right. Their accelerators are note
         # letters, not numbers: a number badge would read as a degree.
         options = tuple(
-            Option(str(i + 1), pitch_name(scale[i].name), accel=scale[i].letter.name.lower())
+            Option(
+                str(i + 1),
+                pitch_name(scale[i].name),
+                accel=scale[i].letter.name.lower(),
+                fixed_accel=True,
+            )
             for i in order
         )
         targets = {slot: str(i + 1) for slot, i in enumerate(order)}
@@ -386,7 +391,7 @@ class ScaleDegrees(ExerciseDefinition):
             exercise_id=self.id,
             item_id=item_id,
             prompt=_find_prompt(function),
-            answer=ChoiceAnswer(options, targets=targets),
+            answer=ChoiceAnswer(options, targets=targets, in_figure_order=True),
             expected=str(degree),
             figure=StaffSpec(clef=clef, key_signature=key.signature, events=events),
             playback=self._scale_playback(key, scale[0].octave),

@@ -248,3 +248,19 @@ def test_drop_upcoming_removes_later_questions_only(world: World) -> None:
     assert runner.current.question.item_id == first
     runner.answer(runner.current.question.expected, response_ms=1000)
     assert not runner.advance()
+
+
+def test_the_runner_shuffles_the_answer_buttons(world: World) -> None:
+    # Key signature options are listed by their number of accidentals, so an
+    # unshuffled list would put four sharps on button 5 every time.
+    runner = world.runner(size=20)
+    places = set()
+    while True:
+        question = runner.current.question
+        options = question.answer.options  # type: ignore[union-attr]
+        places.add((question.expected, [o.key for o in options].index(str(question.expected))))
+        assert [o.accel for o in options][:3] == ['1', '2', '3']
+        runner.answer(question.expected, response_ms=2500)
+        if not runner.advance():
+            break
+    assert len(places) > len({expected for expected, _ in places})

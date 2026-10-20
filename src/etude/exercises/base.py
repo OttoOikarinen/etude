@@ -18,7 +18,7 @@ from __future__ import annotations
 import random
 from abc import ABC, abstractmethod
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import Enum
 from gettext import gettext as _
 from typing import ClassVar
@@ -58,6 +58,10 @@ class Option:
     """Keyboard accelerator shown as a badge, e.g. ``'1'`` or ``'R'``."""
     description: str | None = None
     """Secondary line, e.g. ``'Tonic'`` under degree ``1`` (design 1g)."""
+    fixed_accel: bool = False
+    """The accelerator means something (a note letter, a degree, a number of beats)
+    and moves with the option when the options are shuffled. Otherwise it numbers
+    the button and stays with the position (see :func:`shuffle_options`)."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -68,6 +72,9 @@ class ChoiceAnswer:
     targets: Mapping[int, str] = field(default_factory=dict, hash=False)
     """Event index on the figure → option key; clicking that note picks the
     option (design 1g, "click the note on the staff")."""
+    in_figure_order: bool = False
+    """The options follow the figure's notes from left to right, which the
+    exercise has already put in random order; :func:`shuffle_options` keeps them."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -229,6 +236,40 @@ class Feedback:
     play_expected: PlaybackSpec | None = None
     play_given: PlaybackSpec | None = None
     """Lets ear-training learners compare what they chose with the right answer."""
+
+
+def shuffle_options(question: Question, rng: random.Random) -> Question:
+    """``question`` with its answer buttons in random order.
+
+    Exercises list options in a teaching order (keys by their accidentals,
+    intervals by size), so the place of the right answer would give it away.
+    The runner shuffles every question it shows. Accelerators that number the
+    buttons stay with the positions, ``1`` on the first button; a
+    :attr:`~Option.fixed_accel` stays with its option.
+    """
+    answer = question.answer
+    match answer:
+        case ChoiceAnswer(in_figure_order=False):
+            shuffled: AnswerSpec = replace(answer, options=_shuffled(answer.options, rng))
+        case ChipsAnswer():
+            shuffled = replace(
+                answer,
+                groups=tuple(
+                    replace(group, options=_shuffled(group.options, rng)) for group in answer.groups
+                ),
+            )
+        case _:
+            return question
+    return replace(question, answer=shuffled)
+
+
+def _shuffled(options: tuple[Option, ...], rng: random.Random) -> tuple[Option, ...]:
+    order = list(options)
+    rng.shuffle(order)
+    numbers = iter([option.accel for option in options if not option.fixed_accel])
+    return tuple(
+        option if option.fixed_accel else replace(option, accel=next(numbers)) for option in order
+    )
 
 
 # Settings ---------------------------------------------------------------------

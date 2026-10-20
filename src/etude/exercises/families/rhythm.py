@@ -1406,6 +1406,8 @@ class MeterByEar(ExerciseDefinition):
                 k,
                 meter_kind_label(k, compound_choice=compound_choice),
                 accel=str(i + 1) if compound_choice else str(i + 2),
+                # Without compound meters the key is the number of beats: 2, 3 or 4.
+                fixed_accel=not compound_choice,
             )
             for i, k in enumerate(kinds)
         )
