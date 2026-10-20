@@ -224,6 +224,10 @@ def test_explanation_of_a_lone_accidental_and_no_figures() -> None:
     assert '♯ raises the third above the bass from G to G♯.' in detail
     assert 'An accidental on its own belongs to the third.' in detail
     assert 'In A minor that is V.' in detail
+    sixth = find('figbass.major.6', Key.parse('C'))
+    assert 'the figure 6 means a sixth and a third above the bass' in (
+        FB.grade(sixth, expected(sixth)).detail
+    )
     plain = find('figbass.major.53', Key.parse('C'))
     assert 'With no figures' in FB.grade(plain, expected(plain)).detail
 

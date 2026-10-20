@@ -644,8 +644,10 @@ class FiguredBassExercise(ExerciseDefinition):
             sentences = [
                 # Translators: e.g. "Under D, the figures 6/5 mean a sixth, a fifth and a third
                 # above the bass: B♮, A♭ and F."
-                _(
-                    'Under {bass}, the figures {figures} mean {intervals} above the bass: {notes}.'
+                ngettext(
+                    'Under {bass}, the figure {figures} means {intervals} above the bass: {notes}.',
+                    'Under {bass}, the figures {figures} mean {intervals} above the bass: {notes}.',
+                    len(figures.entries(slashed)),
                 ).format(
                     bass=bass_name,
                     figures=figures.inline(slashed),
