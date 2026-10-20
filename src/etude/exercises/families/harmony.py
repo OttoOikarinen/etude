@@ -1,8 +1,21 @@
 # SPDX-FileCopyrightText: 2026 Otto Oikarinen
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""Shared helpers of the harmony exercises: four-part voicings, Roman numeral
-display and the keys a question may use. This module defines no exercise.
+"""Shared helpers of the harmony exercises. This module defines no exercise.
+
+* Roman numerals and figures for display: :func:`roman_label`,
+  :func:`numeral_base`, :func:`figure_text`, :data:`TRIAD_FIGURES`,
+  :data:`SEVENTH_FIGURES`.
+* Keys and the common settings: :func:`keys_within`, :func:`modes_setting`
+  (``mode``: major, minor or both), :func:`limit_setting`
+  (``max-accidentals``), :func:`key_from_signature`.
+* Four-part figures and sound: :func:`satb_figure`, :func:`satb_voices`,
+  :func:`satb_durations`, :func:`progression_playback`,
+  :func:`playback_lengths`, and :func:`chord_of` to name the chord of a
+  voicing.
+* A four-part voicer, :func:`voicings` and :func:`voice_progression`. It is
+  to be replaced by the checker-validated voicer of :mod:`etude.checkers`
+  once that lands; the rules it follows are below.
 
 Four-part writing follows Kostka & Payne, *Tonal Harmony* (ch. 5–7), with the
 voice ranges of :class:`etude.checkers.voice_leading.Ranges`:
@@ -32,10 +45,9 @@ from itertools import permutations
 
 from ...audio.spec import PlaybackNote, PlaybackSpec
 from ...checkers.voice_leading import Ranges
-from ...core import Chord, ChordQuality, Duration, KeySignature, Pitch, PitchName
+from ...core import Chord, ChordKind, ChordQuality, Duration, KeySignature, Pitch, PitchName
 from ...core.roman import RomanNumeral
 from ...core.scale import Key, Mode
-from ...learning.model import ItemId
 from ...notation.spec import Barline, BarStyle, Clef, Event, Head, Ink, StaffSpec, SystemSpec
 from ...notation.spec import Chord as StaffChord
 from ..base import ExerciseDefinition
@@ -61,11 +73,14 @@ def figure_text(figure: str) -> str:
 
 
 def roman_label(numeral: RomanNumeral) -> str:
-    """Display form with slashed figures and quality signs: ``'V6/5'``, ``'vii°7'``,
-    ``'iiø4/3'``, ``'IV'``."""
+    """Display form with slashed figures and quality signs, as Kostka–Payne print
+    them: ``'V6/5'``, ``'vii°7'``, ``'iiø4/3'``, ``'IV'``, ``'V6/5/V'``, ``'♭II6'``."""
+    if numeral.secondary is not None:
+        primary = RomanNumeral(numeral.degree, numeral.quality, numeral.inversion, numeral.alter)
+        return f'{roman_label(primary)}/{roman_label(numeral.secondary)}'
     symbol = numeral.symbol
     figure = numeral.figure
-    if numeral.secondary is not None or numeral.cadential or not figure:
+    if numeral.cadential or not figure or numeral.quality.kind is ChordKind.AUGMENTED_SIXTH:
         return symbol
     return symbol[: len(symbol) - len(figure)] + figure_text(figure)
 
@@ -104,11 +119,14 @@ def modes_setting(settings: Mapping[str, object], default: str = 'major') -> tup
 
 
 def limit_setting(settings: Mapping[str, object], default: int = 4) -> int:
+    """The ``max-accidentals`` integer setting, clamped to 0–7."""
     value = settings.get('max-accidentals', default)
     return max(0, min(MAX_ACCIDENTALS, value if isinstance(value, int) else default))
 
 
 def key_from_signature(signature: KeySignature | None, mode: Mode) -> Key:
+    """The major or minor key of a signature (``None`` is C major or A minor), e.g. to
+    read a question's key back from its figure."""
     signature = signature or KeySignature(0)
     tonic = signature.major_tonic if mode is Mode.MAJOR else signature.minor_tonic
     return Key(tonic, mode)
@@ -352,74 +370,83 @@ def progression_cost(chords: Sequence[Chord], voices: Sequence[Voicing], key: Ke
 # Figures and playback ------------------------------------------------------------------
 
 
-@dataclass(frozen=True, slots=True)
-class Satb:
-    """A voiced progression on a grand staff."""
-
-    voices: tuple[Voicing, ...]
-    signature: KeySignature | None
-    durations: tuple[Duration, ...] = ()
-    """Note values per chord; empty for stemless chords (one head per voice)."""
-
-
 def satb_figure(
-    satb: Satb,
+    voices: Sequence[Voicing],
+    signature: KeySignature | None = None,
     *,
+    durations: Sequence[Duration] = (),
     labels: Sequence[str | None] = (),
-    description: str | None = None,
+    highlight: Collection[int] = (),
     final_bar: bool = False,
-    label_ink: Ink = Ink.FOREGROUND,
+    description: str | None = None,
 ) -> SystemSpec:
-    """Soprano and alto on the treble staff, tenor and bass on the bass staff.
+    """Four voices on a grand staff: soprano and alto on the treble staff, tenor
+    and bass on the bass staff.
 
-    With durations each staff has two voices (stems up and down), as in a
-    chorale; without, each staff shows one stemless two-note chord per slot.
-    ``labels`` go under the bass staff (Roman numerals in feedback).
+    * ``durations`` (one per chord) draws each staff as two voices with stems up
+      and down, as in a chorale; without them each staff shows one stemless
+      two-note chord per slot.
+    * ``labels`` (one per chord, ``None`` for none) are written under the bass
+      staff: Roman numerals, or figured-bass figures with lines separated by
+      ``'\\n'``.
+    * Chords whose index is in ``highlight`` are drawn in the accent colour, with
+      their labels (the cadence of a phrase, the chord a question asked about).
+
+    :func:`satb_voices` reads the voicings back.
     """
 
-    def label(i: int) -> str | None:
-        return labels[i] if i < len(labels) else None
+    def chord(i: int, voice: int, *, labelled: bool = False) -> StaffChord:
+        ink = Ink.ACCENT if i in highlight else Ink.FOREGROUND
+        pitches = (voices[i][voice],) if durations else (voices[i][voice + 1], voices[i][voice])
+        return StaffChord(
+            tuple(Head(p, ink=ink) for p in pitches),
+            durations[i] if durations else None,
+            label=(labels[i] if i < len(labels) else None) if labelled else None,
+            ink=ink,
+        )
 
-    if satb.durations:
-        upper = [StaffChord((Head(v[0]),), satb.durations[i]) for i, v in enumerate(satb.voices)]
-        alto = [StaffChord((Head(v[1]),), satb.durations[i]) for i, v in enumerate(satb.voices)]
-        tenor = [StaffChord((Head(v[2]),), satb.durations[i]) for i, v in enumerate(satb.voices)]
-        bass = [
-            StaffChord((Head(v[3]),), satb.durations[i], label=label(i))
-            for i, v in enumerate(satb.voices)
-        ]
+    count = range(len(voices))
+    if durations:
         ending: tuple[Event, ...] = (Barline(BarStyle.FINAL),) if final_bar else ()
         treble = StaffSpec(
             clef=Clef.TREBLE,
-            key_signature=satb.signature,
-            events=(*upper, *ending),
-            voices=((*alto, *ending),),
+            key_signature=signature,
+            events=(*(chord(i, 0) for i in count), *ending),
+            voices=((*(chord(i, 1) for i in count), *ending),),
         )
         low = StaffSpec(
             clef=Clef.BASS,
-            key_signature=satb.signature,
-            events=(*tenor, *ending),
-            voices=((*bass, *ending),),
+            key_signature=signature,
+            events=(*(chord(i, 2) for i in count), *ending),
+            voices=((*(chord(i, 3, labelled=True) for i in count), *ending),),
         )
     else:
+        ending = (Barline(BarStyle.FINAL),) if final_bar else ()
         treble = StaffSpec(
             clef=Clef.TREBLE,
-            key_signature=satb.signature,
-            events=tuple(StaffChord((Head(v[1]), Head(v[0]))) for v in satb.voices),
+            key_signature=signature,
+            events=(*(chord(i, 0) for i in count), *ending),
         )
         low = StaffSpec(
             clef=Clef.BASS,
-            key_signature=satb.signature,
-            events=tuple(
-                StaffChord((Head(v[3]), Head(v[2])), label=label(i), ink=label_ink)
-                for i, v in enumerate(satb.voices)
-            ),
+            key_signature=signature,
+            events=(*(chord(i, 2, labelled=True) for i in count), *ending),
         )
     return SystemSpec(staves=(treble, low), description=description)
 
 
+def satb_durations(figure: object) -> tuple[Duration, ...]:
+    """The note values of a figure made by :func:`satb_figure` (empty if stemless)."""
+    if not isinstance(figure, SystemSpec) or not figure.staves:
+        return ()
+    events = [e for e in figure.staves[0].events if isinstance(e, StaffChord)]
+    found = tuple(e.duration for e in events if e.duration is not None)
+    return found if len(found) == len(events) else ()
+
+
 def satb_voices(figure: object) -> list[Voicing]:
-    """Read the voicings back from a figure made by :func:`satb_figure`."""
+    """The voicings of a figure made by :func:`satb_figure`, soprano first; empty for
+    any other figure."""
     if not isinstance(figure, SystemSpec) or len(figure.staves) != 2:
         return []
     treble, low = figure.staves
@@ -441,9 +468,13 @@ def satb_voices(figure: object) -> list[Voicing]:
 
 
 def progression_playback(
-    voices: Sequence[Voicing], lengths: Sequence[Fraction] = (), tempo: float = 76.0
+    voices: Sequence[Sequence[Pitch]], lengths: Sequence[Fraction] = (), tempo: float = 76.0
 ) -> PlaybackSpec:
-    """Block chords one after another (``lengths`` in beats, default one beat each)."""
+    """Block chords one after another, ``lengths`` in beats (one beat each by default).
+
+    Works for any number of voices per chord; :func:`playback_lengths`
+    turns note values into lengths.
+    """
     notes: list[PlaybackNote] = []
     start = Fraction(0)
     for i, voicing in enumerate(voices):
@@ -451,6 +482,11 @@ def progression_playback(
         notes.extend(PlaybackNote(p.midi, start, length) for p in voicing)
         start += length
     return PlaybackSpec(tuple(notes), tempo=tempo)
+
+
+def playback_lengths(durations: Sequence[Duration]) -> list[Fraction]:
+    """Note values as playback lengths in beats (quarter notes)."""
+    return [d.quarter_length for d in durations]
 
 
 def chord_of(pitches: Sequence[Pitch], quality: ChordQuality | None = None) -> Chord:
@@ -476,10 +512,6 @@ def chord_of(pitches: Sequence[Pitch], quality: ChordQuality | None = None) -> C
         if names <= set(tones) and set(tones) - names == {tones[2]}:
             return Chord(bass, candidate)
     raise ValueError(f'no tertian chord in {pitches}')
-
-
-def mode_of(item: ItemId) -> Mode:
-    return Mode.MINOR if '.minor.' in f'{item}.' else Mode.MAJOR
 
 
 EXERCISES: tuple[ExerciseDefinition, ...] = ()

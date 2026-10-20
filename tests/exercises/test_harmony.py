@@ -10,11 +10,11 @@ from etude.core import Chord, ChordQuality, Duration, NoteValue, Pitch, PitchNam
 from etude.core.roman import RomanNumeral
 from etude.core.scale import Key, Mode
 from etude.exercises.families.harmony import (
-    Satb,
     chord_of,
     figure_text,
     keys_within,
     roman_label,
+    satb_durations,
     satb_figure,
     satb_voices,
     voice_progression,
@@ -43,6 +43,10 @@ def test_figure_text_writes_figures_with_slashes() -> None:
         ('I64', 'I6/4'),
         ('IM7', 'IM7'),
         ('V7/V', 'V7/V'),
+        ('V65/V', 'V6/5/V'),
+        ('viio42/ii', 'vii°4/2/ii'),
+        ('bII6', '♭II6'),
+        ('Ger+6', 'Ger+6'),
     ],
 )
 def test_roman_label(text: str, label: str) -> None:
@@ -166,5 +170,6 @@ def test_chord_of_reads_complete_and_incomplete_chords() -> None:
 def test_satb_figure_round_trips() -> None:
     voices = ((Pitch.parse('C5'), Pitch.parse('G4'), Pitch.parse('E4'), Pitch.parse('C3')),)
     for durations in ((), (Duration(NoteValue.HALF),)):
-        figure = satb_figure(Satb(voices, None, durations))
+        figure = satb_figure(voices, None, durations=durations, labels=('I',), highlight=(0,))
         assert satb_voices(figure) == list(voices)
+        assert satb_durations(figure) == durations

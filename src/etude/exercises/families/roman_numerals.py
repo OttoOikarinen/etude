@@ -58,7 +58,6 @@ from .harmony import (
     MAX_ACCIDENTALS,
     SEVENTH_FIGURES,
     TRIAD_FIGURES,
-    Satb,
     best_voicing,
     chord_of,
     figure_text,
@@ -352,7 +351,7 @@ class RomanNumerals(ExerciseDefinition):
         figure: Figure
         if voicing == 'satb':
             voices = best_voicing(chord, key, rng)
-            figure = satb_figure(Satb((voices,), key.signature))
+            figure = satb_figure((voices,), key.signature)
             pitches: Sequence[Pitch] = sorted(voices)
         else:
             clef, pitches = _fit_close(chord, rng)
@@ -531,9 +530,7 @@ class RomanNumerals(ExerciseDefinition):
         if isinstance(figure, SystemSpec):
             voices = satb_voices(figure)
             signature = figure.staves[0].key_signature
-            return satb_figure(
-                Satb(tuple(voices), signature), labels=(label,), label_ink=Ink.ACCENT
-            )
+            return satb_figure(voices, signature, labels=(label,), highlight=(0,))
         return figure
 
 

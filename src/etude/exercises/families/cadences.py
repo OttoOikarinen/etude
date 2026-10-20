@@ -45,8 +45,7 @@ from ...core.naming import key_name, pitch_name
 from ...core.roman import RomanNumeral
 from ...core.scale import Key, Mode
 from ...learning.model import ItemId
-from ...notation.spec import Chord as StaffChord
-from ...notation.spec import Event, Figure, Head, Ink, StaffSpec, SystemSpec
+from ...notation.spec import Figure, SystemSpec
 from ..base import (
     BoolSetting,
     ChoiceAnswer,
@@ -62,7 +61,6 @@ from ..base import (
 )
 from .harmony import (
     MAX_ACCIDENTALS,
-    Satb,
     Voicing,
     chord_of,
     key_from_signature,
@@ -71,6 +69,7 @@ from .harmony import (
     modes_setting,
     progression_playback,
     roman_label,
+    satb_durations,
     satb_figure,
     satb_voices,
     voice_progression,
@@ -352,7 +351,7 @@ class CadencesStaff(ExerciseDefinition):
             extra[count - 1] = {1: 0.0}  # double the third of vi after V
         voices = voice_progression(chords, key, rng, soprano=soprano, extra_doublings=extra)
         durations = (*([_QUARTER] * (count - 1)), _HALF)
-        figure = satb_figure(Satb(tuple(voices), key.signature, durations), final_bar=True)
+        figure = satb_figure(voices, key.signature, durations=durations, final_bar=True)
 
         pool = _types(settings)
         if kind not in pool:
@@ -497,37 +496,14 @@ class CadencesStaff(ExerciseDefinition):
         if not isinstance(figure, SystemSpec):
             return figure
         count = len(voices)
-
-        def mark(staff: StaffSpec, labelled: bool) -> StaffSpec:
-            def recolour(events: tuple[Event, ...], with_labels: bool) -> tuple[Event, ...]:
-                result: list[Event] = []
-                index = 0
-                for event in events:
-                    if not isinstance(event, StaffChord):
-                        result.append(event)
-                        continue
-                    cadence = index >= count - 2
-                    ink = Ink.ACCENT if cadence else Ink.FOREGROUND
-                    result.append(
-                        StaffChord(
-                            tuple(Head(h.pitch, ink=ink) for h in event.heads),
-                            event.duration,
-                            label=numerals[index] if with_labels else None,
-                            ink=ink,
-                        )
-                    )
-                    index += 1
-                return tuple(result)
-
-            return StaffSpec(
-                clef=staff.clef,
-                key_signature=staff.key_signature,
-                events=recolour(staff.events, False),
-                voices=tuple(recolour(v, labelled) for v in staff.voices),
-            )
-
-        treble, low = figure.staves
-        return SystemSpec(staves=(mark(treble, False), mark(low, True)))
+        return satb_figure(
+            voices,
+            figure.staves[0].key_signature,
+            durations=satb_durations(figure),
+            labels=numerals,
+            highlight=(count - 2, count - 1),
+            final_bar=True,
+        )
 
 
 EXERCISES: tuple[ExerciseDefinition, ...] = (CadencesStaff(),)
