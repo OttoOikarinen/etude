@@ -15,9 +15,13 @@ from etude.core import Duration, Meter, NoteValue
 from etude.exercises.base import ChoiceAnswer, RhythmInputAnswer, TapAnswer
 from etude.exercises.families.rhythm import (
     COMPOUND_CELLS,
+    DICTATION_DEFAULT,
+    ED,
     METERS,
     QD,
     SIMPLE_CELLS,
+    TAP_DEFAULT,
+    D,
     E,
     H,
     MeterByEar,
@@ -26,6 +30,7 @@ from etude.exercises.families.rhythm import (
     RhythmDictation,
     RhythmTap,
     S,
+    T,
     Vocabulary,
     W,
     as_rhythm,
@@ -89,7 +94,7 @@ def test_durations_are_valid_and_from_the_vocabulary(
     allowed = {event for cell in (*focal, *fillers) for event in cell}
     for event in rhythm:
         assert event in allowed
-        assert event[0].tuplet is None
+        assert event[0].tuplet is None or vocabulary is Vocabulary.TRIPLETS
     # The practised figure appears somewhere.
     text = serialize_rhythm(rhythm)
     assert any(serialize_rhythm(cell) in text for cell in focal)
@@ -552,3 +557,68 @@ def test_compound_meter_choice() -> None:
     feedback = METER_EAR.grade(question, 'duple')
     assert not feedback.correct
     assert 'three eighths' in feedback.detail
+
+
+# Level 2: dotted eighths, triplets, duplets and 9/8, 12/8 -------------------------------
+
+
+def test_level_two_vocabulary_keeps_level_one_ids_and_defaults() -> None:
+    assert [v.value for v in Vocabulary][:7] == [
+        'quarters',
+        'halves',
+        'eighths',
+        'rests',
+        'dotted-quarter',
+        'sixteenths',
+        'syncopation',
+    ]
+    assert Vocabulary.DOTTED_EIGHTH.value == 'dotted-eighth'
+    assert Vocabulary.TRIPLETS.value == 'triplets'
+    for vocabulary in ('syncopation', 'dotted-eighth', 'triplets'):
+        assert vocabulary not in TAP_DEFAULT
+        assert vocabulary not in DICTATION_DEFAULT
+    assert 'rhythm.tap.triplets' in TAP.items({'vocabulary': ('triplets',)})
+    assert 'rhythm.dictation.dotted-eighth' in DICTATION.items({'vocabulary': ('dotted-eighth',)})
+
+
+def test_triplets_fill_a_beat_and_duplets_a_dotted_quarter() -> None:
+    assert rhythm_length((note(T),) * 3) == Fraction(1, 4)
+    assert rhythm_length((note(D),) * 2) == Fraction(3, 8)
+    assert rhythm_length((note(ED), note(S))) == Fraction(1, 4)
+    rhythm = generate_rhythm(Vocabulary.TRIPLETS, Meter(6, 8), 1, random.Random(1))
+    assert note(D) in rhythm
+    assert note(T) not in rhythm
+    rhythm = generate_rhythm(Vocabulary.TRIPLETS, Meter(4, 4), 1, random.Random(1))
+    assert note(T) in rhythm
+    assert note(D) not in rhythm
+
+
+def test_triplet_names_and_serialisation() -> None:
+    assert rhythm_words((note(T), note(T), note(T))) == (
+        'triplet eighth note, triplet eighth note, triplet eighth note'
+    )
+    assert serialize_rhythm((note(T), note(D), note(ED), note(S))) == '8/3 8/2 8. 16'
+
+
+def test_triplet_dictation_is_graded_on_a_finer_grid() -> None:
+    meter = Meter(2, 4)
+    expected = (note(T), note(T), note(T), note(Q))
+    assert beat_matches(expected, expected, meter, 1) == [True, True]
+    eighths = (note(E), note(E), note(Q))
+    assert beat_matches(expected, eighths, meter, 1) == [False, True]
+    # Without tuplets the sixteenth grid is unchanged.
+    assert ''.join(sound_grid((note(ED), note(S)), 4)) == 'ASSA'
+
+
+def test_compound_meters_are_offered() -> None:
+    assert METERS['9/8'] == Meter(9, 8)
+    assert METERS['12/8'] == Meter(12, 8)
+    question = DICTATION.generate(
+        'rhythm.dictation.triplets',
+        {**DICTATION.default_settings(), 'meters': ('12/8',)},
+        random.Random(0),
+    )
+    assert isinstance(question.answer, RhythmInputAnswer)
+    assert question.answer.meter == Meter(12, 8)
+    assert D in question.answer.palette
+    assert DICTATION.grade(question, question.expected).correct

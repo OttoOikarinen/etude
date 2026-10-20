@@ -60,7 +60,19 @@ _REST_GLYPHS = {
 _DOT = ''
 
 
-_FRACTIONS = {Fraction(1, 4): '¼', Fraction(1, 2): '½', Fraction(3, 4): '¾'}
+_FRACTIONS = {
+    Fraction(1, 4): '¼',
+    Fraction(1, 2): '½',
+    Fraction(3, 4): '¾',
+    Fraction(1, 3): '⅓',
+    Fraction(2, 3): '⅔',
+    Fraction(1, 6): '⅙',
+    Fraction(5, 6): '⅚',
+    Fraction(1, 8): '⅛',
+    Fraction(3, 8): '⅜',
+    Fraction(5, 8): '⅝',
+    Fraction(7, 8): '⅞',
+}
 
 
 def beats_text(beats: Fraction) -> str:
@@ -70,13 +82,19 @@ def beats_text(beats: Fraction) -> str:
         return str(int(whole))
     symbol = _FRACTIONS.get(part)
     if symbol is None:
-        return f'{float(beats):g}'
+        # Triplets mixed with sixteenths leave twelfths and the like: 11/12.
+        symbol = f'{part.numerator}/{part.denominator}'
+        return f'{int(whole)} {symbol}' if whole else symbol
     return f'{int(whole)}{symbol}' if whole else symbol
 
 
 def glyph_markup(duration: Duration, is_rest: bool) -> str:
     glyphs = _REST_GLYPHS if is_rest else _NOTE_GLYPHS
     text = glyphs.get(duration.value, '?') + (' ' + _DOT) * duration.dots
+    if duration.tuplet is not None:
+        # A triplet or duplet member: the tuplet number beside the note, raised.
+        number = duration.tuplet.actual
+        text += f'<span font_family="sans" weight="bold" size="6pt" rise="10pt"> {number}</span>'
     return f'<span font_family="Bravura" size="200%">{text}</span>'
 
 
