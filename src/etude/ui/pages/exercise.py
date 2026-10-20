@@ -28,7 +28,7 @@ from ..common import (
     setting_bool,
     ui_resource,
 )
-from ..figure import create_figure_widget
+from ..figure import WideFigure, create_figure_widget
 from ..timing import Player
 from ..widgets.base import AnswerWidget
 from ..widgets.ear_panel import EarPanel
@@ -237,7 +237,7 @@ class ExercisePage(Adw.NavigationPage):
             figure = (figure or question.written_alternative) if visible else None
         widget = create_figure_widget(figure)
         widget.connect('head-activated', self._on_head_activated)
-        self._figure_holder.set_child(widget)
+        self._figure_holder.set_child(WideFigure(widget))
         self._figure_holder.set_visible(figure is not None)
 
     @staticmethod

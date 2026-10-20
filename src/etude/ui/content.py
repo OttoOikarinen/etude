@@ -34,7 +34,7 @@ from ..content.model import (
 )
 from ..core import Pitch, PitchName
 from .common import note_label
-from .figure import create_figure_widget, describe_figure, pitch_label
+from .figure import WideFigure, create_figure_widget, describe_figure, pitch_label
 
 TermHandler = Callable[[str], None]
 PlayHandler = Callable[[PlaybackSpec], None]
@@ -136,7 +136,7 @@ def example_card(
     # focus chain (the description still reaches screen readers).
     figure.set_focusable(False)
     figure.update_property([Gtk.AccessibleProperty.DESCRIPTION], [describe_figure(example.figure)])
-    box.append(figure)
+    box.append(WideFigure(figure))
     if example.caption:
         caption = paragraph_label(example.caption, on_term, css=('caption', 'dim-label'))
         caption.set_xalign(0.5)
