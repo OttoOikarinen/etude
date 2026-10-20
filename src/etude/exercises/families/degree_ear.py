@@ -210,7 +210,7 @@ class DegreeEar(ExerciseDefinition):
             context, PlaybackSpec.melodic([note], note_length=Fraction(2))
         )
         options = tuple(
-            Option(str(n), str(n), str(n), degree_short_name(key.degree_function(n)))
+            Option(str(n), str(n), str(n), degree_short_name(key.degree_function(n)), True)
             for n in range(1, 8)
         )
         clef = Clef.TREBLE if note.midi >= 57 else Clef.BASS

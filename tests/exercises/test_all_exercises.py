@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import random
 from collections.abc import Iterator, Mapping
+from dataclasses import replace
 
 import pytest
 
@@ -26,10 +27,12 @@ from etude.exercises.base import (
     IntSetting,
     Modality,
     MultiChoiceSetting,
+    Option,
     PianoAnswer,
     Question,
     StaffInputAnswer,
     TextAnswer,
+    shuffle_options,
 )
 from etude.exercises.registry import default_registry
 
@@ -183,3 +186,54 @@ def test_questions_are_well_formed_and_gradable(definition: ExerciseDefinition) 
 def test_describe_settings_is_text(definition: ExerciseDefinition) -> None:
     for settings in setting_variants(definition):
         assert isinstance(definition.describe_settings(settings), str)
+
+
+def check_shuffled(original: tuple[Option, ...], shuffled: tuple[Option, ...]) -> None:
+    """The same options; number accelerators stay with the places, fixed ones move."""
+    assert sorted(o.key for o in shuffled) == sorted(o.key for o in original)
+    assert [o.accel for o in shuffled if not o.fixed_accel] == [
+        o.accel for o in original if not o.fixed_accel
+    ]
+    by_key = {o.key: o for o in original}
+    for option in shuffled:
+        assert replace(option, accel=by_key[option.key].accel) == by_key[option.key]
+        if option.fixed_accel:
+            assert option.accel == by_key[option.key].accel
+
+
+@pytest.mark.parametrize('definition', EXERCISES, ids=_ids)
+def test_the_place_of_the_right_answer_varies(definition: ExerciseDefinition) -> None:
+    settings = definition.default_settings()
+    for item in sampled_items(definition, settings)[:12]:
+        question = definition.generate(item, settings, random.Random(0))
+        shown = [shuffle_options(question, random.Random(seed)) for seed in range(24)]
+        for each in shown:
+            check_expected(each)
+            assert definition.grade(each, each.expected).correct
+        answer = question.answer
+        if isinstance(answer, ChoiceAnswer) and answer.in_figure_order:
+            # The exercise orders the figure, and the buttons with it, at random.
+            places = set()
+            for seed in range(24):
+                again = definition.generate(item, settings, random.Random(seed))
+                assert isinstance(again.answer, ChoiceAnswer)
+                places.add([o.key for o in again.answer.options].index(str(again.expected)))
+            assert len(places) > 1, item
+        elif isinstance(answer, ChoiceAnswer):
+            places = set()
+            for each in shown:
+                assert isinstance(each.answer, ChoiceAnswer)
+                check_shuffled(answer.options, each.answer.options)
+                places.add([o.key for o in each.answer.options].index(str(each.expected)))
+            assert len(places) > 1 or len(answer.options) == 1, item
+        elif isinstance(answer, ChipsAnswer):
+            assert isinstance(question.expected, Mapping)
+            for index, group in enumerate(answer.groups):
+                places = set()
+                for each in shown:
+                    assert isinstance(each.answer, ChipsAnswer)
+                    options = each.answer.groups[index].options
+                    check_shuffled(group.options, options)
+                    chosen = str(question.expected[group.key]).rstrip('#b')
+                    places.add([o.key for o in options].index(chosen))
+                assert len(places) > 1 or len(group.options) == 1, (item, group.key)

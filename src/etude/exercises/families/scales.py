@@ -393,7 +393,12 @@ class ScalesStaff(ExerciseDefinition):
         shown = list(pitches)
         shown[degree - 1] = Pitch(right.letter, right.alter + alter, right.octave)
         options = tuple(
-            Option(str(d), pitch_name(shown[d - 1].name), accel=shown[d - 1].letter.name.lower())
+            Option(
+                str(d),
+                pitch_name(shown[d - 1].name),
+                accel=shown[d - 1].letter.name.lower(),
+                fixed_accel=True,
+            )
             for d in range(2, 8)
         )
         targets = {d - 1: str(d) for d in range(2, 8)}

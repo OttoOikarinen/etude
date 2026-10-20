@@ -28,7 +28,7 @@ from ..learning.model import (
     SessionRequest,
     SessionSummary,
 )
-from .base import ExerciseDefinition, Feedback, Question
+from .base import ExerciseDefinition, Feedback, Question, shuffle_options
 from .registry import ExerciseRegistry
 
 log = logging.getLogger(__name__)
@@ -278,7 +278,9 @@ class SessionRunner:
         definition = self.registry.get(planned.exercise_id)
         settings = self.settings(planned.exercise_id)
         try:
-            question = definition.generate(planned.item_id, settings, self._rng)
+            question = shuffle_options(
+                definition.generate(planned.item_id, settings, self._rng), self._rng
+            )
         except (KeyError, ValueError):
             # An item that the current settings no longer cover, or a stale id.
             log.warning('cannot generate %s', planned.item_id, exc_info=True)
