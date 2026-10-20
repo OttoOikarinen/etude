@@ -309,6 +309,15 @@ def rule_reason(rule: Rule) -> str:
     return reasons[rule]()
 
 
+def _missing(role: int) -> str:
+    return (
+        _('Chord {n} has no root ({note})'),
+        _('Chord {n} has no third ({note})'),
+        _('Chord {n} has no fifth ({note})'),
+        _('Chord {n} has no seventh ({note})'),
+    )[role]
+
+
 def _note(pitch: Pitch) -> str:
     return pitch_name(pitch.name) + str(pitch.octave)
 
@@ -393,6 +402,10 @@ def _span(a: Pitch, b: Pitch) -> tuple[int, int]:
     return abs(b.diatonic_index - a.diatonic_index), abs(b.midi - a.midi)
 
 
+_FIFTHS_AND_OCTAVES = frozenset({(0, 0), (7, 7), (7, 6), (6, 7)})
+"""Semitone classes (mod 12) of two successive intervals that may form parallels."""
+
+
 def _sign(value: int) -> int:
     return (value > 0) - (value < 0)
 
@@ -405,6 +418,7 @@ class _Checker:
         self.messages = messages
         self.context = context
         self.harmonies = [_harmony(i, c, context) for i, c in enumerate(chords)]
+        self.midi = [tuple(p.midi for p in chord) for chord in chords]
         self.found: list[Violation] = []
 
     def add(
@@ -535,18 +549,12 @@ class _Checker:
                 severity = self.omitted_fifth(slot, expected)
             if severity is None:
                 continue
-            missing = (
-                _('Chord {n} has no root ({note})'),
-                _('Chord {n} has no third ({note})'),
-                _('Chord {n} has no fifth ({note})'),
-                _('Chord {n} has no seventh ({note})'),
-            )[role]
             self.add(
                 Rule.INCOMPLETE_CHORD,
                 severity,
                 slot,
                 (),
-                lambda: missing.format(n=n, note=pitch_name(tone)),
+                lambda: _missing(role).format(n=n, note=pitch_name(tone)),
             )
 
     def omitted_fifth(self, slot: int, chord: Chord) -> Severity | None:
@@ -665,6 +673,13 @@ class _Checker:
         upper: int,
         lower: int,
     ) -> None:
+        a_midi, b_midi = self.midi[slot - 1], self.midi[slot]
+        intervals = (
+            abs(a_midi[upper] - a_midi[lower]) % 12,
+            abs(b_midi[upper] - b_midi[lower]) % 12,
+        )
+        if intervals not in _FIFTHS_AND_OCTAVES:
+            return  # quick test by sound; spelling is checked below
         a_up, a_low, b_up, b_low = before[upper], before[lower], after[upper], after[lower]
         if a_up == b_up or a_low == b_low:
             return  # one voice holds its note: oblique motion
