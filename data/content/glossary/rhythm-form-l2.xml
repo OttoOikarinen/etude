@@ -139,7 +139,7 @@ sentences. Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
     <term>motive</term>
     <gloss>shortest recognizable musical idea</gloss>
     <def>A short rhythmic or melodic idea, often only a few notes long, that is repeated and developed through a piece. Spelled motif in British English.</def>
-    <figure play="as-written" tempo="108">
+    <figure play="as-written" tempo="216">
       <staff clef="treble" key="-3" time="2/4">r/e G4/e G4/e G4/e | Eb4/h | r/e F4/e F4/e F4/e | D4/h |.</staff>
       <caption>The opening motive of Beethoven's Fifth Symphony, stated and then repeated a step lower.</caption>
     </figure>
