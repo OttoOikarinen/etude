@@ -21,6 +21,7 @@ data/content/lessons/level1/triads.xml
 data/fi.oikarinenotto.etude.desktop.in
 data/fi.oikarinenotto.etude.gschema.xml
 data/fi.oikarinenotto.etude.metainfo.xml.in
+src/etude/checkers/voice_leading.py
 src/etude/core/naming.py
 src/etude/exercises/base.py
 src/etude/exercises/families/chords.py

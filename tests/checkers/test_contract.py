@@ -30,3 +30,10 @@ def test_voices_on_a_grand_staff() -> None:
 
 def test_rhythm_template_defaults_to_stemless() -> None:
     assert StaffInputAnswer(Clef.TREBLE).rhythm == ()
+
+
+def test_check_is_implemented() -> None:
+    from etude.checkers.voice_leading import check
+
+    chord = tuple(Pitch.parse(n) for n in ('C5', 'G4', 'E4', 'C3'))
+    assert check([chord]) == []
