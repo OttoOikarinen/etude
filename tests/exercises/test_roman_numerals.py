@@ -50,7 +50,7 @@ def test_item_ids_round_trip() -> None:
     for item in RN.items(EVERYTHING):
         assert item_id(*parse_item(item)) == item
     for bad in ('roman.major.V.7', 'roman.dorian.I.53', 'roman.major.VII.53', 'roman.minor.v.53'):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match='not a'):
             parse_item(bad)
 
 
@@ -99,7 +99,7 @@ def test_items_cover_the_diatonic_numerals_of_both_modes() -> None:
 def test_written_chord_is_the_numeral_in_the_key(voicing: str) -> None:
     settings = {**EVERYTHING, 'voicing': voicing}
     for item in RN.items(settings):
-        mode, degree, seventh, inversion = parse_item(item)
+        mode, degree, _seventh, inversion = parse_item(item)
         table = MAJOR if mode is Mode.MAJOR else MINOR
         for seed in range(3):
             question = RN.generate(item, settings, random.Random(seed))
@@ -113,7 +113,8 @@ def test_written_chord_is_the_numeral_in_the_key(voicing: str) -> None:
             )
             analysis = RomanNumeral.analyze(chord, key)
             assert analysis is not None
-            assert analysis.degree == degree and analysis.inversion == inversion
+            assert analysis.degree == degree
+            assert analysis.inversion == inversion
             assert RN.answer_label(question, expected(question)) in (
                 analysis.symbol.replace('65', '6/5')
                 .replace('64', '6/4')
@@ -149,7 +150,9 @@ def test_answer_chips_and_labels() -> None:
     ]  # fmt: skip
     assert expected(question) == {'numeral': '5', 'figures': '65'}
     assert RN.answer_label(question, expected(question)) == 'V6/5'
-    minor = RN.generate(ItemId('roman.minor.iio.6'), {**DEFAULTS, 'sevenths': 'none'}, random.Random(0))
+    minor = RN.generate(
+        ItemId('roman.minor.iio.6'), {**DEFAULTS, 'sevenths': 'none'}, random.Random(0)
+    )
     assert isinstance(minor.answer, ChipsAnswer)
     assert [o.label for o in minor.answer.groups[0].options] == [
         'i', 'ii°', 'III', 'iv', 'V', 'VI', 'vii°'

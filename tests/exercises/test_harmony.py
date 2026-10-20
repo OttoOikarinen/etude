@@ -71,7 +71,8 @@ def test_voicings_follow_ranges_spacing_and_doubling(text: str) -> None:
         s, a, t, b = voicing
         assert all(in_range(p, v) for v, p in enumerate(voicing))
         assert s.midi > a.midi > t.midi > b.midi
-        assert s.midi - a.midi <= 12 and a.midi - t.midi <= 12
+        assert s.midi - a.midi <= 12
+        assert a.midi - t.midi <= 12
         assert b.name == chord.bass
         assert {p.name for p in voicing} <= set(chord.names())
         # The leading tone is never doubled.
@@ -144,7 +145,7 @@ def test_voice_progression_has_no_parallels_and_resolves_tendency_tones(
 
 def test_soprano_constraint_is_kept() -> None:
     key = Key.parse('G')
-    chords = [RomanNumeral.parse(n).realize(key) for n in 'I IV V I'.split()]
+    chords = [RomanNumeral.parse(n).realize(key) for n in ['I', 'IV', 'V', 'I']]
     for seed in range(10):
         voices = voice_progression(chords, key, random.Random(seed), soprano={3: {key.tonic}})
         assert voices[-1][0].name == key.tonic

@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2026 Otto Oikarinen
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import itertools
 import random
 
 import pytest
@@ -59,8 +60,10 @@ def test_perfect_authentic(mode: Mode) -> None:
     for question in questions('pac', mode):
         key, voices, _chords, numerals = analysis(question)
         penult, final = numerals[-2:]
-        assert is_dominant(penult) and penult.inversion == 0
-        assert is_tonic(final) and final.inversion == 0
+        assert is_dominant(penult)
+        assert penult.inversion == 0
+        assert is_tonic(final)
+        assert final.inversion == 0
         assert voices[-1][0].name == key.tonic
 
 
@@ -70,7 +73,8 @@ def test_imperfect_authentic(mode: Mode) -> None:
     for question in questions('iac', mode):
         key, voices, _chords, numerals = analysis(question)
         penult, final = numerals[-2:]
-        assert is_tonic(final) and final.inversion == 0
+        assert is_tonic(final)
+        assert final.inversion == 0
         assert is_dominant(penult) or (penult.degree == 7 and penult.inversion == 1)
         weak = penult.inversion != 0 or penult.degree == 7
         inverted += weak
@@ -83,7 +87,8 @@ def test_inverted_iac_setting() -> None:
     settings = {**ALL, 'inverted-iac': False}
     for question in questions('iac', Mode.MAJOR, settings):
         key, voices, _chords, numerals = analysis(question)
-        assert numerals[-2].inversion == 0 and numerals[-2].degree == 5
+        assert numerals[-2].inversion == 0
+        assert numerals[-2].degree == 5
         assert voices[-1][0].name != key.tonic
 
 
@@ -91,22 +96,24 @@ def test_inverted_iac_setting() -> None:
 def test_half_cadence_ends_on_root_position_dominant(mode: Mode) -> None:
     for question in questions('half', mode):
         numerals = analysis(question)[3]
-        assert is_dominant(numerals[-1]) and numerals[-1].inversion == 0
+        assert is_dominant(numerals[-1])
+        assert numerals[-1].inversion == 0
         assert numerals[-1].quality.size == 3
 
 
 def test_phrygian_half_cadence() -> None:
     for question in questions('phrygian', Mode.MINOR):
-        key, voices, chords, numerals = analysis(question)
+        key, voices, _chords, numerals = analysis(question)
         assert (numerals[-2].degree, numerals[-2].inversion) == (4, 1)
         assert numerals[-2].quality.value == 'minor'
-        assert is_dominant(numerals[-1]) and numerals[-1].inversion == 0
+        assert is_dominant(numerals[-1])
+        assert numerals[-1].inversion == 0
         # The bass falls a half step from the lowered sixth degree to the dominant ...
         assert voices[-2][3].midi - voices[-1][3].midi == 1
         assert voices[-2][3].name == key.degree(6)
         # ... while the soprano rises a whole step from 4 to 5.
         assert voices[-1][0].midi - voices[-2][0].midi == 2
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match='not a'):
         parse_item('cadence.staff.major.phrygian')
 
 
@@ -115,15 +122,18 @@ def test_plagal(mode: Mode) -> None:
     for question in questions('plagal', mode):
         numerals = analysis(question)[3]
         assert (numerals[-2].degree, numerals[-2].inversion) == (4, 0)
-        assert is_tonic(numerals[-1]) and numerals[-1].inversion == 0
+        assert is_tonic(numerals[-1])
+        assert numerals[-1].inversion == 0
 
 
 @pytest.mark.parametrize('mode', list(Mode))
 def test_deceptive(mode: Mode) -> None:
     for question in questions('deceptive', mode):
         key, voices, _chords, numerals = analysis(question)
-        assert is_dominant(numerals[-2]) and numerals[-2].inversion == 0
-        assert numerals[-1].degree == 6 and numerals[-1].inversion == 0
+        assert is_dominant(numerals[-2])
+        assert numerals[-2].inversion == 0
+        assert numerals[-1].degree == 6
+        assert numerals[-1].inversion == 0
         # The leading tone rises to the tonic, which is doubled in vi (the third).
         for v in range(3):
             if voices[-2][v].name == key.leading_tone:
@@ -153,8 +163,9 @@ def test_four_part_writing(kind: str) -> None:
                     assert low.midi <= pitch.midi <= high.midi
                 s, a, t, b = voicing
                 assert s.midi > a.midi > t.midi > b.midi
-                assert s.midi - a.midi <= 12 and a.midi - t.midi <= 12
-            for before, after in zip(voices, voices[1:], strict=False):
+                assert s.midi - a.midi <= 12
+                assert a.midi - t.midi <= 12
+            for before, after in itertools.pairwise(voices):
                 assert not parallel(before, after), question.item_id
                 assert all(abs(x.midi - y.midi) <= 12 for x, y in zip(before, after, strict=True))
             for chord, voicing in zip(chords, voices, strict=True):
@@ -194,9 +205,11 @@ def test_feedback_explains_and_contrasts() -> None:
     bass = figure.staves[1]
     assert isinstance(bass, StaffSpec)
     labels = [e.label for e in bass.voices[0] if isinstance(e, StaffChord)]
-    assert labels[-1] == 'I' and labels[-2] in ('V', 'V7')
+    assert labels[-1] == 'I'
+    assert labels[-2] in ('V', 'V7')
     inks = [e.ink for e in bass.voices[0] if isinstance(e, StaffChord)]
-    assert inks[-2:] == [Ink.ACCENT, Ink.ACCENT] and Ink.ACCENT not in inks[:-2]
+    assert inks[-2:] == [Ink.ACCENT, Ink.ACCENT]
+    assert Ink.ACCENT not in inks[:-2]
 
 
 def test_iac_explains_why_it_is_imperfect() -> None:

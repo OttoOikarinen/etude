@@ -464,11 +464,17 @@ class FiguredBassExercise(ExerciseDefinition):
         )
         bass = self._bass_pitch(chord.bass, rng)
         label = figures.label(slashed)
-        description = _('Bass staff in {key}: {note} with the figures {figures}.').format(
-            key=key_name(key),
-            note=pitch_name(bass.name) + str(bass.octave),
-            figures=figures.inline(slashed) or _('none'),
-        )
+        note = pitch_name(bass.name) + str(bass.octave)
+        if figures.entries(slashed):
+            # Translators: accessible description of a figured bass, e.g. "Bass staff in C
+            # minor: D3 with the figures ♯6/5."
+            description = _('Bass staff in {key}: {note} with the figures {figures}.').format(
+                key=key_name(key), note=note, figures=figures.inline(slashed)
+            )
+        else:
+            description = _('Bass staff in {key}: {note} without figures.').format(
+                key=key_name(key), note=note
+            )
         figure = StaffSpec(
             clef=Clef.BASS,
             key_signature=key.signature,
