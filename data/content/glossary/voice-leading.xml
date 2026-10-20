@@ -125,7 +125,7 @@ schema: schema/glossary.rng.
 
   <entry id="open-position" level="2" tags="voice-leading">
     <term>open position</term>
-    <gloss>upper three voices spread over more than an octave</gloss>
+    <gloss>soprano and tenor an octave or more apart</gloss>
     <def>A <term ref="spacing">spacing</term> in which the soprano and tenor are an octave or more apart, leaving room for chord notes between the upper voices. Also called open structure or open spacing.</def>
     <figure play="harmonic">
       <staff clef="treble">[E4 C5]/w</staff>
@@ -309,9 +309,9 @@ schema: schema/glossary.rng.
     <gloss>leading tone falling to the fifth in an inner voice</gloss>
     <def>A <term ref="leading-tone">leading tone</term> in an inner voice that falls to the fifth of the tonic chord instead of rising to the tonic, so that the final chord is complete. It is allowed in an inner voice at V–I, but not in the soprano.</def>
     <figure play="as-written" tempo="60">
-      <staff clef="treble">[B4 G5] [G4 G5]</staff>
-      <staff clef="bass">[G2 D4]{V} [C3 E4]{I}</staff>
-      <caption>The alto falls from <note>B</note> to <note>G</note>.</caption>
+      <staff clef="treble">[G4 D5] [E4 C5]</staff>
+      <staff clef="bass">[G2 B3]{V} [C3 G3]{I}</staff>
+      <caption>The tenor falls from <note>B</note> to <note>G</note>; rising to <note>C</note> would leave the tonic triad without its fifth.</caption>
     </figure>
     <see ref="tendency-tone"/>
   </entry>
@@ -333,7 +333,7 @@ schema: schema/glossary.rng.
   <entry id="pedal-six-four" level="2" tags="voice-leading">
     <term>pedal six-four</term>
     <gloss>6/4 chord over a held or repeated bass</gloss>
-    <def>A <term ref="second-inversion">second-inversion</term> chord over a bass note that is held or repeated, while two upper voices rise by step and return, as in I–IV6/4–I. Also called a neighboring six-four or stationary six-four.</def>
+    <def>A <term ref="second-inversion">second-inversion</term> chord over a bass note that is held or repeated, while two upper voices rise by step and return, as in I–IV6/4–I. Also called a neighboring six-four.</def>
     <figure play="as-written" tempo="60">
       <staff clef="treble">[G4 C5] [A4 C5] [G4 C5]</staff>
       <staff clef="bass">[C3 E4]{I} [C3 F4]{IV6/4} [C3 E4]{I}</staff>

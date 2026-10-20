@@ -31,10 +31,10 @@ schema: schema/glossary.rng.
   <entry id="accented-passing-tone" level="2" tags="nonchord">
     <term>accented passing tone</term>
     <gloss>passing tone on a strong beat</gloss>
-    <def>A <term ref="passing-tone">passing tone</term> that falls on a beat or strong part of the beat, where the chord changes, so that it sounds as a dissonance against the new chord before moving on by step.</def>
+    <def>A <term ref="passing-tone">passing tone</term> that falls on a beat or strong part of the beat, often where the chord changes, so that it sounds as a dissonance against the new chord before moving on by step.</def>
     <figure play="as-written">
       <staff clef="treble" time="4/4">E5/q D5/q *C5/q B4/q | C5/w |.</staff>
-      <staff clef="bass" time="4/4">[C3 G3]/h [G2 D3]/h | [C3 G3]/w |.</staff>
+      <staff clef="bass" time="4/4">[C3 E3]/h [G2 D3]/h | [C3 E3]/w |.</staff>
       <caption><note>C</note> passes from <note>D</note> to <note>B</note> on the third beat, against the dominant chord.</caption>
     </figure>
     <see ref="passing-tone"/>
@@ -55,7 +55,7 @@ schema: schema/glossary.rng.
   <entry id="incomplete-neighbor" level="2" tags="nonchord">
     <term>incomplete neighbor</term>
     <gloss>neighbor tone with a leap on one side</gloss>
-    <def>A <term ref="nonchord-tone">non-chord tone</term> a step from a chord tone that is reached or left by leap instead of by step on both sides. The <term ref="appoggiatura">appoggiatura</term> (leap, then step) and the <term ref="escape-tone">escape tone</term> (step, then leap) are its two kinds.</def>
+    <def>A <term ref="nonchord-tone">non-chord tone</term> a step from a chord tone that is reached or left by leap instead of by step on both sides. The <term ref="appoggiatura">appoggiatura</term> (leap, then step) and the <term ref="escape-tone">escape tone</term> (step, then leap) are often treated as its two kinds.</def>
     <see ref="neighbor-tone"/>
   </entry>
 
@@ -74,7 +74,7 @@ schema: schema/glossary.rng.
     <term>appoggiatura</term>
     <foreign lang="it">appoggiatura</foreign>
     <gloss>accented dissonance reached by leap, left by step</gloss>
-    <def>A <term ref="nonchord-tone">non-chord tone</term>, usually accented, that resolves by step; the name is Italian for leaning. Kostka and Payne define it as approached by leap and left by step, usually in the opposite direction; others, such as Aldwell and Schachter, use the name for any accented dissonance that is not prepared and resolves by step, however it is approached. In Baroque and Classical scores it is often written as a small note.</def>
+    <def>A <term ref="nonchord-tone">non-chord tone</term>, usually accented, that resolves by step; the name is Italian for leaning. Kostka and Payne define it as approached by leap and left by step, usually in the opposite direction; others, following eighteenth-century usage, use the name for any accented dissonance that is not prepared and resolves by step, however it is approached. In Baroque and Classical scores it is often written as a small note.</def>
     <figure play="as-written">
       <staff clef="treble" time="4/4">E5/h C5/h | *A5/h G5/h |.</staff>
       <staff clef="bass" time="4/4">[C3 G3]/w | [C3 G3]/w |.</staff>
@@ -102,7 +102,7 @@ schema: schema/glossary.rng.
     <def>A <term ref="nonchord-tone">non-chord tone</term> that sounds a note of the next chord just before that chord arrives, usually approached by step and on a weak part of the beat. The anticipated note is then repeated or held when the chord changes. Common in the soprano at cadences.</def>
     <figure play="as-written">
       <staff clef="treble" time="4/4">B4/q. *C5/e C5/h |.</staff>
-      <staff clef="bass" time="4/4">[G2 D3]/h{V} [C3 G3]/h{I} |.</staff>
+      <staff clef="bass" time="4/4">[G2 D3]/h{V} [C3 E3]/h{I} |.</staff>
     </figure>
     <see ref="suspension"/>
   </entry>
@@ -113,7 +113,7 @@ schema: schema/glossary.rng.
     <def>A note held over from one chord into the next, where it becomes a dissonance on the strong beat and then <term ref="resolution">resolves</term> down by step. Its three stages are the <term ref="preparation">preparation</term>, the suspension itself and the resolution. Suspensions are named by the intervals above the bass at the dissonance and the resolution, as in 4–3, 7–6 and 9–8; with the dissonance in the bass, 2–3.</def>
     <figure play="as-written">
       <staff clef="treble" time="4/4">E5/h C5/h~ | *C5/h B4/h | C5/w |.</staff>
-      <staff clef="bass" time="4/4">[C3 G3]/h [F3 A3]/h | [G2 D3]/h{4} [G2 D3]/h{3} | [C3 G3]/w |.</staff>
+      <staff clef="bass" time="4/4">[C3 G3]/h [F3 A3]/h | [G2 D3]/h{4} [G2 D3]/h{3} | [C3 E3]/w |.</staff>
       <caption><note>C</note> is prepared in the IV chord, held against the dominant, and resolves to <note>B</note>.</caption>
     </figure>
     <see ref="four-three-suspension"/>

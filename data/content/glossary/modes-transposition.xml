@@ -35,7 +35,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
   <entry id="characteristic-note" level="2" tags="modes">
     <term>characteristic note</term>
     <gloss>the note that sets a mode apart from major or minor</gloss>
-    <def>The note that distinguishes a <term ref="mode">mode</term> from the major or natural minor scale on the same tonic: the raised sixth of <term ref="dorian">Dorian</term>, the lowered second of <term ref="phrygian">Phrygian</term>, the raised fourth of <term ref="lydian">Lydian</term>, the lowered seventh of <term ref="mixolydian">Mixolydian</term> and the lowered fifth of <term ref="locrian">Locrian</term>. Also called the characteristic tone or color note.</def>
+    <def>The note that distinguishes a <term ref="mode">mode</term> from the major or natural minor scale on the same tonic: the raised sixth of <term ref="dorian">Dorian</term>, the lowered second of <term ref="phrygian">Phrygian</term>, the raised fourth of <term ref="lydian">Lydian</term>, the lowered seventh of <term ref="mixolydian">Mixolydian</term> and the lowered second and fifth of <term ref="locrian">Locrian</term>. Persichetti also names the lowered sixth of <term ref="aeolian">Aeolian</term>, which sets it apart from Dorian. Also called the characteristic tone or color note.</def>
     <figure play="melodic" tempo="120">
       <staff clef="treble">C4 D4 E4 *F#4{4} G4 A4 B4 C5</staff>
       <caption><note>C</note> Lydian: a <note>C</note> major scale with a raised fourth degree.</caption>

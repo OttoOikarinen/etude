@@ -23,7 +23,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
   <entry id="major-seventh-chord" level="2" tags="sevenths">
     <term>major seventh chord</term>
     <gloss>major triad plus a major seventh</gloss>
-    <def>A <term ref="seventh-chord">seventh chord</term> made of a <term ref="major-triad">major triad</term> and a <term ref="major-seventh">major seventh</term> above the root: <note>C</note>–<note>E</note>–<note>G</note>–<note>B</note>. In a major key it is built on the first and fourth degrees (IM7 and IVM7). Also called a major-major seventh chord; jazz writes it Cmaj7 or CΔ7.</def>
+    <def>A <term ref="seventh-chord">seventh chord</term> made of a <term ref="major-triad">major triad</term> and a <term ref="major-seventh">major seventh</term> above the root: <note>C</note>–<note>E</note>–<note>G</note>–<note>B</note>. In a major key it is built on the first and fourth degrees (IM7 and IVM7). Also called a major-major seventh chord; jazz writes it <note>C</note>maj7 or <note>C</note>Δ7.</def>
     <figure play="harmonic">
       <staff clef="treble">[C4 E4 G4 B4]/h{IM7} [F4 A4 C5 E5]/h{IVM7}</staff>
       <caption>The major seventh chords of <note>C</note> major.</caption>
@@ -182,7 +182,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
     <gloss>a chord's role: tonic, predominant or dominant</gloss>
     <def>The role a chord plays in a key, which groups chords into three families: <term ref="tonic-function">tonic</term> (stability), <term ref="predominant">predominant</term> (moving away) and <term ref="dominant-function">dominant</term> (tension that leads back to the tonic). The typical phrase moves tonic – predominant – dominant – tonic. Some theorists, following Riemann, call the predominant the subdominant function.</def>
     <figure play="as-written" tempo="60">
-      <staff clef="treble">[E4 G4 C5] [F4 A4 D5] [F4 B4 D5] [E4 C5 E5]</staff>
+      <staff clef="treble">[E4 G4 C5] [F4 A4 D5] [F4 G4 B4] [E4 G4 C5]</staff>
       <staff clef="bass">C3{I} F3{ii6} G3{V7} C3{I}</staff>
       <caption>Tonic, predominant, dominant and tonic again.</caption>
     </figure>
@@ -259,7 +259,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
     <gloss>chord roots falling by fifths</gloss>
     <def>A <term ref="progression">progression</term> whose roots fall by fifths (or rise by fourths), as on the <term ref="circle-of-fifths">circle of fifths</term>: vi–ii–V–I. Falling fifths are usually considered the strongest root movement in tonal music.</def>
     <figure play="as-written" tempo="60">
-      <staff clef="treble">[E4 A4 C5] [F4 A4 D5] [F4 B4 D5] [E4 C5 E5]</staff>
+      <staff clef="treble">[E4 A4 C5] [F4 A4 D5] [F4 G4 B4] [E4 G4 C5]</staff>
       <staff clef="bass">A2{vi} D3{ii} G2{V7} C3{I}</staff>
     </figure>
     <see ref="root-movement"/>
@@ -268,7 +268,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
   <entry id="root-movement" level="2" tags="function">
     <term>root movement</term>
     <gloss>the interval between successive chord roots</gloss>
-    <def>The interval from the root of one chord to the root of the next, whatever the chords' inversions. Roots falling by fifth, falling by third and rising by step make the most common progressions; roots falling by step or rising by third are less common.</def>
+    <def>The interval from the root of one chord to the root of the next, whatever the chords' inversions. Roots falling by fifth, falling by third and rising by step are considered the strongest movements and are the most common, together with roots rising by fifth, as in I–V and IV–I; roots falling by step or rising by third are less common.</def>
     <see ref="circle-progression"/>
   </entry>
 
@@ -278,7 +278,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
     <def>The rhythm of the chord changes, as distinct from the rhythm of the melody. Harmonic rhythm often speeds up towards a <term ref="cadence">cadence</term>, and chord changes usually fall on strong beats.</def>
     <figure play="as-written">
       <staff clef="treble" time="4/4">E5/q D5/q C5/q E5/q | F5/q A5/q G5/q F5/q | E5/q D5/q C5/h |.</staff>
-      <staff clef="bass" time="4/4">[C3 G3]/w{I} | [F3 C4]/h{IV} [G3 D4]/h{V7} | [C3 G3]/w{I} |.</staff>
+      <staff clef="bass" time="4/4">[C3 G3]/w{I} | [F3 A3]/h{IV} [G3 B3]/h{V7} | [C3 C4]/w{I} |.</staff>
       <caption>The melody moves in quarter notes; the harmony changes once in the first and last bars and twice in the second.</caption>
     </figure>
   </entry>
@@ -307,7 +307,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
     <figure play="as-written" tempo="60">
       <staff clef="treble">[G4 B4] [G4 C5]</staff>
       <staff clef="bass">[G2 D4]{V} [C3 E4]{I}</staff>
-      <caption>The leading tone rises to the tonic in the soprano while the bass falls from the dominant to the tonic.</caption>
+      <caption>The leading tone rises to the tonic in the soprano while the bass moves from the dominant to the tonic.</caption>
     </figure>
     <see ref="imperfect-authentic-cadence"/>
   </entry>
@@ -315,7 +315,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
   <entry id="imperfect-authentic-cadence" level="2" tags="cadences">
     <term>imperfect authentic cadence</term>
     <gloss>V–I ending with the third or fifth on top</gloss>
-    <def>An <term ref="authentic-cadence">authentic cadence</term> weaker than a <term ref="perfect-authentic-cadence">perfect</term> one. Most textbooks mean root-position V–I with the third or fifth of the tonic in the highest voice; some, such as Kostka and Payne, also count cadences with an inverted chord or with vii° in place of V. Abbreviated IAC. Not the British imperfect cadence, which is a <term ref="half-cadence">half cadence</term>.</def>
+    <def>An <term ref="authentic-cadence">authentic cadence</term> weaker than a <term ref="perfect-authentic-cadence">perfect</term> one. In the narrower definition, used by Caplin among others, it is root-position V–I with the third or fifth of the tonic in the highest voice; others, such as Kostka and Payne, count every authentic cadence that is not perfect, including those with an inverted chord or with vii° in place of V. Abbreviated IAC. Not the British imperfect cadence, which is a <term ref="half-cadence">half cadence</term>.</def>
     <abbr>IAC</abbr>
     <figure play="as-written" tempo="60">
       <staff clef="treble">[G4 D5] [G4 E5]</staff>
@@ -340,7 +340,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
   <entry id="plagal-cadence" level="2" tags="cadences">
     <term>plagal cadence</term>
     <gloss>IV to I: the Amen cadence</gloss>
-    <def>The progression IV–I (iv–i in minor), familiar as the Amen at the end of hymns. Many theorists, Caplin among them, regard it as a confirmation that follows an <term ref="authentic-cadence">authentic cadence</term> rather than as a phrase-ending cadence of its own.</def>
+    <def>The progression IV–I (iv–i in minor), familiar as the Amen at the end of hymns. Many theorists, Caplin among them, regard IV–I in Classical music as a prolongation of the tonic that follows an <term ref="authentic-cadence">authentic cadence</term> rather than as a phrase-ending cadence of its own.</def>
     <figure play="as-written" tempo="60">
       <staff clef="treble">[F4 C5] [E4 C5]</staff>
       <staff clef="bass">[F2 A3]{IV} [C3 G3]{I}</staff>
@@ -430,7 +430,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
     <gloss>chords played or written out from a figured bass</gloss>
     <def>The chords and voices that a performer improvises, or a student writes out, above a <term ref="figured-bass">figured bass</term>. A good realization follows the rules of <term ref="voice-leading">voice leading</term>. Spelled realisation in British English.</def>
     <figure play="as-written">
-      <staff clef="treble" time="4/4">[E4 G4 C5]/q [F4 A4 D5]/q [F4 B4 D5]/q [E4 C5 E5]/q |.</staff>
+      <staff clef="treble" time="4/4">[E4 G4 C5]/q [F4 A4 D5]/q [F4 G4 B4]/q [E4 G4 C5]/q |.</staff>
       <staff clef="bass" time="4/4">C3/q F3/q{6} G3/q{7} C3/q |.</staff>
     </figure>
   </entry>

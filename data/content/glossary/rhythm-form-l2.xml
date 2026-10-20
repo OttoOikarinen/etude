@@ -204,7 +204,7 @@ sentences. Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
   <entry id="sentence" level="2" tags="form">
     <term>sentence</term>
     <gloss>idea, its repetition, then continuation to a cadence</gloss>
-    <def>A theme type, usually eight bars, made of a <term ref="presentation">presentation</term>, a two-bar <term ref="basic-idea">basic idea</term> and its repetition, followed by a <term ref="continuation">continuation</term> that breaks the idea into smaller pieces and drives to a <term ref="cadence">cadence</term>. The term comes from Schoenberg and was developed by Caplin.</def>
+    <def>A theme type, usually eight bars, made of a <term ref="presentation">presentation</term>, in which a two-bar <term ref="basic-idea">basic idea</term> is stated and repeated, followed by a <term ref="continuation">continuation</term> that breaks the idea into smaller pieces and drives to a <term ref="cadence">cadence</term>. The term comes from Schoenberg and was developed by Caplin.</def>
     <see ref="period"/>
   </entry>
 
