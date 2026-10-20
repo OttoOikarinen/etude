@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+Glossary, level 2: four-part writing and voice leading. Format: docs/CONTENT_AUTHORING.md,
+schema: schema/glossary.rng.
+-->
+<glossary tags="part-writing">
+  <!-- Voices and texture -->
+
+  <entry id="voice-leading" level="2" tags="voice-leading">
+    <term>voice leading</term>
+    <gloss>how each voice moves from chord to chord</gloss>
+    <def>The way the individual voices, or parts, move from one chord to the next. Good voice leading in common-practice style keeps each voice singable: <term ref="common-tone">common tones</term> are held, other voices move by step where possible, and <term ref="parallel-fifths">parallel fifths</term> and <term ref="parallel-octaves">octaves</term> are avoided. Also called part writing.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[G4 C5] [A4 C5] [G4 C5]</staff>
+      <staff clef="bass">[C3 E4]{I} [F3 F4]{IV} [C3 E4]{I}</staff>
+      <caption>The soprano holds the common tone <note>C</note>; the alto and tenor move by step.</caption>
+    </figure>
+    <see ref="satb"/>
+  </entry>
+
+  <entry id="satb" level="2" tags="voice-leading">
+    <term>SATB</term>
+    <gloss>soprano, alto, tenor and bass: four-part texture</gloss>
+    <def>Soprano, alto, tenor and bass: the four voices of a mixed choir, and the four-part texture in which harmony is traditionally taught. Written on a <term ref="grand-staff">grand staff</term>, the soprano and alto share the treble staff with stems up and down, and the tenor and bass share the bass staff.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[G4 E5]/w</staff>
+      <staff clef="bass">[C3 C4]/w</staff>
+    </figure>
+    <see ref="soprano"/>
+    <see ref="bass-voice"/>
+  </entry>
+
+  <entry id="soprano" level="2" tags="voice-leading">
+    <term>soprano</term>
+    <gloss>highest of the four voices</gloss>
+    <def>The highest voice of four-part writing, which usually carries the melody. Its range in harmony exercises is about <note>C4</note> to <note>G5</note>, a little higher in some books. One of the two <term ref="outer-voices">outer voices</term>.</def>
+    <figure play="melodic">
+      <staff clef="treble">C4/h G5/h</staff>
+    </figure>
+    <see ref="alto"/>
+  </entry>
+
+  <entry id="alto" level="2" tags="voice-leading">
+    <term>alto</term>
+    <gloss>second-highest of the four voices</gloss>
+    <def>The second-highest voice of four-part writing, written on the treble staff with stems down. Its range in harmony exercises is about <note>G3</note> to <note>C5</note> or <note>D5</note>.</def>
+    <figure play="melodic">
+      <staff clef="treble">G3/h C5/h</staff>
+    </figure>
+    <see ref="tenor"/>
+  </entry>
+
+  <entry id="tenor" level="2" tags="voice-leading">
+    <term>tenor</term>
+    <gloss>second-lowest of the four voices</gloss>
+    <def>The second-lowest voice of four-part writing, written on the bass staff with stems up in harmony exercises, or in choral scores on a treble staff that sounds an octave lower. Its range is about <note>C3</note> to <note>G4</note> or <note>A4</note>.</def>
+    <figure play="melodic">
+      <staff clef="treble_8vb">C3/h G4/h</staff>
+      <caption>The tenor range written in the octave treble clef.</caption>
+    </figure>
+    <see ref="bass-voice"/>
+  </entry>
+
+  <entry id="bass-voice" level="2" tags="voice-leading">
+    <term>bass (voice)</term>
+    <gloss>lowest of the four voices</gloss>
+    <def>The lowest voice of four-part writing, which carries the harmony's foundation and decides the chord's inversion. Its range in harmony exercises is about <note>E2</note> to <note>C4</note> or <note>D4</note>. One of the two <term ref="outer-voices">outer voices</term>.</def>
+    <figure play="melodic">
+      <staff clef="bass">E2/h C4/h</staff>
+    </figure>
+    <see ref="tenor"/>
+  </entry>
+
+  <entry id="voice-range" level="2" tags="voice-leading">
+    <term>range (of a voice)</term>
+    <gloss>span from a voice's lowest to highest note</gloss>
+    <def>The span of notes a voice or instrument can sing or play. Harmony exercises keep each voice within a comfortable range: roughly <note>C4</note>–<note>G5</note> for the <term ref="soprano">soprano</term>, <note>G3</note>–<note>C5</note> for the <term ref="alto">alto</term>, <note>C3</note>–<note>G4</note> for the <term ref="tenor">tenor</term> and <note>E2</note>–<note>C4</note> for the <term ref="bass-voice">bass</term>; textbooks differ by a step or so at the edges. The part of the range where a voice is most comfortable is its tessitura.</def>
+    <see ref="spacing"/>
+  </entry>
+
+  <entry id="outer-voices" level="2" tags="voice-leading">
+    <term>outer voices</term>
+    <gloss>the soprano and the bass</gloss>
+    <def>The highest and lowest voices, the <term ref="soprano">soprano</term> and the <term ref="bass-voice">bass</term>. Listeners hear them best, so their counterpoint matters most: contrary motion and imperfect consonances between them are preferred, and <term ref="direct-fifths">direct fifths</term> and octaves with a leaping soprano are avoided between them.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">E5/q D5/q C5/h |.</staff>
+      <staff clef="bass" time="4/4">C3/q B2/q C3/h |.</staff>
+    </figure>
+    <see ref="inner-voices"/>
+  </entry>
+
+  <entry id="inner-voices" level="2" tags="voice-leading">
+    <term>inner voices</term>
+    <gloss>the alto and the tenor</gloss>
+    <def>The voices between the soprano and the bass, in four-part writing the <term ref="alto">alto</term> and the <term ref="tenor">tenor</term>. They fill in the harmony and should move as smoothly as possible, often by holding <term ref="common-tone">common tones</term>.</def>
+    <see ref="outer-voices"/>
+  </entry>
+
+  <entry id="spacing" level="2" tags="voice-leading">
+    <term>spacing</term>
+    <gloss>distances between neighboring voices</gloss>
+    <def>The distances between neighboring voices of a chord. In four-part writing the soprano and alto, and the alto and tenor, are normally no more than an octave apart, while the tenor and bass may be farther apart.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[C5 G5]/w</staff>
+      <staff clef="bass">[C3 E4]/w</staff>
+      <caption>Upper voices within an octave of each other; a wide gap between tenor and bass.</caption>
+    </figure>
+    <see ref="close-position"/>
+    <see ref="open-position"/>
+  </entry>
+
+  <entry id="close-position" level="2" tags="voice-leading">
+    <term>close position</term>
+    <gloss>upper three voices within an octave</gloss>
+    <def>A <term ref="spacing">spacing</term> in which the soprano and tenor are less than an octave apart, so no chord note could be put between the upper three voices. Also called close structure or close spacing.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[G4 C5]/w</staff>
+      <staff clef="bass">[C3 E4]/w</staff>
+    </figure>
+    <see ref="open-position"/>
+  </entry>
+
+  <entry id="open-position" level="2" tags="voice-leading">
+    <term>open position</term>
+    <gloss>soprano and tenor an octave or more apart</gloss>
+    <def>A <term ref="spacing">spacing</term> in which the soprano and tenor are an octave or more apart, leaving room for chord notes between the upper voices. Also called open structure or open spacing.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[E4 C5]/w</staff>
+      <staff clef="bass">[C3 G3]/w</staff>
+    </figure>
+    <see ref="close-position"/>
+  </entry>
+
+  <entry id="keyboard-style" level="2" tags="voice-leading">
+    <term>keyboard style</term>
+    <gloss>three voices in the right hand, the bass in the left</gloss>
+    <def>A four-part texture written for the piano, with the three upper voices close together on the treble staff for the right hand and the bass alone on the bass staff for the left. In <term ref="satb">chorale style</term>, by contrast, two voices share each staff.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[G4 C5 E5]/w</staff>
+      <staff clef="bass">C3/w</staff>
+    </figure>
+    <see ref="satb"/>
+  </entry>
+
+  <entry id="doubling" level="2" tags="voice-leading">
+    <term>doubling</term>
+    <gloss>two voices sharing one chord note</gloss>
+    <def>Giving one note of a triad to two voices, in unison or octaves, as four-part writing must. In root position the root is usually doubled; in second inversion the bass. The <term ref="leading-tone">leading tone</term> and the <term ref="chordal-seventh">seventh</term> of a chord are not doubled, since each has only one good resolution.</def>
+    <figure play="harmonic">
+      <staff clef="treble">[E4 C5]/w</staff>
+      <staff clef="bass">[C3 G3]/w</staff>
+      <caption>The root, <note>C</note>, doubled by the bass and the soprano.</caption>
+    </figure>
+    <see ref="incomplete-chord"/>
+  </entry>
+
+  <!-- Motion between voices -->
+
+  <entry id="parallel-motion" level="2" tags="voice-leading">
+    <term>parallel motion</term>
+    <gloss>two voices moving the same way, same interval</gloss>
+    <def>Two voices move in parallel when they move in the same direction and keep the same interval number between them, such as two voices a third or a sixth apart. Parallel thirds and sixths are common; <term ref="parallel-fifths">parallel fifths</term> and <term ref="parallel-octaves">octaves</term> are avoided.</def>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">[E4 C5] [F4 D5] [G4 E5]</staff>
+      <caption>Parallel sixths.</caption>
+    </figure>
+    <see ref="similar-motion"/>
+  </entry>
+
+  <entry id="similar-motion" level="2" tags="voice-leading">
+    <term>similar motion</term>
+    <gloss>two voices moving the same way, changing interval</gloss>
+    <def>Two voices move in similar motion when they move in the same direction by different intervals, so the interval between them changes.</def>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">[C4 G4] [E4 C5]</staff>
+      <caption>Both voices rise, from a fifth to a sixth.</caption>
+    </figure>
+    <see ref="contrary-motion"/>
+  </entry>
+
+  <entry id="contrary-motion" level="2" tags="voice-leading">
+    <term>contrary motion</term>
+    <gloss>two voices moving in opposite directions</gloss>
+    <def>Two voices move in contrary motion when one rises while the other falls. It keeps the voices independent and is the preferred motion between the <term ref="outer-voices">outer voices</term>.</def>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">[E4 C5] [D4 D5] [C4 E5]</staff>
+    </figure>
+    <see ref="oblique-motion"/>
+  </entry>
+
+  <entry id="oblique-motion" level="2" tags="voice-leading">
+    <term>oblique motion</term>
+    <gloss>one voice moves while the other stays</gloss>
+    <def>Two voices move in oblique motion when one of them keeps its pitch while the other moves up or down.</def>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">[C4 E4] [C4 F4] [C4 G4]</staff>
+    </figure>
+    <see ref="parallel-motion"/>
+  </entry>
+
+  <entry id="parallel-fifths" level="2" tags="voice-leading">
+    <term>parallel fifths</term>
+    <gloss>two voices moving from one perfect fifth to another</gloss>
+    <def>Two voices a perfect fifth (or a twelfth) apart that both move to another perfect fifth. They are avoided in common-practice part writing because they weaken the independence of the voices. Called consecutive fifths in British English; fifths by contrary motion, as from a fifth to a twelfth, are usually avoided too.</def>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">*[C4 G4] *[D4 A4]</staff>
+    </figure>
+    <see ref="parallel-octaves"/>
+    <see ref="unequal-fifths"/>
+  </entry>
+
+  <entry id="parallel-octaves" level="2" tags="voice-leading">
+    <term>parallel octaves</term>
+    <gloss>two voices moving from one octave to another</gloss>
+    <def>Two voices an octave (or a unison) apart that both move to another octave on a different note: the two voices then sound like one. They are avoided in part writing, though doubling a whole line in octaves, as orchestras do, is a different thing. Called consecutive octaves in British English.</def>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">*[C4 C5] *[D4 D5]</staff>
+    </figure>
+    <see ref="parallel-fifths"/>
+  </entry>
+
+  <entry id="direct-fifths" level="2" tags="voice-leading">
+    <term>direct fifths</term>
+    <gloss>outer voices reaching a fifth by similar motion</gloss>
+    <def>A perfect fifth reached by <term ref="similar-motion">similar motion</term>. Between the <term ref="outer-voices">outer voices</term> it is avoided when the soprano leaps, and allowed when the soprano moves by step. Also called hidden fifths.</def>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">[E4 G4] *[F4 C5]</staff>
+      <caption>Both voices rise into the fifth <note>F</note>–<note>C</note>, the upper one by leap.</caption>
+    </figure>
+    <see ref="direct-octaves"/>
+  </entry>
+
+  <entry id="direct-octaves" level="2" tags="voice-leading">
+    <term>direct octaves</term>
+    <gloss>outer voices reaching an octave by similar motion</gloss>
+    <def>An octave reached by <term ref="similar-motion">similar motion</term>. Like <term ref="direct-fifths">direct fifths</term>, it is avoided between the outer voices unless the soprano moves by step. Also called hidden octaves.</def>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">[D4 A4] *[E4 E5]</staff>
+    </figure>
+    <see ref="parallel-octaves"/>
+  </entry>
+
+  <entry id="unequal-fifths" level="2" tags="voice-leading">
+    <term>unequal fifths</term>
+    <gloss>a perfect and a diminished fifth in succession</gloss>
+    <def>Two voices moving from a perfect fifth to a diminished fifth, or the reverse. A perfect fifth moving to a diminished fifth is generally allowed; a diminished fifth moving to a perfect fifth is avoided, at least when one voice is the bass, because the diminished fifth should resolve inward to a third.</def>
+    <figure play="as-written" tempo="72">
+      <staff clef="treble">[B3 F4] *[C4 G4]</staff>
+      <caption>A diminished fifth moving to a perfect fifth instead of resolving to the third <note>C</note>–<note>E</note>.</caption>
+    </figure>
+    <see ref="parallel-fifths"/>
+  </entry>
+
+  <entry id="voice-crossing" level="2" tags="voice-leading">
+    <term>voice crossing</term>
+    <gloss>a voice moving above a higher or below a lower one</gloss>
+    <def>A voice goes above the voice normally higher than it, or below the voice normally lower, such as the alto above the soprano. It is avoided in four-part exercises because the listener can no longer follow the lines.</def>
+    <see ref="voice-overlap"/>
+  </entry>
+
+  <entry id="voice-overlap" level="2" tags="voice-leading">
+    <term>voice overlap</term>
+    <gloss>a voice passing the neighboring voice's previous note</gloss>
+    <def>A voice moves above the note that the next higher voice has just left, or below the note the next lower voice has just left, without actually crossing it: the tenor rising to <note>E4</note> just after the alto has left <note>D4</note>. It is avoided for the same reason as <term ref="voice-crossing">voice crossing</term>.</def>
+    <see ref="voice-crossing"/>
+  </entry>
+
+  <!-- Resolving and connecting -->
+
+  <entry id="tendency-tone" level="2" tags="voice-leading">
+    <term>tendency tone</term>
+    <gloss>note that strongly pulls in one direction</gloss>
+    <def>A note with a strong pull to move to a particular next note: the <term ref="leading-tone">leading tone</term> up to the tonic, the <term ref="chordal-seventh">seventh of a chord</term> down by step, and chromatically raised or lowered notes in the direction of their alteration. Tendency tones are not doubled.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">*[B4 F5] [C5 E5]</staff>
+      <caption>In V7–I, the leading tone <note>B</note> rises to <note>C</note> and the seventh <note>F</note> falls to <note>E</note>.</caption>
+    </figure>
+    <see ref="resolution"/>
+  </entry>
+
+  <entry id="resolution" level="2" tags="voice-leading nonchord">
+    <term>resolution</term>
+    <gloss>a dissonance moving to a consonance</gloss>
+    <def>The move from a <term ref="dissonance">dissonance</term> to a <term ref="consonance">consonance</term>, usually by step, and the note reached by that move: the seventh of V7 resolves down to the third of I. A dissonance that moves elsewhere is said to be unresolved.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[F4 B4] [E4 C5]</staff>
+      <caption>The augmented fourth <note>F</note>–<note>B</note> resolves outward to the sixth <note>E</note>–<note>C</note>.</caption>
+    </figure>
+    <see ref="tendency-tone"/>
+  </entry>
+
+  <entry id="common-tone" level="2" tags="voice-leading">
+    <term>common tone</term>
+    <gloss>note shared by two successive chords</gloss>
+    <def>A note that belongs to two successive chords, such as <note>C</note> in I and IV of <note>C</note> major. In smooth <term ref="voice-leading">voice leading</term> it is usually kept in the same voice.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">*C5 *C5</staff>
+      <staff clef="bass">[C3 G3 E4]{I} [F3 A3 F4]{IV}</staff>
+      <caption><note>C</note>, common to both chords, stays in the soprano.</caption>
+    </figure>
+    <see ref="voice-leading"/>
+  </entry>
+
+  <entry id="frustrated-leading-tone" level="2" tags="voice-leading">
+    <term>frustrated leading tone</term>
+    <gloss>leading tone falling to the fifth in an inner voice</gloss>
+    <def>A <term ref="leading-tone">leading tone</term> in an inner voice that falls to the fifth of the tonic chord instead of rising to the tonic, so that the final chord is complete. It is allowed in an inner voice at V–I, but not in the soprano.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[G4 D5] [E4 C5]</staff>
+      <staff clef="bass">[G2 B3]{V} [C3 G3]{I}</staff>
+      <caption>The tenor falls from <note>B</note> to <note>G</note>; rising to <note>C</note> would leave the tonic triad without its fifth.</caption>
+    </figure>
+    <see ref="tendency-tone"/>
+  </entry>
+
+  <!-- Six-four chords -->
+
+  <entry id="passing-six-four" level="2" tags="voice-leading">
+    <term>passing six-four</term>
+    <gloss>6/4 chord over a bass passing by step</gloss>
+    <def>A <term ref="second-inversion">second-inversion</term> chord on a weak beat over a bass that passes by step between two positions of one chord, as in I–V6/4–I6. The voices above it usually move by step, often in a voice exchange with the bass.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[G4 E5] [G4 D5] [G4 C5]</staff>
+      <staff clef="bass">[C3 C4]{I} [D3 B3]{V6/4} [E3 C4]{I6}</staff>
+    </figure>
+    <see ref="pedal-six-four"/>
+    <see ref="cadential-six-four"/>
+  </entry>
+
+  <entry id="pedal-six-four" level="2" tags="voice-leading">
+    <term>pedal six-four</term>
+    <gloss>6/4 chord over a held or repeated bass</gloss>
+    <def>A <term ref="second-inversion">second-inversion</term> chord over a bass note that is held or repeated, while two upper voices rise by step and return, as in I–IV6/4–I. Also called a neighboring six-four.</def>
+    <figure play="as-written" tempo="60">
+      <staff clef="treble">[G4 C5] [A4 C5] [G4 C5]</staff>
+      <staff clef="bass">[C3 E4]{I} [C3 F4]{IV6/4} [C3 E4]{I}</staff>
+    </figure>
+    <see ref="passing-six-four"/>
+  </entry>
+
+  <entry id="arpeggiated-six-four" level="2" tags="voice-leading">
+    <term>arpeggiated six-four</term>
+    <gloss>6/4 made by a bass arpeggiating one chord</gloss>
+    <def>A <term ref="second-inversion">second-inversion</term> chord that arises when the bass moves through the notes of a chord that is held above it, as in waltz and march accompaniments.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="3/4">[G4 C5 E5]/h. |.</staff>
+      <staff clef="bass" time="3/4">C3/q E3/q G3/q |.</staff>
+    </figure>
+    <see ref="passing-six-four"/>
+  </entry>
+</glossary>

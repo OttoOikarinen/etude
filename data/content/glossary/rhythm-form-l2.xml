@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+Glossary, level 2: tuplets, compound meters and other rhythms; phrases, periods and
+sentences. Format: docs/CONTENT_AUTHORING.md, schema: schema/glossary.rng.
+-->
+<glossary>
+  <!-- Rhythm -->
+
+  <entry id="beat-division" level="2" tags="rhythm2">
+    <term>beat division</term>
+    <gloss>the beat split into two or three equal parts</gloss>
+    <def>The first level of equal parts into which a <term ref="beat">beat</term> is split: two in <term ref="simple-meter">simple meter</term> (eighth notes under a quarter-note beat) and three in <term ref="compound-meter">compound meter</term> (eighth notes under a dotted quarter-note beat).</def>
+    <figure play="as-written">
+      <staff clef="percussion" time="2/4">B4/q B4/q | B4/e B4/e B4/e B4/e |.</staff>
+    </figure>
+    <see ref="subdivision"/>
+  </entry>
+
+  <entry id="subdivision" level="2" tags="rhythm2">
+    <term>subdivision</term>
+    <gloss>the beat's divisions split again</gloss>
+    <def>The next level below the <term ref="beat-division">beat division</term>: each part of the division split into two, such as sixteenth notes under a quarter-note or dotted quarter-note beat. Counting the subdivision helps to place short notes and dotted rhythms exactly.</def>
+    <figure play="as-written">
+      <staff clef="percussion" time="6/8">B4/q. B4/q. | B4/e B4/e B4/e B4/e B4/e B4/e | B4/s B4/s B4/s B4/s B4/s B4/s B4/s B4/s B4/s B4/s B4/s B4/s |.</staff>
+      <caption>In 6/8: the beats, their division into eighth notes and the subdivision into sixteenth notes.</caption>
+    </figure>
+    <see ref="beat-division"/>
+  </entry>
+
+  <entry id="compound-duple" level="2" tags="rhythm2">
+    <term>compound duple meter</term>
+    <gloss>two dotted beats in a bar, as in 6/8</gloss>
+    <def>A <term ref="compound-meter">compound meter</term> with two beats in each bar, each a dotted note divided into three: 6/8 (two dotted quarter notes), and also 6/4 and 6/16. Called compound duple time in British English.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="6/8">C5/q E5/e G5/q E5/e | F5/e E5/e D5/e C5/q. |.</staff>
+    </figure>
+    <see ref="compound-triple"/>
+  </entry>
+
+  <entry id="compound-triple" level="2" tags="rhythm2">
+    <term>compound triple meter</term>
+    <gloss>three dotted beats in a bar, as in 9/8</gloss>
+    <def>A <term ref="compound-meter">compound meter</term> with three beats in each bar, each a dotted note divided into three: 9/8 (three dotted quarter notes), and also 9/4 and 9/16. Called compound triple time in British English.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="9/8">C5/q E5/e D5/q F5/e E5/q G5/e | C6/q. G5/q. C5/q. |.</staff>
+    </figure>
+    <see ref="compound-quadruple"/>
+  </entry>
+
+  <entry id="compound-quadruple" level="2" tags="rhythm2">
+    <term>compound quadruple meter</term>
+    <gloss>four dotted beats in a bar, as in 12/8</gloss>
+    <def>A <term ref="compound-meter">compound meter</term> with four beats in each bar, each a dotted note divided into three: 12/8 (four dotted quarter notes), and also 12/4 and 12/16. Called compound quadruple time in British English.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="12/8">C5/e D5/e E5/e F5/q D5/e E5/q. C5/q. | G4/w. |.</staff>
+    </figure>
+    <see ref="compound-duple"/>
+  </entry>
+
+  <entry id="tuplet" level="2" tags="rhythm2">
+    <term>tuplet</term>
+    <gloss>irregular group in the time of a regular one</gloss>
+    <def>A group of notes played in the time of a different number of the same value, marked with a number and often a bracket: a <term ref="triplet">triplet</term> (three in the time of two), a <term ref="duplet">duplet</term> (two in the time of three), or a quintuplet (five in the time of four).</def>
+    <figure play="as-written">
+      <staff clef="treble" time="2/4">C5/s5 D5/s5 E5/s5 F5/s5 G5/s5 A5/q | G5/h |.</staff>
+      <caption>Five sixteenth notes in the time of four.</caption>
+    </figure>
+    <see ref="triplet"/>
+  </entry>
+
+  <entry id="triplet" level="2" tags="rhythm2">
+    <term>triplet</term>
+    <gloss>three notes in the time of two</gloss>
+    <def>A <term ref="tuplet">tuplet</term> of three equal notes in the time of two of the same value, marked 3: three triplet eighth notes fill a quarter note, and three triplet quarter notes a half note. Triplets borrow the division of <term ref="compound-meter">compound meter</term> in simple meter.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="2/4">C5/e D5/e E5/e3 F5/e3 G5/e3 | A5/q G5/q |.</staff>
+    </figure>
+    <see ref="duplet"/>
+  </entry>
+
+  <entry id="duplet" level="2" tags="rhythm2">
+    <term>duplet</term>
+    <gloss>two notes in the time of three</gloss>
+    <def>A <term ref="tuplet">tuplet</term> of two equal notes in the time of three of the same value, marked 2: in 6/8, two duplet eighth notes fill a dotted quarter-note beat. Duplets borrow the division of <term ref="simple-meter">simple meter</term> in compound meter, and are sometimes written as two dotted eighth notes instead.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="6/8">C5/e D5/e E5/e F5/e2 G5/e2 | A5/q. G5/q. |.</staff>
+    </figure>
+    <see ref="triplet"/>
+  </entry>
+
+  <entry id="dotted-rhythm" level="2" tags="rhythm2">
+    <term>dotted rhythm</term>
+    <gloss>long–short pattern made with a dotted note</gloss>
+    <def>A rhythm in which a <term ref="dot">dotted</term> note is followed by a short note that completes the beat or beat pair, such as a dotted eighth and a sixteenth, or a dotted quarter and an eighth. In Baroque French overtures such rhythms were often played sharper than written.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">C5/q. D5/e E5/q. F5/e | G5/e. A5/s G5/e. F5/s E5/h |.</staff>
+    </figure>
+    <see ref="double-dot"/>
+    <see ref="lombard-rhythm"/>
+  </entry>
+
+  <entry id="double-dot" level="2" tags="rhythm2">
+    <term>double dot</term>
+    <gloss>adds half and then a quarter of the value</gloss>
+    <def>Two dots after a note or rest, which add half its value and then a quarter of its value: a double-dotted half note lasts seven eighth notes, and a double-dotted quarter note seven sixteenth notes. The short note that follows usually completes the beat.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">C5/h.. D5/e | E5/q.. F5/s G5/h |.</staff>
+    </figure>
+    <see ref="dotted-rhythm"/>
+  </entry>
+
+  <entry id="lombard-rhythm" level="2" tags="rhythm2">
+    <term>Lombard rhythm</term>
+    <gloss>short–long pattern on the beat</gloss>
+    <def>A short note on the beat followed by a longer dotted note, the reverse of the usual <term ref="dotted-rhythm">dotted rhythm</term>: a sixteenth and a dotted eighth. Also called the Scotch snap, after its use in Scottish folk music.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="2/4">C5/s D5/e. E5/s F5/e. | G5/h |.</staff>
+    </figure>
+    <see ref="dotted-rhythm"/>
+  </entry>
+
+  <entry id="hemiola" level="2" tags="rhythm2">
+    <term>hemiola</term>
+    <gloss>three twos in the place of two threes</gloss>
+    <def>A rhythm that puts three groups of two beats in the place of two groups of three, so that two bars of 3/4 sound like one bar of 3/2. It is common at cadences in Baroque music. The name comes from the Greek for one and a half, the ratio 3:2.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="3/4">C5/q D5/q E5/q | F5/h E5/q~ | E5/q D5/h | C5/h. |.</staff>
+      <caption>In the second and third bars the stresses fall every two beats.</caption>
+    </figure>
+    <see ref="syncopation"/>
+  </entry>
+
+  <!-- Form -->
+
+  <entry id="motive" level="2" tags="form">
+    <term>motive</term>
+    <gloss>shortest recognizable musical idea</gloss>
+    <def>A short rhythmic or melodic idea, often only a few notes long, that is repeated and developed through a piece. Spelled motif in British English.</def>
+    <figure play="as-written" tempo="216">
+      <staff clef="treble" key="-3" time="2/4">r/e G4/e G4/e G4/e | Eb4/h | r/e F4/e F4/e F4/e | D4/h |.</staff>
+      <caption>The opening motive of Beethoven's Fifth Symphony, stated and then repeated a step lower.</caption>
+    </figure>
+    <see ref="basic-idea"/>
+  </entry>
+
+  <entry id="phrase" level="2" tags="form">
+    <term>phrase</term>
+    <gloss>musical unit that ends with a cadence</gloss>
+    <def>A complete musical thought that ends with a <term ref="cadence">cadence</term>, often four bars long. This is the definition of Kostka and Payne and most American textbooks; Caplin uses phrase more loosely for a unit of about four bars, whether or not it ends with a cadence.</def>
+    <see ref="period"/>
+    <see ref="sentence"/>
+  </entry>
+
+  <entry id="period" level="2" tags="form">
+    <term>period</term>
+    <gloss>two phrases: a question and its answer</gloss>
+    <def>Two <term ref="phrase">phrases</term> heard as a pair, an <term ref="antecedent">antecedent</term> ending with a weaker cadence and a <term ref="consequent">consequent</term> ending with a stronger one, typically a half cadence answered by a perfect authentic cadence.</def>
+    <figure play="as-written" tempo="120">
+      <staff clef="treble" time="4/4">C4/q C4/q D4/q E4/q | E4/q. D4/e D4/h || C4/q C4/q D4/q E4/q | D4/q. C4/e C4/h |.</staff>
+      <caption>The ends of the two phrases of the <em>Ode to Joy</em> from Beethoven's Ninth Symphony: the first stops on the second degree over a half cadence, the second closes on the tonic.</caption>
+    </figure>
+    <see ref="parallel-period"/>
+    <see ref="sentence"/>
+  </entry>
+
+  <entry id="antecedent" level="2" tags="form">
+    <term>antecedent</term>
+    <gloss>first phrase of a period, with the weaker cadence</gloss>
+    <def>The first phrase of a <term ref="period">period</term>, which ends with a weak cadence, usually a <term ref="half-cadence">half cadence</term> and sometimes an <term ref="imperfect-authentic-cadence">imperfect authentic cadence</term>, so that it sounds like a question.</def>
+    <see ref="consequent"/>
+  </entry>
+
+  <entry id="consequent" level="2" tags="form">
+    <term>consequent</term>
+    <gloss>second phrase of a period, with the stronger cadence</gloss>
+    <def>The second phrase of a <term ref="period">period</term>, which answers the <term ref="antecedent">antecedent</term> with a stronger cadence, usually a <term ref="perfect-authentic-cadence">perfect authentic cadence</term>.</def>
+    <see ref="antecedent"/>
+  </entry>
+
+  <entry id="parallel-period" level="2" tags="form">
+    <term>parallel period</term>
+    <gloss>period whose two phrases begin alike</gloss>
+    <def>A <term ref="period">period</term> whose <term ref="consequent">consequent</term> begins with the same or similar melodic material as the <term ref="antecedent">antecedent</term>, as in the <em>Ode to Joy</em>.</def>
+    <see ref="contrasting-period"/>
+  </entry>
+
+  <entry id="contrasting-period" level="2" tags="form">
+    <term>contrasting period</term>
+    <gloss>period whose two phrases begin differently</gloss>
+    <def>A <term ref="period">period</term> whose <term ref="consequent">consequent</term> begins with different melodic material from the <term ref="antecedent">antecedent</term>; the cadences alone make the two phrases a pair.</def>
+    <see ref="parallel-period"/>
+  </entry>
+
+  <entry id="double-period" level="2" tags="form">
+    <term>double period</term>
+    <gloss>four phrases in two period-like halves</gloss>
+    <def>Four <term ref="phrase">phrases</term> grouped like a <term ref="period">period</term> in which each half has two phrases: the second phrase ends with a weak cadence, usually a half cadence, and the fourth with a stronger one, usually a perfect authentic cadence.</def>
+    <see ref="period"/>
+  </entry>
+
+  <entry id="sentence" level="2" tags="form">
+    <term>sentence</term>
+    <gloss>idea, its repetition, then continuation to a cadence</gloss>
+    <def>A theme type, usually eight bars, made of a <term ref="presentation">presentation</term>, in which a two-bar <term ref="basic-idea">basic idea</term> is stated and repeated, followed by a <term ref="continuation">continuation</term> that breaks the idea into smaller pieces and drives to a <term ref="cadence">cadence</term>. The term comes from Schoenberg and was developed by Caplin.</def>
+    <see ref="period"/>
+  </entry>
+
+  <entry id="presentation" level="2" tags="form">
+    <term>presentation</term>
+    <gloss>first half of a sentence: the idea stated twice</gloss>
+    <def>The first part of a <term ref="sentence">sentence</term>: a <term ref="basic-idea">basic idea</term> and its repetition, exact or on another degree, over a tonic harmony. It does not end with a cadence.</def>
+    <see ref="continuation"/>
+  </entry>
+
+  <entry id="continuation" level="2" tags="form">
+    <term>continuation</term>
+    <gloss>second half of a sentence, breaking up the idea</gloss>
+    <def>The second part of a <term ref="sentence">sentence</term>, which destabilizes the <term ref="presentation">presentation</term> through <term ref="fragmentation">fragmentation</term>, faster <term ref="harmonic-rhythm">harmonic rhythm</term> and often sequences, and ends with a <term ref="cadence">cadence</term>.</def>
+    <see ref="presentation"/>
+  </entry>
+
+  <entry id="basic-idea" level="2" tags="form">
+    <term>basic idea</term>
+    <gloss>two-bar opening idea of a theme</gloss>
+    <def>In Caplin's theory, the idea of about two bars, usually made of several <term ref="motive">motives</term>, that begins a <term ref="sentence">sentence</term> or a <term ref="period">period</term>.</def>
+    <see ref="presentation"/>
+  </entry>
+
+  <entry id="fragmentation" level="2" tags="form">
+    <term>fragmentation</term>
+    <gloss>breaking an idea into shorter units</gloss>
+    <def>Shortening the units in which material is grouped, for example from two-bar to one-bar ideas, typically in the <term ref="continuation">continuation</term> of a <term ref="sentence">sentence</term>.</def>
+    <see ref="continuation"/>
+  </entry>
+
+  <entry id="phrase-extension" level="2" tags="form">
+    <term>phrase extension</term>
+    <gloss>a phrase lengthened beyond its expected size</gloss>
+    <def>Lengthening a <term ref="phrase">phrase</term> beyond its expected length, often four bars, by repeating or delaying the cadence, inserting extra material in the middle, or adding a short introduction. Also called phrase expansion.</def>
+    <see ref="elision"/>
+  </entry>
+
+  <entry id="elision" level="2" tags="form">
+    <term>elision</term>
+    <gloss>one phrase's last bar is the next one's first</gloss>
+    <def>The overlapping of two phrases so that the cadence of the first and the beginning of the second fall on the same beat: the bar that ends one phrase also begins the next.</def>
+    <see ref="phrase-extension"/>
+  </entry>
+</glossary>

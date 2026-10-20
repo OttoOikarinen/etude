@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+
+Glossary, level 2: non-chord tones. Format: docs/CONTENT_AUTHORING.md,
+schema: schema/glossary.rng.
+-->
+<glossary tags="harmony">
+  <entry id="nonchord-tone" level="2" tags="nonchord">
+    <term>non-chord tone</term>
+    <gloss>note that does not belong to the chord</gloss>
+    <def>A note that is not part of the chord sounding with it, usually a <term ref="dissonance">dissonance</term> that decorates a chord tone. Non-chord tones are named by how they are approached and left: by step or leap, up or down, on a strong or weak beat. Also called a nonharmonic tone or embellishing tone, and in British books a non-harmonic or unessential note.</def>
+    <see ref="passing-tone"/>
+    <see ref="neighbor-tone"/>
+    <see ref="suspension"/>
+  </entry>
+
+  <entry id="passing-tone" level="2" tags="nonchord">
+    <term>passing tone</term>
+    <gloss>steps between two chord tones in one direction</gloss>
+    <def>A <term ref="nonchord-tone">non-chord tone</term> that fills the gap between two chord tones a third apart, approached and left by step in the same direction. Usually unaccented; two passing tones in a row can fill a fourth. Called a passing note in British English.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">C5/q *D5/q E5/h |.</staff>
+      <staff clef="bass" time="4/4">[C3 G3]/w |.</staff>
+    </figure>
+    <see ref="accented-passing-tone"/>
+    <see ref="neighbor-tone"/>
+  </entry>
+
+  <entry id="accented-passing-tone" level="2" tags="nonchord">
+    <term>accented passing tone</term>
+    <gloss>passing tone on a strong beat</gloss>
+    <def>A <term ref="passing-tone">passing tone</term> that falls on a beat or strong part of the beat, often where the chord changes, so that it sounds as a dissonance against the new chord before moving on by step.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">E5/q D5/q *C5/q B4/q | C5/w |.</staff>
+      <staff clef="bass" time="4/4">[C3 E3]/h [G2 D3]/h | [C3 E3]/w |.</staff>
+      <caption><note>C</note> passes from <note>D</note> to <note>B</note> on the third beat, against the dominant chord.</caption>
+    </figure>
+    <see ref="passing-tone"/>
+  </entry>
+
+  <entry id="neighbor-tone" level="2" tags="nonchord">
+    <term>neighbor tone</term>
+    <gloss>steps away from a chord tone and back</gloss>
+    <def>A <term ref="nonchord-tone">non-chord tone</term> a step above (upper neighbor) or below (lower neighbor) a chord tone, approached from it by step and returning to it. Called an auxiliary note, or neighbour note, in British English.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">E5/q *F5/q E5/h |.</staff>
+      <staff clef="bass" time="4/4">[C3 G3]/w |.</staff>
+    </figure>
+    <see ref="changing-tones"/>
+    <see ref="incomplete-neighbor"/>
+  </entry>
+
+  <entry id="incomplete-neighbor" level="2" tags="nonchord">
+    <term>incomplete neighbor</term>
+    <gloss>neighbor tone with a leap on one side</gloss>
+    <def>A <term ref="nonchord-tone">non-chord tone</term> a step from a chord tone that is reached or left by leap instead of by step on both sides. The <term ref="appoggiatura">appoggiatura</term> (leap, then step) and the <term ref="escape-tone">escape tone</term> (step, then leap) are often treated as its two kinds.</def>
+    <see ref="neighbor-tone"/>
+  </entry>
+
+  <entry id="changing-tones" level="2" tags="nonchord">
+    <term>changing tones</term>
+    <gloss>upper and lower neighbors in a row around one note</gloss>
+    <def>Two <term ref="nonchord-tone">non-chord tones</term> in a row that surround a chord tone: from the chord tone a step up, a third down, and a step up back to it, or the mirror image. Also called a double neighbor or neighbor group. Some books call it a cambiata, a word species counterpoint uses for a different figure.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">C5/q *D5/q *B4/q C5/q |.</staff>
+      <staff clef="bass" time="4/4">[C3 G3]/w |.</staff>
+    </figure>
+    <see ref="neighbor-tone"/>
+  </entry>
+
+  <entry id="appoggiatura" level="2" tags="nonchord">
+    <term>appoggiatura</term>
+    <foreign lang="it">appoggiatura</foreign>
+    <gloss>accented dissonance reached by leap, left by step</gloss>
+    <def>A <term ref="nonchord-tone">non-chord tone</term>, usually accented, that resolves by step; the name is Italian for leaning. Kostka and Payne define it as approached by leap and left by step, usually in the opposite direction; others, following eighteenth-century usage, use the name for any accented dissonance that is not prepared and resolves by step, however it is approached. In Baroque and Classical scores it is often written as a small note.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">E5/h C5/h | *A5/h G5/h |.</staff>
+      <staff clef="bass" time="4/4">[C3 G3]/w | [C3 G3]/w |.</staff>
+      <caption>The <note>A</note> is reached by a leap and falls by step to <note>G</note>, a chord tone.</caption>
+    </figure>
+    <see ref="escape-tone"/>
+    <see ref="suspension"/>
+  </entry>
+
+  <entry id="escape-tone" level="2" tags="nonchord">
+    <term>escape tone</term>
+    <foreign lang="fr">échappée</foreign>
+    <gloss>unaccented step away, then leap back the other way</gloss>
+    <def>An unaccented <term ref="nonchord-tone">non-chord tone</term> approached by step and left by leap in the opposite direction, often decorating a falling step in the melody. Also known by its French name, échappée.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">D5/q. *E5/e C5/h |.</staff>
+      <staff clef="bass" time="4/4">[G2 B3]/h{V} [C3 G3]/h{I} |.</staff>
+    </figure>
+    <see ref="appoggiatura"/>
+  </entry>
+
+  <entry id="anticipation" level="2" tags="nonchord">
+    <term>anticipation</term>
+    <gloss>note of the next chord sounding early</gloss>
+    <def>A <term ref="nonchord-tone">non-chord tone</term> that sounds a note of the next chord just before that chord arrives, usually approached by step and on a weak part of the beat. The anticipated note is then repeated or held when the chord changes. Common in the soprano at cadences.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">B4/q. *C5/e C5/h |.</staff>
+      <staff clef="bass" time="4/4">[G2 D3]/h{V} [C3 E3]/h{I} |.</staff>
+    </figure>
+    <see ref="suspension"/>
+  </entry>
+
+  <entry id="suspension" level="2" tags="nonchord">
+    <term>suspension</term>
+    <gloss>held-over note that resolves down by step</gloss>
+    <def>A note held over from one chord into the next, where it becomes a dissonance on the strong beat and then <term ref="resolution">resolves</term> down by step. Its three stages are the <term ref="preparation">preparation</term>, the suspension itself and the resolution. Suspensions are named by the intervals above the bass at the dissonance and the resolution, as in 4–3, 7–6 and 9–8; with the dissonance in the bass, 2–3.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">E5/h C5/h~ | *C5/h B4/h | C5/w |.</staff>
+      <staff clef="bass" time="4/4">[C3 G3]/h [F3 A3]/h | [G2 D3]/h{4} [G2 D3]/h{3} | [C3 E3]/w |.</staff>
+      <caption><note>C</note> is prepared in the IV chord, held against the dominant, and resolves to <note>B</note>.</caption>
+    </figure>
+    <see ref="four-three-suspension"/>
+    <see ref="retardation"/>
+  </entry>
+
+  <entry id="preparation" level="2" tags="nonchord">
+    <term>preparation</term>
+    <gloss>the consonant note before a suspension</gloss>
+    <def>The first stage of a <term ref="suspension">suspension</term>: the same note sounded as a consonance in the chord before, so that the dissonance arrives without a new attack. More generally, any dissonance that is preceded by the same note as a consonance is said to be prepared.</def>
+    <see ref="suspension"/>
+  </entry>
+
+  <entry id="four-three-suspension" level="2" tags="nonchord">
+    <term>4–3 suspension</term>
+    <gloss>suspended fourth resolving down to the third</gloss>
+    <def>A <term ref="suspension">suspension</term> in which an upper voice forms a fourth above the bass and resolves down to the third, often over V at a cadence. The third of the chord should not sound in another voice at the same time.</def>
+    <figure play="as-written">
+      <staff clef="treble" key="1" time="4/4">B4/h G4/h~ | *G4/h F#4/h | G4/w |.</staff>
+      <staff clef="bass" key="1" time="4/4">G3/h E3/h | D3/h{4} D3/h{3} | G2/w |.</staff>
+    </figure>
+    <see ref="seven-six-suspension"/>
+  </entry>
+
+  <entry id="seven-six-suspension" level="2" tags="nonchord">
+    <term>7–6 suspension</term>
+    <gloss>suspended seventh resolving down to the sixth</gloss>
+    <def>A <term ref="suspension">suspension</term> in which an upper voice forms a seventh above the bass and resolves down to a sixth, so that the chord of resolution is in first inversion. Chains of 7–6 suspensions over a falling bass are common in Baroque music.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">A4/h D5/h~ | *D5/h C5/h | B4/w | C5/w |.</staff>
+      <staff clef="bass" time="4/4">F3/w | E3/h{7} E3/h{6} | G2/w | C3/w |.</staff>
+    </figure>
+    <see ref="nine-eight-suspension"/>
+  </entry>
+
+  <entry id="nine-eight-suspension" level="2" tags="nonchord">
+    <term>9–8 suspension</term>
+    <gloss>suspended ninth resolving down to the octave</gloss>
+    <def>A <term ref="suspension">suspension</term> in which an upper voice forms a ninth above the bass and resolves down to the octave, doubling the bass. Unlike other suspensions it keeps the compound number, so that it is not confused with the 2–3 suspension.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">B4/h D5/h~ | *D5/h C5/h |.</staff>
+      <staff clef="bass" time="4/4">G2/w | C3/h{9} C3/h{8} |.</staff>
+    </figure>
+    <see ref="two-three-suspension"/>
+  </entry>
+
+  <entry id="two-three-suspension" level="2" tags="nonchord">
+    <term>2–3 suspension</term>
+    <gloss>suspension in the bass: second resolving to a third</gloss>
+    <def>A <term ref="suspension">suspension</term> in the bass: the bass is held while an upper voice moves to form a second (or ninth) above it, and the bass then resolves down by step to make a third (or tenth). Also called a bass suspension.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">G5/h E5/h | D5/w | C5/w |.</staff>
+      <staff clef="bass" time="4/4">C3/h C3/h~ | *C3/h{2} B2/h{3} | C3/w |.</staff>
+    </figure>
+    <see ref="nine-eight-suspension"/>
+  </entry>
+
+  <entry id="retardation" level="2" tags="nonchord">
+    <term>retardation</term>
+    <gloss>suspension that resolves up by step</gloss>
+    <def>A <term ref="suspension">suspension</term> that resolves up instead of down, most often a <term ref="leading-tone">leading tone</term> held into the tonic chord and rising to the tonic, a 7–8 retardation.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">D5/h B4/h~ | *B4/h C5/h |.</staff>
+      <staff clef="bass" time="4/4">G2/w | C3/h{7} C3/h{8} |.</staff>
+    </figure>
+    <see ref="suspension"/>
+  </entry>
+
+  <entry id="pedal-point" level="2" tags="nonchord">
+    <term>pedal point</term>
+    <gloss>held note under changing harmonies</gloss>
+    <def>A note held or repeated, usually in the bass, while the harmonies above it change, some of them clashing with it. Most pedal points are on the tonic or the dominant. A pedal point in an upper voice is called an inverted pedal. Often shortened to pedal.</def>
+    <figure play="as-written">
+      <staff clef="treble" time="4/4">[E4 G4 C5]/h [F4 A4 C5]/h | [D4 G4 B4]/h [E4 G4 C5]/h |.</staff>
+      <staff clef="bass" time="4/4">*C3/w~ | *C3/w |.</staff>
+      <caption>A tonic pedal under I, IV, V and I in <note>C</note> major.</caption>
+    </figure>
+    <see ref="pedal-six-four"/>
+  </entry>
+</glossary>

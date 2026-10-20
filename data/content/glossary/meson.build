@@ -1,11 +1,17 @@
 content_dir_files = [
   'chords.xml',
+  'dictation.xml',
+  'harmony-l2.xml',
   'intervals.xml',
+  'modes-transposition.xml',
+  'nonchord.xml',
   'notation.xml',
   'performance.xml',
   'pitch.xml',
+  'rhythm-form-l2.xml',
   'rhythm-meter.xml',
   'scales-keys.xml',
+  'voice-leading.xml',
 ]
 content_schema = 'glossary'
 content_relative_dir = 'glossary'

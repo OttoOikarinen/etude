@@ -2,12 +2,18 @@
 # Please keep this file sorted alphabetically.
 data/content/curriculum.xml
 data/content/glossary/chords.xml
+data/content/glossary/dictation.xml
+data/content/glossary/harmony-l2.xml
 data/content/glossary/intervals.xml
+data/content/glossary/modes-transposition.xml
+data/content/glossary/nonchord.xml
 data/content/glossary/notation.xml
 data/content/glossary/performance.xml
 data/content/glossary/pitch.xml
+data/content/glossary/rhythm-form-l2.xml
 data/content/glossary/rhythm-meter.xml
 data/content/glossary/scales-keys.xml
+data/content/glossary/voice-leading.xml
 data/content/lessons/level1/accidentals.xml
 data/content/lessons/level1/degrees.xml
 data/content/lessons/level1/intervals.xml
