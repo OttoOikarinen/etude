@@ -70,6 +70,13 @@ Contract changes so far (all backwards-compatible):
   for four-part writing on a grand staff (values list one pitch per voice,
   top voice first); new package `etude.checkers` with the voice-leading
   checker's API (`Rule`, `Severity`, `Violation`, `Context`, `check`).
+* W4 checker: `check()` is implemented (rule decisions in the module
+  docstring of `etude.checkers.voice_leading`); additions: `Violation.slots`
+  (the chords involved), `MOTION_RULES`, `scan()` (fast, without messages),
+  `errors()`, and the names `voice_name()`, `voice_title()`, `rule_name()`,
+  `rule_mark()` and `rule_reason()`. New module `etude.checkers.realize` is
+  the only four-part voicer: `realize(numerals or chords, key, rng, bass=,
+  soprano=)` returns correct SATB voicings or raises `RealisationError`.
 * W3 content: `etude.content` moved below `etude.exercises` in the layers;
   content model, loaders and XML formats added. W2 follow-up:
   `Question.playback_style_choice` and `ExerciseDefinition.confusables()`.
