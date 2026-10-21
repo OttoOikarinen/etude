@@ -18,6 +18,7 @@ install_data(
     'progression_ear.py',
     'rhythm.py',
     'roman_numerals.py',
+    'satb.py',
     'scale_degrees.py',
     'scales.py',
     'symbols.py',

@@ -46,6 +46,7 @@ src/etude/exercises/families/note_placement.py
 src/etude/exercises/families/progression_ear.py
 src/etude/exercises/families/rhythm.py
 src/etude/exercises/families/roman_numerals.py
+src/etude/exercises/families/satb.py
 src/etude/exercises/families/scale_degrees.py
 src/etude/exercises/families/scales.py
 src/etude/exercises/families/symbols.py
