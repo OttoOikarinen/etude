@@ -6,6 +6,7 @@ install_data(
     'a11y.py',
     'displaylist.py',
     'layout.py',
+    'parts.py',
     'smufl.py',
     'spec.py',
     'widget.py',

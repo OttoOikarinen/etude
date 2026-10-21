@@ -110,6 +110,18 @@ def check_expected(question: Question) -> None:
         assert all(isinstance(p, Pitch) for c in expected for p in c)
         if answer.slots is not None:
             assert len(expected) == answer.slots
+        if answer.voices > 1:
+            assert all(len(c) == answer.voices for c in expected), 'one pitch per voice'
+            assert all(
+                0 <= answer.staff_of_voice(v) < max(1, len(answer.staves))
+                for v in range(answer.voices)
+            )
+            for voice, pitches in answer.given_voices.items():
+                assert tuple(c[voice] for c in expected) == tuple(pitches)
+        if answer.rhythm:
+            assert len(answer.rhythm) == len(expected)
+        if answer.labels:
+            assert len(answer.labels) == len(expected)
 
 
 def wrong_answers(question: Question) -> list[object]:
@@ -126,6 +138,20 @@ def wrong_answers(question: Question) -> list[object]:
         wrong: list[object] = [((step,), *rest), (), 'not notes']
         enharmonic = [p for p in first.enharmonics(max_alter=1) if p != first]
         wrong += [((p,), *rest) for p in enharmonic]
+        # A note the learner writes, altered by a chromatic semitone: never right.
+        free = [v for v in range(answer.voices) if v not in answer.given_voices]
+        voice = free[0] if free else 0
+        chord = list(question.expected[0])
+        note = chord[voice]
+        chord[voice] = Pitch(note.letter, note.alter + (1 if note.alter < 1 else -1), note.octave)
+        wrong.append((tuple(chord), *rest))
+        if answer.given_voices:
+            # Changing a printed voice is wrong too.
+            given_voice = next(iter(answer.given_voices))
+            chord = list(question.expected[0])
+            note = chord[given_voice]
+            chord[given_voice] = Pitch.from_diatonic(note.diatonic_index + 1, note.midi + 2)
+            wrong.append((tuple(chord), *rest))
         return wrong
     return []
 
