@@ -46,10 +46,13 @@ installable Flatpak bundle from CI for testing. The first public release
 
 ## W4 — Level 2 (intermediate)
 
-- [ ] Staff input and SATB voice-leading checker
-- [ ] Seventh chords, Roman numeral analysis, cadences, figured bass, modes, transposition
-- [ ] Melodic and rhythmic dictation, progressions by ear
-- [ ] Level 2 lessons and vocabulary, fact-checked
+- [x] Staff input and SATB voice-leading checker; one four-part voicer (`checkers.realize`)
+      with textbook doubling; four-part writing and spot the error
+- [x] Seventh chords, Roman numeral analysis, cadences, figured bass, modes, transposition
+- [x] Melodic and rhythmic dictation, cadences, progressions and inversions by ear
+- [x] Level 2 lessons and vocabulary (155 glossary entries), fact-checked
+- [x] Answer options in random order everywhere (exercises and lesson checks)
+- [x] App icon
 
 ## W5 — Level 3 (undergraduate)
 
