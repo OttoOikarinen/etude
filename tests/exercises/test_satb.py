@@ -200,3 +200,40 @@ def test_confusables_and_labels() -> None:
     assert 'Parallel fifths' in SPOTTING.item_label('satb.error.parallel-fifths')
     with pytest.raises(ValueError, match='not a four-part writing item'):
         WRITING.item_label('satb.write.nonsense')
+
+
+def _label_boxes(figure: SystemSpec) -> list[tuple[float, float, float, float]]:
+    from etude.notation.displaylist import TextItem
+    from etude.notation.layout import item_bounds, layout
+    from etude.notation.smufl import FontMetrics
+
+    metrics = FontMetrics.bravura()
+    display = layout(figure, metrics)
+    return [item_bounds(i, metrics) for i in display.items if isinstance(i, TextItem)]
+
+
+def test_mistake_marks_never_overlap() -> None:
+    """An answer full of mistakes (every voice a step off): the marks under the treble
+    staff are capped to the listed mistakes, and no two labels overlap."""
+    for seed in range(8):
+        question = WRITING.generate('satb.write.I-vi-IV-V-I', C_MAJOR, random.Random(seed))
+        answer = question.answer
+        wrong = []
+        for chord in question.expected:
+            changed = list(chord)
+            for voice in range(4):
+                if voice not in answer.given_voices:
+                    changed[voice] = Pitch.from_diatonic(
+                        chord[voice].diatonic_index + 1, chord[voice].midi + 2
+                    )
+            wrong.append(tuple(changed))
+        feedback = WRITING.grade(question, tuple(wrong))
+        assert not feedback.correct
+        figure = feedback.figure
+        assert isinstance(figure, SystemSpec)
+        marks = [e.label for e in figure.staves[0].events if isinstance(e, Chord) and e.label]
+        assert 0 < len(' '.join(marks).split()) <= MAX_LISTED
+        boxes = _label_boxes(figure)
+        for i, (x0, y0, x1, y1) in enumerate(boxes):
+            for a0, b0, a1, b1 in boxes[i + 1 :]:
+                assert x1 <= a0 or a1 <= x0 or y1 <= b0 or b1 <= y0, 'labels overlap'

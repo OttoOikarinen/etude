@@ -212,7 +212,9 @@ def _marked(
     given: frozenset[int] = frozenset(),
     correct_ink: bool = False,
 ) -> tuple[dict[tuple[int, int], Ink], dict[int, str]]:
-    """Inks and marks for an answer: error notes in error ink, a mark per slot."""
+    """Inks and marks for an answer: the notes of every error in error ink, and a short
+    mark under the treble staff for the errors the feedback lists (the first
+    :data:`MAX_LISTED`), merged into one label per chord."""
     inks: dict[tuple[int, int], Ink] = {}
     if correct_ink:
         for slot in range(len(chords)):
@@ -220,12 +222,12 @@ def _marked(
                 if voice not in given:
                     inks[voice, slot] = Ink.SUCCESS
     marks: dict[int, list[str]] = {}
-    for violation in violations:
-        if violation.severity is not Severity.ERROR:
-            continue
+    errors = [v for v in violations if v.severity is Severity.ERROR]
+    for violation in errors:
         for slot in violation.slots:
             for voice in violation.voices:
                 inks[voice, slot] = Ink.ERROR
+    for violation in errors[:MAX_LISTED]:
         mark = rule_mark(violation.rule)
         if mark not in marks.setdefault(violation.slot, []):
             marks[violation.slot].append(mark)
