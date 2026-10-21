@@ -50,13 +50,16 @@ def figure_text(figure: str) -> str:
 
 def roman_label(numeral: RomanNumeral) -> str:
     """Display form with slashed figures and quality signs, as Kostka–Payne print
-    them: ``'V6/5'``, ``'vii°7'``, ``'iiø4/3'``, ``'IV'``, ``'V6/5/V'``, ``'♭II6'``."""
+    them: ``'V6/5'``, ``'vii°7'``, ``'iiø4/3'``, ``'IV'``, ``'V6/5/V'``, ``'♭II6'``,
+    ``'Cad6/4'``."""
     if numeral.secondary is not None:
         primary = RomanNumeral(numeral.degree, numeral.quality, numeral.inversion, numeral.alter)
         return f'{roman_label(primary)}/{roman_label(numeral.secondary)}'
+    if numeral.cadential:
+        return 'Cad' + figure_text('64')
     symbol = numeral.symbol
     figure = numeral.figure
-    if numeral.cadential or not figure or numeral.quality.kind is ChordKind.AUGMENTED_SIXTH:
+    if not figure or numeral.quality.kind is ChordKind.AUGMENTED_SIXTH:
         return symbol
     return symbol[: len(symbol) - len(figure)] + figure_text(figure)
 
