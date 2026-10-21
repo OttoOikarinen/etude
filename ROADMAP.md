@@ -2,7 +2,8 @@
 
 Etude is built in waves. Each wave ends with green CI, a review, and an
 installable Flatpak bundle from CI for testing. The first public release
-(1.0 on Flathub) comes after all four curriculum levels are complete.
+(1.0 on Flathub) comes after all four curriculum levels and the W8–W9 additions are
+complete.
 
 ## W0 — Foundation
 
@@ -71,11 +72,45 @@ installable Flatpak bundle from CI for testing. The first public release
 
 - [ ] Accessibility audit: Orca, keyboard only, contrast, large notation, written alternatives
 - [ ] Performance, progress export and import, help, screenshots, release notes
+
+## W8 — Levels 1–2 completed, aural skills without a microphone
+
+- [ ] Nonchord tones on the staff: passing, neighbor, suspension, retardation, appoggiatura,
+      escape tone, anticipation, pedal
+- [ ] Phrase and period: sentence or period, parallel or contrasting, the cadence of each phrase
+- [ ] Figured bass realization: write the upper voices over a figured bass (four-part checker)
+- [ ] Melody harmonization: choose the chords for a given soprano and write the inner voices
+- [ ] Symbols: ornaments (trill, mordent, turn, appoggiatura) and road map signs (D.C., D.S.,
+      coda, first and second endings, 8va)
+- [ ] Error detection by ear: a performance differs from the printed score in one pitch or rhythm
+- [ ] Two-voice (outer voices) dictation
+- [ ] Which notated melody did you hear (inner hearing, in place of sight-singing)
+- [ ] Lessons, vocabulary and level exams updated, fact-checked
+
+## W9 — Extended theory and real-instrument sound
+
+- [ ] Twentieth-century techniques: whole-tone, octatonic and blues scales, modes of limited
+      transposition, quartal and quintal harmony, polychords, bitonality, planing,
+      pandiatonicism, minimalism and aleatory
+- [ ] Late-Romantic chromaticism: common-tone diminished sevenths, augmented triads,
+      linear chromaticism (the Tristan chord)
+- [ ] Acoustics and tuning: the harmonic series, cents, equal, just and meantone temperament;
+      tuning discrimination by ear
+- [ ] Blues and popular forms: twelve-bar blues, AABA, rhythm changes, verse–chorus, mixture in pop
+- [ ] Tonal counterpoint: two-part invention, canon, writing a fugue exposition
+- [ ] Schenkerian analysis exercises (choose the reduction, find the Urlinie); hypermeter and
+      metric dissonance
+- [ ] Instrument recognition and ranges; movable-do solfège as a naming option; tempo and
+      dynamics by ear
+- [ ] Real-instrument sound: freely licensed sampled piano and orchestral instruments, as an
+      optional Flatpak extension so the base download stays small
+- [ ] Lessons and vocabulary for every addition, fact-checked
+
+## W10 — Release 1.0
+
 - [ ] Finnish translation complete; `flatpak-builder-lint` clean
 - [ ] Beta testing with CI bundles
-
-## W8 — Release 1.0
-
 - [ ] Tag and release notes
-- [ ] Flathub submission (app id domain verification for oikarinenotto.fi)
+- [ ] Flathub submission (app id domain verification for oikarinenotto.fi), only after the
+      maintainer confirms
 - [ ] Translation platform
