@@ -33,7 +33,7 @@ from gettext import gettext as _
 from gettext import ngettext, pgettext
 from typing import cast
 
-from ...checkers.realize import RealisationError, Voicing, realize
+from ...checkers.realize import Voicing, realize
 from ...core import Chord, ChordQuality, KeySignature, Pitch
 from ...core.naming import chord_name, degree_name, key_name, pitch_name
 from ...core.roman import RomanNumeral
@@ -399,22 +399,8 @@ class RomanNumerals(ExerciseDefinition):
     @staticmethod
     def _complete_voicing(chord: Chord, key: Key, rng: random.Random) -> Voicing:
         """A correct four-part voicing with every chord tone: without its fifth a
-        half-diminished seventh would read as a minor seventh.
-
-        :func:`realize` prefers a root-position seventh chord without its fifth, so a
-        missing tone is asked for in the soprano.
-        """
-        voicing = realize([chord], key, rng)[0]
-        missing = sorted(set(chord.names()) - {p.name for p in voicing}, key=str)
-        rng.shuffle(missing)
-        for name in missing:
-            try:
-                candidate = realize([chord], key, rng, soprano=[name])[0]
-            except RealisationError:
-                continue
-            if {p.name for p in candidate} == set(chord.names()):
-                return candidate
-        return voicing
+        half-diminished seventh would read as a minor seventh."""
+        return realize([chord], key, rng, complete=True)[0]
 
     @staticmethod
     def _spellable(key: Key, degree: int, seventh: bool) -> bool:

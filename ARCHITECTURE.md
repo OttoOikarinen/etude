@@ -77,6 +77,10 @@ Contract changes so far (all backwards-compatible):
   `rule_mark()` and `rule_reason()`. New module `etude.checkers.realize` is
   the only four-part voicer: `realize(numerals or chords, key, rng, bass=,
   soprano=)` returns correct SATB voicings or raises `RealisationError`.
+* W4 voicer follow-up: `realize()` doubles as textbooks do (root of root-position
+  triads, bass of ii°6/vii°6 and six-fours, third of vi after V), accepts a set of
+  pitch names per chord in `soprano=`, takes `complete=True` for every chord tone,
+  and keeps half steps in the bass (the Phrygian iv6–V); `scan()` gained `first=`.
 * W4 exercises: `Question.details`, exercise-private facts needed again when
   grading (the keys of a transposition); not shown to the learner.
 * W4 notation: lines of a `Chord.label` separated by `'\n'` are stacked

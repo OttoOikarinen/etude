@@ -412,10 +412,15 @@ def _sign(value: int) -> int:
 
 class _Checker:
     def __init__(
-        self, chords: Sequence[tuple[Pitch, ...]], context: Context, messages: bool
+        self,
+        chords: Sequence[tuple[Pitch, ...]],
+        context: Context,
+        messages: bool,
+        first: int = 0,
     ) -> None:
         self.chords = chords
         self.messages = messages
+        self.first = first
         self.context = context
         self.harmonies = [_harmony(i, c, context) for i, c in enumerate(chords)]
         self.midi = [tuple(p.midi for p in chord) for chord in chords]
@@ -437,6 +442,8 @@ class _Checker:
 
     def run(self) -> list[Violation]:
         for slot, chord in enumerate(self.chords):
+            if slot < self.first:
+                continue
             self.chord(slot, chord)
             if slot:
                 self.motion(slot, self.chords[slot - 1], chord)
@@ -508,6 +515,13 @@ class _Checker:
         self.doubling(slot, chord, harmony)
 
     def membership(self, slot: int, chord: Sequence[Pitch], harmony: _Harmony) -> None:
+        if Rule.WRONG_CHORD in self.context.rules:
+            self.foreign(slot, chord, harmony)
+        if Rule.INCOMPLETE_CHORD in self.context.rules:
+            self.incomplete(slot, chord, harmony)
+
+    def foreign(self, slot: int, chord: Sequence[Pitch], harmony: _Harmony) -> None:
+        """Notes outside the chord, and a bass that is not the chord's bass."""
         n = slot + 1
         expected = harmony.chord
         outside = [v for v, p in enumerate(chord) if harmony.role(p) is None]
@@ -537,6 +551,10 @@ class _Checker:
                     n=n, note=pitch_name(expected.bass)
                 ),
             )
+
+    def incomplete(self, slot: int, chord: Sequence[Pitch], harmony: _Harmony) -> None:
+        n = slot + 1
+        expected = harmony.chord
         present = {p.name for p in chord}
         tones = _tones(expected)
         if expected.quality.kind not in (ChordKind.TRIAD, ChordKind.SEVENTH):
@@ -973,12 +991,18 @@ def check(chords: Sequence[tuple[Pitch, ...]], context: Context | None = None) -
     return _Checker(chords, context or Context(), messages=True).run()
 
 
-def scan(chords: Sequence[tuple[Pitch, ...]], context: Context | None = None) -> list[Violation]:
-    """Like :func:`check`, with empty messages: fast, for generators that try many voicings."""
+def scan(
+    chords: Sequence[tuple[Pitch, ...]], context: Context | None = None, *, first: int = 0
+) -> list[Violation]:
+    """Like :func:`check`, with empty messages: fast, for generators that try many voicings.
+
+    With ``first`` only the chords from that slot on are checked (with the motion into
+    the first of them): a generator that extends a passage checks the new chord only.
+    """
     for chord in chords:
         if len(chord) != len(VOICES):
             raise ValueError(f'four-part chords have four pitches, not {len(chord)}')
-    return _Checker(chords, context or Context(), messages=False).run()
+    return _Checker(chords, context or Context(), messages=False, first=first).run()
 
 
 def errors(violations: Sequence[Violation]) -> list[Violation]:
