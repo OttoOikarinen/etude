@@ -105,6 +105,8 @@ LABEL_MIN_BASELINE = 3.4
 """Smallest distance from the bottom line to the label baseline."""
 LABEL_LINE_SPACING = 1.0
 """Distance between the baselines of stacked label lines, in label sizes."""
+LABEL_GAP = 0.5
+"""Least horizontal space between two labels on one row."""
 BRACKET_GAP = 0.6
 BRACKET_HOOK = 0.5
 BRACKET_PAD = 0.55
@@ -1465,19 +1467,31 @@ class _Engraver:
         lowest = max(_item_box(item, self.m).y1 for item in out.items)
         bottom = staff.lines - 1
         baseline = max(bottom + LABEL_MIN_BASELINE, lowest + LABEL_CLEARANCE + LABEL_SIZE * 0.75)
+        # Labels too wide for their columns move down a row instead of overlapping the
+        # label before them (several voice-leading marks next to each other).
+        row_ends: list[float] = []
+        labelled.sort(key=lambda g: out.event_x[g.track.base + g.index])
         for geom in labelled:
             chord = geom.chord
             assert chord.label is not None
             index = geom.track.base + geom.index
+            x = out.event_x[index]
             highlighted = chord.ink is not Ink.FOREGROUND
             ink = chord.ink if highlighted else Ink.DIM
+            lines = chord.label.split('\n')
+            half = max(_text_width(line, LABEL_SIZE) for line in lines) / 2
+            row = _free_row(row_ends, x - half, len(lines))
+            for taken in range(row, row + len(lines)):
+                while len(row_ends) <= taken:
+                    row_ends.append(-math.inf)
+                row_ends[taken] = x + half + LABEL_GAP
             # Lines of a label are stacked downwards (figured-bass figures).
-            for line_index, line in enumerate(chord.label.split('\n')):
+            for line_index, line in enumerate(lines):
                 out.items.append(
                     TextItem(
                         line,
-                        out.event_x[index],
-                        baseline + line_index * LABEL_SIZE * LABEL_LINE_SPACING,
+                        x,
+                        baseline + (row + line_index) * LABEL_SIZE * LABEL_LINE_SPACING,
                         LABEL_SIZE,
                         Align.CENTER,
                         highlighted,
@@ -1622,6 +1636,16 @@ def _time_digits(meter: Meter) -> tuple[list[str], list[str]]:
         [f'timeSig{d}' for d in str(meter.beats)],
         [f'timeSig{d}' for d in str(meter.beat_unit)],
     )
+
+
+def _free_row(row_ends: list[float], left: float, height: int) -> int:
+    """The first row from which ``height`` rows are free left of ``left``."""
+    row = 0
+    while any(
+        left < (row_ends[r] if r < len(row_ends) else -math.inf) for r in range(row, row + height)
+    ):
+        row += 1
+    return row
 
 
 def _text_width(text: str, size: float) -> float:

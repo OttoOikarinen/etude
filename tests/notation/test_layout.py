@@ -514,3 +514,20 @@ def test_ledger_lines_exactly_when_needed(
         expected.update(round(geometry.y_of(p), 6) for p in range(-2, position - 1, -2))
         expected.update(round(geometry.y_of(p), 6) for p in range(10, position + 1, 2))
     assert ledger_ys(display, metrics) == sorted(expected)
+
+
+def test_wide_labels_stack_instead_of_overlapping(metrics) -> None:
+    """Labels wider than their columns move down a row; narrow ones stay on the first."""
+    events = tuple(
+        Chord((Head(Pitch.parse(p)),), label=label)
+        for p, label in (('C4', 'spacing ∥8'), ('D4', 'range'), ('E4', 'I'), ('F4', 'IV'))
+    )
+    display = layout(StaffSpec(events=events), metrics)
+    labels = [i for i in display.items if isinstance(i, TextItem)]
+    boxes = [item_bounds(i, metrics) for i in labels]
+    for i, (x0, y0, x1, y1) in enumerate(boxes):
+        for a0, b0, a1, b1 in boxes[i + 1 :]:
+            assert x1 <= a0 or a1 <= x0 or y1 <= b0 or b1 <= y0
+    baselines = {i.text: i.y for i in labels}
+    assert baselines['range'] > baselines['spacing ∥8'], 'moved down a row'
+    assert baselines['I'] == baselines['IV'] == baselines['spacing ∥8']
