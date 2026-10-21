@@ -1355,12 +1355,20 @@ def check_tap_pad_flow() -> None:
             count = len(expected)
             assert view.summary.get_label().startswith(f'{count} of {count} on time')
             assert not pad.pad.get_visible()
-            # Next question: a sloppy take, with the first note missed.
-            assert press(page, 'Return')
-            pad = page.answer_widget
-            pad.start()
-            backend.current.started_at = 50.0
-            onsets = list(page.question.expected)
+            # Next question: a sloppy take, with the first note missed. A one-note bar
+            # (a whole note) leaves nothing to tap, so take such questions on time.
+            for _attempt in range(20):
+                assert press(page, 'Return')
+                pad = page.answer_widget
+                pad.start()
+                backend.current.started_at = 50.0
+                onsets = list(page.question.expected)
+                if len(onsets) > 1:
+                    break
+                pad.tap(50.0 + (onsets[0] + 30) / 1000)
+                backend.complete()
+                pump()
+                assert page.feedback is not None
             for onset in onsets[1:]:
                 pad.tap(50.0 + (onset + 30 + 70) / 1000)
             backend.complete()
@@ -1837,12 +1845,17 @@ def check_live_satb_sessions() -> None:
     from etude.ui.widgets.staff_input import StaffInputView
 
     def inks(figure) -> list:
+        # Note heads, and the labels above chords: an incomplete chord is marked
+        # with a label ("inc."), not on any one note.
         return [
-            h.ink
+            ink
             for staff in figure.staves
             for line in (staff.events, *staff.voices)
             for e in line
-            for h in getattr(e, 'heads', ())
+            for ink in (
+                *(h.ink for h in getattr(e, 'heads', ())),
+                *((e.ink,) if getattr(e, 'label', None) else ()),
+            )
         ]
 
     with tempfile.TemporaryDirectory() as data_dir:
