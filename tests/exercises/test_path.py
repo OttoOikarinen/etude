@@ -153,6 +153,18 @@ def test_the_real_curriculum_resolves() -> None:
     assert {i.split('.')[1] for i in intervals} == {'staff', 'ear', 'write'}
 
 
+def test_level_2_units_get_the_vocabulary_of_their_own_glossary_topics() -> None:
+    library = ContentLibrary.load(content_dir())
+    path = LearningPath(library, default_registry(), Mastery(FakeCardStore(), FakeAttemptLog()))
+    unit = library.curriculum.unit('l2.nonchord')
+    entries = {e.id for e in library.vocabulary(unit)}
+    assert entries
+    assert all(e.level == 2 for e in library.vocabulary(unit))
+    items = path.unit_items(unit)
+    assert items, 'a unit with only glossary topics still has items to practice'
+    assert {i.split('.')[1] for i in items} == entries
+
+
 class FakeVocabulary(KeySignatures):
     id = 'vocabulary'
     item_prefix = 'vocab.'
