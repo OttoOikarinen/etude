@@ -53,7 +53,7 @@ def test_items_go_from_triads_to_sevenths() -> None:
 
 @pytest.mark.parametrize(
     ('numeral', 'label'),
-    [('V65', 'V6/5'), ('viio6', 'vii°6'), ('Cad64', 'Cad64'), ('ii6', 'ii6'), ('iiø65', 'iiø6/5')],
+    [('V65', 'V6/5'), ('viio6', 'vii°6'), ('Cad64', 'Cad6/4'), ('ii6', 'ii6'), ('iiø65', 'iiø6/5')],
 )
 def test_numeral_labels_read_back(numeral: str, label: str) -> None:
     parsed = RomanNumeral.parse(numeral)

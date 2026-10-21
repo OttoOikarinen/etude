@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+<lesson id="l2.dictation">
+  <title>Melodic and Harmonic Dictation</title>
+  <summary>Writing down music you hear is a skill of memory and method: fix the key and meter, remember, then work out rhythm, degrees and chords.</summary>
+
+  <section>
+    <title>Listening with a plan</title>
+    <p>In <term ref="melodic-dictation">melodic</term> and <term ref="harmonic-dictation">harmonic dictation</term> you hear a melody or a chord <term ref="progression">progression</term> a few times and write it down. Trying to catch every note at once rarely works; a plan does:</p>
+    <list ordered="true">
+      <li>Before the music starts, fix the <term ref="tonic">tonic</term> and the <term ref="meter">meter</term>: sing the tonic, and count the beats when the tempo is given.</li>
+      <li>On the first hearing, write nothing. Listen to the whole, and try to remember it: its shape, its length, where it rests.</li>
+      <li>Sing it back in your head. What you can sing, you can work out; what you cannot remember, you cannot write.</li>
+      <li>Write in layers: first the landmarks, such as the first and last notes and the cadences, then the rhythm, then the remaining pitches.</li>
+      <li>Check the result by singing what you wrote, or by comparing it with the next hearing.</li>
+    </list>
+    <p>Hear notes as <term ref="scale-degree">scale degrees</term> rather than as single intervals: degree 7 that rises to the tonic sounds the same in every key, and one wrong interval no longer spoils everything after it.</p>
+    <check id="first-step">
+      <prompt>What should you do before the dictation begins?</prompt>
+      <option key="a" correct="true">Fix the tonic and the meter</option>
+      <option key="b">Write as many notes as possible</option>
+      <option key="c">Name the interval between the first two notes</option>
+      <explanation>The tonic and the meter are the frame for everything else: scale degrees are heard against the tonic, and rhythms against the beat. Writing during the first hearing usually means missing the rest of the music.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Melodic dictation step by step</title>
+    <worked>
+      <title>Write down a four-bar melody</title>
+      <step>
+        <p>The key is <note>D</note> major and the meter 3/4. On the first hearing, notice the shape: the melody climbs, turns around in the second bar, falls step by step and ends on the tonic with a long note.</p>
+      </step>
+      <step>
+        <p>Write the rhythm, bar by bar: three quarter notes; a half note and a quarter note; three quarter notes; a dotted half note.</p>
+        <figure play="as-written" tempo="92">
+          <staff clef="percussion" time="3/4">C5/q C5/q C5/q | C5/h C5/q | C5/q C5/q C5/q | C5/h. |.</staff>
+        </figure>
+      </step>
+      <step>
+        <p>Find the <term ref="scale-degree-numbers">scale-degree numbers</term>, starting from the landmarks. The last note is the tonic, 1, and the steps before it fall 4, 3, 2. The first bar climbs the tonic triad, 1, 3, 5; the second bar reaches 6 and falls back to 5.</p>
+      </step>
+      <step>
+        <p>Translate the degrees into notes in <note>D</note> major and check by singing: <note>D4</note>, <note>F#4</note>, <note>A4</note>, <note>B4</note>, <note>A4</note>, <note>G4</note>, <note>F#4</note>, <note>E4</note>, <note>D4</note>.</p>
+        <figure play="as-written" tempo="92">
+          <staff clef="treble" key="2" time="3/4">D4/q{1} F#4/q{3} A4/q{5} | B4/h{6} A4/q{5} | G4/q{4} F#4/q{3} E4/q{2} | D4/h.{1} |.</staff>
+        </figure>
+      </step>
+    </worked>
+    <callout kind="tip">
+      <p>Melodies often move along the notes of the tonic and dominant triads and fill the gaps by step. If you lose a note, look for these patterns, and remember that a phrase usually ends on degree 1, 3 or 5, or on degree 2 or 7 at a half cadence.</p>
+    </callout>
+    <check id="melody-ending">
+      <prompt>A melody in major ends with the degrees 3, 2, 1 over V–I, both chords in root position. Which cadence ends it?</prompt>
+      <option key="a" correct="true">A perfect authentic cadence</option>
+      <option key="b">An imperfect authentic cadence</option>
+      <option key="c">A half cadence</option>
+      <explanation>V–I with both chords in root position and the tonic in the melody is a perfect authentic cadence. Ending on degree 3 or 5 would make it imperfect, and ending on V a half cadence.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Harmonic dictation</title>
+    <p>In harmonic dictation, the bass line is the key. Write it first, as scale degrees, then decide which chord fits each bass note. Each bass degree allows only a few common chords:</p>
+    <list>
+      <li>1: I.</li>
+      <li>2: ii, vii°6 or V4/3.</li>
+      <li>3: I6.</li>
+      <li>4: IV, ii6 or V4/2.</li>
+      <li>5: V, V7, or the <term ref="cadential-six-four">cadential six-four</term>.</li>
+      <li>6: vi or IV6.</li>
+      <li>7: V6 or V6/5.</li>
+    </list>
+    <p>Then listen for what tells the possibilities apart: the quality of the chord, the soprano, and the function. A chord after the tonic that leads to V is a <term ref="predominant">predominant</term>, IV or ii; the sound of a seventh points to V7 or one of its inversions.</p>
+    <figure play="as-written" tempo="66">
+      <staff clef="treble">[G4 C5]/h [G4 D5]/h [G4 E5]/h [F4 D5]/h [F4 D5]/h [E4 C5]/h |.</staff>
+      <staff clef="bass">[C3 E4]/h{I} [B2 D4]/h{V6} [C3 C4]/h{I} [F3 A3]/h{ii6} [G3 B3]/h{V7} [C3 C4]/h{I} |.</staff>
+      <caption>A progression in <note>C</note> major. The bass sings the degrees 1, 7, 1, 4, 5, 1: degree 7 between two tonics is V6, and degree 4 before V is a predominant, here ii6.</caption>
+    </figure>
+    <check id="bass-seven">
+      <prompt>The bass moves from degree 1 down to degree 7 and back to 1. Which chord most likely stands over degree 7?</prompt>
+      <option key="a" correct="true">V6</option>
+      <option key="b">vii°</option>
+      <option key="c">iii6/4</option>
+      <explanation>Degree 7 in the bass is the third of V, so V6 or V6/5 is the usual chord, leading back to I. Degree 7 is also the root of vii° and the fifth of iii, but vii° is rare in root position and iii6/4 rarer still.</explanation>
+    </check>
+    <check id="bass-four">
+      <prompt>Over bass degree 4, a minor triad sounds and leads to V. Which chord is it?</prompt>
+      <option key="a">IV</option>
+      <option key="b" correct="true">ii6</option>
+      <option key="c">V4/2</option>
+      <explanation>Both IV and ii6 have degree 4 in the bass and lead to V, but in major IV is a major triad and ii6 a minor one. V4/2 is a seventh chord and leads to I6, not to V.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Practicing</title>
+    <p>Dictation improves with short, regular practice more than with long sessions. Sing scale degrees aloud, with numbers or with <term ref="solfege">solfège</term> syllables. With <term ref="movable-do">movable do</term>, do is the tonic of a major key. In minor some teachers use la as the tonic, <term ref="la-based-minor">la-based minor</term>, and others keep do, <term ref="do-based-minor">do-based minor</term>; both systems work if you use one consistently. In <term ref="fixed-do">fixed do</term>, used in many countries where the syllables are the note names, do is always <note>C</note>, so the syllables do not show the scale degrees.</p>
+    <p>Practice the parts separately as well: <term ref="rhythmic-dictation">rhythmic dictation</term> for rhythm, and listening to the bass line alone for harmony. Etude's dictation exercises let you hear the music again, so use the replays deliberately: each time, listen for one thing.</p>
+    <check id="memory-first">
+      <prompt>Why is it useful to sing a melody back in your head before writing it?</prompt>
+      <option key="a" correct="true">What you can remember and sing, you can then work out at your own pace</option>
+      <option key="b">It makes the melody shorter</option>
+      <option key="c">It shows the key signature</option>
+      <explanation>Dictation depends on memory. Once the melody is held in your head, you can compare each note with the tonic and work out degrees and rhythm without the music playing.</explanation>
+    </check>
+  </section>
+</lesson>

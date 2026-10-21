@@ -46,7 +46,7 @@ from ..learning.engine import LearningEngine
 from ..learning.mastery import Mastery
 from ..learning.model import ItemId, SessionRequest, SessionSummary
 from ..learning.placement import PLACEMENT_SAMPLE, PlacementWalk, balanced_sample, needed, passes
-from .base import Feedback
+from .base import Feedback, MultiChoiceSetting
 from .registry import ExerciseRegistry
 from .runner import SessionRunner
 from .settings import SettingError, coerce
@@ -165,7 +165,15 @@ class LearningPath:
         entries = {e.id for e in self.library.vocabulary(unit)}
         if not entries:
             return []
-        pool = self.registry.items(VOCABULARY_EXERCISE, {})
+        # Every level and topic: the unit's own entries choose among them, whatever the
+        # exercise's default settings (level 1 only) would offer.
+        definition = self.registry.get(VOCABULARY_EXERCISE)
+        everything = {
+            setting.key: tuple(option.key for option in setting.options)
+            for setting in definition.settings
+            if setting.key in ('levels', 'topics') and isinstance(setting, MultiChoiceSetting)
+        }
+        pool = self.registry.items(VOCABULARY_EXERCISE, everything)
         return [i for i in pool if len(parts := i.split('.')) == 3 and parts[1] in entries]
 
     def settings_for(self, units: Iterable[Unit]) -> dict[str, dict[str, object]]:

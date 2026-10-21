@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+<lesson id="l2.phrase">
+  <title>Motive, Phrase and Period</title>
+  <summary>Motives grow into phrases, phrases end with cadences, and pairs of phrases form periods and sentences.</summary>
+
+  <section>
+    <title>Motive</title>
+    <p>A <term ref="motive">motive</term> is the smallest recognizable musical idea: a short group of notes with a characteristic rhythm, contour or both. Composers build longer passages by repeating and varying motives:</p>
+    <list>
+      <li>Repetition: the motive again, unchanged.</li>
+      <li>Sequence: the motive repeated at a higher or lower pitch level.</li>
+      <li>Inversion: the motive with its directions turned upside down.</li>
+      <li>Augmentation and diminution: the motive in longer or shorter note values.</li>
+      <li><term ref="fragmentation">Fragmentation</term>: only a part of the motive, repeated or developed.</li>
+    </list>
+    <figure play="as-written" tempo="80">
+      <staff clef="treble" time="2/4">C5/e D5/e E5/q | D5/e E5/e F5/q | C5/e B4/e A4/q | C5/q D5/q | E5/h |.</staff>
+      <caption>A motive of three rising notes, its sequence a step higher, its inversion, and its augmentation in notes twice as long.</caption>
+    </figure>
+    <p>The inversion above keeps the steps but not their exact sizes: within the key, a rising whole step can become a falling half step. This is called a diatonic inversion.</p>
+    <check id="sequence-definition">
+      <prompt>A motive is repeated starting a step higher, with the same rhythm and contour. What is this called?</prompt>
+      <option key="a" correct="true">A sequence</option>
+      <option key="b">An inversion</option>
+      <option key="c">An augmentation</option>
+      <explanation>Repeating a motive at another pitch level is a sequence. An inversion turns its directions upside down, and augmentation lengthens its note values.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Phrase</title>
+    <p>A <term ref="phrase">phrase</term> is a complete musical thought that ends with a <term ref="cadence">cadence</term>. Phrases are often four bars long, but two, three, five or eight bars are possible too; what defines a phrase is its cadence, not its length. This is the definition of Kostka and Payne and most American textbooks; Caplin uses the word more loosely, for a unit of about four bars whether or not it ends with a cadence.</p>
+    <p>Listen for where the music comes to rest: a phrase ending on V, with a <term ref="half-cadence">half cadence</term>, sounds like a question, and one ending on I with a <term ref="perfect-authentic-cadence">perfect authentic cadence</term> sounds like an answer. A phrase is often divided into shorter subphrases, but without its own cadence a unit is not a phrase.</p>
+    <check id="phrase-defined-by">
+      <prompt>What defines the end of a phrase?</prompt>
+      <option key="a">A rest</option>
+      <option key="b" correct="true">A cadence</option>
+      <option key="c">The fourth bar</option>
+      <explanation>A phrase is a musical thought that ends with a cadence. Many phrases are four bars long and many end with a longer note or a rest, but neither makes a phrase.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Period: antecedent and consequent</title>
+    <p>A <term ref="period">period</term> is a pair of phrases in which the second answers the first. The first phrase, the <term ref="antecedent">antecedent</term>, ends with a weaker cadence, usually a half cadence or an <term ref="imperfect-authentic-cadence">imperfect authentic cadence</term>. The second phrase, the <term ref="consequent">consequent</term>, ends with a stronger cadence, usually a perfect authentic cadence.</p>
+    <figure play="as-written" tempo="100">
+      <staff clef="treble" time="4/4">E5/q C5/q G4/q C5/q | D5/q F5/q E5/q D5/q | C5/q E5/q A5/q F5/q | E5/h D5/h ||</staff>
+      <staff clef="bass" time="4/4">C3/w | B2/w | C3/h F2/h | G2/w ||</staff>
+      <caption>The antecedent of a parallel period in <note>C</note> major: four bars ending with a half cadence on V.</caption>
+    </figure>
+    <figure play="as-written" tempo="100">
+      <staff clef="treble" time="4/4">E5/q C5/q G4/q C5/q | D5/q F5/q E5/q D5/q | C5/q E5/q A5/q F5/q | E5/q D5/q C5/h |.</staff>
+      <staff clef="bass" time="4/4">C3/w | B2/w | C3/h F2/h | G2/h C3/h |.</staff>
+      <caption>The consequent: it begins like the antecedent and ends with a perfect authentic cadence.</caption>
+    </figure>
+    <p>When the two phrases begin with the same or similar music, the period is a <term ref="parallel-period">parallel period</term>; when they begin differently, it is a <term ref="contrasting-period">contrasting period</term>. If both phrases end with the same cadence, the second does not answer the first, and most textbooks call the pair a repeated phrase or a phrase group rather than a period.</p>
+    <check id="antecedent-cadence">
+      <prompt>Which cadence typically ends the antecedent of a period?</prompt>
+      <option key="a" correct="true">A half cadence</option>
+      <option key="b">A perfect authentic cadence</option>
+      <option key="c">A deceptive cadence followed by a plagal cadence</option>
+      <explanation>The antecedent ends with a weaker cadence, most often a half cadence, so that the consequent can answer it with a stronger one, usually a perfect authentic cadence.</explanation>
+    </check>
+    <check id="parallel-period">
+      <prompt>Two phrases begin with the same melody; the first ends on V and the second on I with a perfect authentic cadence. What is the form?</prompt>
+      <option key="a">A contrasting period</option>
+      <option key="b" correct="true">A parallel period</option>
+      <option key="c">A repeated phrase</option>
+      <explanation>The second phrase answers the first with a stronger cadence, so the pair is a period, and because both phrases begin alike it is a parallel period. A repeated phrase would end both times with the same cadence.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Sentence</title>
+    <p>The <term ref="sentence">sentence</term> is another common eight-bar theme, described by Arnold Schoenberg and in detail by William Caplin. It has two halves of four bars:</p>
+    <list>
+      <li>The <term ref="presentation">presentation</term>: a two-bar <term ref="basic-idea">basic idea</term>, then its repetition, exact or on another harmony, often the dominant.</li>
+      <li>The <term ref="continuation">continuation</term>: shorter fragments of the idea, often with faster <term ref="harmonic-rhythm">harmonic rhythm</term> or a sequence, leading to a cadence.</li>
+    </list>
+    <figure play="as-written" tempo="100">
+      <staff clef="treble" key="1" time="4/4">D5/q B4/q G4/q B4/q | C5/q A4/q F#4/h | C5/q A4/q F#4/q A4/q | B4/q G4/q G4/h ||</staff>
+      <staff clef="bass" key="1" time="4/4">G2/w | D3/w | D3/w | G2/w ||</staff>
+      <caption>The presentation of a sentence in <note>G</note> major: the basic idea over I–V7, then its repetition over V7–I.</caption>
+    </figure>
+    <figure play="as-written" tempo="100">
+      <staff clef="treble" key="1" time="4/4">E5/q C5/q D5/q B4/q | C5/q A4/q E5/q C5/q | B4/q D5/q C5/q A4/q | G4/w |.</staff>
+      <staff clef="bass" key="1" time="4/4">C3/h B2/h | A2/h C3/h | D3/w | G2/w |.</staff>
+      <caption>The continuation: two-note fragments with a chord every two beats, then a perfect authentic cadence.</caption>
+    </figure>
+    <p>Not every textbook uses the term: many North American harmony texts describe themes mainly as periods. The two forms differ in their middles: a period cadences after four bars, a sentence does not.</p>
+    <check id="sentence-presentation">
+      <prompt>What happens in the first four bars of a sentence?</prompt>
+      <option key="a">A phrase ending with a half cadence</option>
+      <option key="b" correct="true">A two-bar basic idea and its repetition</option>
+      <option key="c">A sequence of one-bar fragments</option>
+      <explanation>The presentation states a basic idea and repeats it, without a cadence. The fragments and the cadence come in the continuation; a half cadence after four bars belongs to a period.</explanation>
+    </check>
+  </section>
+</lesson>

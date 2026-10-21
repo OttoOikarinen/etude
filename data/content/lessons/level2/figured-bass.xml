@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: 2026 Otto Oikarinen
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+<lesson id="l2.figured-bass">
+  <title>Figured Bass</title>
+  <summary>Numbers under a bass line show the intervals above it; a player turns them into chords.</summary>
+
+  <section>
+    <title>Figures over a bass</title>
+    <p>In the Baroque era, from about 1600 to 1750, keyboard and lute players often read from a <term ref="figured-bass">figured bass</term>, also called <term ref="thoroughbass">thoroughbass</term>: a bass line with numbers, the <term ref="figures">figures</term>, written with it. The figures show which intervals to play above each bass note. The player, part of the <term ref="basso-continuo">basso continuo</term>, makes up the upper voices on the spot; writing them out is called <term ref="realization">realizing</term> the figured bass.</p>
+    <p>The figures count intervals upward from the bass, using the notes of the key unless an accidental says otherwise. They do not say in which octave or order the upper notes lie, and compound intervals are counted as simple ones: a tenth above the bass is shown as 3.</p>
+    <figure play="as-written" tempo="66">
+      <staff clef="treble">[G4 C5]/h [G4 D5]/h [G4 C5]/h |.</staff>
+      <staff clef="bass">[C3 E4]/h [B2 D4]/h{6} [C3 E4]/h |.</staff>
+      <caption>In <note>C</note> major, the figure 6 under <note>B</note> asks for a sixth above the bass, <note>G</note>, and a third, <note>D</note>: the <note>G</note> major triad in <term ref="first-inversion">first inversion</term>, V6. The other bass notes, without figures, carry root-position triads.</caption>
+    </figure>
+    <check id="figures-count-from">
+      <prompt>From which note are the intervals of a figure counted?</prompt>
+      <option key="a">From the root of the chord</option>
+      <option key="b" correct="true">From the bass note</option>
+      <option key="c">From the tonic of the key</option>
+      <explanation>Figures always count upward from the bass note they stand with. The root is in the bass only in root position, so counting from the root would give different numbers for inverted chords.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Abbreviations</title>
+    <p>Writing every interval would be slow, so figured bass leaves out the obvious ones. The complete figures and their usual abbreviations are:</p>
+    <list>
+      <li>No figure: 5/3, a <term ref="root-position">root-position</term> triad.</li>
+      <li>6: 6/3, a triad in first inversion.</li>
+      <li>6/4: a triad in <term ref="second-inversion">second inversion</term>; both numbers are always written.</li>
+      <li>7: 7/5/3, a seventh chord in root position.</li>
+      <li>6/5: 6/5/3, a seventh chord in first inversion.</li>
+      <li>4/3: 6/4/3, a seventh chord in second inversion.</li>
+      <li>4/2, or simply 2: 6/4/2, a seventh chord in <term ref="third-inversion">third inversion</term>.</li>
+    </list>
+    <p>In print the numbers of a figure are stacked with the largest on top; this course writes them with a slash.</p>
+    <figure play="as-written" tempo="60">
+      <staff clef="bass">[C3 E3 G3]/h | [E3 G3 C4]/h{6} | [G3 C4 E4]/h{6/4} | [G2 B2 D3 F3]/h{7} | [B2 D3 F3 G3]/h{6/5} | [D3 F3 G3 B3]/h{4/3} | [F3 G3 B3 D4]/h{4/2} |</staff>
+      <caption>In <note>C</note> major: the tonic triad in its three positions, then the dominant seventh chord in its four positions, with their figures.</caption>
+    </figure>
+    <check id="no-figure">
+      <prompt>A bass note has no figure. What does the player play above it?</prompt>
+      <option key="a" correct="true">A root-position triad</option>
+      <option key="b">A first-inversion triad</option>
+      <option key="c">A seventh chord</option>
+      <explanation>A missing figure stands for 5/3, a third and a fifth above the bass: a triad with its root in the bass. A first-inversion triad is figured 6, and a seventh chord 7.</explanation>
+    </check>
+    <check id="four-two-meaning">
+      <prompt>What do the figures 4/2 show?</prompt>
+      <option key="a">A triad in second inversion</option>
+      <option key="b">A seventh chord in second inversion</option>
+      <option key="c" correct="true">A seventh chord in third inversion</option>
+      <explanation>4/2 is short for 6/4/2: the seventh is in the bass, and the root lies a second above it. A second-inversion seventh chord is 4/3, and a second-inversion triad 6/4.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Accidentals in figures</title>
+    <p><term ref="figured-accidental">Accidentals in a figure</term> change a note above the bass:</p>
+    <list>
+      <li>An accidental standing alone applies to the third above the bass. In minor keys a sharp or natural alone often raises the third of V to the <term ref="leading-tone">leading tone</term>.</li>
+      <li>An accidental next to a number applies to that interval: ♯6 raises the sixth above the bass, ♭7 lowers the seventh.</li>
+      <li>A slash through a number, or a plus sign next to it, raises that note by a half step, like a sharp.</li>
+    </list>
+    <p>An accidental in a figure has the same effect as the same accidental written before the note. In a key with flats, a natural can therefore raise a note: in <note>C</note> minor, whose key signature lowers <note>B</note> to <note>Bb</note>, a natural alone under the bass <note>G</note> asks for the leading tone <note>B</note>. In <note>G</note> minor the third above <note>D</note> is <note>F</note>, which the key signature leaves alone, so a sharp is needed for <note>F#</note>.</p>
+    <check id="sharp-alone">
+      <prompt>In <note>A</note> minor, a bass <note>E</note> has a sharp alone as its figure. Which notes does the player add?</prompt>
+      <option key="a"><note>G</note> and <note>B</note></option>
+      <option key="b" correct="true"><note>G#</note> and <note>B</note></option>
+      <option key="c"><note>E#</note> and <note>B</note></option>
+      <explanation>A lone accidental applies to the third above the bass. Above <note>E</note> the third is <note>G</note>, raised to <note>G#</note>, and the fifth is <note>B</note>: the major V of <note>A</note> minor with its leading tone.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Realizing a figured bass</title>
+    <p>To realize a figured bass in four parts, work out the chords first, then write the upper voices following the rules of four-part writing.</p>
+    <worked>
+      <title>Realize a short figured bass in four parts</title>
+      <step>
+        <p>The key is <note>A</note> minor, and the bass is <note>A3</note>, <note>D3</note> with a 6, <note>E3</note> with a sharp, and <note>A2</note>.</p>
+        <figure play="as-written" tempo="66">
+          <staff clef="bass">A3/h D3/h{6} E3/h{♯} A2/h |.</staff>
+        </figure>
+      </step>
+      <step>
+        <p>Name the notes above each bass note. Above <note>A</note>, no figure means a third and a fifth: <note>C</note> and <note>E</note>. Above <note>D</note>, 6 means a third and a sixth: <note>F</note> and <note>B</note>. Above <note>E</note>, the sharp raises the third: <note>G#</note> and <note>B</note>.</p>
+      </step>
+      <step>
+        <p>Name the chords: i, ii°6, V and i. ii°6 is a <term ref="predominant">predominant</term> chord, and V contains the leading tone, which must rise to the tonic.</p>
+      </step>
+      <step>
+        <p>Choose the <term ref="doubling">doublings</term>. In the root-position chords, double the root. In ii°6, double the bass, the third of the chord, not the root <note>B</note>.</p>
+      </step>
+      <step>
+        <p>Write the upper voices, moving each as little as possible: the soprano <note>A4</note>, <note>B4</note>, <note>G#4</note>, <note>A4</note>; the alto <note>E4</note>, <note>F4</note>, <note>E4</note>, <note>E4</note>; the tenor <note>C4</note>, <note>D4</note>, <note>B3</note>, <note>C4</note>. Check the result: the leading tone <note>G#4</note> rises to <note>A4</note>, and no two voices move in <term ref="parallel-fifths">parallel fifths</term> or <term ref="parallel-octaves">octaves</term>.</p>
+        <figure play="as-written" tempo="66">
+          <staff clef="treble">[E4 A4]/h [F4 B4]/h [E4 G#4]/h [E4 A4]/h |.</staff>
+          <staff clef="bass">[A3 C4]/h [D3 D4]/h{6} [E3 B3]/h{♯} [A2 C4]/h |.</staff>
+        </figure>
+      </step>
+    </worked>
+    <check id="six-under-f">
+      <prompt>In <note>C</note> major, a bass <note>F</note> has the figure 6. Which chord is it?</prompt>
+      <option key="a">IV in root position</option>
+      <option key="b" correct="true">ii6</option>
+      <option key="c">vi6</option>
+      <explanation>A sixth and a third above <note>F</note> are <note>D</note> and <note>A</note>: the notes <note>F</note>, <note>A</note> and <note>D</note> form the <note>D</note> minor triad with its third in the bass, ii6. vi6 would have <note>C</note> in the bass.</explanation>
+    </check>
+  </section>
+
+  <section>
+    <title>Figures that move</title>
+    <p>Figures written one after another under a single bass note show the upper voices moving while the bass stays. The <term ref="cadential-six-four">cadential six-four</term> is figured this way: 6/4 followed by 5/3 under the dominant, showing the sixth falling to the fifth and the fourth to the third.</p>
+    <figure play="as-written" tempo="66">
+      <staff clef="treble">[F4 D5]/h [E4 C5]/h [D4 B4]/h [E4 C5]/h |.</staff>
+      <staff clef="bass">[F2 A3]/h{6} [G2 G3]/h{6/4} [G2 G3]/h{5/3} [C3 G3]/h |.</staff>
+      <caption>In <note>C</note> major: 6/4 and 5/3 over the bass <note>G</note>. The upper voices move from <note>C</note> and <note>E</note> to <note>B</note> and <note>D</note>.</caption>
+    </figure>
+    <p>Moving figures also show <term ref="nonchord-tone">nonchord tones</term> such as <term ref="suspension">suspensions</term>, which the nonchord tones lesson explains: 4 followed by 3 under one bass note means a fourth above the bass that resolves down to a third.</p>
+    <check id="moving-figures">
+      <prompt>Under one bass note stand the figures 6/4 and then 5/3. What happens?</prompt>
+      <option key="a">The bass moves up a step</option>
+      <option key="b" correct="true">Above the held bass, the sixth falls to the fifth and the fourth to the third</option>
+      <option key="c">The chord changes from root position to second inversion</option>
+      <explanation>Figures in a row under one bass note describe the upper voices while the bass is held: here the sixth moves to the fifth and the fourth to the third, as in the cadential six-four.</explanation>
+    </check>
+  </section>
+</lesson>

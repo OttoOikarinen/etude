@@ -18,7 +18,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <staff clef="treble">A4{1} *B4{2} *C5{3} D5{4} *E5{5} *F5{6} G5{7} A5{8}</staff>
       <caption>The <note>A</note> natural minor scale. The highlighted pairs are the half steps, 2–3 and 5–6.</caption>
     </figure>
-    <p>Compared with the <term ref="major-scale">major scale</term> on the same <term ref="tonic">tonic</term>, the natural minor scale has a lower third, sixth and seventh note, each by a half step. The lower third gives minor its characteristic darker colour.</p>
+    <p>Compared with the <term ref="major-scale">major scale</term> on the same <term ref="tonic">tonic</term>, the natural minor scale has a lower third, sixth and seventh note, each by a half step. The lower third gives minor its characteristic darker color.</p>
     <figure play="melodic" tempo="100">
       <staff clef="treble">C4 D4 E4 F4 G4 A4 B4 C5</staff>
       <caption>The <note>C</note> major scale.</caption>
@@ -95,7 +95,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <staff clef="treble">A4 B4 C5 D5 E5 *F5 *G#5 A5</staff>
       <caption>The <note>A</note> harmonic minor scale. Between the sixth and seventh notes, <note>F5</note> and <note>G#5</note>, lies a gap of three half steps.</caption>
     </figure>
-    <p>The raised seventh leaves a gap of three half steps between the sixth and seventh notes. Written with neighbouring letters, this gap is an <term ref="augmented-interval">augmented second</term>, as the intervals lesson explains; it gives the harmonic minor scale its distinctive sound.</p>
+    <p>The raised seventh leaves a gap of three half steps between the sixth and seventh notes. Written with neighboring letters, this gap is an <term ref="augmented-interval">augmented second</term>, as the intervals lesson explains; it gives the harmonic minor scale its distinctive sound.</p>
     <worked>
       <title>Write a harmonic minor scale</title>
       <step>

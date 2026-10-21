@@ -3,7 +3,7 @@
 SPDX-FileCopyrightText: 2026 Otto Oikarinen
 SPDX-License-Identifier: CC-BY-SA-4.0
 
-The curriculum: levels, their units and what each unit practises.
+The curriculum: levels, their units and what each unit practices.
 Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
 -->
 <curriculum>
@@ -135,6 +135,133 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
       <summary>The Italian terms and signs that tell how to perform music.</summary>
       <practice exercise="symbols"/>
       <vocabulary tags="tempo dynamics articulation directions"/>
+    </unit>
+
+    <exam size="30"/>
+  </level>
+  <level id="level2" number="2">
+    <title>Intermediate</title>
+    <description>Seventh chords, Roman numeral analysis and harmonic function, cadences, figured bass and four-part writing; nonchord tones, phrases and periods; the church modes, transposition, advanced rhythm and dictation.</description>
+
+    <unit id="l2.sevenths" lesson="l2.sevenths">
+      <title>Seventh Chords</title>
+      <summary>The five common seventh chords, their inversions and figures.</summary>
+      <practice exercise="chord-staff">
+        <setting key="sevenths" value="true"/>
+      </practice>
+      <practice exercise="chord-ear">
+        <setting key="sevenths" value="true"/>
+      </practice>
+      <vocabulary tags="sevenths"/>
+    </unit>
+
+    <unit id="l2.roman" lesson="l2.roman">
+      <title>Roman Numerals and Harmonic Function</title>
+      <summary>Analyze chords in a key; tonic, predominant and dominant.</summary>
+      <practice exercise="roman-numerals">
+        <setting key="mode" value="both"/>
+      </practice>
+      <vocabulary tags="function"/>
+    </unit>
+
+    <unit id="l2.modes" lesson="l2.modes">
+      <title>Church Modes</title>
+      <summary>Dorian, Phrygian, Lydian, Mixolydian and Locrian, on the staff and by ear.</summary>
+      <practice exercise="scale-staff">
+        <setting key="modes" value="true"/>
+      </practice>
+      <practice exercise="scale-ear">
+        <setting key="modes" value="true"/>
+      </practice>
+      <vocabulary tags="modes"/>
+    </unit>
+
+    <unit id="l2.cadences" lesson="l2.cadences">
+      <title>Cadences</title>
+      <summary>Authentic, half, plagal and deceptive cadences, and the cadential six-four.</summary>
+      <practice exercise="cadences-staff">
+        <setting key="phrygian" value="true"/>
+      </practice>
+      <practice exercise="cadence-ear">
+        <setting key="mode" value="both"/>
+        <setting key="authentic-kinds" value="true"/>
+        <setting key="phrygian" value="true"/>
+      </practice>
+      <vocabulary tags="cadences"/>
+    </unit>
+
+    <unit id="l2.rhythm" lesson="l2.rhythm">
+      <title>Syncopation, Triplets and Compound Meters</title>
+      <summary>Rhythms that go against the beat or divide it in a new way.</summary>
+      <practice exercise="rhythm-tap">
+        <setting key="vocabulary" value="quarters halves eighths rests dotted-quarter sixteenths syncopation dotted-eighth triplets"/>
+        <setting key="meters" value="2/4 3/4 4/4 6/8 9/8 12/8"/>
+      </practice>
+      <practice exercise="rhythm-dictation">
+        <setting key="vocabulary" value="halves eighths rests dotted-quarter syncopation dotted-eighth triplets"/>
+        <setting key="meters" value="2/4 3/4 4/4 6/8 9/8 12/8"/>
+      </practice>
+      <vocabulary tags="rhythm2"/>
+    </unit>
+
+    <unit id="l2.figured-bass" lesson="l2.figured-bass">
+      <title>Figured Bass</title>
+      <summary>Read the figures under a bass line and realize them in four parts.</summary>
+      <practice exercise="figured-bass">
+        <setting key="slashed" value="true"/>
+      </practice>
+      <practice exercise="inversion-ear">
+        <setting key="sevenths" value="dominant"/>
+      </practice>
+      <vocabulary tags="figured-bass"/>
+    </unit>
+
+    <unit id="l2.transposition" lesson="l2.transposition">
+      <title>Transposition</title>
+      <summary>Move music to another key and write for transposing instruments.</summary>
+      <practice exercise="transposition">
+        <setting key="instruments" value="true"/>
+        <setting key="instrument-direction" value="both"/>
+      </practice>
+      <vocabulary tags="transposition"/>
+    </unit>
+
+    <unit id="l2.voice-leading" lesson="l2.voice-leading">
+      <title>Four-Part Writing</title>
+      <summary>Ranges, spacing, doubling, motion between voices and resolving tendency tones.</summary>
+      <practice exercise="satb-writing"/>
+      <practice exercise="satb-errors"/>
+      <vocabulary tags="voice-leading"/>
+    </unit>
+
+    <unit id="l2.nonchord" lesson="l2.nonchord">
+      <title>Nonchord Tones</title>
+      <summary>Passing and neighbor tones, suspensions, appoggiaturas, anticipations and pedal points.</summary>
+      <vocabulary tags="nonchord"/>
+    </unit>
+
+    <unit id="l2.phrase" lesson="l2.phrase">
+      <title>Motive, Phrase and Period</title>
+      <summary>How phrases end in cadences and pair up into periods and sentences.</summary>
+      <practice exercise="cadence-ear">
+        <setting key="mode" value="both"/>
+        <setting key="authentic-kinds" value="true"/>
+        <setting key="phrygian" value="true"/>
+      </practice>
+      <vocabulary tags="form"/>
+    </unit>
+
+    <unit id="l2.dictation" lesson="l2.dictation">
+      <title>Melodic and Harmonic Dictation</title>
+      <summary>Strategies for writing down melodies and chord progressions by ear.</summary>
+      <practice exercise="melodic-dictation">
+        <setting key="max-accidentals" value="3"/>
+        <setting key="meters" value="2/4 3/4 4/4"/>
+      </practice>
+      <practice exercise="progression-ear">
+        <setting key="mode" value="both"/>
+      </practice>
+      <vocabulary tags="dictation"/>
     </unit>
 
     <exam size="30"/>
