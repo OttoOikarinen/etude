@@ -9,7 +9,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Figures over a bass</title>
-    <p>In the Baroque era, from about 1600 to 1750, keyboard and lute players often read from a <term ref="figured-bass">figured bass</term>, also called <term ref="thoroughbass">thoroughbass</term>: a bass line with numbers, the <term ref="figures">figures</term>, written with it. The figures show which intervals to play above each bass note. The player, part of the <term ref="basso-continuo">basso continuo</term>, makes up the upper voices on the spot; writing them out is called <term ref="realization">realising</term> the figured bass.</p>
+    <p>In the Baroque era, from about 1600 to 1750, keyboard and lute players often read from a <term ref="figured-bass">figured bass</term>, also called <term ref="thoroughbass">thoroughbass</term>: a bass line with numbers, the <term ref="figures">figures</term>, written with it. The figures show which intervals to play above each bass note. The player, part of the <term ref="basso-continuo">basso continuo</term>, makes up the upper voices on the spot; writing them out is called <term ref="realization">realizing</term> the figured bass.</p>
     <p>The figures count intervals upward from the bass, using the notes of the key unless an accidental says otherwise. They do not say in which octave or order the upper notes lie, and compound intervals are counted as simple ones: a tenth above the bass is shown as 3.</p>
     <figure play="as-written" tempo="66">
       <staff clef="treble">[G4 C5]/h [G4 D5]/h [G4 C5]/h |.</staff>
@@ -77,10 +77,10 @@ SPDX-License-Identifier: CC-BY-SA-4.0
   </section>
 
   <section>
-    <title>Realising a figured bass</title>
-    <p>To realise a figured bass in four parts, work out the chords first, then write the upper voices following the rules of four-part writing.</p>
+    <title>Realizing a figured bass</title>
+    <p>To realize a figured bass in four parts, work out the chords first, then write the upper voices following the rules of four-part writing.</p>
     <worked>
-      <title>Realise a short figured bass in four parts</title>
+      <title>Realize a short figured bass in four parts</title>
       <step>
         <p>The key is <note>A</note> minor, and the bass is <note>A3</note>, <note>D3</note> with a 6, <note>E3</note> with a sharp, and <note>A2</note>.</p>
         <figure play="as-written" tempo="66">

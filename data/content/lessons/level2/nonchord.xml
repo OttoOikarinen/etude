@@ -26,12 +26,12 @@ SPDX-License-Identifier: CC-BY-SA-4.0
   </section>
 
   <section>
-    <title>Passing and neighbour tones</title>
-    <p>A <term ref="passing-tone">passing tone</term> fills the gap between two chord tones a third apart: it is approached by step and left by step in the same direction. A <term ref="neighbor-tone">neighbour tone</term> decorates a single chord tone: it steps away, up or down, and steps back. Both are usually unaccented.</p>
+    <title>Passing and neighbor tones</title>
+    <p>A <term ref="passing-tone">passing tone</term> fills the gap between two chord tones a third apart: it is approached by step and left by step in the same direction. A <term ref="neighbor-tone">neighbor tone</term> decorates a single chord tone: it steps away, up or down, and steps back. Both are usually unaccented.</p>
     <figure play="as-written" tempo="80">
       <staff clef="treble" time="4/4">C5/q *D5/q E5/q *F5/q | E5/w |.</staff>
       <staff clef="bass" time="4/4">[C3 G3]/w | [C3 G3]/w |.</staff>
-      <caption>Over a <note>C</note> major chord: <note>D5</note> is a passing tone between <note>C5</note> and <note>E5</note>, and <note>F5</note> an upper neighbour tone that returns to <note>E5</note>.</caption>
+      <caption>Over a <note>C</note> major chord: <note>D5</note> is a passing tone between <note>C5</note> and <note>E5</note>, and <note>F5</note> an upper neighbor tone that returns to <note>E5</note>.</caption>
     </figure>
     <p>Passing tones can also fall on the beat, as <term ref="accented-passing-tone">accented passing tones</term>, and two passing tones in a row can fill the gap of a fourth.</p>
     <check id="passing-figure">
@@ -42,9 +42,9 @@ SPDX-License-Identifier: CC-BY-SA-4.0
         <description>The bass staff holds a chord for the whole bar. Above it, three notes rise by step; the middle one, on the second beat, is highlighted.</description>
       </figure>
       <option key="a" correct="true">A passing tone</option>
-      <option key="b">A neighbour tone</option>
+      <option key="b">A neighbor tone</option>
       <option key="c">A suspension</option>
-      <explanation>Over the <note>C</note> major chord, <note>F5</note> is not a chord tone. It is approached by step from <note>E5</note> and left by step to <note>G5</note>, in the same direction, on a weak beat: a passing tone. A neighbour tone would return to <note>E5</note>.</explanation>
+      <explanation>Over the <note>C</note> major chord, <note>F5</note> is not a chord tone. It is approached by step from <note>E5</note> and left by step to <note>G5</note>, in the same direction, on a weak beat: a passing tone. A neighbor tone would return to <note>E5</note>.</explanation>
     </check>
   </section>
 

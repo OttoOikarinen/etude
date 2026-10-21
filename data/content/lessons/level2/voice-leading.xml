@@ -21,7 +21,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <list>
       <li><term ref="spacing">Spacing</term>: no more than an <term ref="octave">octave</term> between soprano and alto, or between alto and tenor. Tenor and bass may be further apart.</li>
       <li>No <term ref="voice-crossing">crossing</term>: a lower voice never sounds above a higher one, for example the alto above the soprano.</li>
-      <li>No <term ref="voice-overlap">overlap</term>: a voice does not move past the note that a neighbouring voice has just sung.</li>
+      <li>No <term ref="voice-overlap">overlap</term>: a voice does not move past the note that a neighboring voice has just sung.</li>
     </list>
     <figure play="as-written" tempo="60">
       <staff clef="treble">[G4 C5]/h [G4 E5]/h *[C4 E5]/h ||</staff>

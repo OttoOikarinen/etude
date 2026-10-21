@@ -97,9 +97,9 @@ SPDX-License-Identifier: CC-BY-SA-4.0
   </section>
 
   <section>
-    <title>Practising</title>
+    <title>Practicing</title>
     <p>Dictation improves with short, regular practice more than with long sessions. Sing scale degrees aloud, with numbers or with <term ref="solfege">solfège</term> syllables. With <term ref="movable-do">movable do</term>, do is the tonic of a major key. In minor some teachers use la as the tonic, <term ref="la-based-minor">la-based minor</term>, and others keep do, <term ref="do-based-minor">do-based minor</term>; both systems work if you use one consistently. In <term ref="fixed-do">fixed do</term>, used in many countries where the syllables are the note names, do is always <note>C</note>, so the syllables do not show the scale degrees.</p>
-    <p>Practise the parts separately as well: <term ref="rhythmic-dictation">rhythmic dictation</term> for rhythm, and listening to the bass line alone for harmony. Etude's dictation exercises let you hear the music again, so use the replays deliberately: each time, listen for one thing.</p>
+    <p>Practice the parts separately as well: <term ref="rhythmic-dictation">rhythmic dictation</term> for rhythm, and listening to the bass line alone for harmony. Etude's dictation exercises let you hear the music again, so use the replays deliberately: each time, listen for one thing.</p>
     <check id="memory-first">
       <prompt>Why is it useful to sing a melody back in your head before writing it?</prompt>
       <option key="a" correct="true">What you can remember and sing, you can then work out at your own pace</option>

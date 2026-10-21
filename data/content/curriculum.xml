@@ -3,7 +3,7 @@
 SPDX-FileCopyrightText: 2026 Otto Oikarinen
 SPDX-License-Identifier: CC-BY-SA-4.0
 
-The curriculum: levels, their units and what each unit practises.
+The curriculum: levels, their units and what each unit practices.
 Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
 -->
 <curriculum>
@@ -157,7 +157,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
 
     <unit id="l2.roman" lesson="l2.roman">
       <title>Roman Numerals and Harmonic Function</title>
-      <summary>Analyse chords in a key; tonic, predominant and dominant.</summary>
+      <summary>Analyze chords in a key; tonic, predominant and dominant.</summary>
       <practice exercise="roman-numerals"/>
       <vocabulary tags="function"/>
     </unit>
@@ -196,7 +196,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
 
     <unit id="l2.figured-bass" lesson="l2.figured-bass">
       <title>Figured Bass</title>
-      <summary>Read the figures under a bass line and realise them in four parts.</summary>
+      <summary>Read the figures under a bass line and realize them in four parts.</summary>
       <practice exercise="figured-bass"/>
       <practice exercise="inversion-ear"/>
       <vocabulary tags="figured-bass"/>
@@ -219,7 +219,7 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
 
     <unit id="l2.nonchord" lesson="l2.nonchord">
       <title>Nonchord Tones</title>
-      <summary>Passing and neighbour tones, suspensions, appoggiaturas, anticipations and pedal points.</summary>
+      <summary>Passing and neighbor tones, suspensions, appoggiaturas, anticipations and pedal points.</summary>
       <vocabulary tags="nonchord"/>
     </unit>
 

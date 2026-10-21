@@ -5,7 +5,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 <lesson id="l2.modes">
   <title>Church Modes</title>
-  <summary>Seven scales use the notes of the white keys from different starting points; each has its own colour.</summary>
+  <summary>Seven scales use the notes of the white keys from different starting points; each has its own color.</summary>
 
   <section>
     <title>Seven modes on the white keys</title>
@@ -35,7 +35,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Comparing modes with major and minor</title>
-    <p>Apart from Ionian and Aeolian, each mode differs from major or natural minor on the same <term ref="tonic">tonic</term> by one or two notes. These <term ref="characteristic-note">characteristic notes</term> give the mode its colour:</p>
+    <p>Apart from Ionian and Aeolian, each mode differs from major or natural minor on the same <term ref="tonic">tonic</term> by one or two notes. These <term ref="characteristic-note">characteristic notes</term> give the mode its color:</p>
     <list>
       <li>Lydian: major with a raised fourth degree.</li>
       <li>Mixolydian: major with a lowered seventh degree.</li>
@@ -102,7 +102,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Hearing modes</title>
-    <p>To recognise a mode by ear, first decide whether its third is major or minor, then listen for the characteristic note:</p>
+    <p>To recognize a mode by ear, first decide whether its third is major or minor, then listen for the characteristic note:</p>
     <list>
       <li>Lydian: a major mode with a <term ref="tritone">tritone</term> above the tonic; it sounds bright and floating.</li>
       <li>Mixolydian: a major mode without a <term ref="leading-tone">leading tone</term>. The seventh degree lies a whole step below the tonic, and the triad on the fifth degree is minor.</li>

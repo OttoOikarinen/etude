@@ -34,7 +34,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Stems, flags and beams</title>
-    <p>Stems point up from notes below the middle line of the staff and down from notes above it. Notes on the middle line usually have a stem pointing down, although the stem may point up when the neighbouring notes have up-stems.</p>
+    <p>Stems point up from notes below the middle line of the staff and down from notes above it. Notes on the middle line usually have a stem pointing down, although the stem may point up when the neighboring notes have up-stems.</p>
     <p>Eighth notes and shorter notes can be joined by <term ref="beam">beams</term> instead of flags. A beam replaces one flag, so two beams mean sixteenth notes. Beams group the notes of one <term ref="beat">beat</term> together so that the beat is easy to see.</p>
     <figure play="as-written" tempo="72">
       <staff clef="treble" time="2/4">G4/e A4/e B4/e C5/e | D5/s C5/s B4/s A4/s G4/q |.</staff>

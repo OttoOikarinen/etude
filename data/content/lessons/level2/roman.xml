@@ -87,7 +87,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>How chords follow each other</title>
-    <p>In common-practice music some chord successions are far more frequent than others. The strongest <term ref="root-movement">root movement</term> is down a fifth (or up a fourth): V to I, ii to V, vi to ii. Chains of falling fifths, <term ref="circle-progression">circle progressions</term>, lead from the tonic's most distant neighbours back to the tonic:</p>
+    <p>In common-practice music some chord successions are far more frequent than others. The strongest <term ref="root-movement">root movement</term> is down a fifth (or up a fourth): V to I, ii to V, vi to ii. Chains of falling fifths, <term ref="circle-progression">circle progressions</term>, lead from the tonic's most distant neighbors back to the tonic:</p>
     <figure play="as-written" tempo="72">
       <staff clef="treble">[G4 E5]/h [A4 E5]/h [A4 F5]/h [B4 G5]/h [C5 G5]/h |.</staff>
       <staff clef="bass">[C3 C4]/h{I} [A2 C4]/h{vi} [D3 D4]/h{ii} [G2 D4]/h{V} [C3 E4]/h{I} |.</staff>
@@ -113,9 +113,9 @@ SPDX-License-Identifier: CC-BY-SA-4.0
   </section>
 
   <section>
-    <title>Analysing a progression</title>
+    <title>Analyzing a progression</title>
     <worked>
-      <title>Analyse a four-part progression</title>
+      <title>Analyze a four-part progression</title>
       <step>
         <p>Find the key. The key signature has two sharps, and the progression begins and ends with <note>D</note>–<note>F#</note>–<note>A</note>, so the key is <note>D</note> major, not <note>B</note> minor.</p>
         <figure play="as-written" tempo="72">

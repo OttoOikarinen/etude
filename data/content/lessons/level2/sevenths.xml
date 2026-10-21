@@ -14,7 +14,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <staff clef="treble">[G4 B4 D5]/h [G4 B4 D5 F5]/h</staff>
       <caption>The triad <note>G</note>–<note>B</note>–<note>D</note>, then the seventh chord <note>G</note>–<note>B</note>–<note>D</note>–<note>F</note>. The added <note>F</note> is the seventh.</caption>
     </figure>
-    <p>Written as a compact stack in root position, a seventh chord sits on four neighbouring lines or in four neighbouring spaces. The seventh is a <term ref="dissonance">dissonance</term> against the root, so seventh chords sound less settled than triads and usually lead somewhere.</p>
+    <p>Written as a compact stack in root position, a seventh chord sits on four neighboring lines or in four neighboring spaces. The seventh is a <term ref="dissonance">dissonance</term> against the root, so seventh chords sound less settled than triads and usually lead somewhere.</p>
     <check id="seventh-of-d">
       <prompt>Which note is the seventh of the seventh chord built on <note>D</note> in <note>C</note> major?</prompt>
       <option key="a"><note>A</note></option>
@@ -73,7 +73,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <prompt>What is the quality of this seventh chord?</prompt>
       <figure play="harmonic">
         <staff clef="treble">[D4 F4 A4 C5]/w</staff>
-        <description>Four notes stacked in neighbouring spaces: the lowest just below the treble staff, the highest in the third space. No accidentals.</description>
+        <description>Four notes stacked in neighboring spaces: the lowest just below the treble staff, the highest in the third space. No accidentals.</description>
       </figure>
       <option key="a">Dominant seventh</option>
       <option key="b" correct="true">Minor seventh</option>
@@ -127,7 +127,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <staff clef="treble">[G4 B4 D5 F5]/h{V7} | [B4 D5 F5 G5]/h{V6/5} | [D4 F4 G4 B4]/h{V4/3} | [F4 G4 B4 D5]/h{V4/2} |</staff>
       <caption>V7 of <note>C</note> major in root position and in its three inversions. The bass is <note>G</note>, <note>B</note>, <note>D</note> and <note>F</note> in turn.</caption>
     </figure>
-    <p>Inverted seventh chords have a second between two of their notes, which helps to recognise them on the staff: in V6/5 above it is <note>F</note>–<note>G</note>, and in V4/2 it lies right above the bass.</p>
+    <p>Inverted seventh chords have a second between two of their notes, which helps to recognize them on the staff: in V6/5 above it is <note>F</note>–<note>G</note>, and in V4/2 it lies right above the bass.</p>
     <worked>
       <title>Name an inverted seventh chord</title>
       <step>
@@ -165,7 +165,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
   <section>
     <title>Hearing seventh chords</title>
-    <p>Each quality has its own colour:</p>
+    <p>Each quality has its own color:</p>
     <list>
       <li>Dominant seventh: a bright major triad with a tense minor seventh on top. It sounds as if it wants to move on, most of all to the chord a fifth below.</li>
       <li>Major seventh: bright but soft, with the sharp clash of the major seventh, a half step below the octave of the root.</li>

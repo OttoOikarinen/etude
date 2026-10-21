@@ -14,7 +14,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <staff clef="treble">[C4 E4 G4]/w</staff>
       <caption>A triad on <note>C</note>: the root <note>C</note>, the third <note>E</note> and the fifth <note>G</note>.</caption>
     </figure>
-    <p>Written as a compact stack with the root at the bottom, a triad sits on three neighbouring lines or in three neighbouring spaces, so it is easy to recognise on the staff.</p>
+    <p>Written as a compact stack with the root at the bottom, a triad sits on three neighboring lines or in three neighboring spaces, so it is easy to recognize on the staff.</p>
     <check id="fifth-of-f">
       <prompt>Which note is the fifth of the triad <note>F</note>–<note>A</note>–<note>C</note>?</prompt>
       <option key="a"><note>F</note></option>
@@ -101,7 +101,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
         </figure>
       </step>
       <step>
-        <p>Rearrange the notes until they stack in thirds, on neighbouring lines or spaces: <note>C</note>–<note>E</note>–<note>G</note>. The bottom note of the stack, <note>C</note>, is the root.</p>
+        <p>Rearrange the notes until they stack in thirds, on neighboring lines or spaces: <note>C</note>–<note>E</note>–<note>G</note>. The bottom note of the stack, <note>C</note>, is the root.</p>
         <figure play="harmonic">
           <staff clef="treble">[C4 E4 G4]/w</staff>
         </figure>
