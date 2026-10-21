@@ -12,6 +12,7 @@ that call ``on_term(entry_id)``, and notated examples use
 
 from __future__ import annotations
 
+import random
 from collections.abc import Callable, Sequence
 from gettext import gettext as _
 
@@ -267,8 +268,14 @@ class CheckView(Gtk.Box):
     }
 
     def __init__(
-        self, check: Check, on_play: PlayHandler, on_term: TermHandler | None = None
+        self,
+        check: Check,
+        on_play: PlayHandler,
+        on_term: TermHandler | None = None,
+        rng: random.Random | None = None,
     ) -> None:
+        """The options appear in random order, so the place of the right one tells
+        nothing (as in exercises, see :func:`~etude.exercises.base.shuffle_options`)."""
         super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.check = check
         self.add_css_class('card')
@@ -283,7 +290,9 @@ class CheckView(Gtk.Box):
         self.options_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.options_box.update_property([Gtk.AccessibleProperty.LABEL], [plain(check.prompt)])
         self.buttons: dict[str, Gtk.Button] = {}
-        for option in check.options:
+        options = list(check.options)
+        (rng or random.Random()).shuffle(options)
+        for option in options:
             label = paragraph_label(option.content, None)
             label.set_xalign(0)
             button = Gtk.Button(child=label)

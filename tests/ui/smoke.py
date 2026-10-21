@@ -927,6 +927,21 @@ def check_lesson_preview() -> None:
         assert not check.retry_button.get_visible()
         assert page.end_icon.has_css_class('success')
 
+        # The options of a check appear in random order.
+        import random
+
+        orders = {
+            tuple(
+                next(k for k, b in shuffled.buttons.items() if b is child)
+                for child in _children(shuffled.options_box)
+            )
+            for shuffled in (
+                CheckView(check.check, lambda *_a: None, rng=random.Random(seed))
+                for seed in range(12)
+            )
+        }
+        assert len(orders) > 1, orders
+
         # Playing an example goes through the model.
         figure = next(
             child for child in _children(sections[0]) if child.has_css_class('lesson-figure')
