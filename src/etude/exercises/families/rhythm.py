@@ -32,7 +32,7 @@ from typing import cast
 
 from ...audio.latency import TapGrade, TapResult, grade_taps
 from ...audio.spec import PlaybackNote, PlaybackSpec
-from ...core import Duration, Meter, NoteValue, Pitch
+from ...core import Duration, Meter, NoteValue, Pitch, Tuplet
 from ...learning.model import ItemId
 from ...learning.rating import PARTIAL_CREDIT_PASS
 from ...notation.spec import Barline, BarStyle, Chord, Clef, Event, Head, Ink, Rest, StaffSpec
@@ -64,6 +64,10 @@ WD = Duration(NoteValue.WHOLE, 1)
 HD = Duration(NoteValue.HALF, 1)
 QD = Duration(NoteValue.QUARTER, 1)
 ED = Duration(NoteValue.EIGHTH, 1)
+T = Duration(NoteValue.EIGHTH, tuplet=Tuplet(3, 2))
+"""Eighth-note triplet member: three in the time of two."""
+D = Duration(NoteValue.EIGHTH, tuplet=Tuplet(2, 3))
+"""Eighth-note duplet member: two in the time of three (compound time)."""
 
 LINE_PITCH = Pitch.parse('E4')
 """Pitch written on the line of a one-line percussion staff."""
@@ -71,6 +75,9 @@ WOODBLOCK = 76
 """GM percussion key of a high wood block."""
 GRID = Fraction(1, 16)
 """Dictation is compared on a grid of sixteenths."""
+TUPLET_GRID = Fraction(1, 48)
+"""The grid when triplets or duplets are involved: sixteenths and triplet sixteenths
+both fall on it."""
 MAX_TRIES = 50
 
 
@@ -95,6 +102,10 @@ class Vocabulary(Enum):
     DOTTED = 'dotted-quarter'
     SIXTEENTHS = 'sixteenths'
     SYNCOPATION = 'syncopation'
+    DOTTED_EIGHTH = 'dotted-eighth'
+    """Level 2: the dotted eighth and sixteenth."""
+    TRIPLETS = 'triplets'
+    """Level 2: eighth-note triplets in simple time, duplets in compound time."""
 
 
 def _cells(*cells: Sequence[Duration | RhythmEvent]) -> tuple[Rhythm, ...]:
@@ -115,6 +126,8 @@ SIMPLE_CELLS: dict[Vocabulary, tuple[tuple[Rhythm, ...], tuple[Rhythm, ...]]] = 
     Vocabulary.DOTTED: (_cells((QD, E)), _cells((Q,), (E, E), (H,))),
     Vocabulary.SIXTEENTHS: (_cells((S, S, S, S), (E, S, S), (S, S, E)), _cells((Q,), (E, E))),
     Vocabulary.SYNCOPATION: (_cells((E, Q, E), (Q, H, Q)), _cells((Q,), (E, E))),
+    Vocabulary.DOTTED_EIGHTH: (_cells((ED, S)), _cells((Q,), (E, E))),
+    Vocabulary.TRIPLETS: (_cells((T, T, T)), _cells((Q,), (E, E))),
 }
 COMPOUND_CELLS: dict[Vocabulary, tuple[tuple[Rhythm, ...], tuple[Rhythm, ...]]] = {
     Vocabulary.QUARTERS: (_cells((QD,)), _cells((QD,))),
@@ -130,6 +143,8 @@ COMPOUND_CELLS: dict[Vocabulary, tuple[tuple[Rhythm, ...], tuple[Rhythm, ...]]] 
         _cells((QD,), (E, E, E), (Q, E)),
     ),
     Vocabulary.SYNCOPATION: (_cells((E, Q)), _cells((QD,), (E, E, E))),
+    Vocabulary.DOTTED_EIGHTH: (_cells((ED, S, E), (E, ED, S)), _cells((QD,), (E, E, E), (Q, E))),
+    Vocabulary.TRIPLETS: (_cells((D, D)), _cells((QD,), (E, E, E))),
 }
 
 
@@ -149,6 +164,10 @@ def vocabulary_name(vocabulary: Vocabulary) -> str:
             return _('Sixteenth notes')
         case Vocabulary.SYNCOPATION:
             return _('Syncopation')
+        case Vocabulary.DOTTED_EIGHTH:
+            return _('Dotted eighth and sixteenth')
+        case Vocabulary.TRIPLETS:
+            return _('Triplets and duplets')
 
 
 def _vocabulary_options(choices: Iterable[Vocabulary]) -> tuple[Option, ...]:
@@ -171,11 +190,25 @@ def _vocabulary_hint(vocabulary: Vocabulary) -> str:
             return _('Four sixteenths fill one beat: count “1 e and a”.')
         case Vocabulary.SYNCOPATION:
             return _('Syncopated notes start between beats: count the “and” out loud.')
+        case Vocabulary.DOTTED_EIGHTH:
+            return _('A dotted eighth and a sixteenth share one beat, long–short: count “1 – a”.')
+        case Vocabulary.TRIPLETS:
+            return _(
+                'A triplet fits three even notes into one beat: count “1-trip-let”. In 6/8 a '
+                'duplet fits two into a beat of three.'
+            )
 
 
 # Meters ------------------------------------------------------------------------
 
-METERS = {'2/4': Meter(2, 4), '3/4': Meter(3, 4), '4/4': Meter(4, 4), '6/8': Meter(6, 8)}
+METERS = {
+    '2/4': Meter(2, 4),
+    '3/4': Meter(3, 4),
+    '4/4': Meter(4, 4),
+    '6/8': Meter(6, 8),
+    '9/8': Meter(9, 8),
+    '12/8': Meter(12, 8),
+}
 
 
 def _meter_options() -> tuple[Option, ...]:
@@ -185,6 +218,8 @@ def _meter_options() -> tuple[Option, ...]:
         Option('4/4', _('4/4')),
         # Translators: a time signature option; compound time has dotted-quarter beats.
         Option('6/8', _('6/8 (compound)')),
+        Option('9/8', _('9/8 (compound)')),
+        Option('12/8', _('12/8 (compound)')),
     )
 
 
@@ -388,7 +423,16 @@ def duration_name(duration: Duration, is_rest: bool = False) -> str:
     pair = names.get(value)
     if pair is None:
         return str(duration.length)
-    return pair[1] if dotted else pair[0]
+    name = pair[1] if dotted else pair[0]
+    if duration.tuplet is not None and not is_rest:
+        if duration.tuplet.actual == 3:
+            # Translators: a note of a triplet, e.g. "triplet eighth note".
+            return _('triplet {note}').format(note=name)
+        if duration.tuplet.actual == 2:
+            # Translators: a note of a duplet (two in the time of three), e.g.
+            # "duplet eighth note".
+            return _('duplet {note}').format(note=name)
+    return name
 
 
 def sentence_case(text: str) -> str:
@@ -501,11 +545,14 @@ def as_taps(value: object) -> tuple[float, ...]:
 
 
 def serialize_rhythm(rhythm: Rhythm) -> str:
-    """Compact form for the attempt log: ``4 8 8 r4 2.`` (denominator, dots, r = rest)."""
+    """Compact form for the attempt log: ``4 8 8 r4 2.`` (denominator, dots, r = rest;
+    ``8/3`` is a triplet eighth)."""
     tokens = []
     for duration, is_rest in rhythm:
         denominator = duration.value.value.denominator
         token = f'{denominator}{"." * duration.dots}'
+        if duration.tuplet is not None:
+            token += f'/{duration.tuplet.actual}'
         tokens.append(f'r{token}' if is_rest else token)
     return ' '.join(tokens)
 
@@ -562,7 +609,9 @@ def _join_numbers(numbers: Sequence[int]) -> str:
 # Rhythm Reading — Tap ----------------------------------------------------------------
 
 TAP_VOCABULARY = tuple(Vocabulary)
-TAP_DEFAULT = tuple(v.value for v in Vocabulary if v is not Vocabulary.SYNCOPATION)
+LEVEL_2_VOCABULARY = (Vocabulary.SYNCOPATION, Vocabulary.DOTTED_EIGHTH, Vocabulary.TRIPLETS)
+"""Rhythms of level 2; the exercises' defaults leave them out."""
+TAP_DEFAULT = tuple(v.value for v in Vocabulary if v not in LEVEL_2_VOCABULARY)
 
 
 class RhythmTap(ExerciseDefinition):
@@ -817,12 +866,12 @@ def palette_for(vocabularies: Iterable[Vocabulary], meter: Meter) -> tuple[Durat
     return tuple(sorted(fitting, key=lambda d: d.length, reverse=True))
 
 
-def sound_grid(rhythm: Rhythm, cells: int) -> list[str]:
-    """``cells`` sixteenths of the rhythm: ``A`` attack, ``S`` sustain, ``R`` rest,
-    ``-`` nothing written (an unfinished answer)."""
+def sound_grid(rhythm: Rhythm, cells: int, grid_unit: Fraction = GRID) -> list[str]:
+    """``cells`` grid steps (sixteenths by default) of the rhythm: ``A`` attack,
+    ``S`` sustain, ``R`` rest, ``-`` nothing written (an unfinished answer)."""
     grid: list[str] = []
     for duration, is_rest in rhythm:
-        count = duration.length / GRID
+        count = duration.length / grid_unit
         steps = int(count) if count.denominator == 1 else max(1, round(float(count)))
         if is_rest:
             grid.extend('R' * steps)
@@ -836,10 +885,12 @@ def sound_grid(rhythm: Rhythm, cells: int) -> list[str]:
 
 def beat_matches(expected: Rhythm, given: Rhythm, meter: Meter, bars: int) -> list[bool]:
     """For every felt beat: whether the given rhythm sounds the same there."""
-    per_beat = int(meter.pulse / GRID)
+    tuplets = any(d.tuplet is not None for d, _r in (*expected, *given))
+    unit = TUPLET_GRID if tuplets else GRID
+    per_beat = int(meter.pulse / unit)
     beats = pulses_per_bar(meter) * bars
     cells = per_beat * beats
-    a, b = sound_grid(expected, cells), sound_grid(given, cells)
+    a, b = sound_grid(expected, cells, unit), sound_grid(given, cells, unit)
     too_long = rhythm_length(given) > meter.bar_length * bars
     matches = [
         a[i * per_beat : (i + 1) * per_beat] == b[i * per_beat : (i + 1) * per_beat]
