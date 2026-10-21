@@ -120,6 +120,8 @@ def satb_figure(
     highlight: Collection[int] = (),
     final_bar: bool = False,
     description: str | None = None,
+    inks: Mapping[tuple[int, int], Ink] | None = None,
+    marks: Mapping[int, str] | None = None,
 ) -> SystemSpec:
     """Four voices on a grand staff: soprano and alto on the treble staff, tenor
     and bass on the bass staff.
@@ -133,18 +135,26 @@ def satb_figure(
     * Chords whose index is in ``highlight`` are drawn in the accent colour, with
       their labels (the cadence of a phrase, the chord a question asked about).
 
+    * ``inks`` colours single notes by ``(voice, chord)`` (voice-leading mistakes in
+      error ink, a correct answer in success ink), and ``marks`` writes a short text
+      under the treble staff at a chord, in error ink (the rule a mistake breaks).
+
     :func:`satb_voices` reads the voicings back.
     """
+    inks = inks or {}
+    marks = marks or {}
 
     def chord(i: int, voice: int, *, labelled: bool = False) -> StaffChord:
         ink = Ink.ACCENT if i in highlight else Ink.FOREGROUND
-        pitches = (voices[i][voice],) if durations else (voices[i][voice + 1], voices[i][voice])
-        return StaffChord(
-            tuple(Head(p, ink=ink) for p in pitches),
-            durations[i] if durations else None,
-            label=(labels[i] if i < len(labels) else None) if labelled else None,
-            ink=ink,
-        )
+        parts = (voice,) if durations else (voice + 1, voice)
+        heads = tuple(Head(voices[i][v], ink=inks.get((v, i), ink)) for v in parts)
+        label = (labels[i] if i < len(labels) else None) if labelled else None
+        stem = ink
+        if voice == 0 and i in marks:
+            label, stem = marks[i], Ink.ERROR
+        elif len({h.ink for h in heads}) == 1 and heads[0].ink is not ink and not labelled:
+            stem = heads[0].ink
+        return StaffChord(heads, durations[i] if durations else None, label=label, ink=stem)
 
     count = range(len(voices))
     if durations:
@@ -195,6 +205,12 @@ def satb_voices(figure: object) -> list[Voicing]:
     def notes(staff: StaffSpec) -> list[list[Pitch]]:
         lines = [staff.events, *staff.voices]
         columns = [[e for e in line if isinstance(e, StaffChord)] for line in lines]
+        if staff.voices:
+            # One voice per line, upper voice first: keep the order even when the
+            # voices cross (a passage with a mistake).
+            return [
+                [chord.heads[0].pitch for chord in column] for column in zip(*columns, strict=True)
+            ]
         return [
             sorted((h.pitch for chord in column for h in chord.heads), reverse=True)
             for column in zip(*columns, strict=True)

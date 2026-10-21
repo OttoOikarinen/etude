@@ -81,6 +81,17 @@ Contract changes so far (all backwards-compatible):
   triads, bass of ii°6/vii°6 and six-fours, third of vi after V), accepts a set of
   pitch names per chord in `soprano=`, takes `complete=True` for every chord tone,
   and keeps half steps in the bass (the Phrygian iv6–V); `scan()` gained `first=`.
+* W4 four-part input: `StaffInputAnswer.labels` (text under each slot, the Roman
+  numerals of four-part writing). New pure module `etude.notation.parts`
+  (`voices_figure`, `event_index`: voices on their staves and their combined
+  event numbering). The staff input (`ui.widgets.staff_entry` / `staff_input`)
+  writes several voices on a grand staff (1–4 and Tab choose the voice, printed
+  `given_voices` cannot be selected) and draws `StaffInputAnswer.rhythm`; an
+  answer widget with `show_feedback_figure(figure)` shows `Feedback.figure` on
+  its own staff instead of the page's figure (voice-leading mistakes marked
+  where they were written; four-part answers only). `harmony.satb_figure` gained
+  `inks` and `marks`, and `satb_voices` keeps the voice order of stemmed figures
+  even when voices cross.
 * W4 exercises: `Question.details`, exercise-private facts needed again when
   grading (the keys of a transposition); not shown to the learner.
 * W4 notation: lines of a `Chord.label` separated by `'\n'` are stacked

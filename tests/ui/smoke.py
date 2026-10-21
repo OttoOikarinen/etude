@@ -1652,6 +1652,255 @@ def check_live_staff_input_sessions() -> None:
             _close_live(window, services)
 
 
+def _satb_spec():
+    from etude.core import KeySignature, Pitch
+    from etude.exercises.base import StaffInputAnswer
+    from etude.notation.spec import Clef
+
+    bass = tuple(Pitch.parse(n) for n in ('C3', 'F3', 'G3', 'C3'))
+    return StaffInputAnswer(
+        Clef.TREBLE,
+        key_signature=KeySignature(0),
+        slots=4,
+        voices=4,
+        staves=(Clef.TREBLE, Clef.BASS),
+        given_voices={3: bass},
+        labels=('I', 'IV', 'V', 'I'),
+    )
+
+
+def _click_voice(widget, voice: int, slot: int, pitch) -> None:
+    """Click where ``pitch`` of ``voice`` goes in ``slot``, on the voice's own staff."""
+    entry = widget.entry
+    view = widget.view
+    display = view.display_list
+    staff, index = entry.event_of(voice, slot)
+    geometry = display.staves[staff]
+    ox, oy = view._origin()
+    px = view.pixels_per_space
+    x = ox + display.event_x[staff][index] * px
+    position = entry.clef_of(voice).staff_position(pitch)
+    y = oy + geometry.y_of(position) * px
+    assert view.staff_position_at(x, y) == (staff, position), view.staff_position_at(x, y)
+    widget._on_pressed(None, 1, x, y)
+
+
+def _write_note(page_or_widget, voice: int, slot: int, pitch) -> None:
+    """Write ``pitch`` in ``voice`` and ``slot`` with the keyboard only: the voice key,
+    ← / →, the letter, ↑ / ↓ and the accidental keys."""
+    from etude.ui.widgets.staff_entry import Accidental, accidental_for
+
+    widget = getattr(page_or_widget, 'answer_widget', page_or_widget)
+
+    def key(name: str) -> None:
+        if hasattr(page_or_widget, 'answer_widget'):
+            assert press(page_or_widget, name), name
+        else:
+            from gi.repository import Gdk
+
+            keyval = Gdk.keyval_from_name(name)
+            assert widget.handle_key(keyval, Gdk.ModifierType(0)), name
+
+    entry = widget.entry
+    if entry.voice != voice:
+        key(str(voice + 1))
+    assert entry.voice == voice
+    while entry.current < slot:
+        key('Right')
+    while entry.current > slot:
+        key('Left')
+    key(pitch.letter.name.lower())
+    target = entry.voice_clef.staff_position(pitch)
+    while entry.cursor < target:
+        key('Up')
+    while entry.cursor > target:
+        key('Down')
+    wanted = accidental_for(pitch, entry.key_signature)
+    names = {Accidental.SHARP: 'plus', Accidental.FLAT: 'minus', Accidental.NATURAL: 'equal'}
+    if entry.accidental is not wanted:
+        key(names[entry.accidental] if wanted is Accidental.NONE else names[wanted])
+    assert entry.notes[slot] == pitch, (entry.notes, pitch)
+
+
+def check_satb_staff_input() -> None:
+    """Four-part entry on a grand staff by keys and clicks at a wide and a phone width:
+    voice keys, printed bass, value top voice first, the reveal and the annotated figure."""
+    from gi.repository import Gdk, Gtk
+
+    from etude.core import Pitch
+    from etude.notation.spec import Ink, SystemSpec
+    from etude.ui.widgets.staff_input import StaffInputView
+
+    music = [('E5', 'C5', 'G4'), ('F5', 'C5', 'A4'), ('D5', 'B4', 'G4'), ('E5', 'C5', 'G4')]
+    for width in (900, 360):
+        window = Gtk.Window(default_width=width, default_height=800)
+        widget = StaffInputView(_satb_spec())
+        window.set_child(widget)
+        window.present()
+        pump()
+        try:
+            view = widget.view
+            assert view.get_width() <= width
+            assert view.display_list.width * view.pixels_per_space <= view.get_width() + 1, (
+                'the grand staff shrinks to fit'
+            )
+            assert isinstance(view.figure, SystemSpec)
+            assert sorted(widget.voice_buttons) == [0, 1, 2], 'no button for the printed bass'
+            answers = []
+            widget.connect('answered', lambda _w, v, found=answers: found.append(v))
+            assert not widget.handle_key(Gdk.KEY_4, Gdk.ModifierType(0)), 'bass is printed'
+            assert widget.handle_key(Gdk.KEY_2, Gdk.ModifierType(0))
+            assert widget.entry.voice == 1
+            assert widget.voice_buttons[1].get_active()
+            assert widget.cursor_text().startswith('Alto, chord 1: ')
+            widget.voice_buttons[2].set_active(True)
+            assert widget.entry.voice == 2
+            # The tenor of chord 1 and 2 by clicks on the bass staff, the rest by keys.
+            _click_voice(widget, 2, 0, Pitch.parse(music[0][2]))
+            _click_voice(widget, 2, 1, Pitch.parse(music[1][2]))
+            # A click on the upper staff selects a voice there (the nearest one).
+            _click_voice(widget, 0, 0, Pitch.parse(music[0][0]))
+            assert widget.entry.voice in (0, 1)
+            for slot, notes in enumerate(music):
+                for voice in range(3):
+                    _write_note(widget, voice, slot, Pitch.parse(notes[voice]))
+            assert widget.cursor_text() == 'Tenor, chord 4: G4'
+            assert widget.check_button.get_sensitive()
+            assert widget.activate_default()
+            bass = ('C3', 'F3', 'G3', 'C3')
+            expected = tuple(
+                tuple(Pitch.parse(n) for n in (*notes, b))
+                for notes, b in zip(music, bass, strict=True)
+            )
+            assert answers == [expected]
+            wrong = list(expected)
+            wrong[2] = (expected[2][0], Pitch.parse('D5'), *expected[2][2:])
+            widget.reveal(tuple(wrong), answers[0], False)
+            alto = widget.view.figure.staves[0].voices[0]
+            assert {h.ink for h in alto[2].heads} == {Ink.ERROR, Ink.SUCCESS}
+            assert not any(b.get_sensitive() for b in widget.voice_buttons.values())
+            assert not widget.handle_key(Gdk.KEY_1, Gdk.ModifierType(0)), 'locked'
+            annotated = view.figure
+            assert widget.show_feedback_figure(annotated)
+            assert view.figure is annotated
+        finally:
+            window.destroy()
+
+
+def check_rhythm_template_input() -> None:
+    """A dictation answer shows its rhythm: entered notes in the slot durations, empty
+    slots as dim placeholders; keys fill it and Check submits."""
+    from gi.repository import Gtk
+
+    from etude.core import Duration, NoteValue, Pitch
+    from etude.exercises.base import StaffInputAnswer
+    from etude.notation.spec import Chord, Clef, Ink
+    from etude.ui.widgets.staff_input import StaffInputView
+
+    rhythm = tuple(
+        Duration(v) for v in (NoteValue.QUARTER, NoteValue.EIGHTH, NoteValue.EIGHTH, NoteValue.HALF)
+    )
+    for width in (900, 360):
+        window = Gtk.Window(default_width=width, default_height=700)
+        widget = StaffInputView(StaffInputAnswer(Clef.TREBLE, slots=4, rhythm=rhythm))
+        window.set_child(widget)
+        window.present()
+        pump()
+        try:
+            chords = [e for e in widget.view.figure.events if isinstance(e, Chord)]
+            assert [c.duration for c in chords] == list(rhythm)
+            assert all(h.ink is Ink.DIM for c in chords for h in c.heads)
+            notes = [Pitch.parse(n) for n in ('G4', 'A4', 'B4', 'C5')]
+            for slot, pitch in enumerate(notes):
+                _write_note(widget, 0, slot, pitch)
+            assert widget.cursor_text() == 'Note 4: C5'
+            chords = [e for e in widget.view.figure.events if isinstance(e, Chord)]
+            assert [c.duration for c in chords] == list(rhythm)
+            answers = []
+            widget.connect('answered', lambda _w, v, found=answers: found.append(v))
+            assert widget.activate_default()
+            assert answers == [tuple((p,) for p in notes)]
+            widget.reveal(tuple((p,) for p in notes), answers[0], True)
+            chords = [e for e in widget.view.figure.events if isinstance(e, Chord)]
+            assert [c.duration for c in chords] == list(rhythm)
+        finally:
+            window.destroy()
+
+
+def check_live_satb_sessions() -> None:
+    """Real four-part writing and spot-the-error sessions: a correct answer written with
+    the keyboard, a wrong one marked on the staff, and a mistake named."""
+    import tempfile
+
+    from etude.core import Interval
+    from etude.notation.spec import Ink, SystemSpec
+    from etude.ui.widgets.staff_input import StaffInputView
+
+    def inks(figure) -> list:
+        return [
+            h.ink
+            for staff in figure.staves
+            for line in (staff.events, *staff.voices)
+            for e in line
+            for h in getattr(e, 'heads', ())
+        ]
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        window, services = _live_window(data_dir)
+        try:
+            page = window.start_exercise('satb-writing')
+            pump()
+            widget = page.answer_widget
+            assert isinstance(widget, StaffInputView), type(widget)
+            expected = page.question.expected
+            for voice in widget.entry.editable_voices:
+                for slot, chord in enumerate(expected):
+                    _write_note(page, voice, slot, chord[voice])
+            assert press(page, 'Return')
+            assert page.feedback is not None
+            assert page.feedback.correct, page.feedback.detail
+            assert isinstance(widget.view.figure, SystemSpec)
+            assert Ink.SUCCESS in inks(widget.view.figure)
+            assert page._figure_in_answer
+            assert not page._figure_holder.get_visible(), 'no second staff above'
+            assert press(page, 'Return')
+            # A wrong answer: an upper voice doubling a lower one in octaves.
+            widget = page.answer_widget
+            expected = page.question.expected
+            free = widget.entry.editable_voices
+            upper, lower = free[0], free[-1] if free[-1] != free[0] else 3
+            for voice in free:
+                for slot, chord in enumerate(expected):
+                    pitch = chord[voice]
+                    if voice == upper:
+                        pitch = chord[lower].transpose(Interval.parse('P8'))
+                    widget.entry.set_voice(voice)
+                    widget.entry.select(slot)
+                    widget.entry.place(widget.entry.voice_clef.staff_position(pitch))
+            widget.refresh()
+            assert press(page, 'Return')
+            assert page.feedback is not None
+            if not page.feedback.correct:
+                assert Ink.ERROR in inks(widget.view.figure)
+                assert page.feedback_banner.has_css_class('feedback-error')
+            assert press(page, 'Escape')
+            pump()
+
+            page = window.start_exercise('satb-errors')
+            pump()
+            assert page._figure_holder.get_visible(), 'the passage is shown'
+            options = page.question.answer.options
+            accel = next(o.accel for o in options if o.key == page.question.expected)
+            assert press(page, accel)
+            assert page.feedback is not None
+            assert page.feedback.correct
+            assert Ink.ERROR in inks(page.feedback.figure)
+            assert press(page, 'Escape')
+            pump()
+        finally:
+            _close_live(window, services)
+
+
 def check_staff_view_focus_ring() -> None:
     """A focused, shrunk StaffView draws its focus ring around the note, not with
     garbage bounds (GskRoundedRect must not be initialised on a temporary)."""
@@ -1723,6 +1972,9 @@ CHECKS: list[Callable[[], None]] = [
     check_long_figure_scrolls_in_its_card,
     check_staff_input_widget,
     check_live_staff_input_sessions,
+    check_satb_staff_input,
+    check_rhythm_template_input,
+    check_live_satb_sessions,
     check_today_preview,
     check_continue_banner_preview,
     check_progress_empty,

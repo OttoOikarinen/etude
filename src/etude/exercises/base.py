@@ -140,6 +140,9 @@ class StaffInputAnswer:
     """Durations of the slots, for dictation: the learner writes pitches into a
     given rhythm, and entered notes are drawn with these durations. Empty means
     stemless notes. When set, ``slots`` equals its length."""
+    labels: tuple[str, ...] = ()
+    """Text under each slot, below the lowest staff (the Roman numerals of a
+    four-part exercise); empty means none."""
 
     def staff_of_voice(self, voice: int) -> int:
         if self.voice_staves:

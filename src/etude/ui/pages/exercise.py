@@ -120,6 +120,8 @@ class ExercisePage(Adw.NavigationPage):
         self.answer_widget: AnswerWidget | None = None
         self.ear_panel: EarPanel | None = None
         self.feedback: Feedback | None = None
+        self._figure_in_answer = False
+        """The answer widget shows the feedback figure itself (staff input)."""
         self.response_ms = 0
         self.elapsed = 0
         self._number = 0
@@ -156,6 +158,7 @@ class ExercisePage(Adw.NavigationPage):
         button of eye exercises that have a playback."""
         self.question = question
         self.feedback = None
+        self._figure_in_answer = False
         self._number, self._total, self._settings_text = number, total, settings_text
         self._update_subtitle()
         self.prompt_label.set_label(question.prompt)
@@ -225,7 +228,11 @@ class ExercisePage(Adw.NavigationPage):
         if question is None:
             return
         figure = question.figure
-        if self.feedback is not None and self.feedback.figure is not None:
+        if (
+            self.feedback is not None
+            and self.feedback.figure is not None
+            and not self._figure_in_answer
+        ):
             figure = self.feedback.figure
         if question.playback_is_question:
             visible = (
@@ -299,9 +306,14 @@ class ExercisePage(Adw.NavigationPage):
         """Show the graded answer: mark the answer widget and reveal the banner."""
         self.feedback = feedback
         expected = self.question.expected if self.question is not None else None
+        self._figure_in_answer = False
         if self.answer_widget is not None:
             self.answer_widget.locked = True
             self.answer_widget.reveal(expected, given, feedback.correct)
+            # Staff answers show an annotated figure (four-part writing) on their own staff.
+            show = getattr(self.answer_widget, 'show_feedback_figure', None)
+            if feedback.figure is not None and show is not None:
+                self._figure_in_answer = bool(show(feedback.figure))
         self.feedback_banner.show_feedback(
             feedback, response_ms=self.response_ms, play_label=play_label
         )

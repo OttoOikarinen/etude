@@ -232,24 +232,27 @@ def rule_name(rule: Rule) -> str:
 def rule_mark(rule: Rule) -> str:
     """A short mark written under the staff where the rule is broken, e.g. "∥5"."""
     # Translators: short marks written on the staff under a voice-leading mistake, as a
-    # teacher would mark it. Keep them very short (a few characters).
+    # teacher would mark it: ∥5 parallel fifths, →8 direct octaves, × crossing, sp.
+    # spacing, rng range, inc. incomplete chord, 2× wrong doubling, LT leading tone,
+    # 7 seventh, A2 augmented leap, lp. large leap, ov. overlap, ✗ wrong chord.
+    # Keep them at most three characters.
     ctx = 'voice-leading mark'
     marks: dict[Rule, Callable[[], str]] = {
-        Rule.WRONG_CHORD: lambda: pgettext(ctx, 'chord'),
-        Rule.INCOMPLETE_CHORD: lambda: pgettext(ctx, 'missing'),
-        Rule.WRONG_DOUBLING: lambda: pgettext(ctx, 'double'),
-        Rule.RANGE: lambda: pgettext(ctx, 'range'),
-        Rule.SPACING: lambda: pgettext(ctx, 'space'),
-        Rule.CROSSING: lambda: pgettext(ctx, 'cross'),
-        Rule.OVERLAP: lambda: pgettext(ctx, 'overlap'),
+        Rule.WRONG_CHORD: lambda: pgettext(ctx, '✗'),
+        Rule.INCOMPLETE_CHORD: lambda: pgettext(ctx, 'inc.'),
+        Rule.WRONG_DOUBLING: lambda: pgettext(ctx, '2×'),
+        Rule.RANGE: lambda: pgettext(ctx, 'rng'),
+        Rule.SPACING: lambda: pgettext(ctx, 'sp.'),
+        Rule.CROSSING: lambda: pgettext(ctx, '×'),
+        Rule.OVERLAP: lambda: pgettext(ctx, 'ov.'),
         Rule.PARALLEL_FIFTHS: lambda: pgettext(ctx, '∥5'),
         Rule.PARALLEL_OCTAVES: lambda: pgettext(ctx, '∥8'),
         Rule.DIRECT_FIFTHS: lambda: pgettext(ctx, '→5'),
         Rule.DIRECT_OCTAVES: lambda: pgettext(ctx, '→8'),
         Rule.LEADING_TONE: lambda: pgettext(ctx, 'LT'),
-        Rule.CHORDAL_SEVENTH: lambda: pgettext(ctx, '7th'),
-        Rule.AUGMENTED_SECOND: lambda: pgettext(ctx, 'aug'),
-        Rule.LARGE_LEAP: lambda: pgettext(ctx, 'leap'),
+        Rule.CHORDAL_SEVENTH: lambda: pgettext(ctx, '7'),
+        Rule.AUGMENTED_SECOND: lambda: pgettext(ctx, 'A2'),
+        Rule.LARGE_LEAP: lambda: pgettext(ctx, 'lp.'),
     }
     return marks[rule]()
 

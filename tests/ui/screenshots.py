@@ -274,6 +274,33 @@ def entry_shots(window, page, pattern) -> None:
     render(window, Path(str(pattern).format('wrong')))
 
 
+def four_part_shots(window, page, pattern) -> None:
+    """Enter a four-part answer whose top written voice doubles the bottom voice in
+    octaves (parallel octaves and more), render it being written and checked."""
+    from etude.core import Interval
+
+    widget = page.answer_widget
+    entry = widget.entry
+    expected = page.question.expected
+    free = entry.editable_voices
+    top, bottom = free[0], max(range(entry.voices))
+    for voice in free:
+        entry.set_voice(voice)
+        for slot, chord in enumerate(expected):
+            pitch = chord[voice]
+            if voice == top:
+                pitch = chord[bottom].transpose(Interval.parse('P15'))
+                if pitch.midi > 79:
+                    pitch = chord[bottom].transpose(Interval.parse('P8'))
+            entry.select(slot)
+            entry.place(entry.voice_clef.staff_position(pitch))
+    entry.set_voice(free[-1])
+    widget.refresh()
+    render(window, Path(str(pattern).format('entering')))
+    widget.activate_default()
+    render(window, Path(str(pattern).format('wrong')))
+
+
 def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
     """Real exercises from the registry against a throw-away database: the first
     question, a correct answer and (for choice answers) a wrong one, light and dark."""
@@ -359,12 +386,23 @@ def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
                     rhythm_shots(window, page, out / f'live-{exercise_id}-{{}}-{scheme}.png')
                 elif isinstance(answer, RhythmInputAnswer):
                     entry_shots(window, page, out / f'live-{exercise_id}-{{}}-{scheme}.png')
+                elif isinstance(answer, StaffInputAnswer) and answer.voices > 1:
+                    # A filled-in four-part answer with mistakes: the highest written
+                    # voice doubles the lowest one in octaves, then it is checked.
+                    four_part_shots(window, page, out / f'live-{exercise_id}-{{}}-{scheme}.png')
                 elif isinstance(answer, StaffInputAnswer):
                     # Write a wrong note with a real click, then check it.
                     widget = page.answer_widget
                     (expected,) = page.question.expected[0]
                     position = widget.entry.clef.staff_position(expected) + 1
                     smoke._click_position(widget, position)
+                    # The other notes of a dictation right, so the answer can be checked.
+                    for slot, chord in enumerate(page.question.expected[1:], start=1):
+                        widget.entry.select(slot)
+                        widget.entry.place(widget.entry.clef.staff_position(chord[0]))
+                        widget.entry.notes[slot] = chord[0]
+                    widget.entry.select(0)
+                    widget.refresh()
                     render(window, out / f'live-{exercise_id}-entering-{scheme}.png')
                     widget.activate_default()
                     render(window, out / f'live-{exercise_id}-wrong-{scheme}.png')
