@@ -92,10 +92,10 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <p>Authentic and half cadences are often decorated with a <term ref="cadential-six-four">cadential six-four</term>: a six-four chord with the dominant in the bass, on a strong beat, just before V. Over the dominant bass, the sixth and fourth fall by step to the fifth and third, so the upper voices move from the notes of I to the notes of V.</p>
     <figure play="as-written" tempo="72">
       <staff clef="treble" time="4/4">[G4 C5]/q [A4 D5]/q [G4 C5]/q [G4 B4]/q | [G4 C5]/w |.</staff>
-      <staff clef="bass" time="4/4">[C3 E4]/q{I} [F3 F4]/q{ii6} [G3 E4]/q{V6/4} [G3 D4]/q{5/3} | [C3 E4]/w{I} |.</staff>
+      <staff clef="bass" time="4/4">[C3 E4]/q{I} [F3 F4]/q{ii6} [G3 E4]/q{Cad6/4} [G3 D4]/q{V} | [C3 E4]/w{I} |.</staff>
       <caption>A perfect authentic cadence with a cadential six-four in <note>C</note> major. Over the bass <note>G</note>, <note>C</note> falls to <note>B</note> and <note>E</note> to <note>D</note>.</caption>
     </figure>
-    <p>The six-four chord has the notes of I, but it does not act as a tonic: it delays the dominant, and the bass, which is doubled, stays on degree 5. Textbooks label it in different ways: this course writes V6/4–5/3, which shows that the chord belongs to the dominant; others write I6/4–V or Cad6/4. All three labels describe the same chords.</p>
+    <p>The six-four chord has the notes of I, but it does not act as a tonic: it delays the dominant, and the bass, which is doubled, stays on degree 5. Textbooks label it in different ways: I6/4–V, V6/4–5/3, which shows that the chord belongs to the dominant, or Cad6/4–V, as this course does. All three labels describe the same chords.</p>
     <check id="cad64-bass">
       <prompt>Which scale degree is in the bass of a cadential six-four chord?</prompt>
       <option key="a">Degree 1</option>

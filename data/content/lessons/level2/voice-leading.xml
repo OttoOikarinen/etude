@@ -21,7 +21,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <list>
       <li><term ref="spacing">Spacing</term>: no more than an <term ref="octave">octave</term> between soprano and alto, or between alto and tenor. Tenor and bass may be further apart.</li>
       <li>No <term ref="voice-crossing">crossing</term>: a lower voice never sounds above a higher one, for example the alto above the soprano.</li>
-      <li>No <term ref="voice-overlap">overlap</term>: a voice does not move past the note that a neighboring voice has just sung.</li>
+      <li>No <term ref="voice-overlap">overlap</term>: a voice does not move past the note that a neighboring voice has just sung. Overlap is the lesser fault of the two.</li>
     </list>
     <figure play="as-written" tempo="60">
       <staff clef="treble">[G4 C5]/h [G4 E5]/h *[C4 E5]/h ||</staff>
@@ -72,6 +72,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <caption>Parallel thirds, similar motion from a third to a fifth, contrary motion from a fourth to a sixth, and oblique motion with the lower voice holding <note>E4</note>.</caption>
     </figure>
     <p>Contrary and oblique motion keep the voices most independent. Good four-part writing mixes all four kinds, with plenty of contrary motion between the <term ref="outer-voices">outer voices</term>, the bass and the soprano.</p>
+    <p>Each voice should also be easy to sing on its own: no augmented intervals, such as the augmented second between degrees 6 and 7 of the harmonic minor scale, no leaps larger than an octave, and in the alto and tenor preferably no leaps larger than a fourth.</p>
     <check id="contrary-motion">
       <prompt>The soprano rises a step while the bass falls a fifth. What kind of motion is this?</prompt>
       <option key="a">Similar</option>
@@ -92,8 +93,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <p>Three related cases:</p>
     <list>
       <li>Contrary fifths and octaves, a perfect fifth or octave followed by another in contrary motion, are also avoided in four-part writing.</li>
-      <li><term ref="unequal-fifths">Unequal fifths</term>: a perfect fifth followed by a diminished fifth is acceptable. A diminished fifth followed by a perfect fifth is avoided when one of the two voices is the bass, because the diminished fifth should resolve inward to a third; Kostka and Payne allow it between upper voices, while stricter textbooks avoid it everywhere.</li>
-      <li><term ref="direct-fifths">Direct fifths</term> and <term ref="direct-octaves">octaves</term>, also called hidden fifths and octaves, arise when the soprano and bass reach a perfect fifth or octave in similar motion. They are avoided when the soprano leaps; with a step in the soprano they are acceptable.</li>
+      <li><term ref="unequal-fifths">Unequal fifths</term>: a perfect fifth followed by a diminished fifth is acceptable between upper voices, though better avoided with the bass. A diminished fifth followed by a perfect fifth is avoided when one of the two voices is the bass, because the diminished fifth should resolve inward to a third; between upper voices Kostka and Payne allow it, while stricter textbooks avoid it there too.</li>
+      <li><term ref="direct-fifths">Direct fifths</term> and <term ref="direct-octaves">octaves</term>, also called hidden fifths and octaves, arise when the soprano and bass reach a perfect fifth or octave in similar motion. They are avoided when the soprano leaps; with a step in the soprano they are acceptable. Direct octaves are the more serious fault: Aldwell and Schachter, for example, treat direct fifths as less objectionable.</li>
     </list>
     <check id="parallel-figure">
       <prompt>Which two voices move in parallel fifths here?</prompt>
@@ -113,8 +114,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
     <title>Resolving tendency tones</title>
     <p>Two notes have a strong pull that four-part writing respects:</p>
     <list>
-      <li>The leading tone rises to the tonic, especially in the soprano or the bass. In an <term ref="inner-voices">inner voice</term> in V–I it may instead fall a third to degree 5, so that the tonic chord is complete: a <term ref="frustrated-leading-tone">frustrated leading tone</term>.</li>
-      <li>The seventh of a chord <term ref="resolution">resolves</term> down by step: in V7–I, degree 4 falls to degree 3.</li>
+      <li>The leading tone rises to the tonic, always when it is in the soprano or the bass, and in every voice in V–vi. In an <term ref="inner-voices">inner voice</term> in V–I it may instead fall a third to degree 5, so that the tonic chord is complete: a <term ref="frustrated-leading-tone">frustrated leading tone</term>.</li>
+      <li>The seventh of a chord <term ref="resolution">resolves</term> down by step: in V7–I, degree 4 falls to degree 3. The one common exception is V4/3–I6, where the seventh may rise by step, moving in parallel tenths with the bass.</li>
     </list>
     <p>When both tendencies resolve, V7 and I cannot both be complete. Either a complete V7 resolves to an <term ref="incomplete-chord">incomplete</term> I, with a tripled root and no fifth, or an incomplete V7, with a doubled root and no fifth, resolves to a complete I.</p>
     <figure play="as-written" tempo="60">

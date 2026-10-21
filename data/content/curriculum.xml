@@ -158,7 +158,9 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
     <unit id="l2.roman" lesson="l2.roman">
       <title>Roman Numerals and Harmonic Function</title>
       <summary>Analyze chords in a key; tonic, predominant and dominant.</summary>
-      <practice exercise="roman-numerals"/>
+      <practice exercise="roman-numerals">
+        <setting key="mode" value="both"/>
+      </practice>
       <vocabulary tags="function"/>
     </unit>
 
@@ -177,8 +179,14 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
     <unit id="l2.cadences" lesson="l2.cadences">
       <title>Cadences</title>
       <summary>Authentic, half, plagal and deceptive cadences, and the cadential six-four.</summary>
-      <practice exercise="cadences-staff"/>
-      <practice exercise="cadence-ear"/>
+      <practice exercise="cadences-staff">
+        <setting key="phrygian" value="true"/>
+      </practice>
+      <practice exercise="cadence-ear">
+        <setting key="mode" value="both"/>
+        <setting key="authentic-kinds" value="true"/>
+        <setting key="phrygian" value="true"/>
+      </practice>
       <vocabulary tags="cadences"/>
     </unit>
 
@@ -186,10 +194,12 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
       <title>Syncopation, Triplets and Compound Meters</title>
       <summary>Rhythms that go against the beat or divide it in a new way.</summary>
       <practice exercise="rhythm-tap">
-        <setting key="vocabulary" value="syncopation"/>
+        <setting key="vocabulary" value="quarters halves eighths rests dotted-quarter sixteenths syncopation dotted-eighth triplets"/>
+        <setting key="meters" value="2/4 3/4 4/4 6/8 9/8 12/8"/>
       </practice>
       <practice exercise="rhythm-dictation">
-        <setting key="vocabulary" value="syncopation"/>
+        <setting key="vocabulary" value="halves eighths rests dotted-quarter syncopation dotted-eighth triplets"/>
+        <setting key="meters" value="2/4 3/4 4/4 6/8 9/8 12/8"/>
       </practice>
       <vocabulary tags="rhythm2"/>
     </unit>
@@ -197,15 +207,22 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
     <unit id="l2.figured-bass" lesson="l2.figured-bass">
       <title>Figured Bass</title>
       <summary>Read the figures under a bass line and realize them in four parts.</summary>
-      <practice exercise="figured-bass"/>
-      <practice exercise="inversion-ear"/>
+      <practice exercise="figured-bass">
+        <setting key="slashed" value="true"/>
+      </practice>
+      <practice exercise="inversion-ear">
+        <setting key="sevenths" value="dominant"/>
+      </practice>
       <vocabulary tags="figured-bass"/>
     </unit>
 
     <unit id="l2.transposition" lesson="l2.transposition">
       <title>Transposition</title>
       <summary>Move music to another key and write for transposing instruments.</summary>
-      <practice exercise="transposition"/>
+      <practice exercise="transposition">
+        <setting key="instruments" value="true"/>
+        <setting key="instrument-direction" value="both"/>
+      </practice>
       <vocabulary tags="transposition"/>
     </unit>
 
@@ -226,15 +243,24 @@ Format: docs/CONTENT_AUTHORING.md, schema: schema/curriculum.rng.
     <unit id="l2.phrase" lesson="l2.phrase">
       <title>Motive, Phrase and Period</title>
       <summary>How phrases end in cadences and pair up into periods and sentences.</summary>
-      <practice exercise="cadence-ear"/>
+      <practice exercise="cadence-ear">
+        <setting key="mode" value="both"/>
+        <setting key="authentic-kinds" value="true"/>
+        <setting key="phrygian" value="true"/>
+      </practice>
       <vocabulary tags="form"/>
     </unit>
 
     <unit id="l2.dictation" lesson="l2.dictation">
       <title>Melodic and Harmonic Dictation</title>
       <summary>Strategies for writing down melodies and chord progressions by ear.</summary>
-      <practice exercise="melodic-dictation"/>
-      <practice exercise="progression-ear"/>
+      <practice exercise="melodic-dictation">
+        <setting key="max-accidentals" value="3"/>
+        <setting key="meters" value="2/4 3/4 4/4"/>
+      </practice>
+      <practice exercise="progression-ear">
+        <setting key="mode" value="both"/>
+      </practice>
       <vocabulary tags="dictation"/>
     </unit>
 

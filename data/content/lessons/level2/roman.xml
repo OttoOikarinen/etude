@@ -119,8 +119,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <step>
         <p>Find the key. The key signature has two sharps, and the progression begins and ends with <note>D</note>–<note>F#</note>–<note>A</note>, so the key is <note>D</note> major, not <note>B</note> minor.</p>
         <figure play="as-written" tempo="72">
-          <staff clef="treble" key="2">[F#4 A4]/h [F#4 B4]/h [E4 B4]/h [E4 C#5]/h [D4 D5]/h |.</staff>
-          <staff clef="bass" key="2">[D3 D4]/h [B2 D4]/h [G2 G3]/h [A2 G3]/h [D3 F#3]/h |.</staff>
+          <staff clef="treble" key="2">[F#4 A4]/h [F#4 B4]/h [G4 B4]/h [G4 C#5]/h [F#4 D5]/h |.</staff>
+          <staff clef="bass" key="2">[D3 D4]/h [B2 D4]/h [G2 E4]/h [A2 E4]/h [D3 D4]/h |.</staff>
         </figure>
       </step>
       <step>
@@ -135,8 +135,8 @@ SPDX-License-Identifier: CC-BY-SA-4.0
       <step>
         <p>Add the functions: I (tonic), vi (tonic, leading on), ii6 (predominant), V7 (dominant), I (tonic).</p>
         <figure play="as-written" tempo="72">
-          <staff clef="treble" key="2">[F#4 A4]/h [F#4 B4]/h [E4 B4]/h [E4 C#5]/h [D4 D5]/h |.</staff>
-          <staff clef="bass" key="2">[D3 D4]/h{I} [B2 D4]/h{vi} [G2 G3]/h{ii6} [A2 G3]/h{V7} [D3 F#3]/h{I} |.</staff>
+          <staff clef="treble" key="2">[F#4 A4]/h [F#4 B4]/h [G4 B4]/h [G4 C#5]/h [F#4 D5]/h |.</staff>
+          <staff clef="bass" key="2">[D3 D4]/h{I} [B2 D4]/h{vi} [G2 E4]/h{ii6} [A2 E4]/h{V7} [D3 D4]/h{I} |.</staff>
         </figure>
       </step>
     </worked>
