@@ -168,3 +168,97 @@ def test_realisations_prefer_complete_chords_and_few_warnings() -> None:
         found = check(chords, Context(C, chords_of(['I', 'IV', 'V', 'I'], C)))
         warnings += sum(1 for v in found if v.severity is Severity.WARNING)
     assert warnings <= 5
+
+
+# Textbook doubling (a preference of the voicer, not a rule of the checker) ----------
+
+
+def _doubled(chord, voicing) -> set[int]:
+    """Chord tones (0 root, 1 third, 2 fifth, 3 seventh) sung by more than one voice."""
+    names = chord.names()
+    return {i for i, name in enumerate(names) if sum(p.name == name for p in voicing) > 1}
+
+
+def _voiced(numerals: str, tonic: str, seeds: int = 12):
+    key = Key.parse(tonic)
+    harmony = chords_of(numerals.split(), key)
+    for seed in range(seeds):
+        yield harmony, realize(harmony, key, random.Random(seed))
+
+
+@pytest.mark.parametrize('tonic', ['C', 'Bb', 'a', 'f#'])
+def test_root_position_triads_double_the_root(tonic: str) -> None:
+    # K–P ch. 5: in root position, double the root.
+    numerals = 'I IV V I' if tonic[0].isupper() else 'i iv V i'
+    for harmony, chords in _voiced(numerals, tonic):
+        for chord, voicing in zip(harmony, chords, strict=True):
+            assert _doubled(chord, voicing) == {0}, voicing
+
+
+@pytest.mark.parametrize(
+    ('numerals', 'tonic'), [('I viio6 I6', 'C'), ('i iio6 V i', 'a'), ('i viio6 i6', 'd')]
+)
+def test_diminished_sixth_chords_double_the_bass(numerals: str, tonic: str) -> None:
+    # K–P ch. 8: in ii°6 and vii°6 double the bass (the third), never the leading tone.
+    key = Key.parse(tonic)
+    for harmony, chords in _voiced(numerals, tonic):
+        chord, voicing = harmony[1], chords[1]
+        assert _doubled(chord, voicing) == {1}, voicing
+        assert sum(p.name == key.leading_tone for p in voicing) <= 1
+
+
+@pytest.mark.parametrize('tonic', ['G', 'c'])
+def test_six_four_chords_double_the_bass(tonic: str) -> None:
+    # K–P ch. 9: the cadential six-four doubles its bass (the fifth of the tonic triad).
+    numerals = 'I IV Cad64 V I' if tonic.isupper() else 'i iv Cad64 V i'
+    for harmony, chords in _voiced(numerals, tonic):
+        assert _doubled(harmony[2], chords[2]) == {2}, chords[2]
+
+
+@pytest.mark.parametrize('tonic', ['D', 'g'])
+def test_deceptive_cadence_doubles_the_third_of_vi(tonic: str) -> None:
+    # K–P ch. 6: in V–vi the leading tone rises and the third of vi is doubled.
+    numerals = 'I IV V vi' if tonic.isupper() else 'i iv V VI'
+    for harmony, chords in _voiced(numerals, tonic):
+        assert _doubled(harmony[3], chords[3]) == {1}, chords[3]
+
+
+def test_soprano_from_a_set_of_names() -> None:
+    # An imperfect authentic cadence: 3̂ or 5̂ on top of the final tonic.
+    key = Key.parse('F')
+    allowed = {key.degree(3), key.degree(5)}
+    tops = set()
+    for seed in range(16):
+        chords = realize(
+            ['I', 'IV', 'V', 'I'], key, random.Random(seed), soprano=[None] * 3 + [allowed]
+        )
+        tops.add(chords[-1][SOPRANO].name)
+    assert tops <= allowed
+    assert tops, 'some answer'
+    with pytest.raises(RealisationError):
+        realize(['I', 'V'], key, soprano=[None, frozenset({PitchName.parse('Bb')})])
+
+
+@pytest.mark.parametrize(
+    ('numeral', 'tonic'), [('iiø7', 'c'), ('viio7', 'a'), ('ii7', 'C'), ('V7', 'G')]
+)
+def test_complete_seventh_chords(numeral: str, tonic: str) -> None:
+    key = Key.parse(tonic)
+    chord = RomanNumeral.parse(numeral).realize(key)
+    for seed in range(10):
+        (voicing,) = realize([chord], key, random.Random(seed), complete=True)
+        assert {p.name for p in voicing} == set(chord.names())
+    if numeral in ('iiø7', 'viio7'):
+        # Without its diminished fifth the chord would read as another one: complete
+        # voicings are preferred even when not required.
+        for seed in range(10):
+            (voicing,) = realize([chord], key, random.Random(seed))
+            assert {p.name for p in voicing} == set(chord.names())
+
+
+@pytest.mark.parametrize('tonic', ['a', 'e', 'b', 'f#', 'c#', 'd', 'g', 'c', 'f'])
+def test_phrygian_bass_falls_the_half_step(tonic: str) -> None:
+    for seed in range(15):
+        key = Key.parse(tonic)
+        chords = realize(['i', 'iv6', 'V'], key, random.Random(seed))
+        assert chords[1][BASS].midi - chords[2][BASS].midi == 1, (tonic, seed, chords)

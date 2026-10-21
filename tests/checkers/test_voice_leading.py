@@ -475,3 +475,14 @@ def test_violations_are_sorted_and_in_range(
         assert all(0 <= v < 4 for v in violation.voices)
         assert all(0 <= s < len(passage) for s in violation.slots)
         assert violation.message
+
+
+def test_scan_from_a_slot_checks_only_the_new_chord() -> None:
+    # The first chord breaks a rule (no third); from slot 1 only the motion into the
+    # second chord and the second chord itself are looked at.
+    passage = chords('C5 G4 C4 C3', 'B4 G4 D4 G3')
+    context = Context(C, chords_of(['I', 'V'], C))
+    assert {v.slot for v in scan(passage, context)} == {0}
+    assert scan(passage, context, first=1) == []
+    broken = chords('C5 G4 E4 C3', 'B4 B4 D4 G3')
+    assert [v.rule for v in scan(broken, context, first=1)] == [Rule.WRONG_DOUBLING]

@@ -39,7 +39,6 @@ from fractions import Fraction
 from functools import cache
 from gettext import gettext as _
 from gettext import ngettext, pgettext
-from itertools import product
 from typing import cast
 
 from ...audio.spec import PlaybackSpec
@@ -385,21 +384,16 @@ class CadencesStaff(ExerciseDefinition):
             key = rng.choice(keys)
             plan = _plan(kind, mode, inverted, rng)
             count = len(plan.numerals)
-            choices = {
-                count + index: rng.sample(degrees, len(degrees))
-                for index, degrees in plan.soprano_degrees.items()
-            }
-            for combination in product(*choices.values()):
-                tops: list[PitchName | None] = [None] * count
-                for index, degree in zip(choices, combination, strict=True):
-                    tops[index] = key.scale.degree(degree)
-                try:
-                    voices = realize(plan.numerals, key, rng, soprano=tops)
-                except RealisationError:
-                    continue
-                if kind == 'phrygian' and voices[-2][3].midi - voices[-1][3].midi != 1:
-                    continue  # the cadence's bass must fall the half step, not leap
-                return key, voices
+            tops: list[frozenset[PitchName] | None] = [None] * count
+            for index, degrees in plan.soprano_degrees.items():
+                tops[count + index] = frozenset(key.scale.degree(d) for d in degrees)
+            try:
+                voices = realize(plan.numerals, key, rng, soprano=tops)
+            except RealisationError:
+                continue
+            if kind == 'phrygian' and voices[-2][3].midi - voices[-1][3].midi != 1:
+                continue  # safety net: the cadence's bass falls the half step
+            return key, voices
         raise AssertionError(f'no {kind} cadence could be voiced')  # pragma: no cover
 
     @staticmethod
