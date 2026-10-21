@@ -1,171 +1,126 @@
 # SPDX-FileCopyrightText: 2026 Otto Oikarinen
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""Every phrase the harmony ear exercises play, in every key, obeys the voice-leading
-rules. The checks here are written independently of :mod:`four_part` (which also
-enforces them), so a bug in the generator cannot hide itself."""
+"""The phrases the harmony ear exercises play pass the project's voice-leading
+checker without an error.
+
+Realising a phrase takes some 30 ms, so the test does not try every phrase in
+every key and variant: each key checks a rotating share of the phrases, which
+puts every phrase in several keys of each mode, in several variants."""
 
 from __future__ import annotations
 
-import itertools
-from collections.abc import Iterator, Sequence
+import random
+from collections.abc import Iterator
 
 import pytest
 
-from etude.core import Chord, ChordKind, Duration, Interval, KeySignature, NoteValue, Pitch
+from etude.audio.spec import Instrument
+from etude.checkers.realize import Voicing
+from etude.checkers.voice_leading import Context, check, errors
+from etude.core import KeySignature
 from etude.core.roman import RomanNumeral
 from etude.core.scale import Key, Mode
 from etude.exercises.families import cadence_ear, progression_ear
 from etude.exercises.families.four_part import (
-    figure_text,
-    key_of,
-    numeral_label,
+    falls_by_semitone,
+    lengths,
+    numerals_text,
     parse_numerals,
+    phrase_figure,
+    phrase_playback,
     progression_label,
-    system_figure,
-    voice_progression,
-    voicings_of,
+    voice,
 )
+from etude.exercises.families.harmony import satb_voices
 
 KEYS = [
     Key(KeySignature(f).major_tonic if mode is Mode.MAJOR else KeySignature(f).minor_tonic, mode)
     for f in range(-6, 7)
     for mode in Mode
 ]
-RANGES = {0: (60, 79), 1: (55, 74), 2: (48, 67), 3: (40, 60)}
+SHARE = 4
+"""Each key checks every fourth phrase, starting at its own offset."""
 
 
-def phrases_in(key: Key) -> Iterator[tuple[str, tuple[RomanNumeral, ...], Sequence[Pitch]]]:
+def phrases(mode: Mode) -> list[tuple[str, cadence_ear.Phrase | None]]:
+    """Every cadence template and every progression (with its changed versions)."""
+    found: dict[str, cadence_ear.Phrase | None] = {}
     for kind in cadence_ear.TYPES:
-        for phrase in cadence_ear.phrases(kind, key.mode):
-            yield kind, phrase.numerals, cadence_ear.realize(phrase, key)
+        for phrase in cadence_ear.phrases(kind, mode):
+            found.setdefault(f'{phrase.opening}-{phrase.cadence}/{phrase.soprano_last}', phrase)
     for progression in progression_ear.PROGRESSIONS:
-        if progression_ear.mode_of(progression) is not key.mode:
+        if progression_ear.mode_of(progression) is mode:
+            found.setdefault(progression, None)
+            for i, s in progression_ear.changes(progression):
+                found.setdefault(progression_ear._with_change(progression, i, s), None)
+    return list(found.items())
+
+
+def phrases_in(
+    key: Key, offset: int
+) -> Iterator[tuple[str, tuple[RomanNumeral, ...], tuple[Voicing, ...]]]:
+    rng = random.Random(offset)
+    for index, (name, phrase) in enumerate(phrases(key.mode)):
+        if index % SHARE != offset % SHARE:
             continue
-        variants = [progression] + [
-            progression_ear._with_change(progression, i, s)
-            for i, s in progression_ear.changes(progression)
-        ]
-        for text in variants:
-            numerals = parse_numerals(text)
-            voiced = 0
-            for tone in numerals[0].realize(key).names():
-                try:
-                    voicings = progression_ear.voiced(key, numerals, tone)
-                except ValueError:
-                    continue
-                voiced += 1
-                yield text, numerals, voicings
-            assert voiced, f'{text} cannot be voiced in {key}'
+        if phrase is not None:
+            yield name, phrase.numerals, cadence_ear.realize(phrase, key, rng)
+        else:
+            numerals = parse_numerals(name)
+            yield name, numerals, voice(key, numerals, rng)
 
 
-def check_chord(voicing: Sequence[Pitch], chord: Chord, key: Key) -> None:
-    soprano, alto, tenor, bass = voicing
-    for voice, pitch in enumerate(voicing):
-        low, high = RANGES[voice]
-        assert low <= pitch.midi <= high, f'voice {voice} out of range: {pitch}'
-    assert soprano.midi > alto.midi > tenor.midi > bass.midi, 'voices cross'
-    assert soprano.midi - alto.midi <= 12
-    assert alto.midi - tenor.midi <= 12
-    names = [p.name for p in voicing]
-    tones = chord.names()
-    assert set(names) <= set(tones), 'only chord tones'
-    assert bass.name == chord.bass, 'the bass gives the inversion'
-    assert tones[0] in names
-    assert tones[1] in names
-    if chord.quality.kind is ChordKind.SEVENTH:
-        assert names.count(tones[3]) == 1, 'the seventh is present and not doubled'
-    if key.leading_tone in tones:
-        assert names.count(key.leading_tone) <= 1, 'the leading tone is never doubled'
-
-
-def check_motion(
-    before: Sequence[Pitch], after: Sequence[Pitch], first: Chord, second: Chord, key: Key
-) -> None:
-    for i, j in itertools.combinations(range(4), 2):
-        moved = before[i] != after[i] and before[j] != after[j]
-        old = (before[i].midi - before[j].midi) % 12
-        new = (after[i].midi - after[j].midi) % 12
-        assert not (moved and old == new and new in (0, 7)), (
-            f'parallel {"octaves" if new == 0 else "fifths"} between voices {i} and {j}'
-        )
-    for voice in range(4):
-        a, b = before[voice], after[voice]
-        leap = abs(b.midi - a.midi)
-        assert leap <= (12 if voice == 3 else 7)
-        if a != b:
-            low, high = sorted((a, b), key=lambda p: (p.diatonic_index, p.midi))
-            quality = Interval.between(low, high).quality.value
-            assert quality in ('m', 'M', 'P'), f'augmented or diminished leap {a}–{b}'
-    resolves = (
-        key.leading_tone in first.names()
-        and key.tonic in second.names()
-        and key.leading_tone not in second.names()
-    )
-    for a, b in zip(before, after, strict=True):
-        if resolves and a.name == key.leading_tone:
-            assert b.name == key.tonic, 'the leading tone resolves to the tonic'
-            assert b.midi == a.midi + 1, 'the leading tone rises'
-    if first.quality.kind is ChordKind.SEVENTH:
-        seventh = first.names()[3]
-        for a, b in zip(before, after, strict=True):
-            if a.name == seventh:
-                assert 1 <= a.midi - b.midi <= 2, 'the seventh falls by step'
-
-
-@pytest.mark.parametrize('key', KEYS, ids=str)
-def test_every_phrase_follows_the_voice_leading_rules(key: Key) -> None:
+@pytest.mark.parametrize('index', range(len(KEYS)), ids=lambda i: str(KEYS[i]))
+def test_phrases_pass_the_voice_leading_checker(index: int) -> None:
+    key = KEYS[index]
     count = 0
-    for _name, numerals, voicings in phrases_in(key):
-        chords = [n.realize(key) for n in numerals]
-        assert len(voicings) == len(chords)
-        for voicing, chord in zip(voicings, chords, strict=True):
-            check_chord(voicing, chord, key)
-        for step in range(1, len(voicings)):
-            check_motion(voicings[step - 1], voicings[step], chords[step - 1], chords[step], key)
+    for name, numerals, voicings in phrases_in(key, index // 2):
+        chords = tuple(n.realize(key) for n in numerals)
+        found = errors(check(voicings, Context(key, chords)))
+        assert found == [], (name, str(key), [v.message for v in found])
         count += 1
-    assert count > 20
+    assert count >= 8
 
 
-def test_parallel_fifths_are_never_chosen_even_when_smoothest() -> None:
-    # I–ii in root position invites parallel fifths and octaves when all voices
-    # move up by step; the result must avoid them.
-    key = Key.parse('C major')
-    voicings = voice_progression(key, parse_numerals('I-ii-V-I'))
-    for a, b in itertools.pairwise(voicings):
-        for i, j in itertools.combinations(range(4), 2):
-            old = (a[i].midi - a[j].midi) % 12
-            new = (b[i].midi - b[j].midi) % 12
-            assert not (a[i] != b[i] and a[j] != b[j] and old == new and new in (0, 7))
+def test_every_phrase_is_checked_in_several_keys_of_each_mode() -> None:
+    for mode in Mode:
+        keys = [i for i, k in enumerate(KEYS) if k.mode is mode]
+        for position in range(len(phrases(mode))):
+            checked = [i for i in keys if (i // 2) % SHARE == position % SHARE]
+            assert len(checked) >= 3
 
 
-def test_soprano_constraints() -> None:
-    key = Key.parse('D major')
-    perfect = voice_progression(key, parse_numerals('I-IV-V-I'), None, frozenset({key.tonic}))
-    assert perfect[-1][0].name == key.tonic
+@pytest.mark.parametrize('key', [k for k in KEYS if k.mode is Mode.MINOR], ids=str)
+def test_phrygian_bass_falls_a_half_step(key: Key) -> None:
+    rng = random.Random(str(key))
+    for phrase in cadence_ear.phrases(cadence_ear.PHRYGIAN, key.mode):
+        voicings = cadence_ear.realize(phrase, key, rng)
+        assert falls_by_semitone(voicings), (str(key), phrase)
 
 
-def test_figure_round_trip() -> None:
+def test_perfect_authentic_ends_with_the_tonic_on_top() -> None:
+    for key in KEYS[:6]:
+        for phrase in cadence_ear.phrases(cadence_ear.PERFECT, key.mode):
+            voicings = cadence_ear.realize(phrase, key, random.Random(1))
+            assert voicings[-1][0].name == key.tonic
+
+
+def test_figure_and_playback_round_trip() -> None:
     key = Key.parse('f minor')
-    voicings = voice_progression(key, parse_numerals('i-iv-V-i'))
-    durations = (Duration(NoteValue.QUARTER),) * 4
-    figure = system_figure(key, voicings, durations=durations)
-    assert voicings_of(figure) == list(voicings)
-    assert key_of(figure) == key
-    major = Key.parse('A major')
-    figure = system_figure(
-        major, voice_progression(major, parse_numerals('ii-V-I')), durations=durations[:3]
-    )
-    assert key_of(figure) == major
+    numerals = parse_numerals('i-iv-V-i')
+    voicings = voice(key, numerals, random.Random(2))
+    figure = phrase_figure(key, voicings, labels=['i', 'iv', 'V', 'i'], highlight=[2, 3])
+    assert satb_voices(figure) == list(voicings)
+    playback = phrase_playback(voicings, tempo=90, instrument=Instrument.ORGAN)
+    assert playback.instrument is Instrument.ORGAN
+    assert playback.tempo == 90
+    assert len(playback.notes) == 16
+    assert playback.length == sum(lengths(4))
 
 
-def test_numeral_labels_use_proper_symbols() -> None:
-    assert numeral_label(RomanNumeral.parse('iio6')) == 'ii°⁶'
-    assert numeral_label(RomanNumeral.parse('V7')) == 'V⁷'
-    assert numeral_label(RomanNumeral.parse('V65')) == 'V⁶₅'
-    assert numeral_label(RomanNumeral.parse('iv6')) == 'iv⁶'
-    assert numeral_label(RomanNumeral.parse('bVI')) == '♭VI'
-    assert numeral_label(RomanNumeral.parse('V7/V')) == 'V⁷/V'
-    assert numeral_label(RomanNumeral.parse('viio7')) == 'vii°⁷'
-    assert progression_label(parse_numerals('i-VII-VI-V')) == 'i–VII–VI–V'
-    assert figure_text('42') == '⁴₂'
+def test_numeral_texts_and_labels() -> None:
+    numerals = parse_numerals('i-iio6-V7-i')
+    assert numerals_text(numerals) == 'i-iio6-V7-i'
+    assert progression_label(numerals) == 'i–ii°6–V7–i'
+    assert progression_label(parse_numerals('I-V65-I')) == 'I–V6/5–I'

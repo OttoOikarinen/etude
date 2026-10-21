@@ -6,25 +6,26 @@
 A phrase starts on the tonic, moves through a pre-dominant or another chord,
 and ends with the cadence:
 
-* **authentic** V(⁷)–I, split behind a setting into **perfect** (both chords
+* **authentic** V(7)–I, split behind a setting into **perfect** (both chords
   in root position, the tonic in the soprano) and **imperfect** (the soprano
-  ends on the third or fifth, or the dominant is inverted: V⁶–I, vii°⁶–I);
+  ends on the third or fifth, or the dominant is inverted: V6–I, vii°6–I);
 * **half**: the phrase stops on V;
 * **plagal**: IV–I;
-* **deceptive**: V(⁷)–vi (VI in minor);
-* **Phrygian half** (minor, behind a setting): iv⁶–V, the bass falling a
-  half step.
+* **deceptive**: V(7)–vi (VI in minor);
+* **Phrygian half** (minor, behind a setting): iv6–V, the bass falling a
+  half step (the voicer does not promise that step, so a Phrygian phrase is
+  voiced again until its bass falls by a semitone).
 
 The phrases are fixed templates (below), voiced in four parts by
-:mod:`.four_part` in the question's key, so every question is played with
-correct voice leading. Items are cadence types, ``cadence.ear.deceptive``;
+:func:`etude.checkers.realize.realize` in the question's key, so every
+question is played with correct voice leading. Items are cadence types, ``cadence.ear.deceptive``;
 the key, mode, opening, soprano and instrument vary. The written
 alternative is the phrase on a grand staff; after answering, the Roman
 numerals appear under it with the cadence highlighted.
 
 Templates follow Kostka & Payne, *Tonal Harmony*, ch. 10 ("Cadences"), and
 Laitz, *The Complete Musician*, ch. 11–12: an inverted dominant is preceded
-by the tonic or a chord that avoids an augmented leap in the bass (no IV–V⁶).
+by the tonic or a chord that avoids an augmented leap in the bass (no IV–V6).
 """
 
 from __future__ import annotations
@@ -32,18 +33,17 @@ from __future__ import annotations
 import random
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from fractions import Fraction
 from gettext import gettext as _
 from gettext import pgettext
 from typing import ClassVar
 
 from ...audio.spec import PlaybackSpec
-from ...core import Duration, NoteValue, PitchName
+from ...checkers.realize import Voicing
+from ...core import PitchName
 from ...core.naming import key_name
 from ...core.roman import RomanNumeral
 from ...core.scale import Key, Mode
 from ...learning.model import ItemId
-from ...notation.spec import Ink
 from ..base import (
     BoolSetting,
     ChoiceAnswer,
@@ -56,23 +56,20 @@ from ..base import (
     Setting,
 )
 from .four_part import (
-    Voicing,
     describe_keys,
     harmony_settings,
-    key_of,
     mode_setting,
     modes,
-    numeral_label,
     parse_numerals,
+    phrase_figure,
+    phrase_playback,
     pick_instrument,
     pick_key,
     progression_label,
-    progression_playback,
-    system_figure,
     tempo_of,
-    voice_progression,
-    voicings_of,
+    voice,
 )
+from .harmony import roman_label, satb_voices
 
 AUTHENTIC = 'authentic'
 PERFECT = 'perfect-authentic'
@@ -143,20 +140,15 @@ def phrases(kind: str, mode: Mode) -> tuple[Phrase, ...]:
     raise ValueError(f'not a cadence type: {kind!r}')
 
 
-def realize(phrase: Phrase, key: Key) -> tuple[Voicing, ...]:
-    last = (
-        frozenset(key.scale.degree(d) for d in phrase.soprano_last) if phrase.soprano_last else None
+def realize(phrase: Phrase, key: Key, rng: random.Random) -> tuple[Voicing, ...]:
+    """The phrase in four parts; a Phrygian cadence with its bass falling a half step."""
+    return voice(
+        key,
+        phrase.numerals,
+        rng,
+        soprano_last=[key.scale.degree(d) for d in phrase.soprano_last],
+        falling_bass=phrase.cadence.startswith('iv6'),
     )
-    return voice_progression(key, phrase.numerals, None, last)
-
-
-def lengths(count: int) -> tuple[Fraction, ...]:
-    """Every chord one beat, the last two."""
-    return (*(Fraction(1),) * (count - 1), Fraction(2))
-
-
-def durations(count: int) -> tuple[Duration, ...]:
-    return (*(Duration(NoteValue.QUARTER),) * (count - 1), Duration(NoteValue.HALF))
 
 
 # Words --------------------------------------------------------------------------
@@ -213,7 +205,7 @@ def _shape(kind: str) -> str:
         HALF: _('Ends on V'),
         PLAGAL: _('IV → I'),
         DECEPTIVE: _('V → vi'),
-        PHRYGIAN: _('iv⁶ → V in minor'),
+        PHRYGIAN: _('iv6 → V in minor'),
     }[kind]
 
 
@@ -240,7 +232,7 @@ def character(kind: str) -> str:
             'music turns aside.'
         ),
         PHRYGIAN: _(
-            'A Phrygian half cadence goes from iv⁶ to V in minor: the bass falls a half step '
+            'A Phrygian half cadence goes from iv6 to V in minor: the bass falls a half step '
             'to the dominant.'
         ),
     }[kind]
@@ -316,7 +308,7 @@ class CadenceEar(ExerciseDefinition):
             'phrygian',
             _('Phrygian half cadence'),
             False,
-            subtitle=_('iv⁶–V in minor keys'),
+            subtitle=_('iv6–V in minor keys'),
         ),
         *harmony_settings(),
     )
@@ -361,14 +353,10 @@ class CadenceEar(ExerciseDefinition):
         mode = Mode.MINOR if kind == PHRYGIAN else rng.choice(allowed)
         key = pick_key(mode, settings, rng)
         phrase = rng.choice(phrases(kind, mode))
-        voicings = realize(phrase, key)
-        count = len(voicings)
-        figure = system_figure(key, voicings, durations=durations(count))
-        playback = progression_playback(
-            voicings,
-            lengths(count),
-            tempo=tempo_of(settings),
-            instrument=pick_instrument(settings, rng),
+        voicings = realize(phrase, key, rng)
+        figure = phrase_figure(key, voicings)
+        playback = phrase_playback(
+            voicings, tempo=tempo_of(settings), instrument=pick_instrument(settings, rng)
         )
         pool = _options(settings, kind)
         options = tuple(Option(k, type_label(k), str(i + 1), _shape(k)) for i, k in enumerate(pool))
@@ -388,14 +376,14 @@ class CadenceEar(ExerciseDefinition):
             hint=_(
                 'Listen to the last two chords: does the phrase come home, stop open or turn aside?'
             ),
+            details={'key': str(key), 'opening': phrase.opening, 'cadence': phrase.cadence},
         )
 
     def grade(self, question: Question, given: object) -> Feedback:
         kind = str(question.expected)
-        voicings = voicings_of(question.written_alternative)
-        key = key_of(question.written_alternative)
-        assert key is not None
-        phrase = find_phrase(key, voicings, kind)
+        voicings = satb_voices(question.written_alternative)
+        key = Key.parse(question.details['key'])
+        phrase = Phrase(question.details['opening'], question.details['cadence'])
         numerals = phrase.numerals
         correct = str(given) == kind
         label = self.answer_label(question, kind)
@@ -412,7 +400,7 @@ class CadenceEar(ExerciseDefinition):
             # Translators: e.g. "Here the phrase stops on V in D major."
             ending = _('Here the phrase stops on {chords} in {key}.')
         else:
-            # Translators: e.g. "Here the phrase ends V⁷–vi in D major."
+            # Translators: e.g. "Here the phrase ends V7–vi in D major."
             ending = _('Here the phrase ends {chords} in {key}.')
         sentences = [
             character(kind),
@@ -428,13 +416,11 @@ class CadenceEar(ExerciseDefinition):
             # Translators: e.g. "For comparison: A half cadence stops on the dominant …".
             sentences.append(_('For comparison: {text}').format(text=character(other)))
             play_given = self._comparison(question, key, phrase, other)
-        inks = [Ink.ACCENT if i >= start else Ink.FOREGROUND for i in range(count)]
-        figure = system_figure(
+        figure = phrase_figure(
             key,
             voicings,
-            durations=durations(count),
-            labels=[numeral_label(n) for n in numerals],
-            inks=inks,
+            labels=[roman_label(n) for n in numerals],
+            highlight=range(start, count),
         )
         return Feedback(
             correct=correct,
@@ -469,21 +455,10 @@ class CadenceEar(ExerciseDefinition):
                 count += 1
             return count
 
-        voicings = realize(max(candidates, key=shared), key)
+        voicings = realize(max(candidates, key=shared), key, random.Random(0))
         playback = question.playback
         assert playback is not None
-        return progression_playback(
-            voicings, lengths(len(voicings)), tempo=playback.tempo, instrument=playback.instrument
-        )
-
-
-def find_phrase(key: Key, voicings: Sequence[Voicing], kind: str) -> Phrase:
-    """The template a question's phrase was realised from."""
-    target = tuple(voicings)
-    for phrase in phrases(kind, key.mode):
-        if realize(phrase, key) == target:
-            return phrase
-    raise ValueError(f'not a {kind} phrase in {key}')
+        return phrase_playback(voicings, tempo=playback.tempo, instrument=playback.instrument)
 
 
 EXERCISES: tuple[ExerciseDefinition, ...] = (CadenceEar(),)

@@ -10,19 +10,19 @@ progressions of common-practice and popular harmony that learners meet first
 (Kostka & Payne, *Tonal Harmony*, ch. 7; Nobile, "Teaching popular music
 harmony"): the I–IV–V–I and I–ii–V–I cadential models, ii–V–I, the
 "doo-wop" I–vi–IV–V and I–vi–ii–V, the "axis" I–V–vi–IV, and in minor
-i–iv–V–i, i–ii°⁶–V–i, i–VI–iv–V, the Andalusian i–VII–VI–V and the Aeolian
+i–iv–V–i, i–ii°6–V–i, i–VI–iv–V, the Andalusian i–VII–VI–V and the Aeolian
 i–VI–III–VII.
 
 Two tasks (setting ``task``):
 
 * **Name it** (default): choose the progression among the selected ones in
-  the same mode, labelled with proper symbols (ii°⁶, V⁷).
+  the same mode, labelled as :func:`.harmony.roman_label` prints them (ii°6, V7).
 * **Spot the change**: the written progression is shown, and the one played
   differs in one chord (IV becomes ii, V becomes iii …); the learner picks the
   chord that differs.
 
-Progressions are voiced by :mod:`.four_part` in the question's key with the
-soprano starting on a varied chord tone; key, mode, instrument and tempo come
+Progressions are voiced by :func:`etude.checkers.realize.realize` in the
+question's key, differently for every question; key, mode, instrument and tempo come
 from the settings.
 """
 
@@ -30,18 +30,16 @@ from __future__ import annotations
 
 import random
 from collections.abc import Mapping, Sequence
-from fractions import Fraction
 from gettext import gettext as _
 from gettext import ngettext
 from typing import ClassVar, cast
 
 from ...audio.spec import PlaybackSpec
-from ...core import Duration, NoteValue, PitchName
+from ...checkers.realize import Voicing
 from ...core.naming import key_name, pitch_name
 from ...core.roman import RomanNumeral
 from ...core.scale import Key, Mode
 from ...learning.model import ItemId
-from ...notation.spec import Ink
 from ..base import (
     ChoiceAnswer,
     ChoiceSetting,
@@ -55,24 +53,20 @@ from ..base import (
     Setting,
 )
 from .four_part import (
-    NoVoicingError,
-    Voicing,
     describe_keys,
     harmony_settings,
-    key_of,
     mode_setting,
     modes,
-    numeral_label,
     parse_numerals,
+    phrase_figure,
+    phrase_playback,
     pick_instrument,
     pick_key,
     progression_label,
-    progression_playback,
-    system_figure,
     tempo_of,
-    voice_progression,
-    voicings_of,
+    voice,
 )
+from .harmony import roman_label, satb_voices
 
 MAJOR = ('I-IV-V-I', 'I-ii-V-I', 'ii-V-I', 'I-vi-IV-V', 'I-vi-ii-V', 'I-V-vi-IV')
 MINOR = ('i-iv-V-i', 'i-iio6-V-i', 'i-VI-iv-V', 'i-VII-VI-V', 'i-VI-III-VII')
@@ -94,7 +88,7 @@ _CONFUSABLE: dict[str, tuple[str, ...]] = {
 }
 
 # Chords that can stand in for a chord in "spot the change": the same function
-# (ii for IV, iii or vii°⁶ for V) or a common-tone neighbour (vi for I or IV).
+# (ii for IV, iii or vii°6 for V) or a common-tone neighbour (vi for I or IV).
 _SUBSTITUTES: dict[Mode, dict[str, tuple[str, ...]]] = {
     Mode.MAJOR: {
         'I': ('vi',),
@@ -137,7 +131,7 @@ def parse_item(item: str) -> str:
 
 
 def label(progression: str) -> str:
-    """``'I–ii°⁶–V–I'``."""
+    """``'I–ii°6–V–I'``."""
     return progression_label(parse_numerals(progression))
 
 
@@ -149,24 +143,6 @@ def _selected(settings: Mapping[str, object]) -> list[str]:
     allowed = modes(settings)
     pool = [p for p in PROGRESSIONS if p in chosen and mode_of(p) in allowed]
     return pool or [p for p in PROGRESSIONS if mode_of(p) in allowed]
-
-
-def voiced(key: Key, numerals: tuple[RomanNumeral, ...], soprano: PitchName) -> tuple[Voicing, ...]:
-    return voice_progression(key, numerals, frozenset((soprano,)), None)
-
-
-def _realize(
-    key: Key, numerals: tuple[RomanNumeral, ...], rng: random.Random
-) -> tuple[Voicing, ...]:
-    """A voicing whose soprano starts on a chord tone chosen at random."""
-    tones = list(numerals[0].realize(key).names())
-    rng.shuffle(tones)
-    for tone in tones:
-        try:
-            return voiced(key, numerals, tone)
-        except NoVoicingError:
-            continue
-    return voice_progression(key, numerals)
 
 
 def changes(progression: str) -> list[tuple[int, str]]:
@@ -189,28 +165,13 @@ def _with_change(progression: str, index: int, substitute: str) -> str:
     return '-'.join(chords)
 
 
-def _voiced_like(
-    key: Key, numerals: tuple[RomanNumeral, ...], like: Sequence[Voicing]
-) -> tuple[Voicing, ...]:
-    """``numerals`` voiced with the soprano starting where ``like`` starts, if it can."""
-    try:
-        return voiced(key, numerals, like[0][0].name)
-    except NoVoicingError:
-        return voice_progression(key, numerals)
+def _voiced_like(key: Key, numerals: tuple[RomanNumeral, ...]) -> tuple[Voicing, ...]:
+    """``numerals`` voiced for comparison with the progression heard."""
+    return voice(key, numerals, random.Random(0))
 
 
 def _playback_like(playback: PlaybackSpec, voicings: Sequence[Voicing]) -> PlaybackSpec:
-    return progression_playback(
-        voicings, _lengths(len(voicings)), tempo=playback.tempo, instrument=playback.instrument
-    )
-
-
-def _lengths(count: int) -> tuple[Fraction, ...]:
-    return (*(Fraction(1),) * (count - 1), Fraction(2))
-
-
-def _durations(count: int) -> tuple[Duration, ...]:
-    return (*(Duration(NoteValue.QUARTER),) * (count - 1), Duration(NoteValue.HALF))
+    return phrase_playback(voicings, tempo=playback.tempo, instrument=playback.instrument)
 
 
 class ProgressionEar(ExerciseDefinition):
@@ -285,14 +246,17 @@ class ProgressionEar(ExerciseDefinition):
             answer = ChoiceAnswer(
                 tuple(
                     # Translators: the second line of an option, e.g. "Chord 2".
+                    # The number is the chord's place in the written progression.
                     Option(
                         str(i + 1),
-                        numeral_label(RomanNumeral.parse(c)),
+                        roman_label(RomanNumeral.parse(c)),
                         str(i + 1),
                         _('Chord {number}').format(number=i + 1),
+                        fixed_accel=True,
                     )
                     for i, c in enumerate(chords)
-                )
+                ),
+                in_figure_order=True,
             )
             expected = str(index + 1)
             prompt = _('Which chord is different from the written progression?')
@@ -316,8 +280,8 @@ class ProgressionEar(ExerciseDefinition):
             )
             expected = progression
             prompt = _('Which progression do you hear?')
-        voicings = _realize(key, parse_numerals(heard), rng)
-        figure = system_figure(key, voicings, durations=_durations(len(voicings)))
+        voicings = voice(key, parse_numerals(heard), rng)
+        figure = phrase_figure(key, voicings)
         return Question(
             exercise_id=self.id,
             item_id=item_id,
@@ -325,24 +289,22 @@ class ProgressionEar(ExerciseDefinition):
             answer=answer,
             expected=expected,
             figure=figure,
-            playback=progression_playback(
-                voicings, _lengths(len(voicings)), tempo=tempo, instrument=instrument
-            ),
+            playback=phrase_playback(voicings, tempo=tempo, instrument=instrument),
             playback_is_question=True,
             playback_style_choice=False,
             written_alternative=figure,
             context=context,
             hint=_('Follow the bass: does it step, or leap by a fourth or fifth?'),
+            details={'key': str(key), 'heard': heard},
         )
 
     def grade(self, question: Question, given: object) -> Feedback:
         progression = parse_item(question.item_id)
-        voicings = voicings_of(question.written_alternative)
-        key = key_of(question.written_alternative)
-        assert key is not None
+        voicings = satb_voices(question.written_alternative)
+        key = Key.parse(question.details['key'])
+        heard = question.details['heard']
         expected = str(question.expected)
         change = expected.isdigit()
-        heard = self._heard(progression, key, voicings) if change else progression
         numerals = parse_numerals(heard)
         correct = str(given) == expected
         answer_text = self.answer_label(question, expected)
@@ -363,7 +325,7 @@ class ProgressionEar(ExerciseDefinition):
         playback = question.playback
         assert playback is not None
         play_given: PlaybackSpec | None = None
-        inks = None
+        highlight: list[int] = []
         if change:
             index = int(expected) - 1
             written = parse_numerals(progression)
@@ -371,24 +333,20 @@ class ProgressionEar(ExerciseDefinition):
                 # Translators: e.g. "Chord 2 was ii instead of the written IV."
                 _('Chord {number} was {heard} instead of the written {written}.').format(
                     number=index + 1,
-                    heard=numeral_label(numerals[index]),
-                    written=numeral_label(written[index]),
+                    heard=roman_label(numerals[index]),
+                    written=roman_label(written[index]),
                 )
             )
-            inks = [Ink.ACCENT if i == index else Ink.FOREGROUND for i in range(len(voicings))]
+            highlight = [index]
             if not correct:
-                play_given = _playback_like(playback, _voiced_like(key, written, voicings))
+                play_given = _playback_like(playback, _voiced_like(key, written))
         elif not correct and str(given) in PROGRESSIONS:
             other = parse_numerals(str(given))
             other_key = Key(key.tonic, mode_of(str(given)))
-            play_given = _playback_like(playback, _voiced_like(other_key, other, voicings))
+            play_given = _playback_like(playback, _voiced_like(other_key, other))
             sentences.append(self._difference(numerals, other))
-        figure = system_figure(
-            key,
-            voicings,
-            durations=_durations(len(voicings)),
-            labels=[numeral_label(n) for n in numerals],
-            inks=inks,
+        figure = phrase_figure(
+            key, voicings, labels=[roman_label(n) for n in numerals], highlight=highlight
         )
         return Feedback(
             correct=correct,
@@ -410,26 +368,9 @@ class ProgressionEar(ExerciseDefinition):
             if 0 <= index < len(chords):
                 # Translators: an answer in "spot the change", e.g. "chord 2 (IV)".
                 return _('chord {number} ({numeral})').format(
-                    number=index + 1, numeral=numeral_label(RomanNumeral.parse(chords[index]))
+                    number=index + 1, numeral=roman_label(RomanNumeral.parse(chords[index]))
                 )
         return super().answer_label(question, value)
-
-    @staticmethod
-    def _heard(progression: str, key: Key, voicings: Sequence[Voicing]) -> str:
-        """Which changed progression a "spot the change" question played."""
-        target = tuple(voicings)
-        soprano = voicings[0][0].name
-        for index, substitute in changes(progression):
-            heard = _with_change(progression, index, substitute)
-            numerals = parse_numerals(heard)
-            try:
-                if voiced(key, numerals, soprano) == target:
-                    return heard
-            except NoVoicingError:
-                pass
-            if voice_progression(key, numerals) == target:
-                return heard
-        raise ValueError(f'no change of {progression} was played')
 
     @staticmethod
     def _difference(heard: Sequence[RomanNumeral], chosen: Sequence[RomanNumeral]) -> str:
@@ -443,7 +384,7 @@ class ProgressionEar(ExerciseDefinition):
             ).format(count=len(heard), chosen=len(chosen))
         differing = [
             _('chord {number} is {heard}, not {chosen}').format(
-                number=i + 1, heard=numeral_label(a), chosen=numeral_label(b)
+                number=i + 1, heard=roman_label(a), chosen=roman_label(b)
             )
             for i, (a, b) in enumerate(zip(heard, chosen, strict=True))
             if a != b

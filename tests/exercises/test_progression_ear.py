@@ -5,9 +5,10 @@ import random
 
 import pytest
 
-from etude.core.scale import Mode
+from etude.core.scale import Key, Mode
 from etude.exercises.base import ChoiceAnswer
-from etude.exercises.families.four_part import key_of, parse_numerals, voicings_of
+from etude.exercises.families.four_part import parse_numerals
+from etude.exercises.families.harmony import satb_voices
 from etude.exercises.families.progression_ear import (
     MAJOR,
     MINOR,
@@ -22,7 +23,7 @@ EXERCISE = ProgressionEar()
 
 
 def test_labels_use_proper_symbols() -> None:
-    assert label('i-iio6-V-i') == 'i–ii°⁶–V–i'
+    assert label('i-iio6-V-i') == 'i–ii°6–V–i'
     assert label('I-vi-IV-V') == 'I–vi–IV–V'
     assert all(label(p) for p in PROGRESSIONS)
 
@@ -57,10 +58,9 @@ def test_naming_questions_offer_same_mode_progressions(progression: str) -> None
     assert progression in keys
     assert all(mode_of(k) is mode_of(progression) for k in keys)
     assert len(keys) >= 3
-    key = key_of(question.written_alternative)
-    assert key is not None
+    key = Key.parse(question.details['key'])
     assert key.mode is mode_of(progression)
-    assert len(voicings_of(question.written_alternative)) == len(progression.split('-'))
+    assert len(satb_voices(question.written_alternative)) == len(progression.split('-'))
     for other in keys:
         feedback = EXERCISE.grade(question, other)
         assert feedback.correct is (other == progression)
@@ -84,11 +84,7 @@ def test_spot_the_change_changes_exactly_one_chord(progression: str) -> None:
         assert [o.key for o in question.answer.options] == [
             str(i + 1) for i in range(len(progression.split('-')))
         ]
-        heard = EXERCISE._heard(
-            progression,
-            key_of(question.written_alternative),
-            voicings_of(question.written_alternative),
-        )
+        heard = question.details['heard']
         written, played = parse_numerals(progression), parse_numerals(heard)
         differing = [i for i, (a, b) in enumerate(zip(written, played, strict=True)) if a != b]
         assert differing == [int(str(question.expected)) - 1]

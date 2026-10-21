@@ -8,6 +8,7 @@ import pytest
 from etude.core import Chord, ChordQuality, Interval
 from etude.core.scale import Key, Mode
 from etude.exercises.base import ChoiceAnswer
+from etude.exercises.families import cadence_ear
 from etude.exercises.families.cadence_ear import (
     AUTHENTIC,
     DECEPTIVE,
@@ -18,11 +19,10 @@ from etude.exercises.families.cadence_ear import (
     PLAGAL,
     TYPES,
     CadenceEar,
-    find_phrase,
     phrases,
     realize,
 )
-from etude.exercises.families.four_part import key_of, voicings_of
+from etude.exercises.families.harmony import satb_voices
 from etude.notation.spec import SystemSpec
 
 EXERCISE = CadenceEar()
@@ -33,7 +33,7 @@ def _last_two(kind: str, key: Key) -> list[tuple[Chord, Chord, tuple[str, ...]]]
     result = []
     for phrase in phrases(kind, key.mode):
         chords = [n.realize(key) for n in phrase.numerals]
-        voicings = realize(phrase, key)
+        voicings = realize(phrase, key, random.Random(0))
         result.append((chords[-2], chords[-1], tuple(str(p) for p in voicings[-1])))
     return result
 
@@ -52,13 +52,13 @@ def test_authentic_cadences_go_from_dominant_to_tonic(key: Key) -> None:
 @pytest.mark.parametrize('key', KEYS, ids=str)
 def test_perfect_and_imperfect_authentic(key: Key) -> None:
     for phrase in phrases(PERFECT, key.mode):
-        voicings = realize(phrase, key)
+        voicings = realize(phrase, key, random.Random(0))
         chords = [n.realize(key) for n in phrase.numerals]
         assert voicings[-1][0].name == key.tonic, 'PAC: tonic in the soprano'
         assert chords[-2].inversion == 0
         assert chords[-1].inversion == 0
     for phrase in phrases(IMPERFECT, key.mode):
-        voicings = realize(phrase, key)
+        voicings = realize(phrase, key, random.Random(0))
         chords = [n.realize(key) for n in phrase.numerals]
         top = voicings[-1][0].name
         inverted = chords[-2].inversion != 0 or chords[-2].root == key.leading_tone
@@ -78,7 +78,7 @@ def test_half_plagal_deceptive_and_phrygian(key: Key) -> None:
         assert (before.degree, last.degree) == (5, 6)
     if key.mode is Mode.MINOR:
         for phrase in phrases(PHRYGIAN, key.mode):
-            voicings = realize(phrase, key)
+            voicings = realize(phrase, key, random.Random(0))
             before, last = phrase.numerals[-2:]
             assert (before.degree, before.inversion, last.degree) == (4, 1, 5)
             assert voicings[-2][3].midi - voicings[-1][3].midi == 1, 'bass falls a half step'
@@ -116,12 +116,16 @@ def test_questions_and_feedback(kind: str) -> None:
         question = EXERCISE.generate(f'cadence.ear.{kind}', settings, random.Random(seed))
         assert isinstance(question.written_alternative, SystemSpec)
         assert not question.playback_style_choice
-        key = key_of(question.written_alternative)
-        assert key is not None
+        key = Key.parse(question.details['key'])
         if kind == PHRYGIAN:
             assert key.mode is Mode.MINOR
-        voicings = voicings_of(question.written_alternative)
-        assert find_phrase(key, voicings, kind)
+        voicings = satb_voices(question.written_alternative)
+        phrase = cadence_ear.Phrase(question.details['opening'], question.details['cadence'])
+        assert len(phrase.numerals) == len(voicings)
+        assert any(
+            p.opening == phrase.opening and p.cadence == phrase.cadence
+            for p in phrases(kind, key.mode)
+        )
         assert question.playback is not None
         assert len(question.playback.notes) == 4 * len(voicings)
         assert isinstance(question.answer, ChoiceAnswer)
@@ -129,7 +133,7 @@ def test_questions_and_feedback(kind: str) -> None:
         assert right.correct
         assert right.play_expected == question.playback
         assert isinstance(right.figure, SystemSpec)
-        assert right.figure.staves[1].events[0].label  # Roman numerals under the bass
+        assert right.figure.staves[1].voices[0][0].label  # Roman numerals under the bass
         for option in question.answer.options:
             if option.key == kind:
                 continue

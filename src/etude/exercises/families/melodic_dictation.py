@@ -459,7 +459,7 @@ class MelodicDictation(ExerciseDefinition):
     glyph = '♫'
     settings: ClassVar[tuple[Setting, ...]] = (
         IntSetting(
-            'accidentals',
+            'max-accidentals',
             _('Key signatures'),
             3,
             0,
@@ -541,7 +541,7 @@ class MelodicDictation(ExerciseDefinition):
     ) -> Question:
         vocabulary = parse_item(item_id)
         grammar = GRAMMARS[vocabulary]
-        limit = _int(settings, 'accidentals', 3, 0, 6)
+        limit = _int(settings, 'max-accidentals', 3, 0, 6)
         key = key_for(grammar.mode, rng.randint(-limit, limit))
         meter = rng.choice(_meters(settings))
         bars = _int(settings, 'bars', 2, 2, 4)
