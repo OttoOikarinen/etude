@@ -1929,6 +1929,145 @@ def check_live_satb_sessions() -> None:
             _close_live(window, services)
 
 
+def _counterpoint_spec():
+    """Fourth species above a five-note cantus: a half rest, notes tied over each
+    barline (written once), the leading tone and the final."""
+    from etude.core import Duration, KeySignature, Meter, NoteValue, Pitch
+    from etude.exercises.base import StaffInputAnswer
+    from etude.notation.spec import Clef
+
+    half, whole = Duration(NoteValue.HALF), Duration(NoteValue.WHOLE)
+    cantus = tuple(Pitch.parse(n) for n in ('D3', 'F3', 'E3', 'F3', 'E3', 'D3'))
+    return StaffInputAnswer(
+        Clef.TREBLE,
+        key_signature=KeySignature(0),
+        voices=2,
+        staves=(Clef.TREBLE, Clef.BASS),
+        voice_staves=(0, 1),
+        given_voices={1: cantus},
+        voice_rhythms={0: (whole, whole, whole, whole, half, whole), 1: (whole,) * 6},
+        voice_rests={0: half},
+        meter=Meter(2, 2),
+        voice_names=('Counterpoint', 'Cantus firmus'),
+    )
+
+
+def check_counterpoint_staff_input() -> None:
+    """Counterpoint entry with the keyboard only, at a wide and a phone width: notes in
+    their own rhythm, a tied note written once, the line scrolling sideways at 360 px
+    to keep the note being written in view, the value per voice and the reveal."""
+    from gi.repository import Gdk, Gtk
+
+    from etude.core import Pitch
+    from etude.notation.spec import Chord, Ink, SystemSpec
+    from etude.ui.figure import WideFigure
+    from etude.ui.widgets.staff_input import StaffInputView
+
+    line = [Pitch.parse(n) for n in ('A3', 'D4', 'C4', 'A3', 'C#4', 'D4')]
+    for width in (900, 360):
+        window = Gtk.Window(default_width=width, default_height=800)
+        widget = StaffInputView(_counterpoint_spec())
+        window.set_child(widget)
+        window.present()
+        pump()
+        try:
+            assert isinstance(widget.wide, WideFigure)
+            assert widget.measure(Gtk.Orientation.HORIZONTAL, -1)[0] <= 360
+            assert not widget.voice_buttons, 'one voice to write: no voice buttons'
+            assert not widget.handle_key(Gdk.KEY_2, Gdk.ModifierType(0)), 'the cantus is printed'
+            assert widget.cursor_text().startswith('Counterpoint, note 1: ')
+            answers = []
+            widget.connect('answered', lambda _w, v, found=answers: found.append(v))
+            for slot, pitch in enumerate(line):
+                _write_note(widget, 0, slot, pitch)
+            assert widget.cursor_text() == 'Counterpoint, note 6: D4'
+            upper = widget.view.figure.staves[0]
+            tied = [e for e in upper.events if isinstance(e, Chord) and e.tie_to_next]
+            assert len(tied) == 4, 'the syncopated notes are tied over the barlines'
+            pump()
+            if width == 360:
+                adjustment = widget.wide._scroller.get_hadjustment()
+                assert adjustment.get_upper() > adjustment.get_page_size(), 'it scrolls'
+                assert adjustment.get_value() > 0, 'the last note is in view'
+            assert widget.activate_default()
+            cantus = tuple(Pitch.parse(n) for n in ('D3', 'F3', 'E3', 'F3', 'E3', 'D3'))
+            assert answers == [(tuple(line), cantus)]
+            widget.reveal((tuple(line), cantus), answers[0], True)
+            pump()
+            assert widget.wide._scroller.get_hadjustment().get_value() == 0, 'read from the start'
+            figure = widget.view.figure
+            assert isinstance(figure, SystemSpec)
+            inks = {h.ink for e in figure.staves[0].events if isinstance(e, Chord) for h in e.heads}
+            assert inks == {Ink.SUCCESS}
+            assert not widget.handle_key(Gdk.KEY_Up, Gdk.ModifierType(0)), 'locked'
+        finally:
+            window.destroy()
+
+
+def check_live_counterpoint_sessions() -> None:
+    """Real counterpoint sessions: the model answer written with the keyboard is
+    correct; a wrong line is marked on the learner's staff with written marks; a
+    mistake in a passage is named."""
+    import tempfile
+
+    from etude.core import Interval
+    from etude.notation.spec import Chord, Ink, SystemSpec
+    from etude.ui.widgets.staff_input import StaffInputView
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        window, services = _live_window(data_dir)
+        try:
+            page = window.start_exercise('counterpoint-writing')
+            pump()
+            widget = page.answer_widget
+            assert isinstance(widget, StaffInputView), type(widget)
+            assert not page._figure_holder.get_visible(), 'the cantus is in the answer staff'
+            question = page.question
+            voice = widget.entry.editable_voices[0]
+            for slot, pitch in enumerate(question.expected[voice]):
+                _write_note(page, voice, slot, pitch)
+            assert press(page, 'Return')
+            assert page.feedback is not None
+            assert page.feedback.correct, page.feedback.detail
+            assert page._figure_in_answer
+            assert isinstance(widget.view.figure, SystemSpec)
+            assert press(page, 'Return')
+            # A wrong answer: the counterpoint a step above the model everywhere.
+            widget = page.answer_widget
+            question = page.question
+            voice = widget.entry.editable_voices[0]
+            step = Interval.parse('M2')
+            for slot, pitch in enumerate(question.expected[voice]):
+                widget.entry.select(slot)
+                widget.entry.place(widget.entry.voice_clef.staff_position(pitch.transpose(step)))
+            widget.refresh()
+            assert press(page, 'Return')
+            feedback = page.feedback
+            assert feedback is not None
+            assert not feedback.correct
+            figure = widget.view.figure
+            staff = figure.staves[widget.entry.voice_staves[voice]]
+            marked = [e for e in staff.events if isinstance(e, Chord) and e.label]
+            assert marked, 'mistakes carry written marks'
+            assert all(e.ink is Ink.ERROR for e in marked)
+            assert page.feedback_banner.has_css_class('feedback-error')
+            assert press(page, 'Escape')
+            pump()
+
+            page = window.start_exercise('counterpoint-errors')
+            pump()
+            assert page._figure_holder.get_visible(), 'the passage is shown'
+            options = page.question.answer.options
+            accel = next(o.accel for o in options if o.key == page.question.expected)
+            assert press(page, accel)
+            assert page.feedback is not None
+            assert page.feedback.correct
+            assert press(page, 'Escape')
+            pump()
+        finally:
+            _close_live(window, services)
+
+
 def check_staff_view_focus_ring() -> None:
     """A focused, shrunk StaffView draws its focus ring around the note, not with
     garbage bounds (GskRoundedRect must not be initialised on a temporary)."""
@@ -2003,6 +2142,8 @@ CHECKS: list[Callable[[], None]] = [
     check_satb_staff_input,
     check_rhythm_template_input,
     check_live_satb_sessions,
+    check_counterpoint_staff_input,
+    check_live_counterpoint_sessions,
     check_today_preview,
     check_continue_banner_preview,
     check_progress_empty,

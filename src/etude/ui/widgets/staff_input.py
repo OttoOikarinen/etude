@@ -23,13 +23,18 @@ while the staff has the focus (after the last voice, Tab leaves the staff as
 usual). Printed voices cannot be selected. A click on the other staff
 selects the voice there whose note is nearest. The accessible value names
 voice, chord and note: "Alto, chord 2: E4".
+
+With voices in rhythms of their own (species counterpoint) ← / → move from
+note to note of the current voice, a tied note is written once, the value
+names the note ("Counterpoint, note 5: A4"), and a long line scrolls sideways
+inside its card, following the note being written.
 """
 
 from __future__ import annotations
 
 from gettext import gettext as _
 
-from gi.repository import Adw, Gdk, Gtk
+from gi.repository import Adw, Gdk, GLib, Gtk
 
 from ...core import Pitch
 from ...core.pitch import Letter
@@ -37,7 +42,7 @@ from ...exercises.base import StaffInputAnswer
 from ...notation.spec import Clef, Figure, StaffSpec
 from ...notation.widget import StaffView
 from ..common import accel_badge, keyval_letter, normalize_keyval, set_shortcut, setting_bool
-from ..figure import LARGE_SCALE, describe_figure, pitch_label
+from ..figure import LARGE_SCALE, WideFigure, describe_figure, pitch_label
 from .base import AnswerWidget
 from .staff_entry import (
     MAX_POSITION,
@@ -46,7 +51,6 @@ from .staff_entry import (
     StaffEntry,
     Value,
     clamp,
-    voice_label,
     voice_letter,
 )
 
@@ -57,6 +61,8 @@ PARTS_STAFF_SPACE = 16.0
 MAX_WIDTH = 440
 MAX_PARTS_WIDTH = 620
 """A grand staff with several chords needs more room."""
+MAX_LINES_WIDTH = 1000
+"""Counterpoint lines are long: on a wide window they are shown whole."""
 
 _SHARP_KEYS = frozenset((Gdk.KEY_plus, Gdk.KEY_KP_Add, Gdk.KEY_numbersign))
 _FLAT_KEYS = frozenset((Gdk.KEY_minus, Gdk.KEY_KP_Subtract))
@@ -120,8 +126,13 @@ class StaffInputView(AnswerWidget):
             given_voices=dict(spec.given_voices),
             rhythm=spec.rhythm,
             labels=spec.labels,
+            voice_rhythms=dict(spec.voice_rhythms),
+            voice_rests=dict(spec.voice_rests),
+            meter=spec.meter,
+            voice_names=spec.voice_names,
         )
         self.hover: int | None = None
+        self._following = False
 
         self.view = StaffView(
             staff_space=PARTS_STAFF_SPACE if len(self.entry.staves) > 1 else STAFF_SPACE,
@@ -130,6 +141,9 @@ class StaffInputView(AnswerWidget):
             hexpand=True,
             focusable=False,
         )
+        # StaffView makes itself focusable; here the canvas takes the keys, and a focused
+        # view would draw a focus ring on a printed note and eat the arrow keys.
+        self.view.set_focusable(False)
         self.view.add_css_class('staff-view')
         self.view.set_pitch_namer(pitch_label)
         self.view.reserve_positions(MIN_POSITION, MAX_POSITION)
@@ -142,7 +156,10 @@ class StaffInputView(AnswerWidget):
         self.view.add_controller(motion)
 
         self.canvas = _StaffCanvas()
-        self.canvas.set_child(self.view)
+        # A line in rhythms of its own (species counterpoint) may be too long for a
+        # phone even at its smallest: it scrolls sideways in its card.
+        self.wide = WideFigure(self.view) if self.entry.voice_rhythms else None
+        self.canvas.set_child(self.wide or self.view)
         self.canvas.update_property(
             [
                 Gtk.AccessibleProperty.LABEL,
@@ -155,6 +172,8 @@ class StaffInputView(AnswerWidget):
         keys.connect('key-pressed', self._on_key)
         self.canvas.add_controller(keys)
         width = MAX_PARTS_WIDTH if self.entry.multipart else MAX_WIDTH
+        if self.entry.voice_rhythms:
+            width = MAX_LINES_WIDTH
         clamp_box = Adw.Clamp(maximum_size=width, child=self.canvas)
         self.append(clamp_box)
 
@@ -168,7 +187,7 @@ class StaffInputView(AnswerWidget):
             for voice in range(self.entry.voices):
                 if voice not in editable:
                     continue
-                name = voice_label(self.entry.voices, voice)
+                name = self.entry.voice_name(voice)
                 button = Gtk.ToggleButton(tooltip_text=name)
                 button.add_css_class('answer-button')
                 button.add_css_class('voice-toggle')
@@ -273,6 +292,7 @@ class StaffInputView(AnswerWidget):
         self.clear_button.set_sensitive(note is not None)
         self.check_button.set_sensitive(self.entry.complete)
         text = self.cursor_text()
+        self._follow_cursor()
         self.canvas.update_property(
             [
                 Gtk.AccessibleProperty.VALUE_NOW,
@@ -281,6 +301,25 @@ class StaffInputView(AnswerWidget):
             ],
             [float(self.entry.cursor), text, text],
         )
+
+    def _follow_cursor(self) -> None:
+        """Keep the current note in view when the line scrolls (once the new figure has
+        its size)."""
+        if self.wide is not None and not self._following:
+            self._following = True
+            GLib.idle_add(self._scroll_to_cursor)
+
+    def _scroll_to_cursor(self) -> bool:
+        self._following = False
+        display = self.view.display_list
+        if self.wide is None or display is None or self.locked:
+            return GLib.SOURCE_REMOVE
+        staff, index = self.entry.event_of(self.entry.voice, self.entry.current)
+        columns = display.event_x[staff] if staff < len(display.event_x) else ()
+        if index < len(columns):
+            origin = self.view._origin()[0]
+            self.wide.scroll_to(origin + columns[index] * self.view.pixels_per_space)
+        return GLib.SOURCE_REMOVE
 
     def cursor_text(self) -> str:
         """What the cursor is on: "E4", or "Alto, chord 2: E4" with several voices."""
@@ -292,11 +331,17 @@ class StaffInputView(AnswerWidget):
             # Translators: the staff input's cursor before a note is written, e.g.
             # "E4, not written yet".
             text = _('{note}, not written yet').format(note=pitch_label(entry.cursor_pitch))
+        if entry.voice_rhythms:
+            # Translators: the staff input's cursor in counterpoint, e.g.
+            # "Counterpoint, note 5: A4".
+            return _('{voice}, note {number}: {note}').format(
+                voice=entry.voice_name(entry.voice), number=entry.current + 1, note=text
+            )
         if entry.voices > 1:
             # Translators: the staff input's cursor in four-part writing, e.g.
             # "Alto, chord 2: E4".
             return _('{voice}, chord {number}: {note}').format(
-                voice=voice_label(entry.voices, entry.voice), number=entry.current + 1, note=text
+                voice=entry.voice_name(entry.voice), number=entry.current + 1, note=text
             )
         if entry.slots > 1:
             # Translators: the staff input's cursor with several notes, e.g. "Note 3: E4".
@@ -314,7 +359,7 @@ class StaffInputView(AnswerWidget):
         if entry.voices > 1:
             for voice in range(entry.voices):
                 notes = [n for n in entry.parts[voice] if n is not None]
-                name = voice_label(entry.voices, voice)
+                name = entry.voice_name(voice)
                 if voice in entry.given_voices:
                     # Translators: part of the staff input's description, e.g.
                     # "Bass (given): G2, C3, D3, G2".
@@ -401,7 +446,7 @@ class StaffInputView(AnswerWidget):
             columns = display.event_x[row] if len(display.event_x) > row else ()
             events = entry.slot_events()
             candidates = [
-                (abs(columns[e] - point[0]), s) for s, e in enumerate(events) if e < len(columns)
+                (abs(columns[e] - point[0]), s) for e, s in entry.slot_columns() if e < len(columns)
             ]
             if candidates:
                 distance_x, nearest = min(candidates)
@@ -498,6 +543,11 @@ class StaffInputView(AnswerWidget):
         self.submit(value)
         return True
 
+    def _scroll_home(self) -> None:
+        """A checked line is read from its beginning (clef, key and first marks)."""
+        if self.wide is not None:
+            self.wide.scroll_to(0.0)
+
     def _lock_buttons(self) -> None:
         for button in (
             *self.accidental_buttons.values(),
@@ -512,6 +562,18 @@ class StaffInputView(AnswerWidget):
         self.hover = None
         self._lock_buttons()
         if not _is_value(expected):
+            return
+        assert isinstance(expected, tuple)
+        if self.entry.voice_rhythms:
+            self._scroll_home()
+            text = self._lines_text(expected, correct)
+            self.view.figure = self.entry.reveal_figure(
+                expected, given_label='✗', expected_label='✓', description=text
+            )
+            self.canvas.update_property(
+                [Gtk.AccessibleProperty.DESCRIPTION, Gtk.AccessibleProperty.VALUE_TEXT],
+                [text, text],
+            )
             return
         marks = self.entry.marks(expected)
         if correct:
@@ -538,6 +600,28 @@ class StaffInputView(AnswerWidget):
             [Gtk.AccessibleProperty.DESCRIPTION, Gtk.AccessibleProperty.VALUE_TEXT], [text, text]
         )
 
+    def _lines_text(self, expected: tuple[tuple[Pitch, ...], ...], correct: bool) -> str:
+        """The checked answer of voices in their own rhythms, for screen readers."""
+        entry = self.entry
+        parts = []
+        for voice in entry.editable_voices:
+            written = _names([n for n in entry.parts[voice] if n is not None])
+            name = entry.voice_name(voice)
+            if correct:
+                # Translators: accessible description of a checked counterpoint, e.g.
+                # "Counterpoint, correct: A4, A4, G4".
+                parts.append(_('{voice}, correct: {notes}').format(voice=name, notes=written))
+            else:
+                right = _names(list(expected[voice])) if voice < len(expected) else ''
+                # Translators: accessible description of a checked counterpoint, e.g.
+                # "Counterpoint as written: A4, B4. A model answer: A4, G4".
+                parts.append(
+                    _('{voice} as written: {notes}. A model answer: {model}').format(
+                        voice=name, notes=written, model=right
+                    )
+                )
+        return _('. ').join([self._staff_names(), *parts]) + '.'
+
     def show_feedback_figure(self, figure: Figure) -> bool:
         """Show the exercise's annotated answer (voice-leading mistakes marked) on this
         staff instead of the generic reveal; the page then keeps its own figure.
@@ -552,6 +636,7 @@ class StaffInputView(AnswerWidget):
         self.hover = None
         self._lock_buttons()
         self.view.figure = figure
+        self._scroll_home()
         description = describe_figure(figure)
         self.canvas.update_property(
             [Gtk.AccessibleProperty.DESCRIPTION, Gtk.AccessibleProperty.VALUE_TEXT],

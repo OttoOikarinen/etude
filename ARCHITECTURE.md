@@ -103,6 +103,13 @@ Contract changes so far (all backwards-compatible):
   `modal_keys()` / `signature()` transpose the modes. `species.realize()` and
   `solve()` find model counterpoints (`solve` also chooses the fourth- and
   fifth-species rhythm: `fourth_rhythm()`, `florid_rhythm()`).
+* W5 counterpoint input: `StaffInputAnswer` gained `voice_rhythms` (each voice's own
+  note durations; the value then lists each voice's notes, top first), `voice_rests`,
+  `meter` and `voice_names`. `notation.parts` gained `rhythm_line()` (a voice in its
+  own rhythm, notes tied over the barlines they cross) and `durations_of()`. The
+  staff input writes such lines (a tied note once, ← / → from note to note) and
+  scrolls a long line sideways in a `WideFigure` (new `scroll_to()`), following the
+  note being written. Exercises `counterpoint-writing` and `counterpoint-errors`.
 * W4 exercises: `Question.details`, exercise-private facts needed again when
   grading (the keys of a transposition); not shown to the learner.
 * W4 notation: lines of a `Chord.label` separated by `'\n'` are stacked

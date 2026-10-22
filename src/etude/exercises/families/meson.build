@@ -4,6 +4,7 @@ install_data(
     'cadence_ear.py',
     'cadences.py',
     'chords.py',
+    'counterpoint.py',
     'degree_ear.py',
     'figured_bass.py',
     'four_part.py',

@@ -88,3 +88,16 @@ class WideFigure(Gtk.Widget):
 
     def do_size_allocate(self, width: int, height: int, baseline: int) -> None:
         self._scroller.allocate(width, height, baseline, None)
+
+    def scroll_to(self, x: float, margin: float = 48.0) -> None:
+        """Scroll as little as needed to show ``x`` (view pixels) with ``margin`` around
+        it: the note a keyboard user is writing stays in sight."""
+        adjustment = self._scroller.get_hadjustment()
+        start = adjustment.get_value()
+        page = adjustment.get_page_size()
+        if page <= 0:
+            return
+        if x - margin < start:
+            adjustment.set_value(max(adjustment.get_lower(), x - margin))
+        elif x + margin > start + page:
+            adjustment.set_value(min(adjustment.get_upper() - page, x + margin - page))

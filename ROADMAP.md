@@ -57,7 +57,8 @@ complete.
 
 ## W5 — Level 3 (undergraduate)
 
-- [ ] Species counterpoint checker (species 1–5)
+- [x] Species counterpoint checker (species 1–5), cantus firmi and model solutions;
+      counterpoint writing and errors
 - [ ] Chromatic harmony and modulation, harmonic dictation, C clefs, jazz chord symbols and
       voicings, form analysis
 - [ ] Level 3 lessons and vocabulary, fact-checked
