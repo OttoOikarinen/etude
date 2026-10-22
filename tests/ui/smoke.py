@@ -1985,10 +1985,15 @@ def check_counterpoint_staff_input() -> None:
             tied = [e for e in upper.events if isinstance(e, Chord) and e.tie_to_next]
             assert len(tied) == 4, 'the syncopated notes are tied over the barlines'
             pump()
-            if width == 360:
-                adjustment = widget.wide._scroller.get_hadjustment()
-                assert adjustment.get_upper() > adjustment.get_page_size(), 'it scrolls'
-                assert adjustment.get_value() > 0, 'the last note is in view'
+            # When the line scrolls (on a phone), the note being written is in view.
+            adjustment = widget.wide._scroller.get_hadjustment()
+            staff, index = widget.entry.event_of(0, widget.entry.current)
+            x = (
+                widget.view._origin()[0]
+                + widget.view.display_list.event_x[staff][index] * widget.view.pixels_per_space
+            )
+            start, page_size = adjustment.get_value(), adjustment.get_page_size()
+            assert start <= x <= start + page_size, (start, x, page_size)
             assert widget.activate_default()
             cantus = tuple(Pitch.parse(n) for n in ('D3', 'F3', 'E3', 'F3', 'E3', 'D3'))
             assert answers == [(tuple(line), cantus)]
