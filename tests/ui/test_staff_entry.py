@@ -5,6 +5,8 @@
 
 from __future__ import annotations
 
+from fractions import Fraction
+
 import pytest
 
 from etude.core import Duration, KeySignature, Letter, Meter, NoteValue, Pitch
@@ -340,3 +342,96 @@ def test_printed_notes_before_a_rhythm_count_towards_the_bar() -> None:
         'Chord',
     ]
     assert entry.slot_events() == [1, 2, 4]
+
+
+def _counterpoint(above: bool = True) -> StaffEntry:
+    """Fourth species above (or below) a three-note cantus: a half rest, a whole note
+    tied over the barline, a half note and the final whole note."""
+    half, whole = Duration(NoteValue.HALF), Duration(NoteValue.WHOLE)
+    cantus = (P('D4'), P('E4'), P('D4'))
+    cp, cf = (0, 1) if above else (1, 0)
+    return StaffEntry(
+        Clef.TREBLE,
+        voices=2,
+        staves=(Clef.TREBLE, Clef.BASS),
+        voice_staves=(0, 1),
+        given_voices={cf: cantus},
+        voice_rhythms={cp: (whole, half, whole), cf: (whole,) * 3},
+        voice_rests={cp: half},
+        meter=Meter(2, 2),
+        voice_names=('Counterpoint', 'Cantus firmus') if above else ('Cantus firmus', 'Cp'),
+    )
+
+
+def test_voices_in_rhythms_of_their_own() -> None:
+    entry = _counterpoint()
+    assert entry.voice == 0
+    assert entry.slots == 3
+    assert entry.count(1) == 3
+    assert entry.voice_name(0) == 'Counterpoint'
+    assert not entry.set_voice(1), 'the cantus is printed'
+    for slot, name in enumerate(('A4', 'D5', 'C#5')):
+        entry.select(slot)
+        entry.place(Clef.TREBLE.staff_position(P(name)))
+    assert entry.notes[2] == P('C5')  # C♯ needs the sharp toggle
+    entry.select(2)
+    entry.toggle_accidental(Accidental.SHARP)
+    assert entry.value() == ((P('A4'), P('D5'), P('C#5')), (P('D4'), P('E4'), P('D4')))
+    assert entry.onset(0, 1) == Fraction(3, 2)
+
+
+def test_tied_notes_are_drawn_over_the_barline() -> None:
+    entry = _counterpoint()
+    for slot, name in enumerate(('A4', 'D5', 'C5')):
+        entry.select(slot)
+        entry.place(Clef.TREBLE.staff_position(P(name)))
+    figure = entry.figure()
+    assert isinstance(figure, SystemSpec)
+    upper = figure.staves[0]
+    assert upper.meter == Meter(2, 2)
+    kinds = [type(e).__name__ for e in upper.events]
+    assert kinds[:4] == ['Rest', 'Chord', 'Barline', 'Chord']
+    chords = [e for e in upper.events if isinstance(e, Chord)]
+    # A4 is a half note tied over the barline to a half note; then D5 and the final C5.
+    assert [c.tie_to_next for c in chords] == [True, False, False, False]
+    assert [c.duration.value if c.duration else None for c in chords] == [
+        NoteValue.HALF,
+        NoteValue.HALF,
+        NoteValue.HALF,
+        NoteValue.WHOLE,
+    ]
+    # Both parts of the tied note map back to it; the first part is its event.
+    assert entry.slot_columns() == [(1, 0), (3, 0), (4, 1), (6, 2)]
+    assert entry.event_of(0, 1) == (0, 4)
+    lower = figure.staves[1]
+    assert [h.pitch for e in lower.events if isinstance(e, Chord) for h in e.heads] == [
+        P('D4'),
+        P('E4'),
+        P('D4'),
+    ]
+
+
+def test_counterpoint_below_keeps_its_place_in_time() -> None:
+    entry = _counterpoint(above=False)
+    assert entry.voice == 1
+    assert entry.voice_name(1) == 'Cp'
+    assert entry.staff_voices(1) == [1]
+    entry.select(2)
+    assert entry.current == 2
+    empty = entry.figure()
+    assert isinstance(empty, SystemSpec)
+    placeholders = [e for e in empty.staves[1].events if isinstance(e, Chord)]
+    assert all(h.ink in (Ink.DIM, Ink.ACCENT) for c in placeholders for h in c.heads)
+
+
+def test_reveal_of_lines_marks_notes_against_the_model() -> None:
+    entry = _counterpoint()
+    for slot, name in enumerate(('A4', 'D5', 'C5')):
+        entry.select(slot)
+        entry.place(Clef.TREBLE.staff_position(P(name)))
+    model = ((P('A4'), P('D5'), P('C#5')), (P('D4'), P('E4'), P('D4')))
+    figure = entry.reveal_figure(model, given_label='✗', expected_label='✓')
+    assert isinstance(figure, SystemSpec)
+    inks = [{h.ink for h in e.heads} for e in figure.staves[0].events if isinstance(e, Chord)]
+    assert inks[0] == {Ink.SUCCESS}
+    assert inks[-1] == {Ink.ERROR}

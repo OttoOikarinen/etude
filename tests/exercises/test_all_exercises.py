@@ -103,6 +103,19 @@ def check_expected(question: Question) -> None:
     elif isinstance(answer, TextAnswer):
         assert isinstance(question.expected, str)
         assert question.expected.strip()
+    elif isinstance(answer, StaffInputAnswer) and answer.voice_rhythms:
+        # Voices in rhythms of their own: one line per voice, top first.
+        expected = question.expected
+        assert isinstance(expected, tuple), 'staff answers are tuples of lines'
+        assert len(expected) == answer.voices
+        assert set(answer.voice_rhythms) == set(range(answer.voices))
+        for voice, line in enumerate(expected):
+            assert isinstance(line, tuple)
+            assert all(isinstance(p, Pitch) for p in line)
+            assert len(line) == len(answer.voice_rhythms[voice])
+        for voice, pitches in answer.given_voices.items():
+            assert expected[voice] == tuple(pitches)
+        assert set(answer.voice_rests) <= set(range(answer.voices))
     elif isinstance(answer, StaffInputAnswer):
         expected = question.expected
         assert isinstance(expected, tuple), 'staff answers are tuples of chords'
@@ -130,6 +143,8 @@ def wrong_answers(question: Question) -> list[object]:
         return [o.key for o in answer.options if o.key != question.expected]
     if isinstance(answer, TextAnswer):
         return ['definitely not the answer']
+    if isinstance(answer, StaffInputAnswer) and answer.voice_rhythms:
+        return wrong_lines(answer, question.expected)
     if isinstance(answer, StaffInputAnswer):
         assert isinstance(question.expected, tuple)
         first = question.expected[0][0]
@@ -154,6 +169,31 @@ def wrong_answers(question: Question) -> list[object]:
             wrong.append((tuple(chord), *rest))
         return wrong
     return []
+
+
+def wrong_lines(answer: StaffInputAnswer, expected: object) -> list[object]:
+    """Wrong answers to voices in their own rhythms (counterpoint, where any correct line
+    is right): the first written note a step away or chromatically altered (the first
+    interval of a counterpoint is perfect), a printed voice changed, and no notes."""
+    assert isinstance(expected, tuple)
+    lines = [list(line) for line in expected]
+    free = [v for v in range(answer.voices) if v not in answer.given_voices]
+    wrong: list[object] = [(), 'not notes', (tuple(lines[0]),)]
+    voice = free[0] if free else 0
+    note = lines[voice][0]
+    for changed in (
+        Pitch.from_diatonic(note.diatonic_index + 1, note.midi + 2),
+        Pitch(note.letter, note.alter + (1 if note.alter < 1 else -1), note.octave),
+    ):
+        copy = [list(line) for line in lines]
+        copy[voice][0] = changed
+        wrong.append(tuple(tuple(line) for line in copy))
+    for given in answer.given_voices:
+        copy = [list(line) for line in lines]
+        first = copy[given][0]
+        copy[given][0] = Pitch.from_diatonic(first.diatonic_index + 1, first.midi + 2)
+        wrong.append(tuple(tuple(line) for line in copy))
+    return wrong
 
 
 @pytest.mark.parametrize('definition', EXERCISES, ids=_ids)

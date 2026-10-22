@@ -301,6 +301,31 @@ def four_part_shots(window, page, pattern) -> None:
     render(window, Path(str(pattern).format('wrong')))
 
 
+def counterpoint_shots(window, page, pattern) -> None:
+    """Write half of the model counterpoint (the input as the learner sees it while
+    writing), then the whole line with every third note a step too high, checked."""
+    from etude.core import Interval
+
+    widget = page.answer_widget
+    entry = widget.entry
+    voice = entry.editable_voices[0]
+    line = page.question.expected[voice]
+    for slot, pitch in enumerate(line[: len(line) // 2]):
+        entry.select(slot)
+        entry.place(entry.voice_clef.staff_position(pitch))
+    entry.select(len(line) // 2)
+    widget.refresh()
+    render(window, Path(str(pattern).format('entering')))
+    for slot, pitch in enumerate(line):
+        if slot % 3 == 1:
+            pitch = pitch.transpose(Interval.parse('M2'))
+        entry.select(slot)
+        entry.place(entry.voice_clef.staff_position(pitch))
+    widget.refresh()
+    widget.activate_default()
+    render(window, Path(str(pattern).format('wrong')))
+
+
 def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
     """Real exercises from the registry against a throw-away database: the first
     question, a correct answer and (for choice answers) a wrong one, light and dark."""
@@ -386,6 +411,8 @@ def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
                     rhythm_shots(window, page, out / f'live-{exercise_id}-{{}}-{scheme}.png')
                 elif isinstance(answer, RhythmInputAnswer):
                     entry_shots(window, page, out / f'live-{exercise_id}-{{}}-{scheme}.png')
+                elif isinstance(answer, StaffInputAnswer) and answer.voice_rhythms:
+                    counterpoint_shots(window, page, out / f'live-{exercise_id}-{{}}-{scheme}.png')
                 elif isinstance(answer, StaffInputAnswer) and answer.voices > 1:
                     # A filled-in four-part answer with mistakes: the highest written
                     # voice doubles the lowest one in octaves, then it is checked.

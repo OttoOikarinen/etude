@@ -24,12 +24,18 @@ value lists one pitch per voice in every slot, top voice first.
 With a ``rhythm`` (dictation) the single voice is drawn in those durations;
 empty slots show a dim placeholder note on the middle line, so the learner
 sees the rhythm they write pitches into.
+
+With ``voice_rhythms`` (species counterpoint) every voice has its own rhythm
+and number of notes: a rest before the first note, notes tied over the barlines
+of ``meter`` where they cross them (written once), and the value lists each
+voice's notes. :attr:`StaffEntry.slots` and :attr:`StaffEntry.current` are then
+the current voice's.
 """
 
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import Enum
 from fractions import Fraction
 from gettext import gettext as _
@@ -37,7 +43,7 @@ from gettext import pgettext
 
 from ...core import Duration, KeySignature, Meter, NoteValue, Pitch
 from ...core.pitch import Letter
-from ...notation.parts import event_index, voices_figure
+from ...notation.parts import Line, event_index, rhythm_line, voices_figure
 from ...notation.spec import Barline, Chord, Clef, Event, Head, Ink, Rest, StaffSpec, SystemSpec
 
 MIN_POSITION = -7
@@ -192,6 +198,14 @@ class StaffEntry:
     parts: list[list[Pitch | None]] = field(default_factory=list)
     """Every voice's notes, top voice first; ``notes`` is ``parts[voice]``."""
     cursors: list[int] = field(default_factory=list)
+    voice_rhythms: Mapping[int, tuple[Duration, ...]] = field(default_factory=dict)
+    """Each voice's own note durations (species counterpoint); see the module notes."""
+    voice_rests: Mapping[int, Duration] = field(default_factory=dict)
+    meter: Meter | None = None
+    """Barlines of ``voice_rhythms``."""
+    voice_names: tuple[str, ...] = ()
+    lines: list[Line] = field(default_factory=list, init=False)
+    """Where each voice's notes fall among its events (``voice_rhythms``)."""
 
     def __post_init__(self) -> None:
         if self.rhythm:
@@ -203,16 +217,22 @@ class StaffEntry:
         if not self.parts:
             self.parts = []
             for v in range(self.voices):
+                count = self.count(v)
                 fixed = self.given_voices.get(v)
                 if fixed is not None:
-                    self.parts.append([*fixed[: self.slots], *[None] * (self.slots - len(fixed))])
+                    self.parts.append([*fixed[:count], *[None] * (count - len(fixed))])
                 elif v == 0 and self.notes:
                     self.parts.append(self.notes)
                 else:
-                    self.parts.append([None] * self.slots)
+                    self.parts.append([None] * count)
         editable = self.editable_voices
         if self.voice not in editable and editable:
             self.voice = editable[0]
+        if self.voice_rhythms:
+            self.slots = self.count(self.voice)
+            self.lines = [
+                self._line(v, [Chord(()) for _ in range(self.count(v))]) for v in range(self.voices)
+            ]
         if not self.cursors:
             self.cursors = [self._default_cursor(v) for v in range(self.voices)]
         self.notes = self.parts[self.voice]
@@ -220,6 +240,35 @@ class StaffEntry:
         if given and self.voices == 1:
             self.cursors[0] = clamp(self.clef.staff_position(given[-1]))
         self.cursor = self.cursors[self.voice]
+
+    def count(self, voice: int) -> int:
+        """The number of notes ``voice`` has."""
+        if self.voice_rhythms:
+            return len(self.voice_rhythms.get(voice, ()))
+        return self.slots
+
+    def onset(self, voice: int, slot: int) -> Fraction:
+        """When note ``slot`` of ``voice`` starts (``voice_rhythms``), in whole notes."""
+        rest = self.voice_rests.get(voice)
+        time = rest.length if rest is not None else Fraction(0)
+        return time + sum((d.length for d in self.voice_rhythms[voice][:slot]), Fraction(0))
+
+    def voice_name(self, voice: int) -> str:
+        """The name of a voice: from ``voice_names``, else as :func:`voice_label`."""
+        if voice < len(self.voice_names):
+            return self.voice_names[voice]
+        return voice_label(self.voices, voice)
+
+    def _line(self, voice: int, chords: Sequence[Chord]) -> Line:
+        bar = self.meter.bar_length if self.meter is not None else None
+        return rhythm_line(
+            chords,
+            self.voice_rhythms[voice],
+            rest=self.voice_rests.get(voice),
+            bar=bar,
+            final_bar=True,
+            rest_ink=Ink.DIM if voice in self.editable_voices else Ink.FOREGROUND,
+        )
 
     def _default_staff(self, voice: int) -> int:
         if len(self.staves) < 2:
@@ -275,6 +324,8 @@ class StaffEntry:
         """The answer value, or ``None`` while a slot is empty."""
         if not self.complete:
             return None
+        if self.voice_rhythms:
+            return tuple(tuple(n for n in part if n is not None) for part in self.parts)
         return tuple(
             tuple(note for part in self.parts if (note := part[slot]) is not None)
             for slot in range(self.slots)
@@ -326,6 +377,13 @@ class StaffEntry:
         if voice not in self.editable_voices:
             return False
         self.cursors[self.voice] = self.cursor
+        if self.voice_rhythms and voice != self.voice:
+            # Keep the place in time: the note of the new voice sounding then.
+            time = self.onset(self.voice, self.current)
+            self.slots = self.count(voice)
+            self.current = max(
+                (k for k in range(self.slots) if self.onset(voice, k) <= time), default=0
+            )
         self.voice = voice
         self.notes = self.parts[voice]
         self.cursor = self.cursors[voice]
@@ -367,6 +425,8 @@ class StaffEntry:
         drawn, empty ones as dim rests (voices) or dim placeholder notes (rhythm),
         and the current voice is accent-coloured.
         """
+        if self.voice_rhythms:
+            return self._lines_figure(hover, description)
         if self.multipart:
             return self._part_figure(hover, description)
         events: list[Event] = list(self._given_events())
@@ -478,6 +538,43 @@ class StaffEntry:
             description=description,
         )
 
+    def _lines_figure(
+        self, hover: int | None, description: str | None, chords: list[list[Chord]] | None = None
+    ) -> StaffSpec | SystemSpec:
+        """Every voice in its own rhythm; ``chords`` replaces the notes (the reveal)."""
+        events: list[tuple[Event, ...]] = []
+        for voice in range(self.voices):
+            if chords is not None:
+                line = chords[voice]
+            else:
+                current_voice = voice == self.voice and voice in self.editable_voices
+                line = []
+                for slot in range(self.count(voice)):
+                    note = self.parts[voice][slot]
+                    heads = self._heads(slot, note, hover, current_voice=current_voice)
+                    if current_voice and slot == self.current and note is None:
+                        # Whole and half notes have no stem to colour: a halo shows
+                        # which empty note the keys write.
+                        heads = [replace(h, halo=True) for h in heads]
+                    if heads:
+                        ink = Ink.ACCENT if current_voice else Ink.FOREGROUND
+                        line.append(Chord(tuple(heads), ink=ink))
+                    else:
+                        # On the middle line as the key signature has it (no natural).
+                        clef = self.clef_of(voice)
+                        position = self._default_cursor(voice)
+                        pitch = pitch_at(clef, position, Accidental.NONE, self.key_signature)
+                        line.append(Chord((Head(pitch, ink=Ink.DIM),), ink=Ink.DIM))
+            events.append(self._line(voice, line).events)
+        return voices_figure(
+            self.staves or (self.clef,),
+            self.voice_staves,
+            events,
+            key_signature=self.key_signature,
+            meter=self.meter,
+            description=description,
+        )
+
     def _slot_offsets(self) -> list[int]:
         """Index of each slot's event within its voice (after given notes and barlines)."""
         start = len(self._given_events()) if self.voices == 1 else 0
@@ -490,7 +587,11 @@ class StaffEntry:
 
     def event_of(self, voice: int, slot: int) -> tuple[int, int]:
         """``(staff, combined event index)`` of ``voice``'s event in ``slot``, as
-        :meth:`figure` lays them out with voices or a rhythm."""
+        :meth:`figure` lays them out with voices or a rhythm (with ``voice_rhythms``
+        the first of a tied note's events)."""
+        if self.voice_rhythms:
+            lengths = [len(line.events) for line in self.lines]
+            return event_index(self.voice_staves, lengths, voice, self.lines[voice].starts[slot])
         offsets = self._slot_offsets()
         length = offsets[-1] + 1  # every voice has the same events
         return event_index(self.voice_staves, [length] * self.voices, voice, offsets[slot])
@@ -503,6 +604,19 @@ class StaffEntry:
         start = len(self._given_events())
         last = max([self.current, *(i for i, note in enumerate(self.notes) if note is not None)])
         return [start + slot for slot in range(last + 1)]
+
+    def slot_columns(self) -> list[tuple[int, int]]:
+        """``(figure event index, slot)`` of every drawn event of the current voice's notes,
+        both parts of a tied note included (what a click near them selects)."""
+        if not self.voice_rhythms:
+            return [(event, slot) for slot, event in enumerate(self.slot_events())]
+        lengths = [len(line.events) for line in self.lines]
+        line = self.lines[self.voice]
+        return [
+            (event_index(self.voice_staves, lengths, self.voice, index)[1], owner)
+            for index, owner in enumerate(line.owners)
+            if owner is not None
+        ]
 
     def marks(self, expected: Sequence[Sequence[Pitch]]) -> list[SlotMark]:
         if self.multipart:
@@ -532,6 +646,8 @@ class StaffEntry:
         in error ink with the right one beside it on the same stem in success ink,
         and the slot's top voice is labelled ``given_label``.
         """
+        if self.voice_rhythms:
+            return self._reveal_lines(expected, description)
         if self.multipart:
             return self._reveal_parts(expected, given_label, description)
         events: list[Event] = list(self._given_events())
@@ -551,6 +667,32 @@ class StaffEntry:
             events=tuple(events),
             description=description,
         )
+
+    def _reveal_lines(
+        self, expected: Sequence[Sequence[Pitch]], description: str | None
+    ) -> StaffSpec | SystemSpec:
+        """Each voice as written: a note that matches the expected line in success ink;
+        another in error ink with the expected one beside it in success ink."""
+        chords: list[list[Chord]] = []
+        for voice in range(self.voices):
+            line: list[Chord] = []
+            right_line = expected[voice] if voice < len(expected) else ()
+            for slot, note in enumerate(self.parts[voice]):
+                right = right_line[slot] if slot < len(right_line) else None
+                if voice in self.given_voices and note is not None:
+                    line.append(Chord((Head(note),)))
+                elif note is not None and (right is None or note == right):
+                    line.append(Chord((Head(note, ink=Ink.SUCCESS),), ink=Ink.SUCCESS))
+                else:
+                    heads = [Head(note, ink=Ink.ERROR)] if note is not None else []
+                    if right is not None and (
+                        note is None or note.diatonic_index != right.diatonic_index
+                    ):
+                        heads.append(Head(right, ink=Ink.SUCCESS))
+                    heads.sort(key=lambda h: h.pitch.diatonic_index)
+                    line.append(Chord(tuple(heads), ink=Ink.ERROR))
+            chords.append(line)
+        return self._lines_figure(None, description, chords)
 
     def _reveal_parts(
         self, expected: Sequence[Sequence[Pitch]], wrong_label: str, description: str | None

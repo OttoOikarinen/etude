@@ -117,7 +117,8 @@ class StaffInputAnswer:
 
     Value: ``tuple[tuple[Pitch, ...], ...]``, one chord (or single note) per slot.
     With several ``voices`` each chord lists one pitch per voice, from the top
-    voice down (soprano, alto, tenor, bass), including the ``given_voices``.
+    voice down (soprano, alto, tenor, bass), including the ``given_voices``. With
+    ``voice_rhythms`` it lists each voice's notes instead.
     """
 
     clef: Clef
@@ -143,6 +144,21 @@ class StaffInputAnswer:
     labels: tuple[str, ...] = ()
     """Text under each slot, below the lowest staff (the Roman numerals of a
     four-part exercise); empty means none."""
+    voice_rhythms: Mapping[int, tuple[Duration, ...]] = field(default_factory=dict, hash=False)
+    """Voices that move in rhythms of their own (species counterpoint: a cantus firmus
+    in whole notes against a line in halves): voice index → the duration of each of
+    its notes. When set it lists every voice, ``given_voices`` hold one pitch per note
+    of their voice, ``slots`` and ``rhythm`` are unused, and the value lists each
+    voice's notes instead of chords, top voice first: ``((upper …), (lower …))``. A
+    note longer than what is left of its bar of ``meter`` is drawn as notes tied over
+    the barline and written once (fourth-species syncopation)."""
+    voice_rests: Mapping[int, Duration] = field(default_factory=dict, hash=False)
+    """A rest before a voice's first note (with ``voice_rhythms``)."""
+    meter: Meter | None = None
+    """The meter whose barlines ``voice_rhythms`` are drawn with."""
+    voice_names: tuple[str, ...] = ()
+    """Names of the voices, top first, for the input's buttons and descriptions
+    ("Counterpoint", "Cantus firmus"); empty: "Soprano" … or "Upper voice" …"""
 
     def staff_of_voice(self, voice: int) -> int:
         if self.voice_staves:

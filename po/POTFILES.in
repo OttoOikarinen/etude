@@ -45,6 +45,7 @@ src/etude/exercises/base.py
 src/etude/exercises/families/cadence_ear.py
 src/etude/exercises/families/cadences.py
 src/etude/exercises/families/chords.py
+src/etude/exercises/families/counterpoint.py
 src/etude/exercises/families/degree_ear.py
 src/etude/exercises/families/figured_bass.py
 src/etude/exercises/families/four_part.py
