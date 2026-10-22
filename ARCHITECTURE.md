@@ -92,6 +92,17 @@ Contract changes so far (all backwards-compatible):
   where they were written; four-part answers only). `harmony.satb_figure` gained
   `inks` and `marks`, and `satb_voices` keeps the voice order of stemmed figures
   even when voices cross.
+* W5 counterpoint: new pure modules in `etude.checkers`. `counterpoint` checks
+  two-voice species counterpoint (species 1–5) against a cantus firmus in a mode:
+  `check(cantus, counterpoint, Context(mode, species, above, rhythm))`, `scan()`,
+  `errors()`, `check_cantus()`, `Rule`, `Violation` (with the counterpoint `notes` and
+  `cantus` notes involved), `Rhythm` and `species_rhythm()`, and the names
+  `voice_name()`, `rule_name()`, `rule_mark()` and `rule_reason()` (rule decisions and
+  sources in its docstring; every two-voice solution in Fux's figures passes).
+  `cantus` holds Fux's six cantus firmi (`FUX`), `generate()` writes new ones, and
+  `modal_keys()` / `signature()` transpose the modes. `species.realize()` and
+  `solve()` find model counterpoints (`solve` also chooses the fourth- and
+  fifth-species rhythm: `fourth_rhythm()`, `florid_rhythm()`).
 * W4 exercises: `Question.details`, exercise-private facts needed again when
   grading (the keys of a transposition); not shown to the learner.
 * W4 notation: lines of a `Chord.label` separated by `'\n'` are stacked
