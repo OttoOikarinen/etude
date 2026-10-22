@@ -99,6 +99,7 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from enum import Enum, IntEnum
 from fractions import Fraction
+from functools import lru_cache
 from gettext import gettext as _
 from gettext import pgettext
 
@@ -620,7 +621,7 @@ def cadence_ficta(mode: Scale) -> tuple[PitchName | None, PitchName | None]:
 # Checking -----------------------------------------------------------------------------
 
 
-@dataclass(slots=True)
+@dataclass(frozen=True, slots=True)
 class _Note:
     """Where a counterpoint note falls: start, end, bar and whether it is tied."""
 
@@ -632,6 +633,67 @@ class _Note:
     tied: bool
     """Held over the barline into the next bar."""
     length: Fraction
+    joined: bool = False
+    """Starts where the note before it ends (not after a rest)."""
+    downbeat_before: int = -1
+    """The note struck on the downbeat of the bar before, if this one is on a downbeat."""
+    syncopation: bool = False
+    """Struck on the weak half after a note tied over from the weak half before."""
+
+    @property
+    def long(self) -> bool:
+        return self.length >= _HALF_LENGTH
+
+    @property
+    def quick(self) -> bool:
+        """A quarter note or shorter."""
+        return self.length <= _QUARTER_LENGTH
+
+
+_HALF_LENGTH = Fraction(1, 2)
+_QUARTER_LENGTH = Fraction(1, 4)
+_EIGHTH_LENGTH = Fraction(1, 8)
+
+
+@lru_cache(maxsize=512)
+def _layout(rhythm: Rhythm) -> tuple[_Note, ...]:
+    """Where the notes of ``rhythm`` fall (searches check thousands of lines in one)."""
+    notes: list[_Note] = []
+    for start, duration in zip(rhythm.onsets, rhythm.notes, strict=True):
+        bar = int(start)
+        end = start + duration.length
+        if end > bar + 2:
+            raise ValueError('a note is tied over more than one barline')
+        index = len(notes)
+        joined = syncopation = False
+        if index:
+            before = notes[-1]
+            joined = before.end == start
+            syncopation = start - bar == _HALF_LENGTH and before.tied and before.start == start - 1
+        downbeat_before = -1
+        if start == bar:
+            downbeat_before = next(
+                (
+                    k
+                    for k in range(index - 1, -1, -1)
+                    if notes[k].strong and notes[k].start == start - 1
+                ),
+                -1,
+            )
+        notes.append(
+            _Note(
+                start,
+                end,
+                bar,
+                start == bar,
+                end > bar + 1,
+                duration.length,
+                joined,
+                downbeat_before,
+                syncopation,
+            )
+        )
+    return tuple(notes)
 
 
 @dataclass(slots=True)
@@ -660,13 +722,7 @@ class _Checker:
             raise ValueError(
                 f'the rhythm lasts {self.rhythm.length} bars, the cantus firmus {bars}'
             )
-        self.notes = []
-        for start, duration in zip(self.rhythm.onsets, self.rhythm.notes, strict=True):
-            bar = int(start)
-            end = start + duration.length
-            if end > bar + 2:
-                raise ValueError('a note is tied over more than one barline')
-            self.notes.append(_Note(start, end, bar, start == bar, end > bar + 1, duration.length))
+        self.notes = list(_layout(self.rhythm))
         mode = self.context.mode
         self.names = frozenset(mode.names()) | mode_ficta(mode)
         self.seventh, self.sixth = cadence_ficta(mode)
@@ -710,7 +766,7 @@ class _Checker:
         return self.cantus[self.notes[index].bar]
 
     def contiguous(self, index: int) -> bool:
-        return index > 0 and self.notes[index - 1].end == self.notes[index].start
+        return self.notes[index].joined
 
     # Stepping
 
@@ -977,11 +1033,11 @@ class _Checker:
         stepwise = _is_step(before, here) and _is_step(here, after)
         if stepwise and _sign(into) == _sign(out):
             return True  # passing tone
-        if self.notes[d].length > Fraction(1, 4):
+        if not self.notes[d].quick:
             return False  # half notes only pass
         if stepwise and after == before:
             return True  # neighbor tone
-        if self.notes[d].length < Fraction(1, 4):
+        if self.notes[d].length < _QUARTER_LENGTH:
             return False  # eighths pass or neighbor
         # Double neighbor, second note: main, step, third the other way, back to main.
         if (
@@ -1058,7 +1114,7 @@ class _Checker:
     def report_dissonance(self, d: int) -> None:
         pitch, cantus = self.line[d], self.under(d)
         bar = self.notes[d].bar
-        if self.notes[d].length >= Fraction(1, 2):
+        if self.notes[d].long:
             # Translators: e.g. "The dissonance (a fourth) in bar 3 is not a passing tone:
             # approach and leave it by step in one direction".
             text = lambda: _(  # noqa: E731
@@ -1213,23 +1269,10 @@ class _Checker:
         if self.species is Species.FIRST:
             return
         if note.strong and i >= 2 and self.species is not Species.FOURTH:
-            k = next(
-                (
-                    k
-                    for k in range(i - 1, -1, -1)
-                    if self.notes[k].start == note.start - 1 and self.notes[k].strong
-                ),
-                None,
-            )
-            if k is not None and k < i - 1:
+            k = note.downbeat_before
+            if 0 <= k < i - 1:
                 self.strong_parallels(k, i)
-        if (
-            not note.strong
-            and note.start - note.bar == Fraction(1, 2)
-            and i >= 1
-            and self.notes[i - 1].tied
-            and self.notes[i - 1].start == note.start - 1
-        ):
+        if note.syncopation:
             self.weak_parallels(i - 1, i)
 
     def strong_parallels(self, k: int, i: int) -> None:
@@ -1402,7 +1445,7 @@ class _Checker:
                 ).format(**where()),
                 notes=notes,
             )
-        eighth = Fraction(1, 8)
+        eighth = _EIGHTH_LENGTH
         if size > 1 and eighth in (self.notes[i].length, self.notes[i - 1].length):
             self.add(
                 Rule.EIGHTH_NOTES,
@@ -1423,7 +1466,7 @@ class _Checker:
     ) -> None:
         if self.species is Species.FIRST:
             severity = Severity.WARNING
-        elif self.species is Species.FIFTH and self.notes[i - 1].length == Fraction(1, 4):
+        elif self.species is Species.FIFTH and self.notes[i - 1].length == _QUARTER_LENGTH:
             return  # an anticipation
         else:
             severity = Severity.ERROR
@@ -1442,12 +1485,15 @@ class _Checker:
         second = c.diatonic_index - b.diatonic_index
         if not first or not second or _sign(first) != _sign(second):
             return
-        fields = {
-            'bars': _bars(self.bar(i - 2), self.bar(i)),
-            'start': _note(a),
-            'middle': _note(b),
-            'end': _note(c),
-        }
+
+        def fields() -> dict[str, str]:
+            return {
+                'bars': _bars(self.bar(i - 2), self.bar(i)),
+                'start': _note(a),
+                'middle': _note(b),
+                'end': _note(c),
+            }
+
         notes = (i - 2, i - 1, i)
         if abs(first) > 1 and abs(second) > 1:
             span = _interval(a, c)
@@ -1464,12 +1510,12 @@ class _Checker:
                 # (bars 2–4)". {interval} is an interval name.
                 text = lambda: _(  # noqa: E731
                     'Two leaps in one direction, {start} {middle} {end}, span {interval} ({bars})'
-                ).format(interval=_named(a, c), **fields)
+                ).format(interval=_named(a, c), **fields())
             else:
                 text = lambda: _(  # noqa: E731
                     'Two leaps in one direction, {start} {middle} {end} '
                     '({bars}); turning back is smoother'
-                ).format(**fields)
+                ).format(**fields())
             self.add(
                 Rule.CONSECUTIVE_LEAPS,
                 Severity.ERROR if wide else Severity.WARNING,
@@ -1487,7 +1533,7 @@ class _Checker:
                 lambda: _(
                     'After the leap {start} {middle} the line goes on to {end} '
                     '({bars}); turn back after a large leap'
-                ).format(**fields),
+                ).format(**fields()),
                 notes=notes,
             )
 
@@ -1515,17 +1561,20 @@ class _Checker:
         interval = _interval(line[start], line[end])
         if interval is None or str(interval) != 'A4':
             return
-        fields = {
-            'start': _note(line[start]),
-            'end': _note(line[end]),
-            'bars': _bars(self.bar(start), self.bar(end)),
-        }
+
+        def fields() -> dict[str, str]:
+            return {
+                'start': _note(line[start]),
+                'end': _note(line[end]),
+                'bars': _bars(self.bar(start), self.bar(end)),
+            }
+
         self.add(
             Rule.OUTLINED_TRITONE,
             Severity.WARNING,
             end,
             # Translators: e.g. "The line outlines a tritone, F4 to B4 (bars 3–6)".
-            lambda: _('The line outlines a tritone, {start} to {end} ({bars})').format(**fields),
+            lambda: _('The line outlines a tritone, {start} to {end} ({bars})').format(**fields()),
             notes=(start, end),
         )
 
