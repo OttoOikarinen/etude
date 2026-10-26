@@ -542,6 +542,8 @@ class _Engraver:
             for slot, entries in sorted(at_slot.items()):
                 self._build_column(staff, columns[slot], entries, memory)
             self._add_bracket_room(staff_index, staff, columns)
+            if staff.labels_in_line:
+                self._add_label_room(columns)
             self.columns.append(columns)
 
     def _find_bar_rests(self, staff: StaffSpec, track: _Track) -> None:
@@ -840,6 +842,22 @@ class _Engraver:
                 + _text_width(bracket.label, BRACKET_LABEL_SIZE)
             )
             column.right = max(column.right, column.content_right + room)
+
+    def _add_label_room(self, columns: list[_Column]) -> None:
+        """Widen columns for the labels under their chords (Roman numerals such as
+        vii°6/5/V), so that neighbouring labels stay on one row
+        (:attr:`StaffSpec.labels_in_line`)."""
+        for column in columns:
+            for geom in column.chords:
+                label = geom.chord.label
+                if not label or not geom.heads:
+                    continue
+                head = geom.heads[0]
+                centre = head.x + head.width / 2
+                half = max(_text_width(line, LABEL_SIZE) for line in label.split('\n')) / 2
+                half += LABEL_GAP / 2
+                column.left = max(column.left, half - centre)
+                column.right = max(column.right, centre + half)
 
     def _locate(self, staff_index: int, event: int) -> int | None:
         """Slot of an event given by its combined index in a staff."""
@@ -1468,7 +1486,8 @@ class _Engraver:
         bottom = staff.lines - 1
         baseline = max(bottom + LABEL_MIN_BASELINE, lowest + LABEL_CLEARANCE + LABEL_SIZE * 0.75)
         # Labels too wide for their columns move down a row instead of overlapping the
-        # label before them (several voice-leading marks next to each other).
+        # label before them (several voice-leading marks next to each other); with
+        # labels_in_line the columns were widened and every label fits on the first row.
         row_ends: list[float] = []
         labelled.sort(key=lambda g: out.event_x[g.track.base + g.index])
         for geom in labelled:

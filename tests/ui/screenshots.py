@@ -335,6 +335,7 @@ def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
 
     from etude.audio.null import NullBackend
     from etude.exercises.base import (
+        ChipsAnswer,
         ChoiceAnswer,
         RhythmInputAnswer,
         StaffInputAnswer,
@@ -406,6 +407,19 @@ def shoot_live(out: Path, exercise_ids: list[str] | None, seed: int) -> None:
                         [o.key for o in answer.options if o.key != page.question.expected]
                     )
                     page.answer_widget.submit(wrong)
+                    render(window, out / f'live-{exercise_id}-wrong-{scheme}.png')
+                elif isinstance(answer, ChipsAnswer):
+                    # The chips of a wrong answer (another option in the last group),
+                    # chosen and then checked.
+                    widget = page.answer_widget
+                    expected = page.question.expected
+                    for group in answer.groups:
+                        key = str(expected[group.key]).rstrip('#b')
+                        if group is answer.groups[-1]:
+                            key = next(o.key for o in group.options if o.key != key)
+                        widget.chips[group.key][key].set_active(True)
+                    render(window, out / f'live-{exercise_id}-answering-{scheme}.png')
+                    widget.activate_default()
                     render(window, out / f'live-{exercise_id}-wrong-{scheme}.png')
                 elif isinstance(answer, TapAnswer):
                     rhythm_shots(window, page, out / f'live-{exercise_id}-{{}}-{scheme}.png')

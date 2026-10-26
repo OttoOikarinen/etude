@@ -1929,6 +1929,99 @@ def check_live_satb_sessions() -> None:
             _close_live(window, services)
 
 
+def check_live_chromatic_sessions() -> None:
+    """Level-3 harmony in real sessions: a chromatic chord named with chips, the pivot of
+    a modulation picked by clicking its chord on the grand staff, a sequence named with
+    its accelerator, and a chromatic progression written with the keyboard."""
+    import tempfile
+
+    from gi.repository import GLib
+
+    from etude.notation.spec import Barline, SystemSpec
+    from etude.ui.common import get_settings
+    from etude.ui.widgets.staff_input import StaffInputView
+
+    def use(exercise_id: str, settings: dict) -> None:
+        stored = {key: _gvariant(value) for key, value in settings.items()}
+        get_settings().set_value(
+            'exercise-settings', GLib.Variant('a{sa{sv}}', {exercise_id: stored})
+        )
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        window, services = _live_window(data_dir)
+        try:
+            page = window.start_exercise('chromatic-chords')
+            pump()
+            assert page._figure_holder.get_visible(), 'the phrase is shown'
+            page.answer_widget.submit(page.question.expected)
+            assert page.feedback is not None
+            assert page.feedback.correct, page.feedback.title
+            assert isinstance(page.feedback.figure, SystemSpec)
+            assert press(page, 'Escape')
+            pump()
+
+            # The pivot question: a click on any note of the pivot chord answers it.
+            use('modulation', {'questions': ('pivot',), 'techniques': ('pivot',)})
+            page = window.start_exercise('modulation')
+            pump()
+            question = page.question
+            assert question.answer.in_figure_order
+            view = page._figure_holder.get_child().view
+            event = max(e for e, key in question.answer.targets.items() if key == question.expected)
+            view.emit('head-activated', 1, event, 0)  # the bass of the pivot chord
+            assert page.feedback is not None
+            assert page.feedback.correct, page.feedback.title
+            labels = [
+                e.label
+                for e in page.feedback.figure.staves[1].voices[0]
+                if getattr(e, 'label', None)
+            ]
+            assert any('\n' in label for label in labels), 'two-level analysis'
+            assert press(page, 'Escape')
+            pump()
+
+            # A direct modulation draws the double bar between its phrases.
+            use('modulation', {'techniques': ('direct',), 'questions': ('key',)})
+            page = window.start_exercise('modulation')
+            pump()
+            bars = [e for e in page.question.figure.staves[0].events if isinstance(e, Barline)]
+            assert len(bars) == 2
+            accel = next(
+                o.accel for o in page.question.answer.options if o.key == page.question.expected
+            )
+            assert press(page, accel)
+            assert page.feedback.correct
+            assert press(page, 'Escape')
+            pump()
+            get_settings().reset('exercise-settings')
+
+            page = window.start_exercise('sequences')
+            pump()
+            options = page.question.answer.options
+            accel = next(o.accel for o in options if o.key == page.question.expected)
+            assert press(page, accel)
+            assert page.feedback.correct
+            assert press(page, 'Escape')
+            pump()
+
+            page = window.start_exercise('chromatic-writing')
+            pump()
+            widget = page.answer_widget
+            assert isinstance(widget, StaffInputView), type(widget)
+            expected = page.question.expected
+            for voice in widget.entry.editable_voices:
+                for slot, chord in enumerate(expected):
+                    _write_note(page, voice, slot, chord[voice])
+            assert press(page, 'Return')
+            assert page.feedback is not None
+            assert page.feedback.correct, page.feedback.detail
+            assert press(page, 'Escape')
+            pump()
+        finally:
+            get_settings().reset('exercise-settings')
+            _close_live(window, services)
+
+
 def _counterpoint_spec():
     """Fourth species above a five-note cantus: a half rest, notes tied over each
     barline (written once), the leading tone and the final."""
@@ -2147,6 +2240,7 @@ CHECKS: list[Callable[[], None]] = [
     check_satb_staff_input,
     check_rhythm_template_input,
     check_live_satb_sessions,
+    check_live_chromatic_sessions,
     check_counterpoint_staff_input,
     check_live_counterpoint_sessions,
     check_today_preview,

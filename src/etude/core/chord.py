@@ -20,7 +20,10 @@ Conventions:
   the lowered sixth degree, which is treated as their "root" so that the
   usual position (♭6 in the bass) is inversion 0: A♭–C–F♯, A♭–C–D–F♯ and
   A♭–C–E♭–F♯ in C. Their spelling separates them from enharmonic chords:
-  A♭–C–E♭–G♭ is a dominant seventh.
+  A♭–C–E♭–G♭ is a dominant seventh. In major keys the German sixth is also
+  spelled with ♯2̂ instead of ♭3̂, A♭–C–D♯–F♯ in C (Kostka–Payne; Aldwell–Schachter
+  call it the chord of the doubly augmented fourth), when it moves to a
+  cadential six-four whose third is E♮: :attr:`ChordQuality.DOUBLY_AUGMENTED_FOURTH`.
 * Inversion figures follow common-practice figured bass: 5/3, 6, 6/4 for
   triads and 7, 6/5, 4/3, 4/2 for seventh chords.
 """
@@ -110,6 +113,9 @@ class ChordQuality(Enum):
     ITALIAN_SIXTH = 'italian-sixth'
     FRENCH_SIXTH = 'french-sixth'
     GERMAN_SIXTH = 'german-sixth'
+    DOUBLY_AUGMENTED_FOURTH = 'doubly-augmented-fourth'
+    """The German sixth spelled with a doubly augmented fourth above the bass (♯2̂ for
+    ♭3̂ in major): A♭–C–D♯–F♯."""
 
     @property
     def intervals(self) -> tuple[Interval, ...]:
@@ -198,6 +204,7 @@ _STRUCTURE: dict[ChordQuality, tuple[ChordKind, tuple[Interval, ...]]] = {
         (_Q.ITALIAN_SIXTH, _K.AUGMENTED_SIXTH, 'M3 A6'),
         (_Q.FRENCH_SIXTH, _K.AUGMENTED_SIXTH, 'M3 A4 A6'),
         (_Q.GERMAN_SIXTH, _K.AUGMENTED_SIXTH, 'M3 P5 A6'),
+        (_Q.DOUBLY_AUGMENTED_FOURTH, _K.AUGMENTED_SIXTH, 'M3 AA4 A6'),
     ]
 }
 

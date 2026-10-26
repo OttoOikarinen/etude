@@ -31,6 +31,15 @@ that :func:`~etude.checkers.voice_leading.check` finds no error in (a dynamic
 programme over the candidate voicings of each chord, whose rules only ever
 look at one chord or two neighbours). ``rng`` adds a little noise to the
 costs, so different seeds give different correct answers.
+
+Chromatic chords are voiced like the others, in the key they are read in
+(:func:`function_keys`: the tonicized key of ``V7/V``, the new key after a
+modulation passed in ``keys``), with the doublings of Kostka–Payne and
+Aldwell–Schachter: the Neapolitan sixth doubles its bass (the third), chromatic
+tones are not doubled (a lowered root of ♭VI, ♭III or ♭VII is), and augmented
+sixth chords are complete (the It+6 doubles the tonic). The checker's rules for
+chromatic tones (:mod:`.voice_leading`) do the rest: the voicer only keeps
+voicings without errors.
 """
 
 from __future__ import annotations
@@ -55,6 +64,7 @@ from .voice_leading import (
     Ranges,
     Rule,
     Severity,
+    alteration,
     errors,
     scan,
 )
@@ -85,13 +95,43 @@ class RealisationError(ValueError):
     """No correct voicing exists for the request (an impossible exercise)."""
 
 
-def chords_of(harmony: Sequence[Harmony], key: Key) -> tuple[Chord, ...]:
-    """The spelled chords of ``harmony`` in ``key`` (numerals are realised in it)."""
+Keys = Sequence[Key | None]
+"""A key per chord; ``None`` for the main key."""
+
+
+def _reading_key(key: Key, keys: Keys | None, index: int) -> Key:
+    if keys is not None and index < len(keys):
+        local = keys[index]
+        if local is not None:
+            return local
+    return key
+
+
+def chords_of(harmony: Sequence[Harmony], key: Key, keys: Keys | None = None) -> tuple[Chord, ...]:
+    """The spelled chords of ``harmony``: numerals are realised in ``key``, or in their
+    entry of ``keys`` (the new key after a modulation)."""
     result: list[Chord] = []
-    for item in harmony:
+    for index, item in enumerate(harmony):
         if isinstance(item, str):
             item = RomanNumeral.parse(item)
-        result.append(item.realize(key) if isinstance(item, RomanNumeral) else item)
+        local = _reading_key(key, keys, index)
+        result.append(item.realize(local) if isinstance(item, RomanNumeral) else item)
+    return tuple(result)
+
+
+def function_keys(
+    harmony: Sequence[Harmony], key: Key, keys: Keys | None = None
+) -> tuple[Key, ...]:
+    """The key each chord functions in, for :attr:`.voice_leading.Context.keys`: the
+    tonicized key of a secondary numeral (G major for ``V7/V`` in C), otherwise the key
+    it is read in (``key``, or its entry of ``keys``). Spelled chords are read in that
+    key as they are."""
+    result: list[Key] = []
+    for index, item in enumerate(harmony):
+        if isinstance(item, str):
+            item = RomanNumeral.parse(item)
+        local = _reading_key(key, keys, index)
+        result.append(item.tonicized_key(local) if isinstance(item, RomanNumeral) else local)
     return tuple(result)
 
 
@@ -135,7 +175,9 @@ def bass_line(
             line.append(resolution)
             continue
         singable = [p for p in options if _singable(previous, p)]
-        pool = singable or options
+        # Near the edges of the range a singable note may lie outside the comfortable
+        # middle (B2–E♯2 rather than the augmented fourth B2–E♯3).
+        pool = singable or [p for p in every if _singable(previous, p)] or options
         pool.sort(key=lambda p: abs(p.midi - previous.midi))
         near = [p for p in pool if abs(p.midi - previous.midi) <= 7] or pool[:1]
         line.append(rng.choice(near))
@@ -192,6 +234,8 @@ def _singable(before: Pitch, after: Pitch) -> bool:
 class _Candidate:
     voicing: Voicing
     cost: float
+    midi: tuple[int, int, int, int] = (0, 0, 0, 0)
+    """The voicing's MIDI numbers, for :func:`_movement`."""
 
 
 def realize(
@@ -204,10 +248,13 @@ def realize(
     ranges: Ranges | None = None,
     attempts: int = DEFAULT_ATTEMPTS,
     complete: bool = False,
+    keys: Keys | None = None,
 ) -> tuple[Voicing, ...]:
     """A correct four-part voicing (soprano, alto, tenor, bass) of every chord.
 
-    ``harmony`` holds chords, Roman numerals or numeral texts, read in ``key``.
+    ``harmony`` holds chords, Roman numerals or numeral texts, read in ``key``, or per
+    chord in ``keys`` (a modulating phrase: the numerals after the pivot in the new
+    key); each chord is checked in its :func:`function_keys`.
     ``bass`` fixes the bass notes (they must be the chords' bass notes); without
     it :func:`bass_line` picks one, and up to ``attempts`` bass lines are tried.
     ``soprano`` constrains the top voice per chord: a :class:`Pitch` exactly, a
@@ -217,30 +264,32 @@ def realize(
     otherwise may drop their fifth), for questions that ask what a chord is.
 
     Doubling follows the textbook defaults as a preference: the root of a
-    root-position triad, the bass of ii°6 and vii°6 and of six-four chords, the
-    root or fifth before the third elsewhere, and the third of vi (VI) after V.
+    root-position triad, the bass of ii°6 and vii°6, of six-four chords and of the
+    Neapolitan sixth, the root or fifth before the third elsewhere, the third of vi
+    (VI) after V, and no chromatic tone.
 
-    The result has no error under :func:`check` with the chords as harmony.
-    Raises :class:`RealisationError` when no correct voicing exists, and
-    :class:`ValueError` when ``bass`` or ``soprano`` do not have one entry per
-    chord.
+    The result has no error under :func:`check` with the chords as harmony and
+    :func:`function_keys` as the keys. Raises :class:`RealisationError` when no
+    correct voicing exists, and :class:`ValueError` when ``bass``, ``soprano`` or
+    ``keys`` do not have one entry per chord.
     """
-    chords = chords_of(harmony, key)
+    chords = chords_of(harmony, key, keys)
     if not chords:
         raise ValueError('nothing to realise')
-    for name, given in (('bass', bass), ('soprano', soprano)):
+    for name, given in (('bass', bass), ('soprano', soprano), ('keys', keys)):
         if given is not None and len(given) != len(chords):
             raise ValueError(f'{name} needs one entry per chord')
+    local = function_keys(harmony, key, keys)
     rng = rng or random.Random(0)
     ranges = ranges or Ranges()
     tops = tuple(soprano) if soprano is not None else (None,) * len(chords)
     if bass is not None:
-        return _realize(chords, key, tuple(bass), tops, rng, ranges, complete)
+        return _realize(chords, key, local, tuple(bass), tops, rng, ranges, complete)
     failure: RealisationError | None = None
     for _attempt in range(max(1, attempts)):
         try:
             line = bass_line(chords, rng, ranges)
-            return _realize(chords, key, line, tops, rng, ranges, complete)
+            return _realize(chords, key, local, line, tops, rng, ranges, complete)
         except RealisationError as error:
             failure = error
     assert failure is not None
@@ -260,42 +309,58 @@ def _fits(pitch: Pitch, constraint: Soprano) -> bool:
 def _realize(
     harmony: tuple[Chord, ...],
     key: Key,
+    keys: tuple[Key, ...],
     bass: tuple[Pitch, ...],
     soprano: tuple[Soprano, ...],
     rng: random.Random,
     ranges: Ranges,
     complete: bool = False,
 ) -> tuple[Voicing, ...]:
-    context = Context(key, harmony, ranges)
+    context = Context(key, harmony, ranges, keys=keys)
     layers: list[list[_Candidate]] = []
     for index, (chord, low, top) in enumerate(zip(harmony, bass, soprano, strict=True)):
         if low.name != chord.bass:
             raise RealisationError(f'{low} is not the bass of {chord}')
         tones = len(tones_of(chord))
-        deceptive = index > 0 and _is_deceptive(harmony[index - 1], chord, key)
+        deceptive = index > 0 and _is_deceptive(harmony[index - 1], chord, keys[index - 1])
         candidates = [
             _Candidate(
                 v,
                 cost + rng.random() * 2.5 + (_deceptive_cost(chord, v) if deceptive else 0.0),
             )
-            for v, cost in _voicings(chord, low, key, ranges)
+            for v, cost in _voicings(chord, low, keys[index], ranges)
             if _fits(v[SOPRANO], top) and (not complete or len({p.name for p in v}) == tones)
         ]
         candidates.sort(key=lambda c: c.cost)
         if not candidates:
             raise RealisationError(f'no voicing of {chord} over {low}')
-        layers.append(candidates[:MAX_CANDIDATES])
+        layers.append(
+            [
+                _Candidate(
+                    c.voicing,
+                    c.cost,
+                    (c.voicing[0].midi, c.voicing[1].midi, c.voicing[2].midi, c.voicing[3].midi),
+                )
+                for c in candidates[:MAX_CANDIDATES]
+            ]
+        )
 
     # Dynamic programme: best[i][j] = (cost, back pointer) of candidate j of chord i.
     best: list[list[tuple[float, int]]] = [[(c.cost, -1) for c in layers[0]]]
     for index in range(1, len(layers)):
         row: list[tuple[float, int]] = []
         previous_layer = layers[index - 1]
-        pair_context = Context(key, (harmony[index - 1], harmony[index]), ranges, _PAIR_RULES)
+        pair_context = Context(
+            key,
+            (harmony[index - 1], harmony[index]),
+            ranges,
+            _PAIR_RULES,
+            keys=(keys[index - 1], keys[index]),
+        )
         for candidate in layers[index]:
             options = sorted(
                 (
-                    best[index - 1][k][0] + _movement(previous.voicing, candidate.voicing),
+                    best[index - 1][k][0] + _movement(previous.midi, candidate.midi),
                     k,
                 )
                 for k, previous in enumerate(previous_layer)
@@ -330,12 +395,15 @@ DOUBLING_COST = 4.0
 """Cost of doubling another chord tone than the textbook one (a preference, not a rule)."""
 
 
-def _preferred_doubling(chord: Chord) -> dict[int, float]:
+def _preferred_doubling(chord: Chord, key: Key) -> dict[int, float]:
     """Chord tone (0 root, 1 third, 2 fifth) → cost of doubling it, after Kostka–Payne
     and Aldwell–Schachter: the root of a root-position triad; the bass of a six-four
-    chord (its fifth) and of a diminished triad in first inversion (its third: ii°6,
-    vii°6); otherwise the root or fifth before the third. Where the rules call for
-    another doubling (the third of vi after V) the error-free alternatives win."""
+    chord (its fifth), of a diminished triad in first inversion (its third: ii°6,
+    vii°6) and of the Neapolitan sixth (its third); otherwise the root or fifth before
+    the third. Where the rules call for another doubling (the third of vi after V) the
+    error-free alternatives win."""
+    if chord.inversion == 1 and _is_neapolitan(chord, key):
+        return {1: 0.0, 0: 2 * DOUBLING_COST, 2: DOUBLING_COST}
     if chord.inversion == 2:
         return {2: 0.0, 0: DOUBLING_COST, 1: DOUBLING_COST}
     if chord.inversion == 1 and chord.quality is ChordQuality.DIMINISHED:
@@ -343,6 +411,15 @@ def _preferred_doubling(chord: Chord) -> dict[int, float]:
     if chord.inversion == 1:
         return {0: 0.0, 2: 0.3, 1: DOUBLING_COST * 0.7}
     return {0: 0.0, 2: DOUBLING_COST * 0.7, 1: DOUBLING_COST}
+
+
+def _is_neapolitan(chord: Chord, key: Key) -> bool:
+    """A major triad on the lowered second degree (♭II)."""
+    return (
+        chord.quality is ChordQuality.MAJOR
+        and chord.root.letter == key.degree(2).letter
+        and alteration(chord.root, key) < 0
+    )
 
 
 def _is_deceptive(before: Chord, chord: Chord, key: Key) -> bool:
@@ -377,9 +454,20 @@ _INCOMPLETE_SEVENTH = {
 fifth a half-diminished seventh sounds like a minor seventh."""
 
 
-def _doubling_cost(chord: Chord, voicing: Voicing) -> float:
+def _doubling_cost(chord: Chord, voicing: Voicing, key: Key) -> float:
     names = tones_of(chord)
     counts = [sum(1 for p in voicing if p.name == name) for name in names]
+    chromatic = sum(
+        DOUBLING_COST
+        for role, (name, count) in enumerate(zip(names, counts, strict=True))
+        if count > 1
+        and alteration(name, key) != 0
+        and not (role == 0 and chord.inversion == 0 and chord.quality.kind is ChordKind.TRIAD)
+    )
+    return chromatic + _usual_doubling_cost(chord, counts, key)
+
+
+def _usual_doubling_cost(chord: Chord, counts: list[int], key: Key) -> float:
     if chord.quality.kind is ChordKind.SEVENTH:
         # Complete seventh chords are the norm; a root-position one may drop its fifth
         # and double the root.
@@ -389,19 +477,17 @@ def _doubling_cost(chord: Chord, voicing: Voicing) -> float:
         return cost if counts[0] > 1 else cost + DOUBLING_COST  # double the root
     if chord.quality.kind is not ChordKind.TRIAD:
         return 0.0
-    costs = _preferred_doubling(chord)
+    costs = _preferred_doubling(chord, key)
     return sum(costs.get(role, 0.0) for role, count in enumerate(counts) if count > 1)
 
 
-def _movement(before: Voicing, after: Voicing) -> float:
-    """Total motion of the upper voices in semitones; leaps in inner voices weigh more."""
-    total = 0.0
-    for voice in (SOPRANO, ALTO, TENOR):
-        distance = abs(after[voice].midi - before[voice].midi)
-        total += distance
-        if voice != SOPRANO and distance > 4:
-            total += distance - 4
-    return total
+def _movement(before: tuple[int, ...], after: tuple[int, ...]) -> float:
+    """Total motion of the upper voices in semitones (MIDI numbers of two voicings);
+    leaps in inner voices weigh more."""
+    soprano = abs(after[SOPRANO] - before[SOPRANO])
+    alto = abs(after[ALTO] - before[ALTO])
+    tenor = abs(after[TENOR] - before[TENOR])
+    return float(soprano + alto + tenor + max(0, alto - 4) + max(0, tenor - 4))
 
 
 def _voicings(chord: Chord, bass: Pitch, key: Key, ranges: Ranges) -> list[tuple[Voicing, float]]:
@@ -427,9 +513,12 @@ def _voicings_cached(
         )
     context = Context(key, (chord,), ranges)
     found: list[tuple[Voicing, float]] = []
-    # A missing root, third or seventh is always an error: skip such voicings before
-    # the (slower) checker sees them.
-    required = {names[0], names[1], *names[3:4]}
+    # A missing root, third or seventh is always an error (any tone of an augmented
+    # sixth chord): skip such voicings before the (slower) checker sees them.
+    if chord.quality.kind is ChordKind.AUGMENTED_SIXTH:
+        required = set(names)
+    else:
+        required = {names[0], names[1], *names[3:4]}
     for soprano, alto, tenor in product(*pools):
         if not (soprano.midi >= alto.midi >= tenor.midi >= bass.midi):
             continue
@@ -442,7 +531,7 @@ def _voicings_cached(
         if errors(violations):
             continue
         cost = 3.0 * len(violations)
-        cost += _doubling_cost(chord, voicing)
+        cost += _doubling_cost(chord, voicing, key)
         if soprano.midi == alto.midi or alto.midi == tenor.midi or tenor.midi == bass.midi:
             cost += 2.0  # unisons weaken the texture
         # Keep the soprano in its comfortable middle, around C5.
