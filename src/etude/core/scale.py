@@ -31,6 +31,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from enum import Enum
+from functools import lru_cache
 
 from .chord import Chord
 from .interval import Interval
@@ -206,6 +207,13 @@ class DegreeFunction(Enum):
         return min(self.value, 7)
 
 
+@lru_cache(maxsize=512)
+def _key_names(key: Key) -> tuple[PitchName, ...]:
+    """The notes of a key's scale (keys are immutable; Roman numerals ask for degrees
+    many thousands of times)."""
+    return key.scale.names()
+
+
 _KEY_RE = re.compile(
     r'^([A-Ga-g](?:#{1,2}|x|b{1,2}|♯|♭|𝄪|𝄫)?)\s*(major|minor|maj|min|M|m)?$',
     re.IGNORECASE,
@@ -287,7 +295,9 @@ class Key:
 
     def degree(self, number: int) -> PitchName:
         """Scale degree of the major or natural minor scale."""
-        return self.scale.degree(number)
+        if not 1 <= number <= 7:
+            return self.scale.degree(number)  # the scale's own error
+        return _key_names(self)[number - 1]
 
     def _chord_names(self, degree: int, size: int) -> tuple[PitchName, ...]:
         if not 1 <= degree <= 7:

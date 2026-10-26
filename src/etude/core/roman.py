@@ -29,7 +29,10 @@ Harmony*; Gotham et al., *Open Music Theory*):
 * **Augmented sixth chords** are ``It+6``, ``Fr+6`` and ``Ger+6`` (input
   also accepts ``It6``, ``Fr43``, ``Ger65``). They are built on the
   lowered sixth degree with the raised fourth and the tonic: A♭–C–F♯,
-  A♭–C–D–F♯ and A♭–C–E♭–F♯ in C major and C minor.
+  A♭–C–D–F♯ and A♭–C–E♭–F♯ in C major and C minor. In major the German sixth
+  may be spelled with ♯2̂ for ♭3̂ (A♭–C–D♯–F♯ in C, the doubly augmented fourth
+  that rises to the third of a cadential six-four); it is still labelled
+  ``Ger+6``, and its ASCII form is ``Ger+6(#2)``.
 * **Cad64** is the cadential six-four: the tonic triad in second inversion,
   analysed by its dominant function. :meth:`RomanNumeral.analyze` cannot
   tell it from ``I64`` without context and returns ``I64``.
@@ -70,6 +73,7 @@ _AUGMENTED_SIXTHS = {
     _Q.ITALIAN_SIXTH: 'It',
     _Q.FRENCH_SIXTH: 'Fr',
     _Q.GERMAN_SIXTH: 'Ger',
+    _Q.DOUBLY_AUGMENTED_FOURTH: 'Ger',
 }
 _NUMERALS = ('I', 'II', 'III', 'IV', 'V', 'VI', 'VII')
 _TRIAD_FIGURES = ('', '6', '64')
@@ -102,8 +106,11 @@ _NUMERAL_RE = re.compile(
 )
 _NEAPOLITAN_RE = re.compile(r'^N(?P<figure>6|63|6/3|53|5/3|64|6/4)?' + _SECONDARY + '$')
 _AUGMENTED_SIXTH_RE = re.compile(
-    r'^(?P<kind>It|Fr|Ger)(?:\+?6|\+?43|\+?4/3|\+?65|\+?6/5|\+)?' + _SECONDARY + '$'
+    r'^(?P<kind>It|Fr|Ger)(?:\+?6|\+?43|\+?4/3|\+?65|\+?6/5|\+)?'
+    r'(?P<sharp_two>\((?:#|♯)2\))?' + _SECONDARY + '$'
 )
+_SHARP_TWO = '(#2)'
+"""ASCII mark of the German sixth spelled with ♯2̂ (the doubly augmented fourth)."""
 _CADENTIAL_RE = re.compile(r'^Cad(?:64|6/4)?$')
 _MINOR_SIXTH = Interval.parse('m6')
 
@@ -163,6 +170,10 @@ class RomanNumeral:
             return cls(1, _Q.MAJOR, 2, cadential=True)
         if match := _AUGMENTED_SIXTH_RE.match(text):
             quality = next(q for q, k in _AUGMENTED_SIXTHS.items() if k == match['kind'])
+            if match['sharp_two']:
+                if quality is not _Q.GERMAN_SIXTH:
+                    raise ValueError(f'only the German sixth is spelled with ♯2: {text!r}')
+                quality = _Q.DOUBLY_AUGMENTED_FOURTH
             return cls(6, quality, 0, -1, cls._parse_secondary(match['secondary']))
         if match := _NEAPOLITAN_RE.match(text):
             _, inversion = _FIGURE_INPUT[match['figure']]
@@ -204,6 +215,8 @@ class RomanNumeral:
             text = 'Cad64'
         elif self.quality in _AUGMENTED_SIXTHS:
             text = _AUGMENTED_SIXTHS[self.quality] + '+6'
+            if self.quality is _Q.DOUBLY_AUGMENTED_FOURTH and not unicode:
+                text += _SHARP_TWO
         else:
             upper, symbol = _SPELLING[self.quality]
             numeral = _NUMERALS[self.degree - 1]
@@ -217,12 +230,14 @@ class RomanNumeral:
         return text
 
     def __str__(self) -> str:
-        """ASCII form (``'viiø43'``, ``'bII6'``, ``'V7/V'``) that :meth:`parse` reads back."""
+        """ASCII form (``'viiø43'``, ``'bII6'``, ``'V7/V'``, ``'Ger+6(#2)'``) that
+        :meth:`parse` reads back."""
         return self._format(unicode=False)
 
     @property
     def symbol(self) -> str:
-        """Display form with ``♭``, ``♯`` and ``°``: ``'vii°7'``, ``'♭II6'``."""
+        """Display form with ``♭``, ``♯`` and ``°``: ``'vii°7'``, ``'♭II6'``; both spellings
+        of the German sixth are ``'Ger+6'``, as Kostka–Payne label them."""
         return self._format(unicode=True)
 
     # Realization ------------------------------------------------------------
@@ -281,7 +296,8 @@ class RomanNumeral:
             return None
         if chord.quality in _AUGMENTED_SIXTHS:
             candidate: RomanNumeral | None = None
-            if chord.inversion == 0:
+            minor_sharp_two = chord.quality is _Q.DOUBLY_AUGMENTED_FOURTH and key.mode is Mode.MINOR
+            if chord.inversion == 0 and not minor_sharp_two:  # ♯2̂ is a major-key spelling
                 candidate = cls(6, chord.quality, 0, -1)
         else:
             candidate = cls._by_root(chord, key)

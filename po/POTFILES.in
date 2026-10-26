@@ -45,6 +45,7 @@ src/etude/exercises/base.py
 src/etude/exercises/families/cadence_ear.py
 src/etude/exercises/families/cadences.py
 src/etude/exercises/families/chords.py
+src/etude/exercises/families/chromatic.py
 src/etude/exercises/families/counterpoint.py
 src/etude/exercises/families/degree_ear.py
 src/etude/exercises/families/figured_bass.py
@@ -54,6 +55,7 @@ src/etude/exercises/families/intervals.py
 src/etude/exercises/families/inversion_ear.py
 src/etude/exercises/families/key_signatures.py
 src/etude/exercises/families/melodic_dictation.py
+src/etude/exercises/families/modulation.py
 src/etude/exercises/families/note_naming.py
 src/etude/exercises/families/note_placement.py
 src/etude/exercises/families/progression_ear.py
