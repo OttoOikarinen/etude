@@ -53,8 +53,9 @@ Decisions (severity in brackets; an *error* makes an answer wrong, a
   tendency tones need not resolve).
 * **Chordal seventh** resolves down by step [error] when the harmony
   changes. In V4/3–I6 it may rise by step [warning] (Kostka–Payne). It may be
-  held into a six-four chord, which delays its resolution: V7/V–Cad6/4–V, where
-  the seventh of V7/V resolves to the third of V after the six-four (K–P ch. 16).
+  held into a cadential six-four, which delays its resolution: V7/V–Cad6/4–V,
+  where the seventh of V7/V resolves to the third of V after the six-four (K–P
+  ch. 16); it must then fall by step out of the six-four [error].
 * **Augmented melodic intervals** (A2, A4, A5 …; not chromatic semitones)
   in any voice [error].
 * **Large leaps**: more than an octave in any voice [error]; more than a
@@ -92,7 +93,8 @@ in minor the natural minor with its raised sixth and seventh degrees.
   (it is often spelled as ♯2̂, the doubly augmented fourth, for that reason).
 * **Cross relations**: a note in one voice and its chromatic alteration in
   another voice of the next chord [warning] (K–P ch. 16 and 22; A–S ch. 16), unless
-  some voice makes the chromatic step itself.
+  some voice makes the chromatic step itself, or ♭2̂ falls to the leading tone
+  (N6–V, where ♮2̂ is the fifth of V in another voice: K–P ch. 22).
 """
 
 # Messages are passed to _Checker.add() as lambdas that it calls at once (or never, in
@@ -1162,7 +1164,20 @@ class _Checker:
                 ),
             )
 
+    def _cadential_six_four(self, slot: int) -> bool:
+        """The tonic six-four over the fifth degree of the slot's key."""
+        harmony, key = self.harmonies[slot], self.context.key_at(slot)
+        if harmony is None or key is None:
+            return False
+        chord = harmony.chord
+        return (
+            chord.inversion == 2
+            and chord.quality.kind is ChordKind.TRIAD
+            and chord.root == key.tonic
+        )
+
     def seventh(self, slot: int, before: Sequence[Pitch], after: Sequence[Pitch]) -> None:
+        self.delayed_seventh(slot, before, after)
         first, second = self.harmonies[slot - 1], self.harmonies[slot]
         if first is None or second is None or first.seventh is None:
             return
@@ -1181,12 +1196,8 @@ class _Checker:
             )
             if down:
                 continue
-            if (
-                target == pitch
-                and second.chord.inversion == 2
-                and second.chord.quality.kind is ChordKind.TRIAD
-            ):
-                continue  # held into a six-four that delays the resolution
+            if target == pitch and self._cadential_six_four(slot):
+                continue  # held into a six-four that delays the resolution (checked next)
             up = (
                 target.diatonic_index - pitch.diatonic_index == 1
                 and 1 <= target.midi - pitch.midi <= 2
@@ -1208,6 +1219,41 @@ class _Checker:
                 (voice,),
                 # Translators: e.g. "The seventh (F) in the alto does not resolve down by step
                 # (chords 2–3)".
+                lambda: _(
+                    'The seventh ({note}) in the {voice} does not resolve down by step '
+                    '(chords {first}–{second})'
+                ).format(
+                    note=pitch_name(seventh),
+                    voice=voice_name(voice),
+                    first=slot,
+                    second=slot + 1,
+                ),
+            )
+
+    def delayed_seventh(self, slot: int, before: Sequence[Pitch], after: Sequence[Pitch]) -> None:
+        """A seventh held into a cadential six-four falls by step out of it."""
+        if slot < 2 or not self._cadential_six_four(slot - 1):
+            return
+        source = self.harmonies[slot - 2]
+        if source is None or source.seventh is None:
+            return
+        seventh = source.seventh
+        earlier = self.chords[slot - 2]
+        for voice in VOICES:
+            pitch = before[voice]
+            if pitch.name != seventh or earlier[voice] != pitch:
+                continue
+            target = after[voice]
+            if (
+                pitch.diatonic_index - target.diatonic_index == 1
+                and 1 <= pitch.midi - target.midi <= 2
+            ):
+                continue
+            self.add(
+                Rule.CHORDAL_SEVENTH,
+                Severity.ERROR,
+                slot,
+                (voice,),
                 lambda: _(
                     'The seventh ({note}) in the {voice} does not resolve down by step '
                     '(chords {first}–{second})'
@@ -1342,6 +1388,8 @@ class _Checker:
         for a, b in sorted(clashes, key=str):
             if any(x.name == a and y.name == b for x, y in zip(before, after, strict=True)):
                 continue  # the chromatic step is made within one voice
+            if self._neapolitan_resolves(slot, a, before, after):
+                continue
             first = next(v for v in VOICES if before[v].name == a)
             second = next(v for v in VOICES if after[v].name == b)
             self.add(
@@ -1363,6 +1411,25 @@ class _Checker:
                     second=slot + 1,
                 ),
             )
+
+    def _neapolitan_resolves(
+        self, slot: int, lowered: PitchName, before: Sequence[Pitch], after: Sequence[Pitch]
+    ) -> bool:
+        """♭2̂ falls to the leading tone in every voice that has it."""
+        key = self.context.key_at(slot - 1)
+        if key is None or lowered != _lowered_second(key):
+            return False
+        leading = _leading(key)
+        return all(
+            after[v].name == leading and before[v].midi > after[v].midi
+            for v in VOICES
+            if before[v].name == lowered
+        )
+
+
+def _lowered_second(key: Key) -> PitchName:
+    second = key.degree(2)
+    return PitchName(second.letter, second.alter - 1)
 
 
 _CHROMATIC_SEMITONE = Interval.parse('A1')

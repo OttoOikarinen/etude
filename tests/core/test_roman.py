@@ -159,6 +159,9 @@ def test_analyze_gives_up() -> None:
     assert RomanNumeral.analyze(Chord(PitchName.parse('Ab'), Q.GERMAN_SIXTH, 1), key) is None
     assert RomanNumeral.analyze(Chord(PitchName.parse('A##'), Q.MAJOR), key) is None
     assert str(RomanNumeral.analyze(Chord(PitchName.parse('A#'), Q.AUGMENTED), key)) == '#VI+'
+    # The German sixth with ♯2̂ is a major-key spelling: in C minor E♭ is diatonic.
+    sharp_two = Chord(PitchName.parse('Ab'), Q.DOUBLY_AUGMENTED_FOURTH)
+    assert RomanNumeral.analyze(sharp_two, Key.parse('c')) is None
 
 
 def test_tonicized_key() -> None:

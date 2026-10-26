@@ -159,6 +159,16 @@ def test_a_leading_tone_may_fall_chromatically_to_the_next_seventh() -> None:
 def test_the_seventh_of_v7_of_v_may_wait_in_the_cadential_six_four() -> None:
     held = ('C5 A4 F#4 D3', 'C5 G4 E4 G3')
     assert errors(run('V7/V Cad64', *held)) == []
+    # Then it falls to the third of V; rising out of the six-four is an error.
+    assert errors(run('V7/V Cad64 V', *held, 'B4 G4 D4 G3')) == []
+    found = errors(run('V7/V Cad64 V', *held, 'D5 B4 D4 G3'))
+    assert [(v.rule, v.slot, v.voices) for v in found] == [(Rule.CHORDAL_SEVENTH, 2, (SOPRANO,))]
+
+
+def test_a_seventh_held_into_another_six_four_is_unresolved() -> None:
+    # V7–IV6/4 is not the cadential six-four: the held F is an unresolved seventh.
+    found = errors(run('V7 IV64', 'F5 B4 D4 G3', 'F5 A4 C4 C3'))
+    assert [(v.rule, v.voices) for v in found] == [(Rule.CHORDAL_SEVENTH, (SOPRANO,))]
 
 
 # Mode mixture ------------------------------------------------------------------------------
@@ -186,9 +196,9 @@ def test_a_lowered_tone_that_rises_is_a_warning() -> None:
 def test_the_neapolitan_root_falls() -> None:
     good = ('Db5 Ab4 F4 F3', 'B4 G4 D4 G3')
     found = run('N6 V', *good, key=c)
-    assert errors(found) == []
-    # The D♮ of V in the tenor against the D♭ of the soprano: a cross relation.
-    assert kinds(found) == {(Rule.CROSS_RELATION, Severity.WARNING)}
+    # The D♮ of V in the tenor against the D♭ of the soprano is no cross relation to
+    # report: ♭2̂ has fallen to the leading tone (K–P ch. 22).
+    assert found == []
     rising = ('Db5 Ab4 F4 F3', 'D5 G4 B3 G3')  # ♭2̂ rises to ♮2̂
     found = errors(run('N6 V', *rising, key=c))
     assert [(v.rule, v.voices) for v in found] == [(Rule.CHROMATIC_TONE, (SOPRANO,))]

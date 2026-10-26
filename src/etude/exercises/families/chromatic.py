@@ -69,6 +69,7 @@ from .harmony import (
     SEVENTH_FIGURES,
     TRIAD_FIGURES,
     figure_text,
+    is_neapolitan,
     keys_within,
     limit_setting,
     modes_setting,
@@ -208,7 +209,7 @@ def numeral_key(numeral: RomanNumeral) -> str:
             ChordQuality.ITALIAN_SIXTH: 'It',
             ChordQuality.FRENCH_SIXTH: 'Fr',
         }.get(quality, 'Ger')
-    if (numeral.degree, numeral.alter, quality) == (2, -1, ChordQuality.MAJOR):
+    if is_neapolitan(numeral):
         return 'N'
     text = str(RomanNumeral(numeral.degree, quality, 0, numeral.alter))
     return text.removesuffix('7')
@@ -612,7 +613,7 @@ def _family_sentence(key: Key, numeral: RomanNumeral, chord: Chord) -> str:
             'A secondary dominant: the dominant of {goal} ({tonic}). Its third, {third}, is '
             'the leading tone of {tonic} and rises to it.'
         ).format(goal=goal, tonic=pitch_name(local.tonic), third=pitch_name(tones[1]))
-    if (numeral.degree, numeral.alter, numeral.quality) == (2, -1, ChordQuality.MAJOR):
+    if is_neapolitan(numeral):
         return _(
             'The Neapolitan sixth: the major triad on the lowered second degree, {root}, '
             'usually with its third, {third}, in the bass (doubled). {root} falls to the '
@@ -828,6 +829,8 @@ class ChromaticWriting(ExerciseDefinition):
                 break
             except RealisationError:
                 continue
+        if not chords:  # pragma: no cover - C major and A minor always have a voicing
+            raise RealisationError(f'no voicing of {writing.key} in {mode.value}')
         labels = tuple(roman_label(RomanNumeral.parse(n)) for n in numerals)
         task = str(settings.get('task', 'both'))
         if task not in ('inner', 'upper'):

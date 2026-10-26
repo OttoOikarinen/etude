@@ -59,7 +59,7 @@ from itertools import pairwise
 from ..core import Chord, Interval, Pitch, PitchName, Quality, RomanNumeral
 from ..core.chord import ChordQuality
 from ..core.scale import Key, Mode
-from .realize import RealisationError, Voicing, realize
+from .realize import RealisationError, Voicing, function_keys, realize
 from .voice_leading import Context, Ranges, alteration
 
 VARIANTS = 3
@@ -144,7 +144,8 @@ class Phrase:
     @property
     def keys(self) -> tuple[Key, ...]:
         """The key each chord functions in (:attr:`.voice_leading.Context.keys`)."""
-        return tuple(r[-1].numeral.tonicized_key(r[-1].key) for r in self.readings)
+        last = [r[-1] for r in self.readings]
+        return function_keys([r.numeral for r in last], self.key, [r.key for r in last])
 
     def context(self, ranges: Ranges | None = None) -> Context:
         """The checker's context for these chords."""
@@ -767,12 +768,17 @@ def sequence(kind: SequenceKind, key: Key, rng: random.Random) -> Phrase:
     texts = SEQUENCES[kind].get(key.mode)
     if texts is None:
         raise ValueError(f'no {kind.value} sequence in {key.mode.value}')
+    readings = tuple(_in(key, texts))
+    plan = tuple((str(r[-1].numeral), key) for r in readings)
+    start = rng.randrange(VARIANTS)
     failure: RealisationError | None = None
-    for plan in _plans_of(rng, kind.value, key):
+    for offset in range(VARIANTS):  # the chords are fixed: only the voicing can vary
         try:
-            return _phrase(key, _in(key, texts), plan)
+            voicings = _voiced(plan, key, (start + offset) % VARIANTS, ())
         except RealisationError as error:
             failure = error
+            continue
+        return Phrase(key, readings, voicings)
     assert failure is not None
     raise failure
 

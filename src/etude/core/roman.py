@@ -296,7 +296,8 @@ class RomanNumeral:
             return None
         if chord.quality in _AUGMENTED_SIXTHS:
             candidate: RomanNumeral | None = None
-            if chord.inversion == 0:
+            minor_sharp_two = chord.quality is _Q.DOUBLY_AUGMENTED_FOURTH and key.mode is Mode.MINOR
+            if chord.inversion == 0 and not minor_sharp_two:  # ♯2̂ is a major-key spelling
                 candidate = cls(6, chord.quality, 0, -1)
         else:
             candidate = cls._by_root(chord, key)
