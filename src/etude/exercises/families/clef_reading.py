@@ -28,7 +28,7 @@ from typing import ClassVar, cast
 
 from ...audio.spec import PlaybackSpec
 from ...core import Pitch
-from ...core.naming import key_name, pitch_name
+from ...core.naming import key_name
 from ...core.scale import Key, Mode
 from ...learning.model import ItemId
 from ...notation.spec import Clef, StaffSpec
@@ -45,8 +45,9 @@ from ..base import (
     StaffInputAnswer,
 )
 from .harmony import MAX_ACCIDENTALS, keys_within, limit_setting
+from .note_naming import full_name
 from .note_placement import staff_value_label, written_notes
-from .transposition import fits_staff, melody, melody_steps, plain
+from .transposition import fits_staff, melody, melody_steps, note_count, plain
 
 PREFIX = 'clef.rewrite.'
 PAIRS = ('alto-treble', 'treble-alto', 'tenor-bass', 'bass-tenor', 'alto-bass', 'tenor-treble')
@@ -107,11 +108,6 @@ def _selected(settings: Mapping[str, object]) -> list[str]:
     return [p for p in PAIRS if p in chosen] or list(PAIRS)
 
 
-def _length(settings: Mapping[str, object]) -> int:
-    value = settings.get('notes', 5)
-    return max(3, min(6, value if isinstance(value, int) else 5))
-
-
 def middle_c_sentence(clef: Clef) -> str:
     """Where middle C is written in ``clef``."""
     sentences: dict[Clef, Callable[[], str]] = {
@@ -121,10 +117,6 @@ def middle_c_sentence(clef: Clef) -> str:
         Clef.TENOR: lambda: _('In the tenor clef middle C (C4) is the fourth line.'),
     }
     return sentences[clef]()
-
-
-def _note(pitch: Pitch) -> str:
-    return pitch_name(pitch.name) + str(pitch.octave)
 
 
 class ClefReading(ExerciseDefinition):
@@ -168,7 +160,7 @@ class ClefReading(ExerciseDefinition):
         else:
             # Translators: separator in a list of clef pairs in an exercise subtitle.
             parts = [_(', ').join(pair_label(p) for p in pairs)]
-        length = _length(settings)
+        length = note_count(settings, 5)
         parts.append(ngettext('{n} note', '{n} notes', length).format(n=length))
         # Translators: separator between the parts of an exercise subtitle.
         return _(' · ').join(parts)
@@ -230,11 +222,13 @@ class ClefReading(ExerciseDefinition):
             middle_c_sentence(target),
             # Translators: e.g. "The pitches stay the same: the first note is D4 in both clefs."
             _('The pitches stay the same: the first note is {note} in both clefs.').format(
-                note=_note(expected[0])
+                note=full_name(expected[0])
             ),
         ]
-        if written is not None and not correct:
-            sentences += _mistakes(written, expected)
+        if chords is not None and written is None:
+            sentences.append(_('Write one note in each place.'))
+        elif not correct:
+            sentences += _mistakes(written or (), expected)
         return Feedback(
             correct=correct,
             title=title,
@@ -259,7 +253,7 @@ def _melody(
     """A key and a melody that fits both staves within one ledger line, or two when the
     clefs share little range (the tenor and bass clefs share about an octave)."""
     keys = keys_within(limit_setting(settings, 3), (Mode.MAJOR, Mode.MINOR))
-    length = _length(settings)
+    length = note_count(settings, 5)
     for attempt in range(_ATTEMPTS):
         key = rng.choice(keys)
         steps = melody_steps(length, rng)
@@ -277,9 +271,17 @@ def _melody(
 
 
 def _mistakes(written: Sequence[Pitch], expected: Sequence[Pitch]) -> list[str]:
+    """A sentence for each of the first wrong or missing notes."""
     sentences = []
-    wrong = [(i, w, e) for i, (w, e) in enumerate(zip(written, expected, strict=False)) if w != e]
+    padded = [*written, *[None] * (len(expected) - len(written))]
+    wrong = [(i, w, e) for i, (w, e) in enumerate(zip(padded, expected, strict=False)) if w != e]
     for index, w, e in wrong[:_MAX_EXPLAINED]:
+        if w is None:
+            # Translators: e.g. "Note 4 (C♯5) is missing."
+            sentences.append(
+                _('Note {n} ({expected}) is missing.').format(n=index + 1, expected=full_name(e))
+            )
+            continue
         if w.name == e.name and w.midi == e.midi - 12:
             # Translators: e.g. "Note 2: G3 is an octave too low."
             text = _('Note {n}: {given} is an octave too low.')
@@ -291,7 +293,7 @@ def _mistakes(written: Sequence[Pitch], expected: Sequence[Pitch]) -> list[str]:
         else:
             # Translators: e.g. "Note 4: B4 should be C♯5."
             text = _('Note {n}: {given} should be {expected}.')
-        sentences.append(text.format(n=index + 1, given=_note(w), expected=_note(e)))
+        sentences.append(text.format(n=index + 1, given=full_name(w), expected=full_name(e)))
     if len(wrong) > _MAX_EXPLAINED:
         more = len(wrong) - _MAX_EXPLAINED
         sentences.append(

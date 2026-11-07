@@ -50,9 +50,9 @@ src/etude/exercises/families/clef_reading.py
 src/etude/exercises/families/counterpoint.py
 src/etude/exercises/families/degree_ear.py
 src/etude/exercises/families/figured_bass.py
+src/etude/exercises/families/four_part.py
 src/etude/exercises/families/harmonic_dictation.py
 src/etude/exercises/families/harmony.py
-src/etude/exercises/families/four_part.py
 src/etude/exercises/families/interval_construction.py
 src/etude/exercises/families/intervals.py
 src/etude/exercises/families/inversion_ear.py

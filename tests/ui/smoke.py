@@ -2087,7 +2087,7 @@ def check_live_score_reading() -> None:
             pump()
             widget = page.answer_widget
             assert isinstance(widget, StaffInputView), type(widget)
-            assert widget.entry.voice_clef is not page.question.figure.clef
+            assert widget.entry.voice_clef is page.question.answer.clef
             for slot, (pitch,) in enumerate(page.question.expected):
                 _write_note(page, 0, slot, pitch)
             assert press(page, 'Return')

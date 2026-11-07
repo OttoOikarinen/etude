@@ -176,9 +176,10 @@ def _selected(
     return [k for k in allowed if k in keys] or list(default)
 
 
-def _length(settings: Mapping[str, object]) -> int:
-    value = settings.get('notes', 4)
-    return max(3, min(6, value if isinstance(value, int) else 4))
+def note_count(settings: Mapping[str, object], default: int = 4) -> int:
+    """The ``notes`` setting: the length of a melody, 3 to 6."""
+    value = settings.get('notes', default)
+    return max(3, min(6, value if isinstance(value, int) else default))
 
 
 # Melodies -----------------------------------------------------------------------------------
@@ -187,7 +188,8 @@ _STEPS = (-1, 1, -1, 1, -2, 2, -1, 1, 3, -3, 4, -2, 2)
 
 
 def melody_steps(length: int, rng: random.Random) -> list[int]:
-    """Scale steps from the tonic (0): mostly steps, some leaps, within a ninth."""
+    """Scale steps from the tonic (0): mostly steps, some leaps, between a fourth below
+    and a ninth above the tonic."""
     steps = [rng.choice((0, 2, 4))]
     while len(steps) < length:
         nxt = steps[-1] + rng.choice(_STEPS)
@@ -326,7 +328,7 @@ class Transposition(ExerciseDefinition):
             parts.append(_('by intervals'))
         if settings.get('instruments', False):
             parts.append(_('instruments'))
-        length = _length(settings)
+        length = note_count(settings)
         parts.append(ngettext('{n} note', '{n} notes', length).format(n=length))
         text = _(' · ').join(parts)
         return text[:1].upper() + text[1:]
@@ -431,7 +433,7 @@ class Transposition(ExerciseDefinition):
 
     def _setup(self, item: _Item, settings: Mapping[str, object], rng: random.Random) -> _Setup:
         limit = limit_setting(settings)
-        length = _length(settings)
+        length = note_count(settings)
         clefs = [_CLEFS[c] for c in _selected(settings, 'clefs', tuple(_CLEFS), tuple(_CLEFS))]
         pairs = self._key_pairs(item, limit)
         for attempt in range(200):

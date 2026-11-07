@@ -231,7 +231,7 @@ class RomanNumerals(ExerciseDefinition):
             (
                 Option('close', _('Close position on one staff')),
                 Option('satb', _('Four voices on a grand staff')),
-                Option('mixed', _('Both')),
+                Option('mixed', _('Close position and grand staff')),
                 Option('quartet', _('String quartet in open score')),
             ),
             'mixed',
@@ -401,6 +401,7 @@ class RomanNumerals(ExerciseDefinition):
                 'Stack the notes in thirds to find the root and its scale degree; then see '
                 'which chord tone is in the bass.'
             ),
+            details={'voicing': voicing},
         )
 
     @staticmethod
@@ -434,7 +435,7 @@ class RomanNumerals(ExerciseDefinition):
             detail=self._explanation(key, chord, given_map, expected),
             expected_label=label,
             score=sum(right) / len(right),
-            figure=self._annotated(question.figure, label),
+            figure=self._annotated(question.figure, label, question.details.get('voicing')),
             play_expected=question.playback,
         )
 
@@ -529,7 +530,7 @@ class RomanNumerals(ExerciseDefinition):
         return ' '.join(sentences)
 
     @staticmethod
-    def _annotated(figure: Figure | None, label: str) -> Figure | None:
+    def _annotated(figure: Figure | None, label: str, voicing: str | None) -> Figure | None:
         """The question's chord with its numeral written under it."""
         if isinstance(figure, StaffSpec):
             events = tuple(
@@ -546,8 +547,9 @@ class RomanNumerals(ExerciseDefinition):
             )
         if isinstance(figure, SystemSpec):
             signature = figure.staves[0].key_signature
-            if quartet := quartet_voices(figure):
-                return quartet_figure(quartet, signature, labels=(label,), highlight=(0,))
+            if voicing == 'quartet':
+                voices = quartet_voices(figure)
+                return quartet_figure(voices, signature, labels=(label,), highlight=(0,))
             return satb_figure(satb_voices(figure), signature, labels=(label,), highlight=(0,))
         return figure
 
@@ -556,6 +558,8 @@ def chord_in_figure(figure: Figure | None) -> Chord:
     """The chord written in a question figure (tests and feedback)."""
     if isinstance(figure, SystemSpec):
         voices = quartet_voices(figure) or satb_voices(figure)
+        if not voices:
+            raise ValueError('the figure has no four-part chord')
         return chord_of(sorted(voices[0]))
     assert isinstance(figure, StaffSpec)
     pitches = [h.pitch for e in figure.events if isinstance(e, StaffChord) for h in e.heads]

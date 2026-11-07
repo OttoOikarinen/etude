@@ -19,6 +19,7 @@ from etude.exercises.families.clef_reading import (
     pair_label,
     parse_item,
 )
+from etude.exercises.families.note_naming import full_name
 from etude.notation.spec import Chord as StaffChord
 from etude.notation.spec import Clef, StaffSpec
 
@@ -89,3 +90,9 @@ def test_grading_names_octave_and_spelling_mistakes() -> None:
     high = ((expected[0].transpose(OCTAVE),), *((p,) for p in expected[1:]))
     assert 'is an octave too high' in CLEF_READING.grade(question, high).detail
     assert CLEF_READING.grade(question, ()).score == 0
+    # Notes left out are named; two notes in one place are not read note by note.
+    short = CLEF_READING.grade(question, tuple((p,) for p in expected[:3]))
+    assert f'Note 4 ({full_name(expected[3])}) is missing.' in short.detail
+    assert short.score == pytest.approx(3 / len(expected))
+    doubled = ((expected[0], expected[1]), *((p,) for p in expected[1:]))
+    assert 'Write one note in each place.' in CLEF_READING.grade(question, doubled).detail
