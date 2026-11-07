@@ -2069,6 +2069,55 @@ def check_live_harmonic_dictation() -> None:
             _close_live(window, services)
 
 
+def check_live_score_reading() -> None:
+    """Level-3 score reading in real sessions: a viola melody rewritten in the treble
+    clef with the keyboard, and a Roman numeral named in a string quartet score."""
+    import tempfile
+
+    from gi.repository import GLib
+
+    from etude.notation.spec import SystemSpec
+    from etude.ui.common import get_settings
+    from etude.ui.widgets.staff_input import StaffInputView
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        window, services = _live_window(data_dir)
+        try:
+            page = window.start_exercise('clef-reading')
+            pump()
+            widget = page.answer_widget
+            assert isinstance(widget, StaffInputView), type(widget)
+            assert widget.entry.voice_clef is not page.question.figure.clef
+            for slot, (pitch,) in enumerate(page.question.expected):
+                _write_note(page, 0, slot, pitch)
+            assert press(page, 'Return')
+            assert page.feedback is not None
+            assert page.feedback.correct, page.feedback.detail
+            assert press(page, 'Escape')
+            pump()
+
+            settings = {'voicing': _gvariant('quartet')}
+            get_settings().set_value(
+                'exercise-settings', GLib.Variant('a{sa{sv}}', {'roman-numerals': settings})
+            )
+            page = window.start_exercise('roman-numerals')
+            pump()
+            figure = page.question.figure
+            assert isinstance(figure, SystemSpec)
+            assert len(figure.staves) == 4
+            assert page._figure_holder.get_visible()
+            page.answer_widget.submit(page.question.expected)
+            assert page.feedback is not None
+            assert page.feedback.correct, page.feedback.title
+            labels = [getattr(e, 'label', None) for e in page.feedback.figure.staves[3].events]
+            assert labels[0], labels
+            assert press(page, 'Escape')
+            pump()
+        finally:
+            get_settings().reset('exercise-settings')
+            _close_live(window, services)
+
+
 def _counterpoint_spec():
     """Fourth species above a five-note cantus: a half rest, notes tied over each
     barline (written once), the leading tone and the final."""
@@ -2289,6 +2338,7 @@ CHECKS: list[Callable[[], None]] = [
     check_live_satb_sessions,
     check_live_chromatic_sessions,
     check_live_harmonic_dictation,
+    check_live_score_reading,
     check_counterpoint_staff_input,
     check_live_counterpoint_sessions,
     check_today_preview,

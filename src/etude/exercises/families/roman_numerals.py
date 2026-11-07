@@ -66,6 +66,8 @@ from .harmony import (
     limit_setting,
     modes_setting,
     numeral_base,
+    quartet_figure,
+    quartet_voices,
     roman_label,
     satb_figure,
     satb_voices,
@@ -133,7 +135,7 @@ def _sevenths(settings: Mapping[str, object]) -> str:
 
 def _voicing(settings: Mapping[str, object]) -> str:
     value = str(settings.get('voicing', 'mixed'))
-    return value if value in ('close', 'satb', 'mixed') else 'mixed'
+    return value if value in ('close', 'satb', 'quartet', 'mixed') else 'mixed'
 
 
 def _mode_name(mode: Mode) -> str:
@@ -230,8 +232,10 @@ class RomanNumerals(ExerciseDefinition):
                 Option('close', _('Close position on one staff')),
                 Option('satb', _('Four voices on a grand staff')),
                 Option('mixed', _('Both')),
+                Option('quartet', _('String quartet in open score')),
             ),
             'mixed',
+            subtitle=_('The quartet reads the viola in the alto clef'),
         ),
     )
 
@@ -266,6 +270,8 @@ class RomanNumerals(ExerciseDefinition):
         parts.append(
             ngettext('up to {n} accidental', 'up to {n} accidentals', limit).format(n=limit)
         )
+        if _voicing(settings) == 'quartet':
+            parts.append(_('string quartet'))
         # Translators: separator between the parts of an exercise subtitle.
         return _(' · ').join(parts)
 
@@ -349,9 +355,10 @@ class RomanNumerals(ExerciseDefinition):
         if voicing == 'mixed':
             voicing = rng.choice(('close', 'satb'))
         figure: Figure
-        if voicing == 'satb':
+        if voicing in ('satb', 'quartet'):
             voices = self._complete_voicing(chord, key, rng)
-            figure = satb_figure((voices,), key.signature)
+            make = quartet_figure if voicing == 'quartet' else satb_figure
+            figure = make((voices,), key.signature)
             pitches: Sequence[Pitch] = sorted(voices)
         else:
             clef, pitches = _fit_close(chord, rng)
@@ -538,16 +545,18 @@ class RomanNumerals(ExerciseDefinition):
                 description=figure.description,
             )
         if isinstance(figure, SystemSpec):
-            voices = satb_voices(figure)
             signature = figure.staves[0].key_signature
-            return satb_figure(voices, signature, labels=(label,), highlight=(0,))
+            if quartet := quartet_voices(figure):
+                return quartet_figure(quartet, signature, labels=(label,), highlight=(0,))
+            return satb_figure(satb_voices(figure), signature, labels=(label,), highlight=(0,))
         return figure
 
 
 def chord_in_figure(figure: Figure | None) -> Chord:
     """The chord written in a question figure (tests and feedback)."""
     if isinstance(figure, SystemSpec):
-        return chord_of(sorted(satb_voices(figure)[0]))
+        voices = quartet_voices(figure) or satb_voices(figure)
+        return chord_of(sorted(voices[0]))
     assert isinstance(figure, StaffSpec)
     pitches = [h.pitch for e in figure.events if isinstance(e, StaffChord) for h in e.heads]
     return chord_of(sorted(pitches))

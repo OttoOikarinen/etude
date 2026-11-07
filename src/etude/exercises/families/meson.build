@@ -5,6 +5,7 @@ install_data(
     'cadences.py',
     'chords.py',
     'chromatic.py',
+    'clef_reading.py',
     'counterpoint.py',
     'degree_ear.py',
     'figured_bass.py',

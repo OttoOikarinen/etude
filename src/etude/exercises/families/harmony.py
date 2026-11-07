@@ -22,6 +22,7 @@ from __future__ import annotations
 
 from collections.abc import Collection, Mapping, Sequence
 from fractions import Fraction
+from gettext import gettext as _
 
 from ...audio.spec import PlaybackNote, PlaybackSpec
 from ...checkers.realize import Voicing
@@ -239,6 +240,55 @@ def satb_voices(figure: object) -> list[Voicing]:
         t, b = bottom
         result.append((s, a, t, b))
     return result
+
+
+QUARTET_CLEFS = (Clef.TREBLE, Clef.TREBLE, Clef.ALTO, Clef.BASS)
+"""Violin I and II, viola and cello: the four voices of a string quartet score."""
+
+
+def quartet_figure(
+    voices: Sequence[Voicing],
+    signature: KeySignature | None = None,
+    *,
+    labels: Sequence[str | None] = (),
+    highlight: Collection[int] = (),
+) -> SystemSpec:
+    """Four voices in open score as a string quartet, one staff each: soprano for the
+    first violin, alto for the second, tenor for the viola in the alto clef and bass for
+    the cello. ``labels`` (one per chord) go under the cello; chords in ``highlight``
+    are drawn in the accent colour. :func:`quartet_voices` reads the voicings back."""
+    staves = []
+    for voice, clef in enumerate(QUARTET_CLEFS):
+        events = []
+        for i, voicing in enumerate(voices):
+            ink = Ink.ACCENT if i in highlight else Ink.FOREGROUND
+            label = (labels[i] if i < len(labels) else None) if voice == 3 else None
+            events.append(StaffChord((Head(voicing[voice], ink=ink),), label=label, ink=ink))
+        staves.append(
+            StaffSpec(
+                clef=clef,
+                key_signature=signature,
+                events=tuple(events),
+                labels_in_line=voice == 3,
+            )
+        )
+    return SystemSpec(
+        staves=tuple(staves),
+        brace=False,
+        # Translators: staff names of a string quartet: first and second violin, viola, cello.
+        labels=(_('Vln I'), _('Vln II'), _('Vla'), _('Vc')),
+    )
+
+
+def quartet_voices(figure: object) -> list[Voicing]:
+    """The voicings of a figure made by :func:`quartet_figure`, soprano first; empty for
+    any other figure."""
+    if not isinstance(figure, SystemSpec) or len(figure.staves) != len(QUARTET_CLEFS):
+        return []
+    lines = [
+        [e.heads[0].pitch for e in s.events if isinstance(e, StaffChord)] for s in figure.staves
+    ]
+    return [(s, a, t, b) for s, a, t, b in zip(*lines, strict=True)]
 
 
 def progression_playback(

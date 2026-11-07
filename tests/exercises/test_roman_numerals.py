@@ -7,11 +7,11 @@ from collections.abc import Mapping
 import pytest
 
 from etude.checkers.voice_leading import Context, check, errors
-from etude.core import Chord, ChordQuality, PitchName
+from etude.core import Chord, ChordQuality, Pitch, PitchName
 from etude.core.roman import RomanNumeral
 from etude.core.scale import Key, Mode
 from etude.exercises.base import ChipsAnswer, Question
-from etude.exercises.families.harmony import satb_voices
+from etude.exercises.families.harmony import QUARTET_CLEFS, quartet_voices, satb_voices
 from etude.exercises.families.roman_numerals import (
     RomanNumerals,
     chord_in_figure,
@@ -97,7 +97,7 @@ def test_items_cover_the_diatonic_numerals_of_both_modes() -> None:
         assert numerals == set(table)
 
 
-@pytest.mark.parametrize('voicing', ['close', 'satb'])
+@pytest.mark.parametrize('voicing', ['close', 'satb', 'quartet'])
 def test_written_chord_is_the_numeral_in_the_key(voicing: str) -> None:
     settings = {**EVERYTHING, 'voicing': voicing}
     for item in RN.items(settings):
@@ -123,7 +123,7 @@ def test_written_chord_is_the_numeral_in_the_key(voicing: str) -> None:
                 .replace('43', '4/3')
                 .replace('42', '4/2'),
             )
-            assert isinstance(question.figure, SystemSpec if voicing == 'satb' else StaffSpec)
+            assert isinstance(question.figure, StaffSpec if voicing == 'close' else SystemSpec)
 
 
 def test_minor_numerals_use_the_raised_leading_tone() -> None:
@@ -185,14 +185,35 @@ def test_feedback_names_key_chord_and_inversion() -> None:
 
 
 def test_feedback_figure_labels_the_numeral() -> None:
-    for voicing in ('close', 'satb'):
+    for voicing in ('close', 'satb', 'quartet'):
         question = RN.generate(
             ItemId('roman.minor.viio.6'), {**DEFAULTS, 'voicing': voicing}, random.Random(3)
         )
         figure = RN.grade(question, expected(question)).figure
-        staff = figure.staves[1] if isinstance(figure, SystemSpec) else figure
+        staff = figure.staves[-1] if isinstance(figure, SystemSpec) else figure
         assert isinstance(staff, StaffSpec)
         assert [getattr(e, 'label', None) for e in staff.events] == ['vii°6']
+
+
+def test_the_quartet_is_an_open_score_in_the_players_ranges() -> None:
+    settings = {**EVERYTHING, 'voicing': 'quartet'}
+    lowest = (Pitch.parse('G3'), Pitch.parse('G3'), Pitch.parse('C3'), Pitch.parse('C2'))
+    for item in RN.items(settings)[::3]:
+        question = RN.generate(item, settings, random.Random(1))
+        figure = question.figure
+        assert isinstance(figure, SystemSpec)
+        assert [s.clef for s in figure.staves] == list(QUARTET_CLEFS)
+        assert figure.labels == ('Vln I', 'Vln II', 'Vla', 'Vc')
+        assert not figure.brace
+        voicing = quartet_voices(figure)[0]
+        assert all(p.midi >= low.midi for p, low in zip(voicing, lowest, strict=True)), item
+        chord = chord_in_figure(figure)
+        assert {p.name for p in voicing} == set(chord.names()), 'every chord tone'
+    assert RN.describe_settings(settings).endswith(' · string quartet')
+    # 'Both' mixes close position and the grand staff; the quartet is chosen on its own.
+    for seed in range(20):
+        mixed = RN.generate(ItemId('roman.major.V.53'), DEFAULTS, random.Random(seed))
+        assert not quartet_voices(mixed.figure)
 
 
 def test_confusables() -> None:
