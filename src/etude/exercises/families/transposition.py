@@ -176,9 +176,10 @@ def _selected(
     return [k for k in allowed if k in keys] or list(default)
 
 
-def _length(settings: Mapping[str, object]) -> int:
-    value = settings.get('notes', 4)
-    return max(3, min(6, value if isinstance(value, int) else 4))
+def note_count(settings: Mapping[str, object], default: int = 4) -> int:
+    """The ``notes`` setting: the length of a melody, 3 to 6."""
+    value = settings.get('notes', default)
+    return max(3, min(6, value if isinstance(value, int) else default))
 
 
 # Melodies -----------------------------------------------------------------------------------
@@ -186,8 +187,9 @@ def _length(settings: Mapping[str, object]) -> int:
 _STEPS = (-1, 1, -1, 1, -2, 2, -1, 1, 3, -3, 4, -2, 2)
 
 
-def _melody_steps(length: int, rng: random.Random) -> list[int]:
-    """Scale steps from the tonic (0): mostly steps, some leaps, within a ninth."""
+def melody_steps(length: int, rng: random.Random) -> list[int]:
+    """Scale steps from the tonic (0): mostly steps, some leaps, between a fourth below
+    and a ninth above the tonic."""
     steps = [rng.choice((0, 2, 4))]
     while len(steps) < length:
         nxt = steps[-1] + rng.choice(_STEPS)
@@ -196,7 +198,9 @@ def _melody_steps(length: int, rng: random.Random) -> list[int]:
     return steps
 
 
-def _melody(key: Key, steps: Sequence[int], octave: int) -> list[Pitch]:
+def melody(key: Key, steps: Sequence[int], octave: int) -> list[Pitch]:
+    """The scale steps of :func:`melody_steps` in ``key`` from the tonic in ``octave``; in
+    minor the seventh degree rising to the tonic is raised."""
     scale = key.scale.pitches(octave)
     pitches = []
     for index, step in enumerate(steps):
@@ -210,7 +214,8 @@ def _melody(key: Key, steps: Sequence[int], octave: int) -> list[Pitch]:
     return pitches
 
 
-def _fits(clef: Clef, pitches: Sequence[Pitch], slack: int = 0) -> bool:
+def fits_staff(clef: Clef, pitches: Sequence[Pitch], slack: int = 0) -> bool:
+    """Every note within one ledger line of the staff (``slack`` more steps allowed)."""
     positions = [clef.staff_position(p) for p in pitches]
     return _LOW - slack <= min(positions) and max(positions) <= _HIGH + slack
 
@@ -219,7 +224,8 @@ def _moved(pitches: Sequence[Pitch], interval: Interval, up: bool) -> list[Pitch
     return [p.transpose(interval, down=not up) for p in pitches]
 
 
-def _plain(pitches: Sequence[Pitch]) -> bool:
+def plain(pitches: Sequence[Pitch]) -> bool:
+    """No double sharps or flats."""
     return all(abs(p.alter) <= 1 for p in pitches)
 
 
@@ -322,7 +328,7 @@ class Transposition(ExerciseDefinition):
             parts.append(_('by intervals'))
         if settings.get('instruments', False):
             parts.append(_('instruments'))
-        length = _length(settings)
+        length = note_count(settings)
         parts.append(ngettext('{n} note', '{n} notes', length).format(n=length))
         text = _(' · ').join(parts)
         return text[:1].upper() + text[1:]
@@ -427,12 +433,12 @@ class Transposition(ExerciseDefinition):
 
     def _setup(self, item: _Item, settings: Mapping[str, object], rng: random.Random) -> _Setup:
         limit = limit_setting(settings)
-        length = _length(settings)
+        length = note_count(settings)
         clefs = [_CLEFS[c] for c in _selected(settings, 'clefs', tuple(_CLEFS), tuple(_CLEFS))]
         pairs = self._key_pairs(item, limit)
         for attempt in range(200):
             source, target = rng.choice(pairs)
-            steps = _melody_steps(length, rng)
+            steps = melody_steps(length, rng)
             if item.instrument is None:
                 source_clefs = target_clefs = [rng.choice(clefs)]
             elif item.target == 'concert':
@@ -442,13 +448,15 @@ class Transposition(ExerciseDefinition):
             slack = 0 if attempt < 150 else 2
             options = []
             for octave in range(1, 7):
-                original = _melody(source, steps, octave)
+                original = melody(source, steps, octave)
                 moved = _moved(original, item.interval, item.up)
-                if not (_plain(original) and _plain(moved)):
+                if not (plain(original) and plain(moved)):
                     continue
                 for source_clef in source_clefs:
                     for target_clef in target_clefs:
-                        if _fits(source_clef, original, slack) and _fits(target_clef, moved, slack):
+                        if fits_staff(source_clef, original, slack) and fits_staff(
+                            target_clef, moved, slack
+                        ):
                             options.append((original, moved, source_clef, target_clef))
             if options:
                 if item.instrument is not None:

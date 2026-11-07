@@ -110,6 +110,10 @@ Contract changes so far (all backwards-compatible):
   staff input writes such lines (a tied note once, ← / → from note to note) and
   scrolls a long line sideways in a `WideFigure` (new `scroll_to()`), following the
   note being written. Exercises `counterpoint-writing` and `counterpoint-errors`.
+* W5 score reading: `harmony.quartet_figure()` / `quartet_voices()` (four voices in
+  open score as a string quartet, the viola in the alto clef) and the Roman numerals
+  voicing `quartet`; `transposition.melody_steps()`, `melody()`, `fits_staff()` and
+  `plain()` are public for exercise `clef-reading`.
 * W5 harmonic dictation: `ChipsAnswer.shared_order` (every group the same options,
   shuffled into one order: a row of chips per chord); an accelerator several groups
   share chooses in the first group without a choice. `etude.checkers.phrases` gains diatonic phrases
