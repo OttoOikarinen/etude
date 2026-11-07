@@ -14,6 +14,7 @@ from etude.checkers.phrases import (
     CHROMATIC_CHORDS,
     CLOSELY_RELATED,
     COMMON_TONE,
+    DIATONIC_PHRASES,
     SEQUENCES,
     ChromaticChord,
     ChromaticFamily,
@@ -23,11 +24,14 @@ from etude.checkers.phrases import (
     bass_moves,
     chromatic_chord,
     chromatic_phrase,
+    chromatic_tones,
+    diatonic_phrase,
     enharmonic_keys,
     key_relation,
     modulation,
     modulation_targets,
     neapolitan_key,
+    phrase_numerals,
     pivot_is_marked,
     pivots,
     related_key,
@@ -182,6 +186,33 @@ def test_in_major_the_german_sixth_is_spelled_both_ways() -> None:
             assert phrase.focus is not None
             spellings.add(phrase.readings[phrase.focus][0].numeral.quality.value)
     assert spellings == {'german-sixth', 'doubly-augmented-fourth'}
+
+
+@pytest.mark.parametrize('chord', CHROMATIC_CHORDS, ids=_id)
+def test_phrase_numerals_cover_every_phrase_of_the_chord(chord: ChromaticChord) -> None:
+    numerals = phrase_numerals(chord)
+    assert {chord.at(i) for i in chord.inversions} <= numerals
+    tonic = Key.parse('C' if chord.mode is Mode.MAJOR else 'a')
+    for seed in range(8):
+        phrase = chromatic_phrase(chord, tonic, random.Random(seed))
+        assert {r[-1].numeral for r in phrase.readings} <= numerals
+
+
+@pytest.mark.parametrize('mode', list(Mode), ids=lambda m: m.value)
+def test_diatonic_phrases_are_correct_and_diatonic(mode: Mode) -> None:
+    plans = set(DIATONIC_PHRASES[mode])
+    seen = set()
+    for tonic in MAJOR if mode is Mode.MAJOR else MINOR:
+        key = Key.parse(tonic)
+        for seed in range(16):
+            phrase = diatonic_phrase(key, random.Random(seed))
+            assert_correct(phrase)
+            text = '-'.join(str(r[-1].numeral) for r in phrase.readings)
+            assert text in plans
+            seen.add(text)
+            assert all(chromatic_tones(c, key) == () for c in phrase.chords)
+            assert phrase.chords[0].root == phrase.chords[-1].root == key.tonic
+    assert seen == plans
 
 
 def test_chromatic_phrases_are_deterministic() -> None:

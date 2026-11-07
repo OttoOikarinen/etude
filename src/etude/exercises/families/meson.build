@@ -8,6 +8,7 @@ install_data(
     'counterpoint.py',
     'degree_ear.py',
     'figured_bass.py',
+    'harmonic_dictation.py',
     'four_part.py',
     'harmony.py',
     'interval_construction.py',

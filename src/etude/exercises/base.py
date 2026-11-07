@@ -109,6 +109,10 @@ class ChipsAnswer:
     Value: ``Mapping[group key, option key]``."""
 
     groups: tuple[ChipGroup, ...]
+    shared_order: bool = False
+    """Every group has the same options (one row per chord of a dictation): shuffle
+    them into one order, so the rows read alike. When groups share accelerators, a
+    key chooses in the first group without a choice."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -267,19 +271,22 @@ def shuffle_options(question: Question, rng: random.Random) -> Question:
     intervals by size), so the place of the right answer would give it away.
     The runner shuffles every question it shows. Accelerators that number the
     buttons stay with the positions, ``1`` on the first button; a
-    :attr:`~Option.fixed_accel` stays with its option.
+    :attr:`~Option.fixed_accel` stays with its option. With
+    :attr:`ChipsAnswer.shared_order` every chip group gets the same order.
     """
     answer = question.answer
     match answer:
         case ChoiceAnswer(in_figure_order=False):
             shuffled: AnswerSpec = replace(answer, options=_shuffled(answer.options, rng))
         case ChipsAnswer():
-            shuffled = replace(
-                answer,
-                groups=tuple(
+            if answer.shared_order and answer.groups:
+                order = _shuffled(answer.groups[0].options, rng)
+                groups = tuple(replace(group, options=order) for group in answer.groups)
+            else:
+                groups = tuple(
                     replace(group, options=_shuffled(group.options, rng)) for group in answer.groups
-                ),
-            )
+                )
+            shuffled = replace(answer, groups=groups)
         case _:
             return question
     return replace(question, answer=shuffled)

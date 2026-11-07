@@ -205,8 +205,8 @@ def harmony_settings(*, tempo: int = 80) -> tuple[Setting, ...]:
     )
 
 
-def modes(settings: Mapping[str, object]) -> tuple[Mode, ...]:
-    return modes_setting(settings)
+def modes(settings: Mapping[str, object], default: str = 'major') -> tuple[Mode, ...]:
+    return modes_setting(settings, default)
 
 
 def pick_key(mode: Mode, settings: Mapping[str, object], rng: random.Random) -> Key:
@@ -225,8 +225,8 @@ def tempo_of(settings: Mapping[str, object], default: int = 80) -> float:
     return float(max(50, min(120, value if isinstance(value, int) else default)))
 
 
-def describe_keys(settings: Mapping[str, object]) -> str:
-    chosen = modes(settings)
+def describe_keys(settings: Mapping[str, object], default: str = 'major') -> str:
+    chosen = modes(settings, default)
     if len(chosen) == 2:
         return _('Major and minor keys')
     return _('Minor keys') if chosen[0] is Mode.MINOR else _('Major keys')

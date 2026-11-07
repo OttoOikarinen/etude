@@ -91,7 +91,7 @@ def _mode_word(mode: Mode) -> str:
     return pgettext('mode', 'major') if mode is Mode.MAJOR else pgettext('mode', 'minor')
 
 
-def _family_name(family: ChromaticFamily) -> str:
+def family_name(family: ChromaticFamily) -> str:
     names: dict[ChromaticFamily, Callable[[], str]] = {
         ChromaticFamily.SECONDARY: lambda: _('Secondary dominants'),
         ChromaticFamily.MIXTURE: lambda: _('Mode mixture'),
@@ -307,7 +307,7 @@ class ChromaticChords(ExerciseDefinition):
         MultiChoiceSetting(
             'families',
             _('Chords'),
-            tuple(Option(f.value, _family_name(f)) for f in ChromaticFamily),
+            tuple(Option(f.value, family_name(f)) for f in ChromaticFamily),
             tuple(f.value for f in ChromaticFamily),
         ),
         *_common_settings(),
@@ -333,7 +333,7 @@ class ChromaticChords(ExerciseDefinition):
         parts = []
         if len(families) < len(ChromaticFamily):
             # Translators: separator in a list of chord families in an exercise subtitle.
-            parts.append(_(', ').join(_family_name(f) for f in families))
+            parts.append(_(', ').join(family_name(f) for f in families))
         parts += _describe_keys(settings)
         # Translators: separator between the parts of an exercise subtitle.
         return _(' · ').join(parts)
@@ -365,7 +365,7 @@ class ChromaticChords(ExerciseDefinition):
         self, item_id: ItemId, settings: Mapping[str, object], rng: random.Random
     ) -> Question:
         chord = parse_name_item(item_id)
-        phrase = _phrase_for(chord, _limit(settings), rng)
+        phrase = phrase_for(chord, _limit(settings), rng)
         key = phrase.key
         focus = phrase.focus
         assert focus is not None
@@ -474,23 +474,27 @@ class ChromaticChords(ExerciseDefinition):
         return str(value)
 
 
-def _phrase_for(chord: ChromaticChord, limit: int, rng: random.Random) -> Phrase:
-    """A phrase around ``chord`` in a key with at most ``limit`` accidentals whose notes
-    need no more than double sharps or flats."""
-    keys = keys_within(limit, (chord.mode,))
-    failure: Exception | None = None
+def phrase_in(
+    mode: Mode, limit: int, rng: random.Random, make: Callable[[Key, random.Random], Phrase]
+) -> Phrase:
+    """A phrase from ``make`` in a key of ``mode`` with at most ``limit`` accidentals
+    whose notes need no more than double sharps or flats."""
+    keys = keys_within(limit, (mode,))
     for _attempt in range(_KEY_ATTEMPTS):
         key = rng.choice(keys)
         try:
-            phrase = chromatic_phrase(chord, key, rng)
-        except RealisationError as error:
-            failure = error  # a key with many accidentals: try another
-            continue
+            phrase = make(key, rng)
+        except RealisationError:
+            continue  # a key with many accidentals: try another
         if _spellable(phrase.chords):
             return phrase
-    # C major and A minor always work (tests voice every chord there).
-    del failure
-    return chromatic_phrase(chord, keys_within(0, (chord.mode,))[0], rng)
+    # C major and A minor always work (tests voice every phrase there).
+    return make(keys_within(0, (mode,))[0], rng)
+
+
+def phrase_for(chord: ChromaticChord, limit: int, rng: random.Random) -> Phrase:
+    """A phrase around ``chord`` (:func:`phrase_in`)."""
+    return phrase_in(chord.mode, limit, rng, lambda key, r: chromatic_phrase(chord, key, r))
 
 
 def _question_figure(phrase: Phrase) -> SystemSpec:

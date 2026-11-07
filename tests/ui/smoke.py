@@ -2022,6 +2022,53 @@ def check_live_chromatic_sessions() -> None:
             _close_live(window, services)
 
 
+def check_live_harmonic_dictation() -> None:
+    """Harmonic dictation in a real session: a row of chips per chord after the tonic,
+    every row in the same order, chosen with the number keys; the feedback marks each row
+    and labels every chord of the phrase."""
+    import tempfile
+
+    from etude.notation.spec import SystemSpec
+    from etude.ui.widgets.chips import ChipGroups
+
+    with tempfile.TemporaryDirectory() as data_dir:
+        window, services = _live_window(data_dir)
+        try:
+            page = window.start_exercise('harmonic-dictation')
+            pump()
+            widget = page.answer_widget
+            assert isinstance(widget, ChipGroups), type(widget)
+            question = page.question
+            groups = question.answer.groups
+            assert len(groups) == len(question.expected) >= 2
+            assert len({tuple(widget.chips[g.key]) for g in groups}) == 1, 'one order'
+            assert not widget.check_button.get_sensitive()
+            # Number keys fill the rows in order; a chip without a number is clicked.
+            for group in groups:
+                option = next(o for o in group.options if o.key == question.expected[group.key])
+                if option.accel:
+                    assert press(page, option.accel)
+                else:
+                    widget.chips[group.key][option.key].emit('clicked')
+            pump()
+            assert widget.value() == dict(question.expected)
+            assert widget.check_button.get_sensitive()
+            assert press(page, 'Return')
+            assert page.feedback is not None
+            assert page.feedback.correct, page.feedback.title
+            for slot, value in question.expected.items():
+                assert widget.chips[slot][value].has_css_class('success')
+            figure = page.feedback.figure
+            assert isinstance(figure, SystemSpec)
+            labels = [e for e in figure.staves[1].voices[0] if getattr(e, 'label', None)]
+            assert len(labels) == len(groups) + 1
+            assert page._figure_holder.get_visible(), 'the phrase is shown after answering'
+            assert press(page, 'Escape')
+            pump()
+        finally:
+            _close_live(window, services)
+
+
 def _counterpoint_spec():
     """Fourth species above a five-note cantus: a half rest, notes tied over each
     barline (written once), the leading tone and the final."""
@@ -2241,6 +2288,7 @@ CHECKS: list[Callable[[], None]] = [
     check_rhythm_template_input,
     check_live_satb_sessions,
     check_live_chromatic_sessions,
+    check_live_harmonic_dictation,
     check_counterpoint_staff_input,
     check_live_counterpoint_sessions,
     check_today_preview,

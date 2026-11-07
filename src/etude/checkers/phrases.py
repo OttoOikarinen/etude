@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2026 Otto Oikarinen
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""Short four-part phrases of chromatic harmony: chromatic chords, modulations, sequences.
+"""Short four-part phrases: diatonic ones, chromatic chords, modulations, sequences.
 
 Every phrase is a plan of Roman numerals voiced by :func:`.realize.realize` and
 checker-clean: :func:`.voice_leading.check` finds no error in it with
@@ -25,6 +25,12 @@ stands in a short phrase that prepares and resolves it as the books do: a
 secondary function goes to its target (the target in first inversion after a
 4/2), the Neapolitan to V, to Cad6/4–V or through vii°7/V, the Ger+6 to Cad6/4
 and the It+6 and Fr+6 to V or Cad6/4.
+
+**Diatonic phrases** (:data:`DIATONIC_PHRASES`, :func:`diatonic_phrase`): tonic,
+predominant, dominant and tonic in the patterns of K–P ch. 7–13 (I–vi–ii6–V7–I,
+i–VI–ii°6–V7–i, the passing vii°6 and V6, the cadential six-four), for dictation.
+:func:`phrase_numerals` lists the numerals the phrases around a chromatic chord may
+use, the vocabulary of an exercise that asks for them.
 
 **Modulations** (:func:`modulation`, K–P ch. 18–19 and 27; Aldwell–Schachter
 ch. 27–28 and 31), all starting with tonic–dominant–tonic in the home key:
@@ -430,6 +436,60 @@ def chromatic_phrase(
         readings = [(Reading(_numeral(t), key),) for t in texts]
         try:
             return _phrase(key, readings, plan, focus=focus)
+        except RealisationError as error:
+            failure = error
+    assert failure is not None
+    raise failure
+
+
+def phrase_numerals(chord: ChromaticChord) -> frozenset[RomanNumeral]:
+    """Every numeral a phrase of :func:`chromatic_phrase` around ``chord`` may contain."""
+    return frozenset(
+        _numeral(text)
+        for inversion in chord.inversions
+        for texts, _focus in _plans(chord, inversion)
+        for text in texts
+    )
+
+
+# Diatonic phrases ----------------------------------------------------------------------
+
+DIATONIC_PHRASES: dict[Mode, tuple[str, ...]] = {
+    Mode.MAJOR: (
+        'I-IV-V-I',
+        'I-ii6-V-I',
+        'I-vi-IV-V-I',
+        'I-vi-ii6-V7-I',
+        'I-ii6-Cad64-V7-I',
+        'I-iii-IV-V-I',
+        'I-viio6-I6-IV-V-I',
+        'I-V6-vi-IV-V7-I',
+    ),
+    Mode.MINOR: (
+        'i-iv-V-i',
+        'i-iio6-V-i',
+        'i-VI-iv-V-i',
+        'i-VI-iio6-V7-i',
+        'i-iv-Cad64-V7-i',
+        'i-III-iv-V-i',
+        'i-viio6-i6-iv-V-i',
+        'i-VII-III-iv-V-i',
+    ),
+}
+"""Plans of diatonic phrases, numerals joined by ``-``: the tonic, a predominant (IV,
+ii6, vi–IV, iii–IV; iv, ii°6, VI–iv, III–iv), the dominant and the tonic, with the
+passing vii°6 between I and I6 (K–P ch. 13), V6–vi (ch. 10) and the cadential six-four
+(ch. 8). In minor VII–III is the natural-minor VII on its way to III (ch. 10)."""
+
+
+def diatonic_phrase(key: Key, rng: random.Random) -> Phrase:
+    """One of :data:`DIATONIC_PHRASES` of the key's mode, chosen with ``rng`` and voiced.
+    Raises :class:`RealisationError` when it cannot be voiced."""
+    text = rng.choice(DIATONIC_PHRASES[key.mode])
+    failure: RealisationError | None = None
+    for plan in _plans_of(rng, text, key):
+        try:
+            return _phrase(key, _in(key, text.split('-')), plan)
         except RealisationError as error:
             failure = error
     assert failure is not None
