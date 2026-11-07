@@ -110,6 +110,10 @@ Contract changes so far (all backwards-compatible):
   staff input writes such lines (a tied note once, ← / → from note to note) and
   scrolls a long line sideways in a `WideFigure` (new `scroll_to()`), following the
   note being written. Exercises `counterpoint-writing` and `counterpoint-errors`.
+* W5 harmonic dictation: `shuffle_options()` gives chip groups with the same options
+  one order (a row of chips per chord). `etude.checkers.phrases` gains diatonic phrases
+  (`DIATONIC_PHRASES`, `diatonic_phrase()`) and `phrase_numerals()`, the numerals the
+  phrases around a chromatic chord may use. Exercise `harmonic-dictation`.
 * W5 chromatic harmony: `ChordQuality.DOUBLY_AUGMENTED_FOURTH`, the German sixth
   spelled with ♯2̂ (A♭–C–D♯–F♯ in C), which `RomanNumeral` writes `Ger+6(#2)` and
   displays as `Ger+6`. In the checker, `Context.keys` (the key each chord is read in:

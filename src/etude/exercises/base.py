@@ -267,17 +267,22 @@ def shuffle_options(question: Question, rng: random.Random) -> Question:
     intervals by size), so the place of the right answer would give it away.
     The runner shuffles every question it shows. Accelerators that number the
     buttons stay with the positions, ``1`` on the first button; a
-    :attr:`~Option.fixed_accel` stays with its option.
+    :attr:`~Option.fixed_accel` stays with its option. Chip groups with the same
+    options (one row per chord of a dictation) share one order.
     """
     answer = question.answer
     match answer:
         case ChoiceAnswer(in_figure_order=False):
             shuffled: AnswerSpec = replace(answer, options=_shuffled(answer.options, rng))
         case ChipsAnswer():
+            orders: dict[tuple[Option, ...], tuple[Option, ...]] = {}
+            for group in answer.groups:
+                if group.options not in orders:
+                    orders[group.options] = _shuffled(group.options, rng)
             shuffled = replace(
                 answer,
                 groups=tuple(
-                    replace(group, options=_shuffled(group.options, rng)) for group in answer.groups
+                    replace(group, options=orders[group.options]) for group in answer.groups
                 ),
             )
         case _:
