@@ -152,7 +152,7 @@ def _fit_close(chord: Chord, rng: random.Random) -> tuple[Clef, tuple[Pitch, ...
     return rng.choice(options)
 
 
-def _inversion_sentence(chord: Chord, label: str) -> str:
+def inversion_sentence(chord: Chord, label: str) -> str:
     bass = pitch_name(chord.bass)
     sentences: tuple[str, ...]
     if chord.quality.size == 4:
@@ -488,7 +488,7 @@ class RomanNumerals(ExerciseDefinition):
                 function=degree_text,
                 numeral=numeral_base(numeral),
             ),
-            _inversion_sentence(chord, label),
+            inversion_sentence(chord, label),
         ]
         if chord.quality in (ChordQuality.MAJOR, ChordQuality.DOMINANT_SEVENTH):
             case = _('A major triad is written with an upper-case numeral.')

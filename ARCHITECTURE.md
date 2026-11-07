@@ -36,7 +36,7 @@ where to start when you change something.
 | `audio` | `spec` describes what to play; `backend` is the interface; FluidSynth plays it, `null` stands in for tests and machines without sound. |
 | `learning` | FSRS scheduling, ratings derived from answers, session building (interleaving, new vs. review), mastery, placement, statistics. Talks to storage and exercises only through `learning.ports`. |
 | `storage` | SQLite implementation of the `learning.ports` stores, with migrations. |
-| `checkers` | Rule checkers for written music: four-part voice leading (W4) and species counterpoint (W5). Pure, on top of `core`. |
+| `checkers` | Rule checkers for written music: four-part voice leading (W4, chromatic rules W5) and species counterpoint (W5); the four-part voicer and the generators of chromatic phrases, modulations and sequences. Pure, on top of `core`. |
 | `exercises` | `base` is the framework; `families/` holds the exercises; `registry` discovers them. |
 | `content` | Curriculum, theory lessons and glossary loaded from `data/content/` (formats: docs/CONTENT_AUTHORING.md); `music_text` reads the compact notation of examples. Below `exercises`, so exercises such as vocabulary flashcards can use the glossary. |
 | `ui` | Pages, widgets and dialogs following the design mockups. |
@@ -110,6 +110,22 @@ Contract changes so far (all backwards-compatible):
   staff input writes such lines (a tied note once, ← / → from note to note) and
   scrolls a long line sideways in a `WideFigure` (new `scroll_to()`), following the
   note being written. Exercises `counterpoint-writing` and `counterpoint-errors`.
+* W5 chromatic harmony: `ChordQuality.DOUBLY_AUGMENTED_FOURTH`, the German sixth
+  spelled with ♯2̂ (A♭–C–D♯–F♯ in C), which `RomanNumeral` writes `Ger+6(#2)` and
+  displays as `Ger+6`. In the checker, `Context.keys` (the key each chord is read in:
+  the tonicized key of V7/V, the new key after a modulation) with `Context.key_at()`,
+  the rules `CHROMATIC_TONE`, `AUGMENTED_SIXTH` and `CROSS_RELATION` (in
+  `MOTION_RULES`; decisions in the docstring of `voice_leading`), and `alteration()`.
+  `realize()` and `chords_of()` take `keys=` (numerals read per chord), and
+  `function_keys()` gives the keys to check a realisation with. New pure module
+  `etude.checkers.phrases`: chromatic chords in a phrase (`CHROMATIC_CHORDS`,
+  `chromatic_phrase()`), modulations (`modulation()`, `Technique`, `key_relation()`,
+  `related_key()`, `pivots()`, `enharmonic_keys()`) and sequences (`sequence()`,
+  `SequenceKind`). A `Phrase` keeps its voicings with the analysis (`readings`, one or
+  two per chord), `new_key`, `pivot`, `focus` and `breaks`, for the eye exercises and
+  for ear training later. `StaffSpec.labels_in_line` widens columns so that chord
+  labels stay on one row (the Roman numerals of `satb_figure`); without it a label too
+  wide for its column still moves down a row.
 * W4 exercises: `Question.details`, exercise-private facts needed again when
   grading (the keys of a transposition); not shown to the learner.
 * W4 notation: lines of a `Chord.label` separated by `'\n'` are stacked

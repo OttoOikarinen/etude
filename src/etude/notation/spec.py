@@ -159,6 +159,10 @@ class StaffSpec:
     and every further voice has stems down. Hit regions and ``event_x`` number the
     events of further voices after those of ``events``: the first event of
     ``voices[0]`` has index ``len(events)``."""
+    labels_in_line: bool = False
+    """Widen columns for the chord labels so that they all stay on one row (Roman
+    numeral analysis). Otherwise a label too wide for its column moves down a row
+    (voice-leading marks next to each other), and the notes keep their spacing."""
 
     @classmethod
     def notes(cls, *pitches: Pitch | str, clef: Clef = Clef.TREBLE, **kwargs: object) -> StaffSpec:

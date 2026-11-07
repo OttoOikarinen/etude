@@ -38,8 +38,14 @@ def test_figure_text_writes_figures_with_slashes() -> None:
         ('V7/V', 'V7/V'),
         ('V65/V', 'V6/5/V'),
         ('viio42/ii', 'vii°4/2/ii'),
-        ('bII6', '♭II6'),
+        ('bII6', 'N6'),
+        ('N6', 'N6'),
+        ('bII', 'N'),
+        ('bVI', '♭VI'),
         ('Ger+6', 'Ger+6'),
+        ('Ger+6(#2)', 'Ger+6'),
+        ('It+6/V', 'It+6/V'),
+        ('viiø7/V', 'viiø7/V'),
     ],
 )
 def test_roman_label(text: str, label: str) -> None:

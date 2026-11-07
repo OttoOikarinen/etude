@@ -47,13 +47,54 @@ Decisions (severity in brackets; an *error* makes an answer wrong, a
 * **Leading tone**: in V(7)–I and vii°(7)–I the leading tone in an outer
   voice rises to the tonic [error]; in an inner voice it may drop a third
   to the fifth of the tonic (the "frustrated" leading tone), other
-  motions are a warning. In V–vi (V–VI) it rises in every voice [error].
+  motions are a warning. In V–vi (V–VI) it rises in every voice [error],
+  except in the bass of V6–vi, where it may fall by step [warning]: the
+  descending 5–6 sequence (I–V6–vi–iii6, K–P ch. 15: inside a sequence
+  tendency tones need not resolve).
 * **Chordal seventh** resolves down by step [error] when the harmony
-  changes. In V4/3–I6 it may rise by step [warning] (Kostka–Payne).
+  changes. In V4/3–I6 it may rise by step [warning] (Kostka–Payne). It may be
+  held into a cadential six-four, which delays its resolution: V7/V–Cad6/4–V,
+  where the seventh of V7/V resolves to the third of V after the six-four (K–P
+  ch. 16); it must then fall by step out of the six-four [error].
 * **Augmented melodic intervals** (A2, A4, A5 …; not chromatic semitones)
   in any voice [error].
 * **Large leaps**: more than an octave in any voice [error]; more than a
   fourth in an inner voice [warning].
+
+Chromatic harmony (Kostka–Payne ch. 16–17, 21–23; Aldwell–Schachter ch. 16,
+22, 29–31). Each chord is read in its own key, :attr:`Context.keys`: the
+tonicized key of a secondary function (G major for V7/V in C) or the new key
+after a modulation. The rules above use that key (the leading tone of V7/V is
+F♯), and a tone is *chromatic* when it is outside that key: the major scale, or
+in minor the natural minor with its raised sixth and seventh degrees.
+
+* **Raised tones** are temporary leading tones. Doubled [error] (K–P ch. 16:
+  "the leading tone of a secondary dominant is not doubled"). When the next
+  chord contains the note a half step above, a raised tone in an outer voice
+  moves to it [error], in an inner voice [warning], as the leading tone does.
+* **Lowered tones** lean downward (A–S ch. 22: "a chromatically lowered tone
+  tends to continue downward"). One that rises when the harmony changes is a
+  warning; for ♭2̂, the root of the Neapolitan, an error (K–P ch. 22: ♭2̂ moves
+  down to 1̂ or, by a diminished third, to 7̂). Holding it, or rising to another
+  lowered tone (♭VI–♭VII), is fine. Doubling a lowered tone is a warning (mixture
+  chords double as usual but avoid doubling the borrowed tones; the Neapolitan
+  doubles its bass, the third), except the root of a root-position triad (♭VI,
+  ♭III, ♭VII), which is the normal doubling.
+* **A chain of secondary dominants**: a leading tone or raised tone may fall by a
+  chromatic half step when it becomes the seventh of the next chord (V7/ii–V7/V,
+  K–P ch. 17).
+* **Augmented sixth chords** (It+6, Fr+6, Ger+6): the interval of the augmented
+  sixth expands outward to the octave on 5̂, ♭6̂ down and ♯4̂ up by half step,
+  whenever the next chord contains 5̂ [error]; neither tone is doubled [error] (so
+  the It+6 doubles the tonic), and every chord tone is present [error] (K–P
+  ch. 23). Ger+6–V gives parallel fifths, which the parallel-fifths rule reports
+  [error]: K–P and A–S avoid them with Ger+6–Cad6/4–V or with the It+6 or Fr+6.
+  In major the ♭3̂ of the Ger+6 may rise chromatically to the ♮3̂ of the Cad6/4
+  (it is often spelled as ♯2̂, the doubly augmented fourth, for that reason).
+* **Cross relations**: a note in one voice and its chromatic alteration in
+  another voice of the next chord [warning] (K–P ch. 16 and 22; A–S ch. 16), unless
+  some voice makes the chromatic step itself, or ♭2̂ falls to the leading tone
+  (N6–V, where ♮2̂ is the fifth of V in another voice: K–P ch. 22).
 """
 
 # Messages are passed to _Checker.add() as lambdas that it calls at once (or never, in
@@ -71,10 +112,10 @@ from gettext import ngettext, pgettext
 
 from ..core import Pitch
 from ..core.chord import Chord, ChordKind, ChordQuality
-from ..core.interval import Interval, Quality
+from ..core.interval import Interval
 from ..core.naming import chord_name, interval_name, pitch_name
-from ..core.pitch import PitchName
-from ..core.scale import Key
+from ..core.pitch import MAX_ALTER, Letter, PitchName
+from ..core.scale import Key, Mode
 
 SOPRANO, ALTO, TENOR, BASS = 0, 1, 2, 3
 VOICES = (SOPRANO, ALTO, TENOR, BASS)
@@ -119,6 +160,12 @@ class Rule(Enum):
     """A voice moves by an augmented second (or another augmented interval)."""
     LARGE_LEAP = 'large-leap'
     """An inner voice leaps more than a fourth, or any voice more than an octave."""
+    CHROMATIC_TONE = 'chromatic-tone'
+    """A raised tone does not rise to the note above it, or a lowered tone rises."""
+    AUGMENTED_SIXTH = 'augmented-sixth'
+    """The augmented sixth does not expand outward to the octave on 5̂."""
+    CROSS_RELATION = 'cross-relation'
+    """A note and its chromatic alteration in different voices of adjacent chords."""
 
 
 MOTION_RULES = frozenset(
@@ -132,6 +179,9 @@ MOTION_RULES = frozenset(
         Rule.CHORDAL_SEVENTH,
         Rule.AUGMENTED_SECOND,
         Rule.LARGE_LEAP,
+        Rule.CHROMATIC_TONE,
+        Rule.AUGMENTED_SIXTH,
+        Rule.CROSS_RELATION,
     }
 )
 """Rules about the motion from one chord to the next: their violations involve the
@@ -182,6 +232,18 @@ class Context:
     ranges: Ranges = field(default_factory=Ranges)
     rules: frozenset[Rule] = frozenset(Rule)
     """Rules to apply; exercises switch some off for earlier stages."""
+    keys: Sequence[Key | None] = field(default=())
+    """The key each slot's chord is read in, when it is not :attr:`key`: the tonicized
+    key of a secondary function (G major for V7/V in C) or the new key after a
+    modulation. ``None`` or a shorter sequence means :attr:`key`."""
+
+    def key_at(self, slot: int) -> Key | None:
+        """The key of ``slot``: its entry in :attr:`keys`, or :attr:`key`."""
+        if slot < len(self.keys):
+            local = self.keys[slot]
+            if local is not None:
+                return local
+        return self.key
 
 
 # Names --------------------------------------------------------------------------------
@@ -225,6 +287,9 @@ def rule_name(rule: Rule) -> str:
         Rule.CHORDAL_SEVENTH: lambda: _('Unresolved seventh'),
         Rule.AUGMENTED_SECOND: lambda: _('Augmented leap'),
         Rule.LARGE_LEAP: lambda: _('Large leap'),
+        Rule.CHROMATIC_TONE: lambda: _('Unresolved chromatic tone'),
+        Rule.AUGMENTED_SIXTH: lambda: _('Unresolved augmented sixth'),
+        Rule.CROSS_RELATION: lambda: _('Cross relation'),
     }
     return names[rule]()
 
@@ -234,7 +299,8 @@ def rule_mark(rule: Rule) -> str:
     # Translators: short marks written on the staff under a voice-leading mistake, as a
     # teacher would mark it: ∥5 parallel fifths, →8 direct octaves, × crossing, sp.
     # spacing, rng range, inc. incomplete chord, 2× wrong doubling, LT leading tone,
-    # 7 seventh, A2 augmented leap, lp. large leap, ov. overlap, ✗ wrong chord.
+    # 7 seventh, A2 augmented leap, lp. large leap, ov. overlap, ✗ wrong chord,
+    # chr unresolved chromatic tone, +6 augmented sixth, cr. cross relation.
     # Keep them at most three characters.
     ctx = 'voice-leading mark'
     marks: dict[Rule, Callable[[], str]] = {
@@ -253,6 +319,9 @@ def rule_mark(rule: Rule) -> str:
         Rule.CHORDAL_SEVENTH: lambda: pgettext(ctx, '7'),
         Rule.AUGMENTED_SECOND: lambda: pgettext(ctx, 'A2'),
         Rule.LARGE_LEAP: lambda: pgettext(ctx, 'lp.'),
+        Rule.CHROMATIC_TONE: lambda: pgettext(ctx, 'chr'),
+        Rule.AUGMENTED_SIXTH: lambda: pgettext(ctx, '+6'),
+        Rule.CROSS_RELATION: lambda: pgettext(ctx, 'cr.'),
     }
     return marks[rule]()
 
@@ -308,6 +377,18 @@ def rule_reason(rule: Rule) -> str:
         Rule.LARGE_LEAP: lambda: _(
             'Inner voices move smoothly; large leaps make them hard to sing and to follow.'
         ),
+        Rule.CHROMATIC_TONE: lambda: _(
+            'A chromatically raised note leads up to the note a half step above, like a '
+            'leading tone; a lowered note leans down. Let each continue the way it was altered.'
+        ),
+        Rule.AUGMENTED_SIXTH: lambda: _(
+            'The two notes of the augmented sixth lean outward by half steps and meet in an '
+            'octave on the dominant.'
+        ),
+        Rule.CROSS_RELATION: lambda: _(
+            'A note and its chromatic alteration in different voices of neighboring chords '
+            'clash; keep the chromatic step in one voice.'
+        ),
     }
     return reasons[rule]()
 
@@ -319,6 +400,12 @@ def _missing(role: int) -> str:
         _('Chord {n} has no fifth ({note})'),
         _('Chord {n} has no seventh ({note})'),
     )[role]
+
+
+def _missing_tone() -> str:
+    # Translators: an augmented sixth chord without one of its notes, e.g. "Chord 3 has
+    # no D (every note of this chord is needed)".
+    return _('Chord {n} has no {note} (every note of this chord is needed)')
 
 
 def _note(pitch: Pitch) -> str:
@@ -346,6 +433,41 @@ def _leading(key: Key) -> PitchName:
 @lru_cache(maxsize=1024)
 def _degree(key: Key, degree: int) -> PitchName:
     return key.degree(degree)
+
+
+def alteration(name: PitchName, key: Key) -> int:
+    """How a note is chromatically altered in ``key``: ``1`` raised, ``-1`` lowered, ``0``
+    diatonic (the major scale; in minor the natural minor with its raised sixth and
+    seventh degrees). F♯ is raised and A♭ lowered in C major; B♮ and D♭ in C minor are
+    diatonic and lowered."""
+    return _alterations(key)[name.letter].get(name.alter, 0)
+
+
+@lru_cache(maxsize=256)
+def _alterations(key: Key) -> tuple[dict[int, int], ...]:
+    """Per letter (C … B), alteration (sharps − flats) → :func:`alteration`."""
+    diatonic = key.scale.names()
+    table: list[dict[int, int]] = []
+    for letter in Letter:
+        same = next(n for n in diatonic if n.letter == letter)
+        row: dict[int, int] = {}
+        for alter in range(-MAX_ALTER, MAX_ALTER + 1):
+            name = PitchName(letter, alter)
+            if name == same or (key.mode is Mode.MINOR and key.function_of(name) is not None):
+                row[alter] = 0
+            else:
+                row[alter] = 1 if alter > same.alter else -1
+        table.append(row)
+    return tuple(table)
+
+
+def _semitone_above(pitch: Pitch) -> Pitch:
+    """The diatonic half step above: F♯4 → G4, D♯4 → E4."""
+    return Pitch.from_diatonic(pitch.diatonic_index + 1, pitch.midi + 1)
+
+
+def _is_augmented_sixth(chord: Chord) -> bool:
+    return chord.quality.kind is ChordKind.AUGMENTED_SIXTH
 
 
 @dataclass(frozen=True, slots=True)
@@ -405,6 +527,9 @@ def _span(a: Pitch, b: Pitch) -> tuple[int, int]:
     return abs(b.diatonic_index - a.diatonic_index), abs(b.midi - a.midi)
 
 
+_MAJOR_OR_PERFECT = (0, 2, 4, 5, 7, 9, 11)
+"""Semitones of the major or perfect interval of each size (unison to seventh)."""
+
 _FIFTHS_AND_OCTAVES = frozenset({(0, 0), (7, 7), (7, 6), (6, 7)})
 """Semitone classes (mod 12) of two successive intervals that may form parallels."""
 
@@ -427,7 +552,20 @@ class _Checker:
         self.context = context
         self.harmonies = [_harmony(i, c, context) for i, c in enumerate(chords)]
         self.midi = [tuple(p.midi for p in chord) for chord in chords]
+        self._table_key: Key | None = None
+        self._table: tuple[dict[int, int], ...] = ()
+        self.alters = [self._alters(i, chord) for i, chord in enumerate(chords)]
+        """Per slot, :func:`alteration` of each voice's note in the slot's key."""
         self.found: list[Violation] = []
+
+    def _alters(self, slot: int, chord: Sequence[Pitch]) -> tuple[int, ...]:
+        key = self.context.key_at(slot)
+        if key is None:
+            return (0,) * len(chord)
+        if key is not self._table_key:  # hashing a key costs more than the lookups
+            self._table_key, self._table = key, _alterations(key)
+        table = self._table
+        return tuple(table[p.letter].get(p.alter, 0) for p in chord)
 
     def add(
         self,
@@ -457,6 +595,51 @@ class _Checker:
     # One chord -------------------------------------------------------------------------
 
     def chord(self, slot: int, chord: Sequence[Pitch]) -> None:
+        # The voicer's pair scans switch off the rules about one chord alone (it checked
+        # them per voicing): skip their work, not just their reports.
+        rules = self.context.rules
+        if Rule.RANGE in rules:
+            self.range(slot, chord)
+        midi = self.midi[slot]
+        n = slot + 1
+        if Rule.CROSSING in rules:
+            for upper in (SOPRANO, ALTO, TENOR):
+                lower = upper + 1
+                if midi[upper] < midi[lower]:
+                    self.add(
+                        Rule.CROSSING,
+                        Severity.ERROR,
+                        slot,
+                        (upper, lower),
+                        # Translators: e.g. "Voice crossing: the tenor is above the alto in
+                        # chord 2".
+                        lambda: _(
+                            'Voice crossing: the {lower} is above the {upper} in chord {n}'
+                        ).format(lower=voice_name(lower), upper=voice_name(upper), n=n),
+                    )
+        if Rule.SPACING in rules:
+            for upper in (SOPRANO, ALTO):
+                lower = upper + 1
+                if midi[upper] - midi[lower] > 12:
+                    self.add(
+                        Rule.SPACING,
+                        Severity.ERROR,
+                        slot,
+                        (upper, lower),
+                        # Translators: e.g. "More than an octave between soprano and alto in
+                        # chord 3".
+                        lambda: _(
+                            'More than an octave between {upper} and {lower} in chord {n}'
+                        ).format(upper=voice_name(upper), lower=voice_name(lower), n=n),
+                    )
+        harmony = self.harmonies[slot]
+        if harmony is None:
+            return
+        if harmony.given:
+            self.membership(slot, chord, harmony)
+        self.doubling(slot, chord, harmony)
+
+    def range(self, slot: int, chord: Sequence[Pitch]) -> None:
         n = slot + 1
         ranges = self.context.ranges
         for voice, pitch in enumerate(chord):
@@ -484,38 +667,6 @@ class _Checker:
                         "The {voice}'s {note} is above its range (highest {limit}) in chord {n}"
                     ).format(voice=voice_name(voice), note=_note(pitch), limit=_note(high), n=n),
                 )
-        for upper in (SOPRANO, ALTO, TENOR):
-            lower = upper + 1
-            if chord[upper].midi < chord[lower].midi:
-                self.add(
-                    Rule.CROSSING,
-                    Severity.ERROR,
-                    slot,
-                    (upper, lower),
-                    # Translators: e.g. "Voice crossing: the tenor is above the alto in chord 2".
-                    lambda: _(
-                        'Voice crossing: the {lower} is above the {upper} in chord {n}'
-                    ).format(lower=voice_name(lower), upper=voice_name(upper), n=n),
-                )
-        for upper in (SOPRANO, ALTO):
-            lower = upper + 1
-            if chord[upper].midi - chord[lower].midi > 12:
-                self.add(
-                    Rule.SPACING,
-                    Severity.ERROR,
-                    slot,
-                    (upper, lower),
-                    # Translators: e.g. "More than an octave between soprano and alto in chord 3".
-                    lambda: _(
-                        'More than an octave between {upper} and {lower} in chord {n}'
-                    ).format(upper=voice_name(upper), lower=voice_name(lower), n=n),
-                )
-        harmony = self.harmonies[slot]
-        if harmony is None:
-            return
-        if harmony.given:
-            self.membership(slot, chord, harmony)
-        self.doubling(slot, chord, harmony)
 
     def membership(self, slot: int, chord: Sequence[Pitch], harmony: _Harmony) -> None:
         if Rule.WRONG_CHORD in self.context.rules:
@@ -560,6 +711,17 @@ class _Checker:
         expected = harmony.chord
         present = {p.name for p in chord}
         tones = _tones(expected)
+        if _is_augmented_sixth(expected):
+            for tone in tones:
+                if tone not in present:
+                    self.add(
+                        Rule.INCOMPLETE_CHORD,
+                        Severity.ERROR,
+                        slot,
+                        (),
+                        lambda: _missing_tone().format(n=n, note=pitch_name(tone)),
+                    )
+            return
         if expected.quality.kind not in (ChordKind.TRIAD, ChordKind.SEVENTH):
             return
         for role, tone in enumerate(tones):
@@ -594,10 +756,12 @@ class _Checker:
         counts: dict[PitchName, list[int]] = {}
         for voice, pitch in enumerate(chord):
             counts.setdefault(pitch.name, []).append(voice)
-        key = self.context.key
-        if key is not None and self.is_dominant(harmony):
+        key = self.context.key_at(slot)
+        reported: set[PitchName] = set()
+        if key is not None and self.is_dominant(harmony, key):
             voices = counts.get(_leading(key), [])
             if len(voices) > 1:
+                reported.add(_leading(key))
                 self.add(
                     Rule.WRONG_DOUBLING,
                     Severity.ERROR,
@@ -610,6 +774,7 @@ class _Checker:
                 )
         seventh = harmony.seventh
         if seventh is not None and len(counts.get(seventh, [])) > 1:
+            reported.add(seventh)
             self.add(
                 Rule.WRONG_DOUBLING,
                 Severity.ERROR,
@@ -620,6 +785,7 @@ class _Checker:
                     note=pitch_name(seventh), n=n
                 ),
             )
+        self.chromatic_doubling(slot, counts, harmony, key, reported)
         chord_ = harmony.chord
         if chord_.quality is ChordQuality.MAJOR and chord_.inversion == 0:
             third = _tones(chord_)[1]
@@ -627,7 +793,7 @@ class _Checker:
             if (
                 len(voices) > 1
                 and not self.after_step_below(slot, chord_)
-                and (key is None or third != _leading(key))
+                and (key is None or (third != _leading(key) and alteration(third, key) == 0))
             ):
                 self.add(
                     Rule.WRONG_DOUBLING,
@@ -642,6 +808,66 @@ class _Checker:
                     ).format(note=pitch_name(third), n=n),
                 )
 
+    def chromatic_doubling(
+        self,
+        slot: int,
+        counts: dict[PitchName, list[int]],
+        harmony: _Harmony,
+        key: Key | None,
+        reported: set[PitchName],
+    ) -> None:
+        """Doubled tendency tones of chromatic chords: the two notes of an augmented
+        sixth and raised tones [error], lowered tones [warning]."""
+        n = slot + 1
+        chord = harmony.chord
+        tones = _tones(chord)
+        alters = self.alters[slot]
+        for name, voices in counts.items():
+            if len(voices) < 2 or name in reported:
+                continue
+            if _is_augmented_sixth(chord) and name in (tones[0], tones[-1]):
+                self.add(
+                    Rule.WRONG_DOUBLING,
+                    Severity.ERROR,
+                    slot,
+                    tuple(voices),
+                    # Translators: e.g. "A♭, a note of the augmented sixth, is doubled in
+                    # chord 3".
+                    lambda: _(
+                        '{note}, a note of the augmented sixth, is doubled in chord {n}'
+                    ).format(note=pitch_name(name), n=n),
+                )
+                continue
+            if key is None:
+                continue
+            altered = alters[voices[0]]
+            if altered > 0:
+                self.add(
+                    Rule.WRONG_DOUBLING,
+                    Severity.ERROR,
+                    slot,
+                    tuple(voices),
+                    # Translators: e.g. "The raised F♯ is doubled in chord 2".
+                    lambda: _('The raised {note} is doubled in chord {n}').format(
+                        note=pitch_name(name), n=n
+                    ),
+                )
+            elif altered < 0 and not (
+                name == chord.root
+                and chord.inversion == 0
+                and chord.quality.kind is ChordKind.TRIAD
+            ):
+                self.add(
+                    Rule.WRONG_DOUBLING,
+                    Severity.WARNING,
+                    slot,
+                    tuple(voices),
+                    # Translators: e.g. "The lowered A♭ is doubled in chord 2".
+                    lambda: _('The lowered {note} is doubled in chord {n}').format(
+                        note=pitch_name(name), n=n
+                    ),
+                )
+
     def after_step_below(self, slot: int, chord: Chord) -> bool:
         """The previous chord's root is a step below (V–vi): doubling the third is right."""
         previous = self.harmonies[slot - 1] if slot else None
@@ -649,9 +875,8 @@ class _Checker:
             return False
         return (chord.root.letter - previous.chord.root.letter) % 7 == 1
 
-    def is_dominant(self, harmony: _Harmony) -> bool:
-        """V, vii° and their sevenths in the context key."""
-        key = self.context.key
+    def is_dominant(self, harmony: _Harmony, key: Key | None) -> bool:
+        """V, vii° and their sevenths in ``key``."""
         if key is None:
             return False
         chord = harmony.chord
@@ -668,9 +893,10 @@ class _Checker:
             for lower in VOICES[upper + 1 :]:
                 self.parallels(slot, before, after, upper, lower)
         self.direct(slot, before, after)
+        a_midi, b_midi = self.midi[slot - 1], self.midi[slot]
         for upper in (SOPRANO, ALTO, TENOR):
             lower = upper + 1
-            if after[lower].midi > before[upper].midi or after[upper].midi < before[lower].midi:
+            if b_midi[lower] > a_midi[upper] or b_midi[upper] < a_midi[lower]:
                 self.add(
                     Rule.OVERLAP,
                     Severity.WARNING,
@@ -685,6 +911,9 @@ class _Checker:
             self.melodic(slot, voice, before[voice], after[voice])
         self.leading_tone(slot, before, after)
         self.seventh(slot, before, after)
+        self.chromatic(slot, before, after)
+        self.augmented_sixth(slot, before, after)
+        self.cross_relation(slot, before, after)
 
     def parallels(
         self,
@@ -822,11 +1051,13 @@ class _Checker:
             )
 
     def melodic(self, slot: int, voice: int, before: Pitch, after: Pitch) -> None:
-        if before.diatonic_index == after.diatonic_index:
+        start, end = before.diatonic_index, after.diatonic_index
+        if start == end:
             return  # repeated note or chromatic semitone
-        low, high = (
-            (before, after) if before.diatonic_index < after.diatonic_index else (after, before)
-        )
+        low, high = (before, after) if start < end else (after, before)
+        steps = abs(end - start)
+        signed = self.midi[slot][voice] - self.midi[slot - 1][voice]
+        semitones = abs(signed)
 
         def fields() -> dict[str, object]:
             return {
@@ -837,21 +1068,16 @@ class _Checker:
                 'end': _note(after),
             }
 
-        try:
-            interval: Interval | None = Interval.between(low, high)
-        except ValueError:
-            interval = None
-        if interval is not None and interval.quality in (
-            Quality.AUGMENTED,
-            Quality.DOUBLY_AUGMENTED,
-        ):
-            leap = interval
+        # Larger than the major or perfect interval of its size: augmented (tested by
+        # arithmetic, since scan() checks many thousands of motions).
+        upward = signed if start < end else -signed
+        if upward > _MAJOR_OR_PERFECT[steps % 7] + 12 * (steps // 7):
 
             def named() -> str:
                 try:
-                    return interval_name(leap)
+                    return interval_name(Interval.between(low, high))
                 except ValueError:
-                    return str(leap)
+                    return f'{_note(low)}–{_note(high)}'
 
             self.add(
                 Rule.AUGMENTED_SECOND,
@@ -864,8 +1090,6 @@ class _Checker:
                     'The {voice} moves by an {interval}, {start} to {end} (chords {first}–{second})'
                 ).format(interval=named(), **fields()),
             )
-        semitones = abs(after.midi - before.midi)
-        steps = abs(after.diatonic_index - before.diatonic_index)
         if semitones > 12:
             self.add(
                 Rule.LARGE_LEAP,
@@ -892,9 +1116,9 @@ class _Checker:
             )
 
     def leading_tone(self, slot: int, before: Sequence[Pitch], after: Sequence[Pitch]) -> None:
-        key = self.context.key
+        key = self.context.key_at(slot - 1)
         first, second = self.harmonies[slot - 1], self.harmonies[slot]
-        if key is None or first is None or second is None or not self.is_dominant(first):
+        if key is None or first is None or second is None or not self.is_dominant(first, key):
             return
         tonic = second.chord.root == key.tonic
         deceptive = second.chord.root == _degree(key, 6) and first.chord.root == _degree(key, 5)
@@ -907,8 +1131,17 @@ class _Checker:
             target = after[voice]
             if target.name == key.tonic and target.midi - pitch.midi == 1:
                 continue
+            if _becomes_seventh(pitch, target, second):
+                continue
             severity = Severity.ERROR
-            if tonic and voice in (ALTO, TENOR):
+            if (
+                deceptive
+                and voice == BASS
+                and pitch.midi - target.midi in (1, 2)
+                and pitch.diatonic_index - target.diatonic_index == 1
+            ):
+                severity = Severity.WARNING  # V6–vi in a descending 5–6 sequence
+            elif tonic and voice in (ALTO, TENOR):
                 frustrated = target.name == _degree(key, 5) and 0 < pitch.midi - target.midi <= 4
                 if frustrated:
                     continue
@@ -931,13 +1164,26 @@ class _Checker:
                 ),
             )
 
+    def _cadential_six_four(self, slot: int) -> bool:
+        """The tonic six-four over the fifth degree of the slot's key."""
+        harmony, key = self.harmonies[slot], self.context.key_at(slot)
+        if harmony is None or key is None:
+            return False
+        chord = harmony.chord
+        return (
+            chord.inversion == 2
+            and chord.quality.kind is ChordKind.TRIAD
+            and chord.root == key.tonic
+        )
+
     def seventh(self, slot: int, before: Sequence[Pitch], after: Sequence[Pitch]) -> None:
+        self.delayed_seventh(slot, before, after)
         first, second = self.harmonies[slot - 1], self.harmonies[slot]
         if first is None or second is None or first.seventh is None:
             return
         if (first.chord.root, first.chord.quality) == (second.chord.root, second.chord.quality):
             return  # the same harmony continues: the resolution may come later
-        key = self.context.key
+        key = self.context.key_at(slot - 1)
         seventh = first.seventh
         for voice in VOICES:
             pitch = before[voice]
@@ -950,6 +1196,8 @@ class _Checker:
             )
             if down:
                 continue
+            if target == pitch and self._cadential_six_four(slot):
+                continue  # held into a six-four that delays the resolution (checked next)
             up = (
                 target.diatonic_index - pitch.diatonic_index == 1
                 and 1 <= target.midi - pitch.midi <= 2
@@ -981,6 +1229,221 @@ class _Checker:
                     second=slot + 1,
                 ),
             )
+
+    def delayed_seventh(self, slot: int, before: Sequence[Pitch], after: Sequence[Pitch]) -> None:
+        """A seventh held into a cadential six-four falls by step out of it."""
+        if slot < 2 or not self._cadential_six_four(slot - 1):
+            return
+        source = self.harmonies[slot - 2]
+        if source is None or source.seventh is None:
+            return
+        seventh = source.seventh
+        earlier = self.chords[slot - 2]
+        for voice in VOICES:
+            pitch = before[voice]
+            if pitch.name != seventh or earlier[voice] != pitch:
+                continue
+            target = after[voice]
+            if (
+                pitch.diatonic_index - target.diatonic_index == 1
+                and 1 <= pitch.midi - target.midi <= 2
+            ):
+                continue
+            self.add(
+                Rule.CHORDAL_SEVENTH,
+                Severity.ERROR,
+                slot,
+                (voice,),
+                lambda: _(
+                    'The seventh ({note}) in the {voice} does not resolve down by step '
+                    '(chords {first}–{second})'
+                ).format(
+                    note=pitch_name(seventh),
+                    voice=voice_name(voice),
+                    first=slot,
+                    second=slot + 1,
+                ),
+            )
+
+    # Chromatic tones ----------------------------------------------------------------------
+
+    def chromatic(self, slot: int, before: Sequence[Pitch], after: Sequence[Pitch]) -> None:
+        """Raised tones rise by half step and lowered tones do not rise (module docs)."""
+        alters = self.alters[slot - 1]
+        if not any(alters):
+            return
+        key = self.context.key_at(slot - 1)
+        first, second = self.harmonies[slot - 1], self.harmonies[slot]
+        if key is None or first is None or second is None:
+            return
+        if (first.chord.root, first.chord.quality) == (second.chord.root, second.chord.quality):
+            return
+        tones = _tones(first.chord)
+        skip = {first.seventh}
+        if _is_augmented_sixth(first.chord):
+            skip |= {tones[0], tones[-1]}
+        following = _tones(second.chord)
+        for voice in VOICES:
+            pitch, target = before[voice], after[voice]
+            altered = alters[voice]
+            if not altered or pitch == target or pitch.name in skip:
+                continue
+            if altered > 0:
+                above = _semitone_above(pitch)
+                if above.name not in following or target == above:
+                    continue
+                if _becomes_seventh(pitch, target, second):
+                    continue
+                self.add(
+                    Rule.CHROMATIC_TONE,
+                    Severity.ERROR if voice in (SOPRANO, BASS) else Severity.WARNING,
+                    slot,
+                    (voice,),
+                    # Translators: e.g. "The raised F♯ in the soprano does not rise to G
+                    # (chords 2–3)".
+                    lambda: _(
+                        'The raised {note} in the {voice} does not rise to {target} '
+                        '(chords {first}–{second})'
+                    ).format(
+                        note=pitch_name(pitch.name),
+                        voice=voice_name(voice),
+                        target=pitch_name(above.name),
+                        first=slot,
+                        second=slot + 1,
+                    ),
+                )
+            elif target.midi > pitch.midi:
+                if self.alters[slot][voice] < 0:
+                    continue  # a passage in the borrowed mode: ♭VI–♭VII
+                if _is_augmented_sixth(first.chord) and target.letter == pitch.letter:
+                    continue  # Ger+6–Cad6/4 in major: ♭3̂ rises to ♮3̂
+                neapolitan = pitch.name == _degree(key, 2).transpose(_CHROMATIC_SEMITONE, down=True)
+                self.add(
+                    Rule.CHROMATIC_TONE,
+                    Severity.ERROR if neapolitan else Severity.WARNING,
+                    slot,
+                    (voice,),
+                    # Translators: e.g. "The lowered D♭ in the alto rises instead of falling
+                    # (chords 2–3)".
+                    lambda: _(
+                        'The lowered {note} in the {voice} rises instead of falling '
+                        '(chords {first}–{second})'
+                    ).format(
+                        note=pitch_name(pitch.name),
+                        voice=voice_name(voice),
+                        first=slot,
+                        second=slot + 1,
+                    ),
+                )
+
+    def augmented_sixth(self, slot: int, before: Sequence[Pitch], after: Sequence[Pitch]) -> None:
+        """♭6̂ falls and ♯4̂ rises by half step to 5̂ when the next chord has 5̂."""
+        first, second = self.harmonies[slot - 1], self.harmonies[slot]
+        if first is None or second is None or not _is_augmented_sixth(first.chord):
+            return
+        if (first.chord.root, first.chord.quality) == (second.chord.root, second.chord.quality):
+            return
+        tones = _tones(first.chord)
+        low, high = tones[0], tones[-1]
+        dominant = low.transpose(_MINOR_SECOND, down=True)
+        if dominant not in _tones(second.chord):
+            return  # reinterpreted (an enharmonic modulation): no outward resolution
+        for voice in VOICES:
+            pitch, target = before[voice], after[voice]
+            if pitch.name == low:
+                good = target.name == dominant and pitch.midi - target.midi == 1
+            elif pitch.name == high:
+                good = target.name == dominant and target.midi - pitch.midi == 1
+            else:
+                continue
+            if good:
+                continue
+            self.add(
+                Rule.AUGMENTED_SIXTH,
+                Severity.ERROR,
+                slot,
+                (voice,),
+                # Translators: e.g. "The augmented sixth does not expand to the octave: the
+                # bass's A♭ should move to G (chords 2–3)".
+                lambda: _(
+                    "The augmented sixth does not expand to the octave: the {voice}'s {note} "
+                    'should move to {target} (chords {first}–{second})'
+                ).format(
+                    voice=voice_name(voice),
+                    note=pitch_name(pitch.name),
+                    target=pitch_name(dominant),
+                    first=slot,
+                    second=slot + 1,
+                ),
+            )
+
+    def cross_relation(self, slot: int, before: Sequence[Pitch], after: Sequence[Pitch]) -> None:
+        """A note in one voice, its chromatic alteration in another voice next."""
+        clashes = {
+            (x.name, y.name)
+            for x in before
+            for y in after
+            if x.letter == y.letter and x.alter != y.alter
+        }
+        for a, b in sorted(clashes, key=str):
+            if any(x.name == a and y.name == b for x, y in zip(before, after, strict=True)):
+                continue  # the chromatic step is made within one voice
+            if self._neapolitan_resolves(slot, a, before, after):
+                continue
+            first = next(v for v in VOICES if before[v].name == a)
+            second = next(v for v in VOICES if after[v].name == b)
+            self.add(
+                Rule.CROSS_RELATION,
+                Severity.WARNING,
+                slot,
+                (first, second),
+                # Translators: e.g. "Cross relation: F in the soprano, then F♯ in the bass
+                # (chords 2–3)".
+                lambda: _(
+                    'Cross relation: {old} in the {old_voice}, then {new} in the {new_voice} '
+                    '(chords {first}–{second})'
+                ).format(
+                    old=pitch_name(a),
+                    old_voice=voice_name(first),
+                    new=pitch_name(b),
+                    new_voice=voice_name(second),
+                    first=slot,
+                    second=slot + 1,
+                ),
+            )
+
+    def _neapolitan_resolves(
+        self, slot: int, lowered: PitchName, before: Sequence[Pitch], after: Sequence[Pitch]
+    ) -> bool:
+        """♭2̂ falls to the leading tone in every voice that has it."""
+        key = self.context.key_at(slot - 1)
+        if key is None or lowered != _lowered_second(key):
+            return False
+        leading = _leading(key)
+        return all(
+            after[v].name == leading and before[v].midi > after[v].midi
+            for v in VOICES
+            if before[v].name == lowered
+        )
+
+
+def _lowered_second(key: Key) -> PitchName:
+    second = key.degree(2)
+    return PitchName(second.letter, second.alter - 1)
+
+
+_CHROMATIC_SEMITONE = Interval.parse('A1')
+_MINOR_SECOND = Interval.parse('m2')
+
+
+def _becomes_seventh(pitch: Pitch, target: Pitch, second: _Harmony) -> bool:
+    """A leading tone falls by a chromatic half step to the seventh of the next chord
+    (a chain of secondary dominants, V7/ii–V7/V)."""
+    return (
+        target.letter == pitch.letter
+        and pitch.midi - target.midi == 1
+        and second.seventh == target.name
+    )
 
 
 def check(chords: Sequence[tuple[Pitch, ...]], context: Context | None = None) -> list[Violation]:

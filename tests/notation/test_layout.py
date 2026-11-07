@@ -531,3 +531,17 @@ def test_wide_labels_stack_instead_of_overlapping(metrics) -> None:
     baselines = {i.text: i.y for i in labels}
     assert baselines['range'] > baselines['spacing ∥8'], 'moved down a row'
     assert baselines['I'] == baselines['IV'] == baselines['spacing ∥8']
+
+
+def test_labels_in_line_widen_columns_instead_of_stacking(metrics) -> None:
+    """With labels_in_line, wide labels (vii°6/5/V) stay on one row, apart."""
+    events = tuple(
+        Chord((Head(Pitch.parse(p)),), label=label)
+        for p, label in (('C4', 'vii°6/5/V'), ('D4', 'V6/5/V'), ('E4', 'I'))
+    )
+    display = layout(StaffSpec(events=events, labels_in_line=True), metrics)
+    labels = [i for i in display.items if isinstance(i, TextItem)]
+    assert len({i.y for i in labels}) == 1
+    boxes = sorted(item_bounds(i, metrics) for i in labels)
+    for (_, _, x1, _), (a0, _, _, _) in itertools.pairwise(boxes):
+        assert x1 <= a0

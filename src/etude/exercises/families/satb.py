@@ -176,11 +176,13 @@ def passage_figure(
     inks: Mapping[tuple[int, int], Ink] | None = None,
     marks: Mapping[int, str] | None = None,
     description: str | None = None,
+    breaks: Sequence[int] = (),
 ) -> SystemSpec:
     """Four voices on a grand staff in quarter notes, numerals under the bass.
 
     ``inks`` colours notes by ``(voice, slot)``; ``marks`` writes a short text under
-    the upper staff at a slot (the rule a mistake breaks), in error ink.
+    the upper staff at a slot (the rule a mistake breaks), in error ink; ``breaks``
+    draws a double bar after those slots.
     """
     voicings = [(c[0], c[1], c[2], c[3]) for c in chords]
     return satb_figure(
@@ -191,6 +193,7 @@ def passage_figure(
         inks=inks,
         marks=marks,
         description=description,
+        breaks=breaks,
     )
 
 
@@ -408,83 +411,8 @@ class FourPartWriting(ExerciseDefinition):
     def grade(self, question: Question, given: object) -> Feedback:
         answer = question.answer
         assert isinstance(answer, StaffInputAnswer)
-        expected = cast(tuple[Voicing, ...], question.expected)
         key = question_key(question)
-        harmony = harmony_of(answer.labels, key)
-        play_expected = passage_playback(expected)
-        chords = _four_part(given, len(expected))
-        if chords is None:
-            return Feedback(
-                correct=False,
-                title=_('Not quite — write every voice of every chord'),
-                detail=_('Each chord needs a soprano, alto, tenor and bass.'),
-                expected_label=chords_text(expected),
-                score=0.0,
-                play_expected=play_expected,
-            )
-        for voice, pitches in answer.given_voices.items():
-            if tuple(c[voice] for c in chords) != tuple(pitches):
-                return Feedback(
-                    correct=False,
-                    title=_('Not quite — the printed voices must stay as they are'),
-                    detail=_('Write only the voices that are not printed.'),
-                    expected_label=chords_text(expected),
-                    score=0.0,
-                    play_expected=play_expected,
-                )
-        violations = check(chords, Context(key, harmony))
-        errors = [v for v in violations if v.severity is Severity.ERROR]
-        warnings = [v for v in violations if v.severity is Severity.WARNING]
-        wrong_slots = {v.slot for v in errors}
-        score = 1.0 - len(wrong_slots) / len(chords)
-        correct = not errors
-        if correct:
-            title = _('Correct — no voice-leading errors')
-        else:
-            title = ngettext(
-                'Not quite — {n} voice-leading error',
-                'Not quite — {n} voice-leading errors',
-                len(errors),
-            ).format(n=len(errors))
-        shown = errors[:MAX_LISTED]
-        sentences: list[str] = [f'{v.message}.' for v in shown]
-        if len(errors) > len(shown):
-            more = len(errors) - len(shown)
-            # Translators: after the first few voice-leading mistakes, e.g. "And 3 more."
-            sentences.append(ngettext('And {n} more.', 'And {n} more.', more).format(n=more))
-        reasons = list(dict.fromkeys(rule_reason(v.rule) for v in errors))
-        sentences += reasons[:2]
-        if warnings:
-            # Translators: introduces voice-leading weaknesses that are not counted as
-            # mistakes, e.g. "Worth noticing: The tenor leaps more than a fourth …".
-            sentences.append(
-                _('Worth noticing: {items}').format(
-                    items=' '.join(f'{w.message}.' for w in warnings[:MAX_LISTED])
-                )
-            )
-        if correct and not warnings:
-            sentences.append(_('Every chord is complete, well spaced and smoothly connected.'))
-        inks, marks = _marked(
-            chords, violations, given=frozenset(answer.given_voices), correct_ink=correct
-        )
-        figure = passage_figure(
-            chords,
-            key,
-            answer.labels,
-            inks=inks,
-            marks=marks,
-            description=_figure_description(chords, errors, key),
-        )
-        return Feedback(
-            correct=correct,
-            title=title,
-            detail=' '.join(sentences),
-            expected_label=chords_text(expected),
-            score=score,
-            figure=figure,
-            play_expected=play_expected,
-            play_given=passage_playback(chords),
-        )
+        return grade_four_part(question, given, Context(key, harmony_of(answer.labels, key)))
 
     def answer_label(self, question: Question, value: object) -> str:
         chords = _four_part(value, None)
@@ -495,6 +423,102 @@ class FourPartWriting(ExerciseDefinition):
         if chords is None:
             return str(value)
         return ' | '.join(' '.join(str(p) for p in chord) for chord in chords)
+
+
+def grade_four_part(
+    question: Question,
+    given: object,
+    context: Context | Callable[[Sequence[Voicing]], Context],
+    *,
+    breaks: Sequence[int] = (),
+) -> Feedback:
+    """Grade a four-part answer to a :class:`StaffInputAnswer` question with the checker:
+    correct without errors, warnings mentioned, the score the share of chords without
+    an error, the first :data:`MAX_LISTED` mistakes explained and every one marked on
+    the learner's staff. ``context`` may depend on the answer (a chord the numeral allows
+    two spellings of); ``breaks`` are the double bars of the figure."""
+    answer = question.answer
+    assert isinstance(answer, StaffInputAnswer)
+    expected = cast(tuple[Voicing, ...], question.expected)
+    play_expected = passage_playback(expected)
+    chords = _four_part(given, len(expected))
+    if chords is None:
+        return Feedback(
+            correct=False,
+            title=_('Not quite — write every voice of every chord'),
+            detail=_('Each chord needs a soprano, alto, tenor and bass.'),
+            expected_label=chords_text(expected),
+            score=0.0,
+            play_expected=play_expected,
+        )
+    for voice, pitches in answer.given_voices.items():
+        if tuple(c[voice] for c in chords) != tuple(pitches):
+            return Feedback(
+                correct=False,
+                title=_('Not quite — the printed voices must stay as they are'),
+                detail=_('Write only the voices that are not printed.'),
+                expected_label=chords_text(expected),
+                score=0.0,
+                play_expected=play_expected,
+            )
+    if callable(context):
+        context = context(chords)
+    key = context.key
+    assert key is not None
+    violations = check(chords, context)
+    errors = [v for v in violations if v.severity is Severity.ERROR]
+    warnings = [v for v in violations if v.severity is Severity.WARNING]
+    wrong_slots = {v.slot for v in errors}
+    score = 1.0 - len(wrong_slots) / len(chords)
+    correct = not errors
+    if correct:
+        title = _('Correct — no voice-leading errors')
+    else:
+        title = ngettext(
+            'Not quite — {n} voice-leading error',
+            'Not quite — {n} voice-leading errors',
+            len(errors),
+        ).format(n=len(errors))
+    shown = errors[:MAX_LISTED]
+    sentences: list[str] = [f'{v.message}.' for v in shown]
+    if len(errors) > len(shown):
+        more = len(errors) - len(shown)
+        # Translators: after the first few voice-leading mistakes, e.g. "And 3 more."
+        sentences.append(ngettext('And {n} more.', 'And {n} more.', more).format(n=more))
+    reasons = list(dict.fromkeys(rule_reason(v.rule) for v in errors))
+    sentences += reasons[:2]
+    if warnings:
+        # Translators: introduces voice-leading weaknesses that are not counted as
+        # mistakes, e.g. "Worth noticing: The tenor leaps more than a fourth …".
+        sentences.append(
+            _('Worth noticing: {items}').format(
+                items=' '.join(f'{w.message}.' for w in warnings[:MAX_LISTED])
+            )
+        )
+    if correct and not warnings:
+        sentences.append(_('Every chord is complete, well spaced and smoothly connected.'))
+    inks, marks = _marked(
+        chords, violations, given=frozenset(answer.given_voices), correct_ink=correct
+    )
+    figure = passage_figure(
+        chords,
+        key,
+        answer.labels,
+        inks=inks,
+        marks=marks,
+        description=_figure_description(chords, errors, key),
+        breaks=breaks,
+    )
+    return Feedback(
+        correct=correct,
+        title=title,
+        detail=' '.join(sentences),
+        expected_label=chords_text(expected),
+        score=score,
+        figure=figure,
+        play_expected=play_expected,
+        play_given=passage_playback(chords),
+    )
 
 
 def _figure_description(

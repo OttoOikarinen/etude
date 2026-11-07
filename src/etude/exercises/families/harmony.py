@@ -50,18 +50,25 @@ def figure_text(figure: str) -> str:
 
 def roman_label(numeral: RomanNumeral) -> str:
     """Display form with slashed figures and quality signs, as Kostka–Payne print
-    them: ``'V6/5'``, ``'vii°7'``, ``'iiø4/3'``, ``'IV'``, ``'V6/5/V'``, ``'♭II6'``,
-    ``'Cad6/4'``."""
+    them: ``'V6/5'``, ``'vii°7'``, ``'iiø4/3'``, ``'IV'``, ``'V6/5/V'``, ``'N6'`` (the
+    Neapolitan, ♭II), ``'Ger+6'``, ``'Cad6/4'``."""
     if numeral.secondary is not None:
         primary = RomanNumeral(numeral.degree, numeral.quality, numeral.inversion, numeral.alter)
         return f'{roman_label(primary)}/{roman_label(numeral.secondary)}'
     if numeral.cadential:
         return 'Cad' + figure_text('64')
+    if is_neapolitan(numeral):
+        return 'N' + figure_text(numeral.figure)
     symbol = numeral.symbol
     figure = numeral.figure
     if not figure or numeral.quality.kind is ChordKind.AUGMENTED_SIXTH:
         return symbol
     return symbol[: len(symbol) - len(figure)] + figure_text(figure)
+
+
+def is_neapolitan(numeral: RomanNumeral) -> bool:
+    """♭II, the major triad on the lowered second degree."""
+    return (numeral.degree, numeral.alter, numeral.quality) == (2, -1, ChordQuality.MAJOR)
 
 
 def numeral_base(numeral: RomanNumeral) -> str:
@@ -125,6 +132,7 @@ def satb_figure(
     description: str | None = None,
     inks: Mapping[tuple[int, int], Ink] | None = None,
     marks: Mapping[int, str] | None = None,
+    breaks: Collection[int] = (),
 ) -> SystemSpec:
     """Four voices on a grand staff: soprano and alto on the treble staff, tenor
     and bass on the bass staff.
@@ -141,6 +149,7 @@ def satb_figure(
     * ``inks`` colours single notes by ``(voice, chord)`` (voice-leading mistakes in
       error ink, a correct answer in success ink), and ``marks`` writes a short text
       under the treble staff at a chord, in error ink (the rule a mistake breaks).
+    * ``breaks`` draws a double bar after those chords (the end of a phrase).
 
     :func:`satb_voices` reads the voicings back.
     """
@@ -159,32 +168,37 @@ def satb_figure(
             stem = heads[0].ink
         return StaffChord(heads, durations[i] if durations else None, label=label, ink=stem)
 
-    count = range(len(voices))
+    ending: tuple[Event, ...] = (Barline(BarStyle.FINAL),) if final_bar else ()
+
+    def line(voice: int, *, labelled: bool = False) -> tuple[Event, ...]:
+        events: list[Event] = []
+        for i in range(len(voices)):
+            events.append(chord(i, voice, labelled=labelled))
+            if i in breaks and i < len(voices) - 1:
+                events.append(Barline(BarStyle.DOUBLE))
+        return (*events, *ending)
+
     if durations:
-        ending: tuple[Event, ...] = (Barline(BarStyle.FINAL),) if final_bar else ()
         treble = StaffSpec(
             clef=Clef.TREBLE,
             key_signature=signature,
-            events=(*(chord(i, 0) for i in count), *ending),
-            voices=((*(chord(i, 1) for i in count), *ending),),
+            events=line(0),
+            voices=(line(1),),
         )
         low = StaffSpec(
             clef=Clef.BASS,
             key_signature=signature,
-            events=(*(chord(i, 2) for i in count), *ending),
-            voices=((*(chord(i, 3, labelled=True) for i in count), *ending),),
+            events=line(2),
+            voices=(line(3, labelled=True),),
+            labels_in_line=True,
         )
     else:
-        ending = (Barline(BarStyle.FINAL),) if final_bar else ()
-        treble = StaffSpec(
-            clef=Clef.TREBLE,
-            key_signature=signature,
-            events=(*(chord(i, 0) for i in count), *ending),
-        )
+        treble = StaffSpec(clef=Clef.TREBLE, key_signature=signature, events=line(0))
         low = StaffSpec(
             clef=Clef.BASS,
             key_signature=signature,
-            events=(*(chord(i, 2, labelled=True) for i in count), *ending),
+            events=line(2, labelled=True),
+            labels_in_line=True,
         )
     return SystemSpec(staves=(treble, low), description=description)
 

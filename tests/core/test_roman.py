@@ -30,6 +30,8 @@ def realized(numeral: str, key: str) -> str:
         ('Fr+6', 'c', 'Ab C D F#'),
         ('Ger+6', 'E', 'C E G A#'),
         ('Ger65', 'C', 'Ab C Eb F#'),
+        ('Ger+6(#2)', 'C', 'Ab C D# F#'),
+        ('Ger+6(♯2)/V', 'C', 'Eb G A# C#'),
         ('Fr43', 'C', 'Ab C D F#'),
         ('Cad64', 'C', 'G C E'),
         ('Cad64', 'f#', 'C# F# A'),
@@ -78,6 +80,7 @@ def test_realize(numeral: str, key: str, expected: str) -> None:
         ('N6', 'bII6', '♭II6'),
         ('It6', 'It+6', 'It+6'),
         ('Ger65/V', 'Ger+6/V', 'Ger+6/V'),
+        ('Ger+6(#2)', 'Ger+6(#2)', 'Ger+6'),
         ('Cad6/4', 'Cad64', 'Cad64'),
         ('V2', 'V42', 'V42'),
         ('#iv°7/V', '#ivo7/V', '♯iv°7/V'),
@@ -106,6 +109,8 @@ def test_validation() -> None:
         RomanNumeral(5, Q.DOMINANT_NINTH)
     with pytest.raises(ValueError, match='♭6'):
         RomanNumeral(6, Q.GERMAN_SIXTH)
+    with pytest.raises(ValueError, match='only the German'):
+        RomanNumeral.parse('It+6(#2)')
     with pytest.raises(ValueError, match='no inversion'):
         RomanNumeral(5, Q.MAJOR, 3)
     with pytest.raises(ValueError, match='I64'):
@@ -132,6 +137,7 @@ def test_validation() -> None:
         ('C', 'Ab', Q.ITALIAN_SIXTH, 0, 'It+6'),
         ('c', 'Ab', Q.GERMAN_SIXTH, 0, 'Ger+6'),
         ('C', 'Eb', Q.GERMAN_SIXTH, 0, 'Ger+6/V'),
+        ('C', 'Ab', Q.DOUBLY_AUGMENTED_FOURTH, 0, 'Ger+6(#2)'),
         ('c', 'C', Q.MAJOR, 0, 'I'),
         ('c', 'F', Q.MAJOR, 0, 'IV'),
         ('c', 'Bb', Q.DOMINANT_SEVENTH, 0, 'VII7'),
@@ -153,6 +159,9 @@ def test_analyze_gives_up() -> None:
     assert RomanNumeral.analyze(Chord(PitchName.parse('Ab'), Q.GERMAN_SIXTH, 1), key) is None
     assert RomanNumeral.analyze(Chord(PitchName.parse('A##'), Q.MAJOR), key) is None
     assert str(RomanNumeral.analyze(Chord(PitchName.parse('A#'), Q.AUGMENTED), key)) == '#VI+'
+    # The German sixth with ♯2̂ is a major-key spelling: in C minor E♭ is diatonic.
+    sharp_two = Chord(PitchName.parse('Ab'), Q.DOUBLY_AUGMENTED_FOURTH)
+    assert RomanNumeral.analyze(sharp_two, Key.parse('c')) is None
 
 
 def test_tonicized_key() -> None:

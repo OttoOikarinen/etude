@@ -44,6 +44,7 @@ def text(items: tuple[object, ...]) -> str:
         ('Ab', Q.ITALIAN_SIXTH, 'Ab C F#'),
         ('Ab', Q.FRENCH_SIXTH, 'Ab C D F#'),
         ('Ab', Q.GERMAN_SIXTH, 'Ab C Eb F#'),
+        ('Ab', Q.DOUBLY_AUGMENTED_FOURTH, 'Ab C D# F#'),
     ],
 )
 def test_spelling(root: str, quality: ChordQuality, expected: str) -> None:

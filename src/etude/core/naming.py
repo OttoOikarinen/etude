@@ -366,6 +366,9 @@ def chord_quality_name(quality: ChordQuality) -> str:
         ChordQuality.ITALIAN_SIXTH: pgettext('chord quality', 'Italian augmented sixth'),
         ChordQuality.FRENCH_SIXTH: pgettext('chord quality', 'French augmented sixth'),
         ChordQuality.GERMAN_SIXTH: pgettext('chord quality', 'German augmented sixth'),
+        ChordQuality.DOUBLY_AUGMENTED_FOURTH: pgettext(
+            'chord quality', 'German augmented sixth with a doubly augmented fourth'
+        ),
     }
     return names[quality]
 
