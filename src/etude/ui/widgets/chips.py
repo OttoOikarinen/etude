@@ -54,7 +54,8 @@ class Chip(Gtk.ToggleButton):
 class ChipGroups(AnswerWidget):
     """Renders a :class:`ChipsAnswer`.
 
-    Emits ``answered`` with ``dict[group key, option key]`` when Check is pressed.
+    Emits ``answered`` with ``dict[group key, option key]`` when Check is pressed. An
+    accelerator that several groups share chooses in the first group without a choice.
     For a group of natural note letters the widget adds a ♯ / ♭ chip; the value
     of that group is then the letter with ``'#'`` or ``'b'`` appended (``'Eb'``).
     """
@@ -154,15 +155,23 @@ class ChipGroups(AnswerWidget):
     def handle_key(self, keyval: int, state: Gdk.ModifierType) -> bool:
         if self.locked or state & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.ALT_MASK):
             return False
-        for group in self.spec.groups:
-            for option in group.options:
-                if keyval_matches(keyval, option.accel):
-                    if group.accidentals:
-                        # As on the piano: a letter is natural, Shift + letter sharp.
-                        self._set_alter(group, 1 if state & Gdk.ModifierType.SHIFT_MASK else 0)
-                    self.chips[group.key][option.key].set_active(True)
-                    return True
-        return False
+        matches = [
+            (group, option)
+            for group in self.spec.groups
+            for option in group.options
+            if keyval_matches(keyval, option.accel)
+        ]
+        if len(matches) > 1:
+            # Rows sharing their keys (a dictation): fill the first row still empty.
+            matches = [(g, o) for g, o in matches if self._selected(g) is None][:1]
+        if not matches:
+            return False
+        group, option = matches[0]
+        if group.accidentals:
+            # As on the piano: a letter is natural, Shift + letter sharp.
+            self._set_alter(group, 1 if state & Gdk.ModifierType.SHIFT_MASK else 0)
+        self.chips[group.key][option.key].set_active(True)
+        return True
 
     def activate_default(self) -> bool:
         if self.locked or len(self.value()) != len(self.spec.groups):

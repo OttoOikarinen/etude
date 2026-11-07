@@ -142,6 +142,9 @@ def test_the_bass_is_given_on_request() -> None:
     assert DICTATION.describe_settings({'bass': True, 'groups': ('neapolitan',)}) == (
         'Neapolitan sixth · Major and minor keys · bass given'
     )
+    # The subtitle names the groups asked, also when the choice falls back.
+    fallback = DICTATION.describe_settings({'mode': 'minor', 'groups': ('mixture',)})
+    assert fallback == 'Minor keys'
 
 
 def test_grading_scores_each_chord_and_marks_the_wrong_ones() -> None:
@@ -166,15 +169,46 @@ def test_grading_scores_each_chord_and_marks_the_wrong_ones() -> None:
     assert accent == [int(slot) - 1]
     assert DICTATION.answer_label(question, wrong).startswith('i–')
     assert DICTATION.answer_label(question, {}).count('?') == len(expected)
+    # The learner's reading is voiced to compare with the phrase.
+    given = feedback.play_given
+    assert given is not None
+    assert given.tempo == question.playback.tempo  # type: ignore[union-attr]
+    assert DICTATION.grade(question, expected).play_given is None
+    assert DICTATION.grade(question, {**expected, slot: ''}).play_given is None
+
+
+def test_chips_are_numbered_for_the_keyboard() -> None:
+    question = DICTATION.generate('harmonic.dictation.major.diatonic', {}, random.Random(0))
+    answer = question.answer
+    assert isinstance(answer, ChipsAnswer)
+    assert answer.shared_order
+    accels = [o.accel for o in answer.groups[0].options]
+    assert accels == list('123456789')
+    long = DICTATION.generate('harmonic.dictation.major.secondary', {}, random.Random(0))
+    assert isinstance(long.answer, ChipsAnswer)
+    accels = [o.accel for o in long.answer.groups[0].options]
+    assert accels[:10] == list('1234567890')
+    assert set(accels[10:]) == {None}
 
 
 def test_many_mistakes_are_summarised() -> None:
-    question = DICTATION.generate('harmonic.dictation.major.diatonic', {}, random.Random(1))
+    question = next(
+        q
+        for seed in range(50)
+        if len(
+            (
+                q := DICTATION.generate(
+                    'harmonic.dictation.major.diatonic', {}, random.Random(seed)
+                )
+            ).expected
+        )
+        > 4  # type: ignore[arg-type]
+    )
     blank = {k: 'iii' if v != 'iii' else 'ii' for k, v in question.expected.items()}  # type: ignore[union-attr]
     feedback = DICTATION.grade(question, blank)
     assert feedback.score == 0
-    if len(blank) > 3:
-        assert 'more chord' in feedback.detail
+    assert feedback.detail.count('Chord ') == 3
+    assert 'more chord' in feedback.detail
 
 
 def test_rows_of_the_same_chips_are_shuffled_alike() -> None:
@@ -185,15 +219,24 @@ def test_rows_of_the_same_chips_are_shuffled_alike() -> None:
         exercise_id='x',
         item_id='x.y',
         prompt='?',
-        answer=ChipsAnswer((*groups, ChipGroup('z', 'Other', other))),
-        expected={'2': 'I', '3': 'V', 'z': 'a'},
+        answer=ChipsAnswer(groups, shared_order=True),
+        expected={'2': 'I', '3': 'V'},
     )
     orders = set()
     for seed in range(20):
         shown = shuffle_options(question, random.Random(seed)).answer
         assert isinstance(shown, ChipsAnswer)
-        first, second, third = shown.groups
+        first, second = shown.groups
         assert first.options == second.options
-        assert sorted(o.key for o in third.options) == ['a', 'b', 'c']
         orders.add(tuple(o.key for o in first.options))
     assert len(orders) > 1
+    # Without the flag, groups are shuffled each on its own, as before.
+    separate = Question(
+        exercise_id='x',
+        item_id='x.y',
+        prompt='?',
+        answer=ChipsAnswer((*groups, ChipGroup('z', 'Other', other))),
+        expected={'2': 'I', '3': 'V', 'z': 'a'},
+    )
+    pairs = [shuffle_options(separate, random.Random(seed)).answer for seed in range(20)]
+    assert any(a.groups[0].options != a.groups[1].options for a in pairs)  # type: ignore[union-attr]

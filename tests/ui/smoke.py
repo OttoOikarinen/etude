@@ -2024,8 +2024,8 @@ def check_live_chromatic_sessions() -> None:
 
 def check_live_harmonic_dictation() -> None:
     """Harmonic dictation in a real session: a row of chips per chord after the tonic,
-    every row in the same order, chosen by clicking; the feedback marks each row and
-    labels every chord of the phrase."""
+    every row in the same order, chosen with the number keys; the feedback marks each row
+    and labels every chord of the phrase."""
     import tempfile
 
     from etude.notation.spec import SystemSpec
@@ -2043,9 +2043,15 @@ def check_live_harmonic_dictation() -> None:
             assert len(groups) == len(question.expected) >= 2
             assert len({tuple(widget.chips[g.key]) for g in groups}) == 1, 'one order'
             assert not widget.check_button.get_sensitive()
-            for slot, value in question.expected.items():
-                widget.chips[slot][value].emit('clicked')
+            # Number keys fill the rows in order; a chip without a number is clicked.
+            for group in groups:
+                option = next(o for o in group.options if o.key == question.expected[group.key])
+                if option.accel:
+                    assert press(page, option.accel)
+                else:
+                    widget.chips[group.key][option.key].emit('clicked')
             pump()
+            assert widget.value() == dict(question.expected)
             assert widget.check_button.get_sensitive()
             assert press(page, 'Return')
             assert page.feedback is not None

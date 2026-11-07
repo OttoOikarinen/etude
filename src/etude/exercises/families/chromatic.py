@@ -474,23 +474,27 @@ class ChromaticChords(ExerciseDefinition):
         return str(value)
 
 
-def phrase_for(chord: ChromaticChord, limit: int, rng: random.Random) -> Phrase:
-    """A phrase around ``chord`` in a key with at most ``limit`` accidentals whose notes
-    need no more than double sharps or flats."""
-    keys = keys_within(limit, (chord.mode,))
-    failure: Exception | None = None
+def phrase_in(
+    mode: Mode, limit: int, rng: random.Random, make: Callable[[Key, random.Random], Phrase]
+) -> Phrase:
+    """A phrase from ``make`` in a key of ``mode`` with at most ``limit`` accidentals
+    whose notes need no more than double sharps or flats."""
+    keys = keys_within(limit, (mode,))
     for _attempt in range(_KEY_ATTEMPTS):
         key = rng.choice(keys)
         try:
-            phrase = chromatic_phrase(chord, key, rng)
-        except RealisationError as error:
-            failure = error  # a key with many accidentals: try another
-            continue
+            phrase = make(key, rng)
+        except RealisationError:
+            continue  # a key with many accidentals: try another
         if _spellable(phrase.chords):
             return phrase
-    # C major and A minor always work (tests voice every chord there).
-    del failure
-    return chromatic_phrase(chord, keys_within(0, (chord.mode,))[0], rng)
+    # C major and A minor always work (tests voice every phrase there).
+    return make(keys_within(0, (mode,))[0], rng)
+
+
+def phrase_for(chord: ChromaticChord, limit: int, rng: random.Random) -> Phrase:
+    """A phrase around ``chord`` (:func:`phrase_in`)."""
+    return phrase_in(chord.mode, limit, rng, lambda key, r: chromatic_phrase(chord, key, r))
 
 
 def _question_figure(phrase: Phrase) -> SystemSpec:

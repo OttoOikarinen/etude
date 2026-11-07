@@ -27,15 +27,15 @@ from collections.abc import Callable, Mapping, Sequence
 from enum import Enum
 from functools import cache
 from gettext import gettext as _
-from gettext import ngettext
+from gettext import ngettext, pgettext
 from typing import ClassVar, cast
 
+from ...audio.spec import PlaybackSpec
 from ...checkers.phrases import (
     CHROMATIC_CHORDS,
     DIATONIC_PHRASES,
     ChromaticChord,
     ChromaticFamily,
-    Phrase,
     diatonic_phrase,
     phrase_numerals,
 )
@@ -58,27 +58,23 @@ from ..base import (
     Question,
     Setting,
 )
-from .chromatic import phrase_for
+from .chromatic import phrase_for, phrase_in
 from .four_part import (
+    describe_keys,
     harmony_settings,
     mode_setting,
+    modes,
     phrase_figure,
     phrase_playback,
     pick_instrument,
     tempo_of,
+    voice,
 )
-from .harmony import (
-    is_neapolitan,
-    keys_within,
-    limit_setting,
-    modes_setting,
-    roman_label,
-    satb_voices,
-)
+from .harmony import is_neapolitan, limit_setting, roman_label, satb_voices
 
 PREFIX = 'harmonic.dictation.'
-_KEY_ATTEMPTS = 6
 _MAX_EXPLAINED = 3
+_ACCELS = '1234567890'
 
 
 class Group(Enum):
@@ -226,29 +222,11 @@ def _selected(settings: Mapping[str, object]) -> list[Group]:
 
 
 def _modes(settings: Mapping[str, object]) -> tuple[Mode, ...]:
-    return modes_setting(settings, 'both')
-
-
-def _describe_keys(settings: Mapping[str, object]) -> str:
-    chosen = _modes(settings)
-    if len(chosen) == 2:
-        return _('Major and minor keys')
-    return _('Minor keys') if chosen[0] is Mode.MINOR else _('Major keys')
+    return modes(settings, 'both')
 
 
 def _limit(settings: Mapping[str, object]) -> int:
     return min(6, limit_setting(settings, 4))
-
-
-def _diatonic_for(mode: Mode, limit: int, rng: random.Random) -> Phrase:
-    keys = keys_within(limit, (mode,))
-    for _attempt in range(_KEY_ATTEMPTS):
-        try:
-            return diatonic_phrase(rng.choice(keys), rng)
-        except RealisationError:
-            continue
-    # C major and A minor always work (tests voice every phrase there).
-    return diatonic_phrase(keys_within(0, (mode,))[0], rng)
 
 
 def _labels(numerals: Sequence[RomanNumeral]) -> list[str]:
@@ -325,11 +303,11 @@ class HarmonicDictation(ExerciseDefinition):
 
     def describe_settings(self, settings: Mapping[str, object]) -> str:
         parts = []
-        groups = _selected(settings)
-        if len(groups) < len(Group):
+        asked = {parse_item(item)[1] for item in self.items(settings)}
+        if asked < {g for mode in _modes(settings) for g in GROUPS[mode]}:
             # Translators: separator in a list of chord groups in an exercise subtitle.
-            parts.append(_(', ').join(group_name(g) for g in groups))
-        parts.append(_describe_keys(settings))
+            parts.append(_(', ').join(group_name(g) for g in Group if g in asked))
+        parts.append(describe_keys(settings, 'both'))
         if settings.get('bass', False) is True:
             parts.append(_('bass given'))
         # Translators: separator between the parts of an exercise subtitle.
@@ -348,7 +326,7 @@ class HarmonicDictation(ExerciseDefinition):
 
     def item_label(self, item_id: ItemId) -> str:
         mode, group = parse_item(item_id)
-        mode_word = _('major') if mode is Mode.MAJOR else _('minor')
+        mode_word = pgettext('mode', 'major') if mode is Mode.MAJOR else pgettext('mode', 'minor')
         # Translators: an item in "Weakest items", e.g. "Neapolitan sixth (minor, dictation)".
         return _('{group} ({mode}, dictation)').format(group=group_name(group), mode=mode_word)
 
@@ -362,14 +340,16 @@ class HarmonicDictation(ExerciseDefinition):
         mode, group = parse_item(item_id)
         limit = _limit(settings)
         if group is Group.DIATONIC:
-            phrase = _diatonic_for(mode, limit, rng)
+            phrase = phrase_in(mode, limit, rng, diatonic_phrase)
         else:
             phrase = phrase_for(rng.choice(group_chords(group, mode)), limit, rng)
         key = phrase.key
         numerals = [r[-1].numeral for r in phrase.readings]
         keys = [chord_key(n) for n in numerals]
         words = vocabulary(group, mode)
-        options = tuple(Option(k, chip_label(k)) for k in words)
+        # Number keys fill the rows in order (ChipsAnswer.shared_order).
+        accels = [*_ACCELS[: len(words)], *[None] * (len(words) - len(_ACCELS))]
+        options = tuple(Option(k, chip_label(k), a) for k, a in zip(words, accels, strict=True))
         groups = tuple(
             # Translators: the heading of a row of chips, e.g. "Chord 2".
             ChipGroup(str(i + 1), _('Chord {number}').format(number=i + 1), options)
@@ -389,7 +369,7 @@ class HarmonicDictation(ExerciseDefinition):
             exercise_id=self.id,
             item_id=item_id,
             prompt=_('Write the Roman numeral of each chord'),
-            answer=ChipsAnswer(groups),
+            answer=ChipsAnswer(groups, shared_order=True),
             expected={str(i + 1): keys[i] for i in range(1, len(keys))},
             figure=figure,
             playback=phrase_playback(
@@ -457,6 +437,7 @@ class HarmonicDictation(ExerciseDefinition):
                 key, voicings, labels=labels, highlight=[int(k) - 1 for k in wrong]
             ),
             play_expected=question.playback,
+            play_given=None if correct else _given_playback(question, given_map),
         )
 
     def answer_label(self, question: Question, value: object) -> str:
@@ -473,6 +454,23 @@ class HarmonicDictation(ExerciseDefinition):
         if isinstance(value, Mapping):
             return ','.join(f'{k}={v}' for k, v in value.items())
         return str(value)
+
+
+def _given_playback(question: Question, given: Mapping[object, object]) -> PlaybackSpec | None:
+    """The learner's numerals voiced and played like the phrase (root position, as the
+    chips have no figures), or ``None`` when a chord is missing or they cannot be
+    voiced."""
+    slots = sorted(cast(Mapping[str, str], question.expected), key=int)
+    texts = [question.details['first'], *(str(given.get(slot, '')) for slot in slots)]
+    playback = question.playback
+    if '' in texts or playback is None:
+        return None
+    key = Key.parse(question.details['key'])
+    try:
+        voicings = voice(key, [RomanNumeral.parse(t) for t in texts], random.Random(0))
+    except (RealisationError, ValueError):
+        return None  # e.g. an augmented sixth resolving to the tonic
+    return phrase_playback(voicings, tempo=playback.tempo, instrument=playback.instrument)
 
 
 def _bass(voicings: Sequence[Voicing]) -> str:
